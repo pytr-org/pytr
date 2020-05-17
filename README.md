@@ -118,7 +118,15 @@ import websocket
 
 ws = websocket.WebSocket()
 ws.connect("wss://api.traderepublic.com")
-ws.send("connect 21 {}")
+connection_message = {
+    'device': str(uuid.uuid4()),
+    'clientId': "de.traderepublic.app",
+    'clientVersion': "1.1.2875",
+    'platformId': "android",
+    'platformVersion': "28",
+    'locale': "de"
+}
+ws.send("connect 21 {json.dumps(connection_message)}")
 print(ws.recv())
 ```
 
