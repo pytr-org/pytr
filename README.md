@@ -2,7 +2,49 @@
 
 This is a documentation of some parts of the private API of the Trade Republic Online Brokerage. Not affiliated with Trade Republic Bank GmbH.
 
-## Request Signing
+## How to use it
+
+First you need to perform a device reset - a private key will be generated that pins your "device". The private key is saved to your keyfile. This procedure will log you out from your mobile device.
+
+```python
+from trade_republic import TradeRepublic
+tr = TradeRepublic(phone_no="+4900000000000", pin="0000", keyfile='keyfile.pem')
+tr.initiate_device_reset()
+tr.complete_device_reset("0000") # Substitute the 2FA token that is sent to you via SMS.
+```
+
+After this has been performed, you can login:
+
+```python
+from trade_republic import TradeRepublic
+tr = TradeRepublic(phone_no="+4900000000000", pin="0000", keyfile='keyfile.pem')
+tr.login()
+```
+
+Now you can talk to the asynchronous Trade Republic API via Websockets: 
+
+```python
+import asyncio
+
+async def my_loop():
+    await tr.request_cash()
+    await tr.request_watchlist()
+    await tr.request_portfolio()
+    await tr.request_ticker("DE0007236101.LSX")
+
+    while True:
+        _, request, _, response = await tr.recv()
+        print(response)
+
+asyncio.get_event_loop().run_until_complete(asyncio.gather(my_loop()))
+```
+
+
+## How it works
+
+Details of how the API works
+
+### Request Signing
 
 All requests to the REST API are pinned to a device by signing requests using a private key which is generated on the device and stored in the secure storage of the device. To login, we first have to generate a private key, register it and verify the key using 2FA (SMS).
 
@@ -67,7 +109,7 @@ This gives us two tokens to authorize requests. The `session_token` needs to be 
 
 After some time the session token expires and we need to request a new one using the refresh token, or just login again.
 
-## Websocket Connection
+### Websocket Connection
 
 There's not a lot we can do with the REST Api - basically only authorization and onboarding. For anything else we need to connect to their websocket.
 
