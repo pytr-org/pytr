@@ -2,12 +2,18 @@
 
 This is a library for the private API of the Trade Republic online brokerage. I am not affiliated with Trade Republic Bank GmbH.
 
+## Installation
+
+```
+pip install py-tr
+```
+
 ## Authentication
 
 First you need to perform a device reset - a private key will be generated that pins your "device". The private key is saved to your keyfile. This procedure will log you out from your mobile device.
 
 ```python
-from trade_republic import TradeRepublicApi
+from py_tr import TradeRepublicApi
 tr = TradeRepublicApi(phone_no="+4900000000000", pin="0000", keyfile='keyfile.pem')
 tr.initiate_device_reset()
 tr.complete_device_reset("0000") # Substitute the 2FA token that is sent to you via SMS.
@@ -34,7 +40,7 @@ Sample code:
 
 ```python
 import asyncio
-from trade_republic import TradeRepublicApi
+from py_tr import TradeRepublicApi
 
 tr = TradeRepublicApi(phone_no="+4900000000000", pin="0000", keyfile='keyfile.pem')
 
@@ -74,88 +80,91 @@ The following subscriptions are supported by this library:
 
 ### Portfolio
 ```python
->>> tr.portfolio()
->>> tr.cash()
->>> tr.available_cash_for_payout()
->>> tr.portfolio_status()
->>> tr.portfolio_history(timeframe)
->>> tr.experience()
+tr.portfolio()
+tr.cash()
+tr.available_cash_for_payout()
+tr.portfolio_status()
+tr.portfolio_history(timeframe)
+tr.experience()
 ```
 ### Watchlist
 ```python
->>> tr.watchlist()
->>> tr.add_watchlist(isin)
->>> tr.remove_watchlist(isin)
+tr.watchlist()
+tr.add_watchlist(isin)
+tr.remove_watchlist(isin)
 ```
 ### Market Data
 ```python
->>> tr.instrument_details(isin)
->>> tr.instrument_suitability(isin)
->>> tr.stock_details(isin)
->>> tr.ticker(isin, exchange="LSX")
->>> tr.performance(isin, exchange="LSX")
->>> tr.performance_history(isin, timeframe, exchange="LSX", resolution=None)
+tr.instrument_details(isin)
+tr.instrument_suitability(isin)
+tr.stock_details(isin)
+tr.ticker(isin, exchange="LSX")
+tr.performance(isin, exchange="LSX")
+tr.performance_history(isin, timeframe, exchange="LSX", resolution=None)
 ```
 ### Timeline
 ```python
->>> tr.timeline(after=None)
->>> tr.timeline_detail(timeline_id)
->>> tr.timeline_detail_order(order_id)
->>> tr.timeline_detail_savings_plan(savings_plan_id)
+tr.timeline(after=None)
+tr.timeline_detail(timeline_id)
+tr.timeline_detail_order(order_id)
+tr.timeline_detail_savings_plan(savings_plan_id)
 ```
 ### Search
 ```python
->>> tr.search_tags()
->>> tr.search_suggested_tags(query)
->>> tr.search(query, asset_type="stock", page=1, page_size=20, aggregate=False, only_savable=False,
+tr.search_tags()
+tr.search_suggested_tags(query)
+tr.search(query, asset_type="stock", page=1, page_size=20, aggregate=False, only_savable=False,
               filter_index=None, filter_country=None, filter_sector=None, filter_region=None)
->>> tr.search_derivative(underlying_isin, product_type)
+tr.search_derivative(underlying_isin, product_type)
 ```
 ### Orders
+
+Be careful, these methods can create actual live trades.
+
 ```python
->>> tr.order_overview()
->>> tr.cash_available_for_order()
->>> tr.size_available_for_order(isin, exchange)
->>> tr.price_for_order(isin, exchange, order_type)
->>> tr.market_order(isin, exchange, order_type, size, expiry, sell_fractions, expiry_date=None, warnings_shown=None)
->>> tr.limit_order(isin, exchange, order_type, size, limit, expiry, expiry_date=None, warnings_shown=None)
->>> tr.stop_market_order(isin, exchange, order_type, size, stop, expiry, expiry_date=None, warnings_shown=None)
->>> tr.cancel_order(order_id)
+tr.order_overview()
+tr.cash_available_for_order()
+tr.size_available_for_order(isin, exchange)
+tr.price_for_order(isin, exchange, order_type)
+tr.market_order(isin, exchange, order_type, size, expiry, sell_fractions, expiry_date=None, warnings_shown=None)
+tr.limit_order(isin, exchange, order_type, size, limit, expiry, expiry_date=None, warnings_shown=None)
+tr.stop_market_order(isin, exchange, order_type, size, stop, expiry, expiry_date=None, warnings_shown=None)
+tr.cancel_order(order_id)
 ```
 ### Savings Plans
 ```python
->>> tr.savings_plan_overview()
->>> tr.savings_plan_parameters(isin)
->>> tr.create_savings_plan(isin, amount, interval, start_date, start_date_type, start_date_value)
->>> tr.change_savings_plan(savings_plan_id, isin, amount, interval, start_date, start_date_type, start_date_value)
->>> tr.cancel_savings_plan(savings_plan_id)
+tr.savings_plan_overview()
+tr.savings_plan_parameters(isin)
+tr.create_savings_plan(isin, amount, interval, start_date, start_date_type, start_date_value)
+tr.change_savings_plan(savings_plan_id, isin, amount, interval, start_date, start_date_type, start_date_value)
+tr.cancel_savings_plan(savings_plan_id)
 ```
 ### Price Alarms
 ```python
->>> tr.price_alarm_overview()
->>> tr.create_price_alarm(isin, price)
->>> tr.cancel_price_alarm(price_alarm_id)
+tr.price_alarm_overview()
+tr.create_price_alarm(isin, price)
+tr.cancel_price_alarm(price_alarm_id)
 ```
 ### News
 ```python
->>> tr.news(isin)
->>> tr.news_subscriptions()
->>> tr.subscribe_news(isin)
->>> tr.unsubscribe_news(isin)
+tr.news(isin)
+tr.news_subscriptions()
+tr.subscribe_news(isin)
+tr.unsubscribe_news(isin)
 ```
 ### Other
 ```python
->>> tr.motd()
->>> tr.neon_cards()
+tr.motd()
+tr.neon_cards()
 ```
 ### REST calls
 These Api calls are not asynchronous, but plain old rest calls. 
 ```python
->>> tr.settings()
->>> tr.order_cost(isin, exchange, order_mode, order_type, size, sell_fractions)
->>> tr.savings_plan_cost(isin, amount, interval)
->>> tr.payout(amount)
->>> tr.confirm_payout(process_id, code)
+tr.settings()
+tr.order_cost(isin, exchange, order_mode, order_type, size, sell_fractions)
+tr.savings_plan_cost(isin, amount, interval)
+tr.payout(amount)
+tr.confirm_payout(process_id, code)
 ```
 Payouts need two-factor-authentication: the `payout()` call will respond with a process_id and trigger an SMS with a code. Confirm the payout by calling `confirm_payout()` with the process_id and code.
 
