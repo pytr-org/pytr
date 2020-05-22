@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py_tr",
-    version="1.0.0",
+    version="1.0.1",
     author="Nils Borrmann",
     author_email="n.borrmann@googlemail.com",
     license='MIT',
@@ -13,7 +13,6 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/nborrmann/pytr",
-    packages=setuptools.find_packages(),
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
@@ -24,4 +23,5 @@ setuptools.setup(
     ],
     python_requires='>=3.4',
     package_dir={'': 'src'},
+    packages=setuptools.find_packages('src'),
 )
