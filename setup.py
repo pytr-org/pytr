@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py_tr",
-    version="1.0.1",
+    version="1.0.2",
     author="Nils Borrmann",
     author_email="n.borrmann@googlemail.com",
     license='MIT',
