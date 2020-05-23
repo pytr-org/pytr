@@ -21,7 +21,7 @@ setuptools.setup(
         "Topic :: Office/Business :: Financial",
         "Topic :: Office/Business :: Financial :: Investment"
     ],
-    python_requires='>=3.4',
+    python_requires='>=3.5',
     package_dir={'': 'src'},
     packages=setuptools.find_packages('src'),
 )

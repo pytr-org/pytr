@@ -3,6 +3,7 @@ import base64
 import hashlib
 import json
 import logging
+import pathlib
 import time
 import urllib.parse
 import uuid
@@ -13,6 +14,7 @@ from ecdsa import NIST256p, SigningKey
 from ecdsa.util import sigencode_der
 
 logger = logging.getLogger(__name__)
+home = pathlib.Path.home()
 
 
 class TradeRepublicApi:
@@ -43,15 +45,26 @@ class TradeRepublicApi:
         self._session_token_expires_at = time.time() + 290
         self._session_token = val
 
-    def __init__(self, phone_no, pin, keyfile=None, locale="de"):
+    def __init__(self, phone_no=None, pin=None, keyfile=None, locale="de"):
         self._locale = locale
-        self.phone_no = phone_no
-        self.pin = pin
-        self.keyfile = keyfile
-        if keyfile:
-            with open('keyfile.pem', 'rb') as f:
-                data = f.read()
-            self.sk = SigningKey.from_pem(data, hashfunc=hashlib.sha512)
+        if not (phone_no and pin):
+            try:
+                with open(f"{home}/.pytr/credentials", 'r') as f:
+                    lines = f.readlines()
+                self.phone_no = lines[0].strip()
+                self.pin = lines[1].strip()
+            except FileNotFoundError:
+                raise ValueError(f"phone_no and pin must be specified explicitly or via {home}/.pytr/credentials")
+        else:
+            self.phone_no = phone_no
+            self.pin = pin
+
+        self.keyfile = keyfile if keyfile else f"{home}/.pytr/keyfile.pem"
+        try:
+            with open(self.keyfile, 'rb') as f:
+                self.sk = SigningKey.from_pem(f.read(), hashfunc=hashlib.sha512)
+        except FileNotFoundError:
+            pass
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -73,7 +86,7 @@ class TradeRepublicApi:
                           json={"code": token, "deviceKey": pubkey_string},
                           headers=self._default_headers)
         if r.status_code == 200:
-            with open('keyfile.pem', 'wb') as f:
+            with open(self.keyfile, 'wb') as f:
                 f.write(self.sk.to_pem())
 
     def login(self):
