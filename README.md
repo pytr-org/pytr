@@ -19,6 +19,8 @@ tr.initiate_device_reset()
 tr.complete_device_reset("0000") # Substitute the 2FA token that is sent to you via SMS.
 ```
 
+If no credentials are supplied the library will look for them in the file `~/.pytr/credentials` (the first line must contain the phone number, the second line the pin). If no keyfile is supplied the library will default to `~/.pytr/keyfile.pem`.
+
 ## Api Subscriptions
 
 The Trade Republic API works fully asynchronously via Websocket. You subscribe to a 'topic', by sending a request using the `tr.subscribe(payload)` call (or any of the helper methods provided by the library). This will return a `subscription_id`, that you can use to identify responses belonging to this subscription. 
@@ -72,7 +74,9 @@ portfolio = tr.run_blocking(tr.portfolio(), timeout=5.0)
 ```
 
 This will subscribe to a topic, return the first response and immediately unsubscribe. If no response is returned this 
-will time out after a default of five seconds. Warning: `tr.run_blocking()` will silently drop all messages belonging to different subscriptions, therefore do not use both approaches at the same time.
+will time out after a default of five seconds. You can also prefix any method with `blocking_` to achieve the same result (eg: `tr.blocking_portfolio(timeout=5)`).
+
+*Warning*: `tr.run_blocking()` will silently drop all messages belonging to different subscriptions, therefore do not use both approaches at the same time.
 
 ## All Subscriptions
 
@@ -114,7 +118,7 @@ tr.timeline_detail_savings_plan(savings_plan_id)
 tr.search_tags()
 tr.search_suggested_tags(query)
 tr.search(query, asset_type="stock", page=1, page_size=20, aggregate=False, only_savable=False,
-              filter_index=None, filter_country=None, filter_sector=None, filter_region=None)
+          filter_index=None, filter_country=None, filter_sector=None, filter_region=None)
 tr.search_derivative(underlying_isin, product_type)
 ```
 ### Orders
@@ -186,6 +190,6 @@ Payouts need two-factor-authentication: the `payout()` call will respond with a 
 * **interval** `string` interval for savings plan execution, allowed values are `"everySecondWeek"`, `"weekly"`, `"twoPerMonth"`, `"monthly"`, `"quarterly"`
 * **start_date** `string` first execution date for savings plans, in format `"yyyy-mm-dd"`
 * **start_date_type** `string` allowed values are `"dayOfMonth"`, `"weekday"`
-* **start_date_value** `int` either the day of month (0-30) on which to execute the savings plan, or the weekday (0-6)
+* **start_date_value** `int` either the day of month (0-30), or the weekday (0-6) on which to execute the savings plan
 
 Allowed values for search filters can be found using the `search_tags()` call.

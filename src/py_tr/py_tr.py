@@ -509,7 +509,8 @@ class TradeRepublicApi:
         if name[:9] == "blocking_":
             attr = object.__getattribute__(self, name[9:])
             if hasattr(attr, '__call__'):
-                return lambda *args, **kwargs: self.run_blocking(attr(*args, **kwargs))
+                return lambda *args, **kwargs: \
+                    self.run_blocking(timeout=kwargs.pop("timeout", 5), fut=attr(*args, **kwargs))
         return object.__getattribute__(self, name)
 
 
