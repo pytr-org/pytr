@@ -505,6 +505,13 @@ class TradeRepublicApi:
         url = f"/api/v1/user/savingsplancosttransparency?instrumentId={isin}&amount={amount}&interval={interval}"
         return self._sign_request(url, method="GET").text
 
+    def __getattr__(self, name):
+        if name[:9] == "blocking_":
+            attr = object.__getattribute__(self, name[9:])
+            if hasattr(attr, '__call__'):
+                return lambda *args, **kwargs: self.run_blocking(attr(*args, **kwargs))
+        return object.__getattribute__(self, name)
+
 
 class TradeRepublicError(ValueError):
     def __init__(self, subscription_id, subscription, error_message):
