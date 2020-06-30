@@ -5,7 +5,7 @@ This is a library for the private API of the Trade Republic online brokerage. I 
 ## Installation
 
 ```
-pip install py-tr
+pip install git+https://github.com/ptrstn/pytr
 ```
 
 ## Authentication
