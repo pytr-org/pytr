@@ -1,3 +1,25 @@
+# MIT License
+
+# Copyright (c) 2020 nborrmann
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import asyncio
 import base64
 import hashlib
@@ -18,7 +40,7 @@ home = pathlib.Path.home()
 
 
 class TradeRepublicApi:
-    _default_headers = {'User-Agent': 'TradeRepublic/Android 24/App Version 1.1.2875'}
+    _default_headers = {"User-Agent": "TradeRepublic/Android 24/App Version 1.1.2875"}
     _host = "https://api.traderepublic.com"
 
     _refresh_token = None
@@ -49,7 +71,7 @@ class TradeRepublicApi:
         self._locale = locale
         if not (phone_no and pin):
             try:
-                with open(f"{home}/.pytr/credentials", 'r') as f:
+                with open(f"{home}/.pytr/credentials", "r") as f:
                     lines = f.readlines()
                 self.phone_no = lines[0].strip()
                 self.pin = lines[1].strip()
@@ -61,7 +83,7 @@ class TradeRepublicApi:
 
         self.keyfile = keyfile if keyfile else f"{home}/.pytr/keyfile.pem"
         try:
-            with open(self.keyfile, 'rb') as f:
+            with open(self.keyfile, "rb") as f:
                 self.sk = SigningKey.from_pem(f.read(), hashfunc=hashlib.sha512)
         except FileNotFoundError:
             pass
@@ -69,74 +91,89 @@ class TradeRepublicApi:
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
 
-        r = requests.post(f"{self._host}/api/v1/auth/account/reset/device",
-                          json={"phoneNumber": self.phone_no, "pin": self.pin},
-                          headers=self._default_headers)
+        r = requests.post(
+            f"{self._host}/api/v1/auth/account/reset/device",
+            json={"phoneNumber": self.phone_no, "pin": self.pin},
+            headers=self._default_headers,
+        )
 
-        self._process_id = r.json()['processId']
+        self._process_id = r.json()["processId"]
 
     def complete_device_reset(self, token):
         if not self._process_id and not self.sk:
             raise ValueError("Initiate Device Reset first.")
 
-        pubkey_bytes = self.sk.get_verifying_key().to_string('uncompressed')
-        pubkey_string = base64.b64encode(pubkey_bytes).decode('ascii')
+        pubkey_bytes = self.sk.get_verifying_key().to_string("uncompressed")
+        pubkey_string = base64.b64encode(pubkey_bytes).decode("ascii")
 
-        r = requests.post(f"{self._host}/api/v1/auth/account/reset/device/{self._process_id}/key",
-                          json={"code": token, "deviceKey": pubkey_string},
-                          headers=self._default_headers)
+        r = requests.post(
+            f"{self._host}/api/v1/auth/account/reset/device/{self._process_id}/key",
+            json={"code": token, "deviceKey": pubkey_string},
+            headers=self._default_headers,
+        )
         if r.status_code == 200:
-            with open(self.keyfile, 'wb') as f:
+            with open(self.keyfile, "wb") as f:
                 f.write(self.sk.to_pem())
 
     def login(self):
         logger.info("Logging in")
-        r = self._sign_request("/api/v1/auth/login",
-                               payload={"phoneNumber": self.phone_no, "pin": self.pin})
-        self._refresh_token = r.json()['refreshToken']
-        self.session_token = r.json()['sessionToken']
+        r = self._sign_request(
+            "/api/v1/auth/login",
+            payload={"phoneNumber": self.phone_no, "pin": self.pin},
+        )
+        self._refresh_token = r.json()["refreshToken"]
+        self.session_token = r.json()["sessionToken"]
 
     def refresh_access_token(self):
         logger.info("Refreshing access token")
         r = self._sign_request("/api/v1/auth/session", method="GET")
-        self.session_token = r.json()['sessionToken']
+        self.session_token = r.json()["sessionToken"]
 
     def _sign_request(self, url_path, payload=None, method="POST"):
         ts = int(time.time() * 1000)
         payload_string = json.dumps(payload) if payload else ""
         signature_payload = f"{ts}.{payload_string}"
-        signature = self.sk.sign(bytes(signature_payload, "utf-8"), hashfunc=hashlib.sha512, sigencode=sigencode_der)
-        signature_string = base64.b64encode(signature).decode('ascii')
+        signature = self.sk.sign(
+            bytes(signature_payload, "utf-8"),
+            hashfunc=hashlib.sha512,
+            sigencode=sigencode_der,
+        )
+        signature_string = base64.b64encode(signature).decode("ascii")
 
         headers = self._default_headers.copy()
         headers["X-Zeta-Timestamp"] = str(ts)
         headers["X-Zeta-Signature"] = signature_string
-        headers['Content-Type'] = 'application/json'
+        headers["Content-Type"] = "application/json"
 
         if url_path == "/api/v1/auth/login":
             pass
         elif url_path == "/api/v1/auth/session":
-            headers['Authorization'] = f'Bearer {self._refresh_token}'
+            headers["Authorization"] = f"Bearer {self._refresh_token}"
         elif self.session_token:
-            headers['Authorization'] = f'Bearer {self.session_token}'
+            headers["Authorization"] = f"Bearer {self.session_token}"
 
-        return requests.request(method=method, url=f"{self._host}{url_path}", data=payload_string, headers=headers)
+        return requests.request(
+            method=method,
+            url=f"{self._host}{url_path}",
+            data=payload_string,
+            headers=headers,
+        )
 
     async def _get_ws(self):
         if self._ws and self._ws.open:
             return self._ws
 
-        logger.info(f"Connecting to websocket ...")
+        logger.info("Connecting to websocket ...")
 
         self._ws = await websockets.connect("wss://api.traderepublic.com")
-        connection_message = {'locale': self._locale}
+        connection_message = {"locale": self._locale}
         await self._ws.send(f"connect 21 {json.dumps(connection_message)}")
         response = await self._ws.recv()
 
-        if not response == 'connected':
+        if not response == "connected":
             raise ValueError(f"Connection Error: {response}")
 
-        logger.info(f"Connected to websocket ...")
+        logger.info("Connected to websocket ...")
 
         return self._ws
 
@@ -173,9 +210,9 @@ class TradeRepublicApi:
             response = await ws.recv()
             logger.debug(f"Received message: {response!r}")
 
-            subscription_id = response[:response.find(" ")]
-            code = response[response.find(" ") + 1: response.find(" ") + 2]
-            payload_str = response[response.find(" ") + 2:].lstrip()
+            subscription_id = response[: response.find(" ")]
+            code = response[response.find(" ") + 1 : response.find(" ") + 2]
+            payload_str = response[response.find(" ") + 2 :].lstrip()
 
             if subscription_id not in self.subscriptions:
                 if code != "C":
@@ -183,24 +220,24 @@ class TradeRepublicApi:
                 continue
             subscription = self.subscriptions[subscription_id]
 
-            if code == 'A':
+            if code == "A":
                 self._previous_responses[subscription_id] = payload_str
                 payload = json.loads(payload_str) if payload_str else {}
                 return subscription_id, subscription, payload
 
-            elif code == 'D':
+            elif code == "D":
                 response = self._calculate_delta(subscription_id, payload_str)
                 logger.debug(f"Payload is {response}")
 
                 self._previous_responses[subscription_id] = response
                 return subscription_id, subscription, json.loads(response)
 
-            if code == 'C':
+            if code == "C":
                 self.subscriptions.pop(subscription_id, None)
                 self._previous_responses.pop(subscription_id, None)
                 continue
 
-            elif code == 'E':
+            elif code == "E":
                 logger.error(f"Received error message: {response!r}")
 
                 await self.unsubscribe(subscription_id)
@@ -211,13 +248,13 @@ class TradeRepublicApi:
     def _calculate_delta(self, subscription_id, delta_payload):
         previous_response = self._previous_responses[subscription_id]
         i, result = 0, []
-        for diff in delta_payload.split('\t'):
+        for diff in delta_payload.split("\t"):
             sign = diff[0]
-            if sign == '+':
+            if sign == "+":
                 result.append(urllib.parse.unquote_plus(diff).strip())
-            elif sign == '-' or sign == '=':
-                if sign == '=':
-                    result.append(previous_response[i:i + int(diff[1:])])
+            elif sign == "-" or sign == "=":
+                if sign == "=":
+                    result.append(previous_response[i : i + int(diff[1:])])
                 i += int(diff[1:])
         return "".join(result)
 
@@ -278,7 +315,11 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "performance", "id": f"{isin}.{exchange}"})
 
     async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):
-        parameters = {"type": "aggregateHistory", "id": f"{isin}.{exchange}", "range": timeframe}
+        parameters = {
+            "type": "aggregateHistory",
+            "id": f"{isin}.{exchange}",
+            "range": timeframe,
+        }
         if resolution:
             parameters["resolution"] = resolution
         return await self.subscribe(parameters)
@@ -310,31 +351,46 @@ class TradeRepublicApi:
     async def search_suggested_tags(self, query):
         return await self.subscribe({"type": "neonSearchSuggestedTags", "data": {"q": query}})
 
-    async def search(self, query, asset_type="stock", page=1, page_size=20, aggregate=False, only_savable=False,
-                     filter_index=None, filter_country=None, filter_sector=None, filter_region=None):
+    async def search(
+        self,
+        query,
+        asset_type="stock",
+        page=1,
+        page_size=20,
+        aggregate=False,
+        only_savable=False,
+        filter_index=None,
+        filter_country=None,
+        filter_sector=None,
+        filter_region=None,
+    ):
         search_parameters = {
             "q": query,
-            "filter": [{'key': 'type', 'value': asset_type}],
+            "filter": [{"key": "type", "value": asset_type}],
             "page": page,
             "pageSize": page_size,
         }
         if only_savable:
-            search_parameters["filter"].append({'key': 'attribute', 'value': 'savable'})
+            search_parameters["filter"].append({"key": "attribute", "value": "savable"})
         if filter_index:
-            search_parameters["filter"].append({'key': 'index', 'value': filter_index})
+            search_parameters["filter"].append({"key": "index", "value": filter_index})
         if filter_country:
-            search_parameters["filter"].append({'key': 'country', 'value': filter_country})
+            search_parameters["filter"].append({"key": "country", "value": filter_country})
         if filter_region:
-            search_parameters["filter"].append({'key': 'region', 'value': filter_region})
+            search_parameters["filter"].append({"key": "region", "value": filter_region})
         if filter_sector:
-            search_parameters["filter"].append({'key': 'sector', 'value': filter_sector})
+            search_parameters["filter"].append({"key": "sector", "value": filter_sector})
 
         search_type = "neonSearch" if not aggregate else "neonSearchAggregations"
         return await self.subscribe({"type": search_type, "data": search_parameters})
 
     async def search_derivative(self, underlying_isin, product_type):
         return await self.subscribe(
-            {"type": "derivatives", "underlying": underlying_isin, "productCategory": product_type}
+            {
+                "type": "derivatives",
+                "underlying": underlying_isin,
+                "productCategory": product_type,
+            }
         )
 
     async def order_overview(self):
@@ -342,7 +398,14 @@ class TradeRepublicApi:
 
     async def price_for_order(self, isin, exchange, order_type):
         return await self.subscribe(
-            {"type": "priceForOrder", "parameters": {"exchangeId": exchange, "instrumentId": isin, "type": order_type}}
+            {
+                "type": "priceForOrder",
+                "parameters": {
+                    "exchangeId": exchange,
+                    "instrumentId": isin,
+                    "type": order_type,
+                },
+            }
         )
 
     async def cash_available_for_order(self):
@@ -350,10 +413,23 @@ class TradeRepublicApi:
 
     async def size_available_for_order(self, isin, exchange):
         return await self.subscribe(
-            {"type": "availableSize", "parameters": {"exchangeId": exchange, "instrumentId": isin}}
+            {
+                "type": "availableSize",
+                "parameters": {"exchangeId": exchange, "instrumentId": isin},
+            }
         )
 
-    async def limit_order(self, isin, exchange, order_type, size, limit, expiry, expiry_date=None, warnings_shown=None):
+    async def limit_order(
+        self,
+        isin,
+        exchange,
+        order_type,
+        size,
+        limit,
+        expiry,
+        expiry_date=None,
+        warnings_shown=None,
+    ):
         parameters = {
             "type": "simpleCreateOrder",
             "clientProcessId": str(uuid.uuid4()),
@@ -366,15 +442,24 @@ class TradeRepublicApi:
                 "mode": "limit",
                 "size": size,
                 "type": order_type,
-            }
+            },
         }
         if expiry == "gtd" and expiry_date:
             parameters["parameters"]["expiry"]["value"] = expiry_date
 
         return await self.subscribe(parameters)
 
-    async def market_order(self, isin, exchange, order_type, size, expiry, sell_fractions, expiry_date=None,
-                           warnings_shown=None):
+    async def market_order(
+        self,
+        isin,
+        exchange,
+        order_type,
+        size,
+        expiry,
+        sell_fractions,
+        expiry_date=None,
+        warnings_shown=None,
+    ):
         parameters = {
             "type": "simpleCreateOrder",
             "clientProcessId": str(uuid.uuid4()),
@@ -387,15 +472,24 @@ class TradeRepublicApi:
                 "sellFractions": sell_fractions,
                 "size": size,
                 "type": order_type,
-            }
+            },
         }
         if expiry == "gtd" and expiry_date:
             parameters["parameters"]["expiry"]["value"] = expiry_date
 
         return await self.subscribe(parameters)
 
-    async def stop_market_order(self, isin, exchange, order_type, size, stop, expiry, expiry_date=None,
-                                warnings_shown=None):
+    async def stop_market_order(
+        self,
+        isin,
+        exchange,
+        order_type,
+        size,
+        stop,
+        expiry,
+        expiry_date=None,
+        warnings_shown=None,
+    ):
         parameters = {
             "type": "simpleCreateOrder",
             "clientProcessId": str(uuid.uuid4()),
@@ -408,7 +502,7 @@ class TradeRepublicApi:
                 "size": size,
                 "stop": stop,
                 "type": order_type,
-            }
+            },
         }
         if expiry == "gtd" and expiry_date:
             parameters["parameters"]["expiry"]["value"] = expiry_date
@@ -424,8 +518,16 @@ class TradeRepublicApi:
     async def savings_plan_parameters(self, isin):
         return await self.subscribe({"type": "cancelSavingsPlan", "instrumentId": isin})
 
-    async def create_savings_plan(self, isin, amount, interval, start_date, start_date_type, start_date_value,
-                                  warnings_shown=None):
+    async def create_savings_plan(
+        self,
+        isin,
+        amount,
+        interval,
+        start_date,
+        start_date_type,
+        start_date_value,
+        warnings_shown=None,
+    ):
         parameters = {
             "type": "createSavingsPlan",
             "warningsShown": warnings_shown if warnings_shown else [],
@@ -434,16 +536,25 @@ class TradeRepublicApi:
                 "instrumentId": isin,
                 "interval": interval,
                 "startDate": {
-                    'nextExecutionDate': start_date,
-                    'type': start_date_type,
-                    'value': start_date_value
-                }
-            }
+                    "nextExecutionDate": start_date,
+                    "type": start_date_type,
+                    "value": start_date_value,
+                },
+            },
         }
         return await self.subscribe(parameters)
 
-    async def change_savings_plan(self, savings_plan_id, isin, amount, interval,
-                                  start_date, start_date_type, start_date_value, warnings_shown=None):
+    async def change_savings_plan(
+        self,
+        savings_plan_id,
+        isin,
+        amount,
+        interval,
+        start_date,
+        start_date_type,
+        start_date_value,
+        warnings_shown=None,
+    ):
         parameters = {
             "id": savings_plan_id,
             "type": "createSavingsPlan",
@@ -453,11 +564,11 @@ class TradeRepublicApi:
                 "instrumentId": isin,
                 "interval": interval,
                 "startDate": {
-                    'nextExecutionDate': start_date,
-                    'type': start_date_type,
-                    'value': start_date_value
-                }
-            }
+                    "nextExecutionDate": start_date,
+                    "type": start_date_type,
+                    "value": start_date_value,
+                },
+            },
         }
         return await self.subscribe(parameters)
 
@@ -497,8 +608,10 @@ class TradeRepublicApi:
         return self._sign_request("/api/v1/auth/account", method="GET").json()
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
-        url = f"/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}" \
-              f"&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}"
+        url = (
+            f"/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}"
+            f"&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}"
+        )
         return self._sign_request(url, method="GET").text
 
     def savings_plan_cost(self, isin, amount, interval):
@@ -508,9 +621,10 @@ class TradeRepublicApi:
     def __getattr__(self, name):
         if name[:9] == "blocking_":
             attr = object.__getattribute__(self, name[9:])
-            if hasattr(attr, '__call__'):
-                return lambda *args, **kwargs: \
-                    self.run_blocking(timeout=kwargs.pop("timeout", 5), fut=attr(*args, **kwargs))
+            if hasattr(attr, "__call__"):
+                return lambda *args, **kwargs: self.run_blocking(
+                    timeout=kwargs.pop("timeout", 5), fut=attr(*args, **kwargs)
+                )
         return object.__getattribute__(self, name)
 
 
