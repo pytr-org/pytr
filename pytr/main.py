@@ -11,6 +11,8 @@ from pytr.utils import get_logger
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
+from pytr.alarms import Alarms
+from pytr.details import Details
 
 
 # async def my_loop(tr, dl):
@@ -73,6 +75,11 @@ def get_main_parser():
     )
     parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH')
 
+    parser_get_price_alarms = subparsers.add_parser(
+        'get_price_alarms', parents=[parent_parser], help='Get overview of current price alarms'
+    )
+    parser_details = subparsers.add_parser('details', parents=[parent_parser], help='Get details for an ISIN')
+    parser_details.add_argument('isin', help='ISIN of intrument')
     parser_set_price_alarms = subparsers.add_parser(
         'set_price_alarms', parents=[parent_parser], help='Set price alarms based on diff from current price'
     )
@@ -129,9 +136,12 @@ def main():
     elif args.command == "set_price_alarms":
         # TODO
         pass
+    elif args.command == "get_price_alarms":
+        Alarms(login()).get()
+    elif args.command == "details":
+        Details(login(), args.isin).get()
     elif args.command == "portfolio":
-        p = Portfolio(login())
-        p.get()
+        Portfolio(login()).get()
     else:
         parser.print_help()
 

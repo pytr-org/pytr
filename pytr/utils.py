@@ -130,9 +130,7 @@ class Timeline:
             if timeline_detail_id == event["data"]["id"]:
                 self.timeline_events.remove(event)
 
-        print(f"len timeline_events: {len(self.timeline_events)}")
-
-        print(f"R: {self.received_detail}/{len(self.timeline_detail_ids)}")
+        # print(f"len timeline_events: {len(self.timeline_events)}")
 
         if response["subtitleText"] == "Sparplan":
             isSavingsPlan = True
@@ -146,7 +144,9 @@ class Timeline:
                             isSavingsPlan = True
                             break
 
-        print(f"Detail: {response['titleText']} -- {response['subtitleText']} -- istSparplan: {isSavingsPlan}")
+        print(
+            f"{self.received_detail}/{len(self.timeline_detail_ids)}: {response['titleText']} -- {response['subtitleText']} -- istSparplan: {isSavingsPlan}"
+        )
 
         for section in response["sections"]:
             if section["type"] == "documents":
@@ -161,5 +161,3 @@ class Timeline:
         if self.received_detail == len(self.timeline_detail_ids):
             print("received all details, downloading docs..")
             dl.work_responses()
-        else:
-            print(f"r: {self.received_detail}/{len(self.timeline_detail_ids)} - istSparplan: {isSavingsPlan}")

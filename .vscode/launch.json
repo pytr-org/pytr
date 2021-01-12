@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "pytr",
             "args": [
-                "portfolio"
+                "details", "DE0006231004"
             ]
         }
     ]

@@ -18,7 +18,7 @@ class DL:
 
         self.docs_request = 0
         self.done = 0
-
+        self.filepaths = []
         self.tl = Timeline(self.tr)
 
     async def dl_loop(self):
@@ -63,10 +63,15 @@ class DL:
             doc_type_num = ""
 
         doc_type = " ".join(doc_type)
-        filepath = os.path.join(directory, doc_type, f"{iso_date}{time} {titleText}{doc_type_num}.pdf")
+        filepath = os.path.join(directory, doc_type, f"{iso_date}{time} {titleText}{doc_type_num} {subtitleText}.pdf")
 
         # if response['titleText'] == "Shopify":
         #    print(json.dumps(response))
+        if filepath in self.filepaths:
+            print(f"file {filepath} already in queue. Skipping...")
+            return
+        else:
+            self.filepaths.append(filepath)
 
         if os.path.isfile(filepath) is False:
             self.docs_request += 1
@@ -74,13 +79,16 @@ class DL:
             future.filepath = filepath
             self.futures.append(future)
         else:
-            print("file {filepath} already exists. Skipping...")
+            print(f"file {filepath} already exists. Skipping...")
 
     def work_responses(self):
         """
         process responses of async requests
         """
         for future in as_completed(self.futures):
+            if os.path.isfile(future.filepath) is True:
+                print(f"file {future.filepath} was already downloaded.")
+
             r = future.result()
             os.makedirs(os.path.dirname(future.filepath), exist_ok=True)
             with open(future.filepath, "wb") as f:
