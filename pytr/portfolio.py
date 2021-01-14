@@ -42,7 +42,10 @@ class Portfolio:
         for pos in sorted(positions, key=lambda x: x['netValue'], reverse=True):
             buyCost = pos["unrealisedAverageCost"] * pos["netSize"]
             diff = pos["netValue"] - buyCost
-            diffP = ((pos["netValue"] / buyCost) - 1) * 100
+            if buyCost == 0:
+                diffP = 0.0
+            else:
+                diffP = ((pos["netValue"] / buyCost) - 1) * 100
             totalBuyCost += buyCost
             totalNetValue += pos["netValue"]
 
@@ -54,7 +57,10 @@ class Portfolio:
         print()
 
         diff = totalNetValue - totalBuyCost
-        diffP = ((totalNetValue / totalBuyCost) - 1) * 100
+        if totalBuyCost == 0:
+            diffP = 0.0
+        else:
+            diffP = ((pos["netValue"] / totalBuyCost) - 1) * 100
         print(f"Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%")
 
         cash = self.cash[0]['amount']

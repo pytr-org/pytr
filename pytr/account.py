@@ -45,6 +45,7 @@ def login(phone_no=None, pin=None):
         log.info(f"Phone: {phone_no}, PIN: {pin}")
     else:
         log.info("Credentials file not found")
+        os.makedirs(os.path.dirname(credentials_file), exist_ok=True)
         if phone_no is None:
             print("Please enter your TradeRepbulic phone number in the format +49123456678:")
             phone_no = input()

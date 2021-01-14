@@ -48,7 +48,10 @@ class Alarms:
                 ts = int(a['triggeredAt']) / 1000.0
                 triggered = datetime.fromtimestamp(ts).isoformat(sep=' ', timespec='minutes')
 
-            diffP = (a['targetPrice'] / a['createdPrice']) * 100 - 100
+            if a['createdPrice'] == 0:
+                diffP = 0.0
+            else:
+                diffP = (a['targetPrice'] / a['createdPrice']) * 100 - 100
 
             print(
                 f"{a['instrumentId']} {a['status']} {a['createdPrice']:>7.2f} {a['targetPrice']:>7.2f} {diffP:>5.1f} {created} {triggered}"
