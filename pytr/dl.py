@@ -63,7 +63,11 @@ class DL:
             doc_type_num = ""
 
         doc_type = " ".join(doc_type)
-        filepath = os.path.join(directory, doc_type, f"{iso_date}{time} {titleText}{doc_type_num} {subtitleText}.pdf")
+        fileName = f"{iso_date}{time} {titleText} - {doc_type_num} {subtitleText}"
+        badChars = ["/","\n",":","@","."]
+        for badChar in badChars:
+            fileName =fileName.replace(badChar,"")
+        filepath = os.path.join(directory, doc_type, f"{fileName}.pdf")
 
         # if response['titleText'] == "Shopify":
         #    print(json.dumps(response))
