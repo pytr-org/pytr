@@ -4,14 +4,15 @@ import re
 from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
 
-from pytr.utils import preview, Timeline
+from pytr.utils import preview, Timeline, get_logger
 
 
 class DL:
-    def __init__(self, tr, output_path, headers={'User-Agent': 'pytr'}):
+    def __init__(self, tr, output_path, filename_fmt, headers={'User-Agent': 'pytr'}):
         self.tr = tr
         self.output_path = output_path
         self.headers = headers
+        self.filename_fmt = filename_fmt
 
         self.session = FuturesSession()
         self.futures = []
@@ -19,7 +20,9 @@ class DL:
         self.docs_request = 0
         self.done = 0
         self.filepaths = []
+        self.doc_urls = []
         self.tl = Timeline(self.tr)
+        self.log = get_logger(__name__)
 
     async def dl_loop(self):
         await self.tl.get_next_timeline()
@@ -27,88 +30,104 @@ class DL:
         while True:
             _subscription_id, subscription, response = await self.tr.recv()
 
-            if subscription["type"] == "timeline":
+            if subscription['type'] == 'timeline':
                 await self.tl.get_next_timeline(response)
-            elif subscription["type"] == "timelineDetail":
+            elif subscription['type'] == 'timelineDetail':
                 await self.tl.timelineDetail(response, self)
             else:
-                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+                self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
     def dl_doc(self, doc, titleText, subtitleText, subfolder=None):
-        """
+        '''
         send asynchronous request, append future with filepath to self.futures
-        """
-        doc_url = doc["action"]["payload"]
+        '''
+        doc_url = doc['action']['payload']
 
-        date = doc["detail"]
-        iso_date = "-".join(date.split(".")[::-1])
+        date = doc['detail']
+        iso_date = '-'.join(date.split('.')[::-1])
 
         # extract time from subtitleText
-        time = re.findall("um (\\d+:\\d+) Uhr", subtitleText)
+        time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
         if time == []:
-            time = ""
+            time = ''
         else:
-            time = f" {time[0]}"
+            time = f' {time[0]}'
 
         if subfolder is not None:
             directory = os.path.join(self.output_path, subfolder)
         else:
             directory = self.output_path
 
-        # If doc_type is something like "Kosteninformation 2", then strip the 2 and save it in doc_type_num
-        doc_type = doc['title'].rsplit(" ")
+        # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
+        doc_type = doc['title'].rsplit(' ')
         if doc_type[-1].isnumeric() is True:
-            doc_type_num = f" {doc_type.pop()}"
+            doc_type_num = f' {doc_type.pop()}'
         else:
-            doc_type_num = ""
+            doc_type_num = ''
 
-        doc_type = " ".join(doc_type)
-        fileName = f"{iso_date}{time} {titleText} - {doc_type_num} {subtitleText}"
-        if os.name == "nt":
-            badChars = ["/","\n",":","@","."]
+        doc_type = ' '.join(doc_type)
+        titleText = titleText.replace('\n', '').replace('/', '-')
+        subtitleText = subtitleText.replace('\n', '').replace('/', '-')
+
+        filename = self.filename_fmt.format(
+            iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num
+        )
+        if os.name == 'nt':
+            badChars = ['/', '\n', ':', '@', '.']
             for badChar in badChars:
-                fileName =fileName.replace(badChar,"")
-        
-        filepath = os.path.join(directory, doc_type, f"{fileName}.pdf")
+                filename = filename.replace(badChar, '')
 
-        # if response['titleText'] == "Shopify":
-        #    print(json.dumps(response))
+        if doc_type in ['Kontoauszug', 'Depotauszug']:
+            filepath = os.path.join(directory, 'Abschlüsse', f'{filename}', f'{doc_type}.pdf')
+        else:
+            filepath = os.path.join(directory, doc_type, f'{filename}.pdf')
+
         if filepath in self.filepaths:
-            print(f"file {filepath} already in queue. Skipping...")
+            self.log.debug(f'File {filepath} already in queue. Skipping...')
             return
         else:
             self.filepaths.append(filepath)
 
         if os.path.isfile(filepath) is False:
-            self.docs_request += 1
+            doc_url_base = doc_url.split('?')[0]
+            if doc_url_base in self.doc_urls:
+                self.log.warning(f'URL {doc_url_base} already in queue. Skipping...')
+                return
+            else:
+                self.doc_urls.append(doc_url_base)
+
             future = self.session.get(doc_url)
             future.filepath = filepath
             self.futures.append(future)
         else:
-            print(f"file {filepath} already exists. Skipping...")
+            self.log.debug(f'file {filepath} already exists. Skipping...')
 
     def work_responses(self):
-        """
+        '''
         process responses of async requests
-        """
+        '''
+        if len(self.doc_urls) == 0:
+            self.log.info('Nothing to download')
+            exit(0)
+
+        self.log.info('Waiting for downloads to complete..')
         for future in as_completed(self.futures):
             if os.path.isfile(future.filepath) is True:
-                print(f"file {future.filepath} was already downloaded.")
+                self.log.debug(f'file {future.filepath} was already downloaded.')
 
             r = future.result()
             os.makedirs(os.path.dirname(future.filepath), exist_ok=True)
-            with open(future.filepath, "wb") as f:
+            with open(future.filepath, 'wb') as f:
                 f.write(r.content)
                 self.done += 1
 
-                print(f"done: {self.done:>3}/{self.docs_request} {os.path.basename(future.filepath)}")
+                self.log.debug(f'{self.done:>3}/{len(self.doc_urls)} {os.path.basename(future.filepath)}')
 
-                if self.done == self.docs_request:
-                    print("Done.")
+                if self.done == len(self.doc_urls):
+                    self.log.info('Done.')
                     exit(0)
 
     def dl_all(output_path):
-        """
-        todo
-        """
-        pass
+        '''
+        TODO
+        '''
