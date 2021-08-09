@@ -30,6 +30,8 @@ import time
 import urllib.parse
 import uuid
 
+import certifi
+import ssl
 import requests
 import websockets
 from ecdsa import NIST256p, SigningKey
@@ -164,8 +166,8 @@ class TradeRepublicApi:
             return self._ws
 
         logger.info('Connecting to websocket ...')
-
-        self._ws = await websockets.connect('wss://api.traderepublic.com')
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context)
         connection_message = {'locale': self._locale}
         await self._ws.send(f'connect 21 {json.dumps(connection_message)}')
         response = await self._ws.recv()
