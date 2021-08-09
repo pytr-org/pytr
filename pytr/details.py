@@ -13,8 +13,8 @@ class Details:
         await self.tr.stock_details(self.isin)
         await self.tr.news(self.isin)
         # await self.tr.subscribe_news(self.isin)
-        await self.tr.ticker(self.isin, exchange="LSX")
-        await self.tr.performance(self.isin, exchange="LSX")
+        await self.tr.ticker(self.isin, exchange='LSX')
+        await self.tr.performance(self.isin, exchange='LSX')
         await self.tr.instrument_details(self.isin)
         await self.tr.instrument_suitability(self.isin)
 
@@ -26,25 +26,25 @@ class Details:
         while True:
             _subscription_id, subscription, response = await self.tr.recv()
 
-            if subscription["type"] == "stockDetails":
+            if subscription['type'] == 'stockDetails':
                 recv += 1
                 self.stockDetails = response
-            elif subscription["type"] == "neonNews":
+            elif subscription['type'] == 'neonNews':
                 recv += 1
                 self.neonNews = response
-            elif subscription["type"] == "ticker":
+            elif subscription['type'] == 'ticker':
                 recv += 1
                 self.ticker = response
-            elif subscription["type"] == "performance":
+            elif subscription['type'] == 'performance':
                 recv += 1
                 self.performance = response
-            elif subscription["type"] == "instrument":
+            elif subscription['type'] == 'instrument':
                 recv += 1
                 self.instrument = response
-            elif subscription["type"] == "instrumentSuitability":
+            elif subscription['type'] == 'instrumentSuitability':
                 recv += 1
                 self.instrumentSuitability = response
-                print("instrumentSuitability:", response)
+                print('instrumentSuitability:', response)
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response, num_lines=30)}")
 

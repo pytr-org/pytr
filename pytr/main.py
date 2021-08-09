@@ -16,13 +16,13 @@ from pytr.details import Details
 
 
 # async def my_loop(tr, dl):
-#     # await tr.subscribe({"type": "unsubscribeNews"})
+#     # await tr.subscribe({'type': 'unsubscribeNews'})
 #     # await tr.order_overview()
 
-#     # await tr.timeline_detail("98d13dc6-5bd3-43c8-b74a-dae4e7728f4f")
+#     # await tr.timeline_detail('98d13dc6-5bd3-43c8-b74a-dae4e7728f4f')
 
-#     # await tr.ticker("DE0007236101", "LSX")
-#     # await tr.ticker("DE0007100000", "LSX")
+#     # await tr.ticker('DE0007236101', 'LSX')
+#     # await tr.ticker('DE0007100000', 'LSX')
 
 #     while True:
 #         _subscription_id, subscription, response = await tr.recv()
@@ -30,20 +30,20 @@ from pytr.details import Details
 #         # Identify response by subscription_id:
 #         #   if portfolio_subscription_id == subscription_id:
 
-#         if subscription["type"] == "orders":
-#             print(f"Orders: {response}")
+#         if subscription['type'] == 'orders':
+#             print(f'Orders: {response}')
 
 #         # Or identify response by subscription type:
-#         elif subscription["type"] == "ticker":
-#             print(f"Current tick for {subscription['id']} is {response}")
+#         elif subscription['type'] == 'ticker':
+#             print(f'Current tick for {subscription['id']} is {response}')
 
 #         else:
-#             print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+#             print(f'unmatched subscription of type '{subscription['type']}':\n{preview(response)}')
 
 
 def get_main_parser():
-    parser = argparse.ArgumentParser()
-    shtab.add_argument_to(parser, ["-s", "--print-completion"])  # magic!
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    shtab.add_argument_to(parser, ['-s', '--print-completion'])  # magic!
 
     parser.add_argument(
         '-v', '--verbosity', help='Set verbosity level', choices=['warning', 'info', 'debug'], default='info'
@@ -54,14 +54,15 @@ def get_main_parser():
     subparsers.add_parser('help', help='Print this help message')
 
     # Create parent subparser for {dl_docs, check}-parsers with common arguments
-    parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser = argparse.ArgumentParser(add_help=False, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     # Subparsers based on parent
 
     parser_login = subparsers.add_parser(
         'login',
         parents=[parent_parser],
-        help='Check if credentials file exists. If not create it and ask for input. Try to login. Ask for device reset if needed',
+        help='Check if credentials file exists. If not create it and ask for input.'
+        + ' Try to login. Ask for device reset if needed',
     )
     parser_login.add_argument('-n', '--phone_no', help='TradeRepbulic phone number (international format)')
     parser_login.add_argument('-p', '--pin', help='TradeRepbulic pin')
@@ -72,8 +73,15 @@ def get_main_parser():
         'dl_docs',
         parents=[parent_parser],
         help='Download all pdf documents from the timeline and sort them into folders',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH')
+    parser_dl_docs.add_argument(
+        '--format',
+        help='available variables:\tiso_date, time, title, doc_num, subtitle',
+        metavar='FORMAT_STRING',
+        default='{iso_date}{time} {title}{doc_num}',
+    )
 
     parser_get_price_alarms = subparsers.add_parser(
         'get_price_alarms', parents=[parent_parser], help='Get overview of current price alarms'
@@ -102,11 +110,11 @@ def exit_gracefully(signum, frame):
     signal.signal(signal.SIGINT, original_sigint)
 
     try:
-        if input("\nReally quit? (y/n)> ").lower().startswith('y'):
+        if input('\nReally quit? (y/n)> ').lower().startswith('y'):
             exit(1)
 
     except KeyboardInterrupt:
-        print("Ok ok, quitting")
+        print('Ok ok, quitting')
         exit(1)
 
     # restore the exit gracefully handler here
@@ -127,20 +135,20 @@ def main():
     log.setLevel(args.verbosity.upper())
     log.debug('logging is set to debug')
 
-    if args.command == "login":
+    if args.command == 'login':
         login(phone_no=args.phone_no, pin=args.pin)
 
-    elif args.command == "dl_docs":
-        dl = DL(login(), args.output)
+    elif args.command == 'dl_docs':
+        dl = DL(login(), args.output, args.format)
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
-    elif args.command == "set_price_alarms":
+    elif args.command == 'set_price_alarms':
         # TODO
-        pass
-    elif args.command == "get_price_alarms":
+        print('Not implemented yet')
+    elif args.command == 'get_price_alarms':
         Alarms(login()).get()
-    elif args.command == "details":
+    elif args.command == 'details':
         Details(login(), args.isin).get()
-    elif args.command == "portfolio":
+    elif args.command == 'portfolio':
         Portfolio(login()).get()
     else:
         parser.print_help()

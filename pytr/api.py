@@ -40,8 +40,8 @@ home = pathlib.Path.home()
 
 
 class TradeRepublicApi:
-    _default_headers = {"User-Agent": "TradeRepublic/Android 24/App Version 1.1.2875"}
-    _host = "https://api.traderepublic.com"
+    _default_headers = {'User-Agent': 'TradeRepublic/Android 30/App Version 1.1.5502'}
+    _host = 'https://api.traderepublic.com'
 
     _refresh_token = None
     _session_token = None
@@ -67,23 +67,23 @@ class TradeRepublicApi:
         self._session_token_expires_at = time.time() + 290
         self._session_token = val
 
-    def __init__(self, phone_no=None, pin=None, keyfile=None, locale="de"):
+    def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de'):
         self._locale = locale
         if not (phone_no and pin):
             try:
-                with open(f"{home}/.pytr/credentials", "r") as f:
+                with open(f'{home}/.pytr/credentials', 'r') as f:
                     lines = f.readlines()
                 self.phone_no = lines[0].strip()
                 self.pin = lines[1].strip()
             except FileNotFoundError:
-                raise ValueError(f"phone_no and pin must be specified explicitly or via {home}/.pytr/credentials")
+                raise ValueError(f'phone_no and pin must be specified explicitly or via {home}/.pytr/credentials')
         else:
             self.phone_no = phone_no
             self.pin = pin
 
-        self.keyfile = keyfile if keyfile else f"{home}/.pytr/keyfile.pem"
+        self.keyfile = keyfile if keyfile else f'{home}/.pytr/keyfile.pem'
         try:
-            with open(self.keyfile, "rb") as f:
+            with open(self.keyfile, 'rb') as f:
                 self.sk = SigningKey.from_pem(f.read(), hashfunc=hashlib.sha512)
         except FileNotFoundError:
             pass
@@ -92,69 +92,69 @@ class TradeRepublicApi:
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
 
         r = requests.post(
-            f"{self._host}/api/v1/auth/account/reset/device",
-            json={"phoneNumber": self.phone_no, "pin": self.pin},
+            f'{self._host}/api/v1/auth/account/reset/device',
+            json={'phoneNumber': self.phone_no, 'pin': self.pin},
             headers=self._default_headers,
         )
 
-        self._process_id = r.json()["processId"]
+        self._process_id = r.json()['processId']
 
     def complete_device_reset(self, token):
         if not self._process_id and not self.sk:
-            raise ValueError("Initiate Device Reset first.")
+            raise ValueError('Initiate Device Reset first.')
 
-        pubkey_bytes = self.sk.get_verifying_key().to_string("uncompressed")
-        pubkey_string = base64.b64encode(pubkey_bytes).decode("ascii")
+        pubkey_bytes = self.sk.get_verifying_key().to_string('uncompressed')
+        pubkey_string = base64.b64encode(pubkey_bytes).decode('ascii')
 
         r = requests.post(
-            f"{self._host}/api/v1/auth/account/reset/device/{self._process_id}/key",
-            json={"code": token, "deviceKey": pubkey_string},
+            f'{self._host}/api/v1/auth/account/reset/device/{self._process_id}/key',
+            json={'code': token, 'deviceKey': pubkey_string},
             headers=self._default_headers,
         )
         if r.status_code == 200:
-            with open(self.keyfile, "wb") as f:
+            with open(self.keyfile, 'wb') as f:
                 f.write(self.sk.to_pem())
 
     def login(self):
-        logger.info("Logging in")
+        logger.info('Logging in')
         r = self._sign_request(
-            "/api/v1/auth/login",
-            payload={"phoneNumber": self.phone_no, "pin": self.pin},
+            '/api/v1/auth/login',
+            payload={'phoneNumber': self.phone_no, 'pin': self.pin},
         )
-        self._refresh_token = r.json()["refreshToken"]
-        self.session_token = r.json()["sessionToken"]
+        self._refresh_token = r.json()['refreshToken']
+        self.session_token = r.json()['sessionToken']
 
     def refresh_access_token(self):
-        logger.info("Refreshing access token")
-        r = self._sign_request("/api/v1/auth/session", method="GET")
-        self.session_token = r.json()["sessionToken"]
+        logger.info('Refreshing access token')
+        r = self._sign_request('/api/v1/auth/session', method='GET')
+        self.session_token = r.json()['sessionToken']
 
-    def _sign_request(self, url_path, payload=None, method="POST"):
+    def _sign_request(self, url_path, payload=None, method='POST'):
         ts = int(time.time() * 1000)
-        payload_string = json.dumps(payload) if payload else ""
-        signature_payload = f"{ts}.{payload_string}"
+        payload_string = json.dumps(payload) if payload else ''
+        signature_payload = f'{ts}.{payload_string}'
         signature = self.sk.sign(
-            bytes(signature_payload, "utf-8"),
+            bytes(signature_payload, 'utf-8'),
             hashfunc=hashlib.sha512,
             sigencode=sigencode_der,
         )
-        signature_string = base64.b64encode(signature).decode("ascii")
+        signature_string = base64.b64encode(signature).decode('ascii')
 
         headers = self._default_headers.copy()
-        headers["X-Zeta-Timestamp"] = str(ts)
-        headers["X-Zeta-Signature"] = signature_string
-        headers["Content-Type"] = "application/json"
+        headers['X-Zeta-Timestamp'] = str(ts)
+        headers['X-Zeta-Signature'] = signature_string
+        headers['Content-Type'] = 'application/json'
 
-        if url_path == "/api/v1/auth/login":
+        if url_path == '/api/v1/auth/login':
             pass
-        elif url_path == "/api/v1/auth/session":
-            headers["Authorization"] = f"Bearer {self._refresh_token}"
+        elif url_path == '/api/v1/auth/session':
+            headers['Authorization'] = f'Bearer {self._refresh_token}'
         elif self.session_token:
-            headers["Authorization"] = f"Bearer {self.session_token}"
+            headers['Authorization'] = f'Bearer {self.session_token}'
 
         return requests.request(
             method=method,
-            url=f"{self._host}{url_path}",
+            url=f'{self._host}{url_path}',
             data=payload_string,
             headers=headers,
         )
@@ -163,17 +163,17 @@ class TradeRepublicApi:
         if self._ws and self._ws.open:
             return self._ws
 
-        logger.info("Connecting to websocket ...")
+        logger.info('Connecting to websocket ...')
 
-        self._ws = await websockets.connect("wss://api.traderepublic.com")
-        connection_message = {"locale": self._locale}
-        await self._ws.send(f"connect 21 {json.dumps(connection_message)}")
+        self._ws = await websockets.connect('wss://api.traderepublic.com')
+        connection_message = {'locale': self._locale}
+        await self._ws.send(f'connect 21 {json.dumps(connection_message)}')
         response = await self._ws.recv()
 
-        if not response == "connected":
-            raise ValueError(f"Connection Error: {response}")
+        if not response == 'connected':
+            raise ValueError(f'Connection Error: {response}')
 
-        logger.info("Connected to websocket ...")
+        logger.info('Connected to websocket ...')
 
         return self._ws
 
@@ -186,20 +186,20 @@ class TradeRepublicApi:
     async def subscribe(self, payload):
         subscription_id = await self._next_subscription_id()
         ws = await self._get_ws()
-        logger.info(f"Subscribing: 'sub {subscription_id} {json.dumps(payload)}'")
+        logger.info(f'Subscribing: \'sub {subscription_id} {json.dumps(payload)}\'')
         self.subscriptions[subscription_id] = payload
 
         payload_with_token = payload.copy()
-        payload_with_token["token"] = self.session_token
+        payload_with_token['token'] = self.session_token
 
-        await ws.send(f"sub {subscription_id} {json.dumps(payload_with_token)}")
+        await ws.send(f'sub {subscription_id} {json.dumps(payload_with_token)}')
         return subscription_id
 
     async def unsubscribe(self, subscription_id):
         ws = await self._get_ws()
 
-        logger.info(f"Unubscribing: {subscription_id}")
-        await ws.send(f"unsub {subscription_id}")
+        logger.info(f'Unubscribing: {subscription_id}')
+        await ws.send(f'unsub {subscription_id}')
 
         self.subscriptions.pop(subscription_id, None)
         self._previous_responses.pop(subscription_id, None)
@@ -208,37 +208,37 @@ class TradeRepublicApi:
         ws = await self._get_ws()
         while True:
             response = await ws.recv()
-            logger.debug(f"Received message: {response!r}")
+            logger.debug(f'Received message: {response!r}')
 
-            subscription_id = response[: response.find(" ")]
-            code = response[response.find(" ") + 1 : response.find(" ") + 2]
-            payload_str = response[response.find(" ") + 2 :].lstrip()
+            subscription_id = response[: response.find(' ')]
+            code = response[response.find(' ') + 1 : response.find(' ') + 2]
+            payload_str = response[response.find(' ') + 2 :].lstrip()
 
             if subscription_id not in self.subscriptions:
-                if code != "C":
-                    logger.info(f"No active subscription for id {subscription_id}, dropping message")
+                if code != 'C':
+                    logger.info(f'No active subscription for id {subscription_id}, dropping message')
                 continue
             subscription = self.subscriptions[subscription_id]
 
-            if code == "A":
+            if code == 'A':
                 self._previous_responses[subscription_id] = payload_str
                 payload = json.loads(payload_str) if payload_str else {}
                 return subscription_id, subscription, payload
 
-            elif code == "D":
+            elif code == 'D':
                 response = self._calculate_delta(subscription_id, payload_str)
-                logger.debug(f"Payload is {response}")
+                logger.debug(f'Payload is {response}')
 
                 self._previous_responses[subscription_id] = response
                 return subscription_id, subscription, json.loads(response)
 
-            if code == "C":
+            if code == 'C':
                 self.subscriptions.pop(subscription_id, None)
                 self._previous_responses.pop(subscription_id, None)
                 continue
 
-            elif code == "E":
-                logger.error(f"Received error message: {response!r}")
+            elif code == 'E':
+                logger.error(f'Received error message: {response!r}')
 
                 await self.unsubscribe(subscription_id)
 
@@ -248,15 +248,15 @@ class TradeRepublicApi:
     def _calculate_delta(self, subscription_id, delta_payload):
         previous_response = self._previous_responses[subscription_id]
         i, result = 0, []
-        for diff in delta_payload.split("\t"):
+        for diff in delta_payload.split('\t'):
             sign = diff[0]
-            if sign == "+":
+            if sign == '+':
                 result.append(urllib.parse.unquote_plus(diff).strip())
-            elif sign == "-" or sign == "=":
-                if sign == "=":
+            elif sign == '-' or sign == '=':
+                if sign == '=':
                     result.append(previous_response[i : i + int(diff[1:])])
                 i += int(diff[1:])
-        return "".join(result)
+        return ''.join(result)
 
     async def _recv_subscription(self, subscription_id):
         while True:
@@ -276,85 +276,85 @@ class TradeRepublicApi:
         return asyncio.get_event_loop().run_until_complete(self._receive_one(fut, timeout=timeout))
 
     async def portfolio(self):
-        return await self.subscribe({"type": "portfolio"})
+        return await self.subscribe({'type': 'portfolio'})
 
     async def watchlist(self):
-        return await self.subscribe({"type": "watchlist"})
+        return await self.subscribe({'type': 'watchlist'})
 
     async def cash(self):
-        return await self.subscribe({"type": "cash"})
+        return await self.subscribe({'type': 'cash'})
 
     async def available_cash_for_payout(self):
-        return await self.subscribe({"type": "availableCashForPayout"})
+        return await self.subscribe({'type': 'availableCashForPayout'})
 
     async def portfolio_status(self):
-        return await self.subscribe({"type": "portfolioStatus"})
+        return await self.subscribe({'type': 'portfolioStatus'})
 
     async def portfolio_history(self, timeframe):
-        return await self.subscribe({"type": "portfolioAggregateHistory", "range": timeframe})
+        return await self.subscribe({'type': 'portfolioAggregateHistory', 'range': timeframe})
 
     async def instrument_details(self, isin):
-        return await self.subscribe({"type": "instrument", "id": isin})
+        return await self.subscribe({'type': 'instrument', 'id': isin})
 
     async def instrument_suitability(self, isin):
-        return await self.subscribe({"type": "instrumentSuitability", "instrumentId": isin})
+        return await self.subscribe({'type': 'instrumentSuitability', 'instrumentId': isin})
 
     async def stock_details(self, isin):
-        return await self.subscribe({"type": "stockDetails", "id": isin})
+        return await self.subscribe({'type': 'stockDetails', 'id': isin})
 
     async def add_watchlist(self, isin):
-        return await self.subscribe({"type": "addToWatchlist", "instrumentId": isin})
+        return await self.subscribe({'type': 'addToWatchlist', 'instrumentId': isin})
 
     async def remove_watchlist(self, isin):
-        return await self.subscribe({"type": "removeFromWatchlist", "instrumentId": isin})
+        return await self.subscribe({'type': 'removeFromWatchlist', 'instrumentId': isin})
 
-    async def ticker(self, isin, exchange="LSX"):
-        return await self.subscribe({"type": "ticker", "id": f"{isin}.{exchange}"})
+    async def ticker(self, isin, exchange='LSX'):
+        return await self.subscribe({'type': 'ticker', 'id': f'{isin}.{exchange}'})
 
-    async def performance(self, isin, exchange="LSX"):
-        return await self.subscribe({"type": "performance", "id": f"{isin}.{exchange}"})
+    async def performance(self, isin, exchange='LSX'):
+        return await self.subscribe({'type': 'performance', 'id': f'{isin}.{exchange}'})
 
-    async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):
+    async def performance_history(self, isin, timeframe, exchange='LSX', resolution=None):
         parameters = {
-            "type": "aggregateHistory",
-            "id": f"{isin}.{exchange}",
-            "range": timeframe,
+            'type': 'aggregateHistory',
+            'id': f'{isin}.{exchange}',
+            'range': timeframe,
         }
         if resolution:
-            parameters["resolution"] = resolution
+            parameters['resolution'] = resolution
         return await self.subscribe(parameters)
 
     async def experience(self):
-        return await self.subscribe({"type": "experience"})
+        return await self.subscribe({'type': 'experience'})
 
     async def motd(self):
-        return await self.subscribe({"type": "messageOfTheDay"})
+        return await self.subscribe({'type': 'messageOfTheDay'})
 
     async def neon_cards(self):
-        return await self.subscribe({"type": "neonCards"})
+        return await self.subscribe({'type': 'neonCards'})
 
     async def timeline(self, after=None):
-        return await self.subscribe({"type": "timeline", "after": after})
+        return await self.subscribe({'type': 'timeline', 'after': after})
 
     async def timeline_detail(self, timeline_id):
-        return await self.subscribe({"type": "timelineDetail", "id": timeline_id})
+        return await self.subscribe({'type': 'timelineDetail', 'id': timeline_id})
 
     async def timeline_detail_order(self, order_id):
-        return await self.subscribe({"type": "timelineDetail", "orderId": order_id})
+        return await self.subscribe({'type': 'timelineDetail', 'orderId': order_id})
 
     async def timeline_detail_savings_plan(self, savings_plan_id):
-        return await self.subscribe({"type": "timelineDetail", "savingsPlanId": savings_plan_id})
+        return await self.subscribe({'type': 'timelineDetail', 'savingsPlanId': savings_plan_id})
 
     async def search_tags(self):
-        return await self.subscribe({"type": "neonSearchTags"})
+        return await self.subscribe({'type': 'neonSearchTags'})
 
     async def search_suggested_tags(self, query):
-        return await self.subscribe({"type": "neonSearchSuggestedTags", "data": {"q": query}})
+        return await self.subscribe({'type': 'neonSearchSuggestedTags', 'data': {'q': query}})
 
     async def search(
         self,
         query,
-        asset_type="stock",
+        asset_type='stock',
         page=1,
         page_size=20,
         aggregate=False,
@@ -365,57 +365,57 @@ class TradeRepublicApi:
         filter_region=None,
     ):
         search_parameters = {
-            "q": query,
-            "filter": [{"key": "type", "value": asset_type}],
-            "page": page,
-            "pageSize": page_size,
+            'q': query,
+            'filter': [{'key': 'type', 'value': asset_type}],
+            'page': page,
+            'pageSize': page_size,
         }
         if only_savable:
-            search_parameters["filter"].append({"key": "attribute", "value": "savable"})
+            search_parameters['filter'].append({'key': 'attribute', 'value': 'savable'})
         if filter_index:
-            search_parameters["filter"].append({"key": "index", "value": filter_index})
+            search_parameters['filter'].append({'key': 'index', 'value': filter_index})
         if filter_country:
-            search_parameters["filter"].append({"key": "country", "value": filter_country})
+            search_parameters['filter'].append({'key': 'country', 'value': filter_country})
         if filter_region:
-            search_parameters["filter"].append({"key": "region", "value": filter_region})
+            search_parameters['filter'].append({'key': 'region', 'value': filter_region})
         if filter_sector:
-            search_parameters["filter"].append({"key": "sector", "value": filter_sector})
+            search_parameters['filter'].append({'key': 'sector', 'value': filter_sector})
 
-        search_type = "neonSearch" if not aggregate else "neonSearchAggregations"
-        return await self.subscribe({"type": search_type, "data": search_parameters})
+        search_type = 'neonSearch' if not aggregate else 'neonSearchAggregations'
+        return await self.subscribe({'type': search_type, 'data': search_parameters})
 
     async def search_derivative(self, underlying_isin, product_type):
         return await self.subscribe(
             {
-                "type": "derivatives",
-                "underlying": underlying_isin,
-                "productCategory": product_type,
+                'type': 'derivatives',
+                'underlying': underlying_isin,
+                'productCategory': product_type,
             }
         )
 
     async def order_overview(self):
-        return await self.subscribe({"type": "orders"})
+        return await self.subscribe({'type': 'orders'})
 
     async def price_for_order(self, isin, exchange, order_type):
         return await self.subscribe(
             {
-                "type": "priceForOrder",
-                "parameters": {
-                    "exchangeId": exchange,
-                    "instrumentId": isin,
-                    "type": order_type,
+                'type': 'priceForOrder',
+                'parameters': {
+                    'exchangeId': exchange,
+                    'instrumentId': isin,
+                    'type': order_type,
                 },
             }
         )
 
     async def cash_available_for_order(self):
-        return await self.subscribe({"type": "availableCash"})
+        return await self.subscribe({'type': 'availableCash'})
 
     async def size_available_for_order(self, isin, exchange):
         return await self.subscribe(
             {
-                "type": "availableSize",
-                "parameters": {"exchangeId": exchange, "instrumentId": isin},
+                'type': 'availableSize',
+                'parameters': {'exchangeId': exchange, 'instrumentId': isin},
             }
         )
 
@@ -431,21 +431,21 @@ class TradeRepublicApi:
         warnings_shown=None,
     ):
         parameters = {
-            "type": "simpleCreateOrder",
-            "clientProcessId": str(uuid.uuid4()),
-            "warningsShown": warnings_shown if warnings_shown else [],
-            "parameters": {
-                "instrumentId": isin,
-                "exchangeId": exchange,
-                "expiry": {"type": expiry},
-                "limit": limit,
-                "mode": "limit",
-                "size": size,
-                "type": order_type,
+            'type': 'simpleCreateOrder',
+            'clientProcessId': str(uuid.uuid4()),
+            'warningsShown': warnings_shown if warnings_shown else [],
+            'parameters': {
+                'instrumentId': isin,
+                'exchangeId': exchange,
+                'expiry': {'type': expiry},
+                'limit': limit,
+                'mode': 'limit',
+                'size': size,
+                'type': order_type,
             },
         }
-        if expiry == "gtd" and expiry_date:
-            parameters["parameters"]["expiry"]["value"] = expiry_date
+        if expiry == 'gtd' and expiry_date:
+            parameters['parameters']['expiry']['value'] = expiry_date
 
         return await self.subscribe(parameters)
 
@@ -461,21 +461,21 @@ class TradeRepublicApi:
         warnings_shown=None,
     ):
         parameters = {
-            "type": "simpleCreateOrder",
-            "clientProcessId": str(uuid.uuid4()),
-            "warningsShown": warnings_shown if warnings_shown else [],
-            "parameters": {
-                "instrumentId": isin,
-                "exchangeId": exchange,
-                "expiry": {"type": expiry},
-                "mode": "market",
-                "sellFractions": sell_fractions,
-                "size": size,
-                "type": order_type,
+            'type': 'simpleCreateOrder',
+            'clientProcessId': str(uuid.uuid4()),
+            'warningsShown': warnings_shown if warnings_shown else [],
+            'parameters': {
+                'instrumentId': isin,
+                'exchangeId': exchange,
+                'expiry': {'type': expiry},
+                'mode': 'market',
+                'sellFractions': sell_fractions,
+                'size': size,
+                'type': order_type,
             },
         }
-        if expiry == "gtd" and expiry_date:
-            parameters["parameters"]["expiry"]["value"] = expiry_date
+        if expiry == 'gtd' and expiry_date:
+            parameters['parameters']['expiry']['value'] = expiry_date
 
         return await self.subscribe(parameters)
 
@@ -491,32 +491,32 @@ class TradeRepublicApi:
         warnings_shown=None,
     ):
         parameters = {
-            "type": "simpleCreateOrder",
-            "clientProcessId": str(uuid.uuid4()),
-            "warningsShown": warnings_shown if warnings_shown else [],
-            "parameters": {
-                "instrumentId": isin,
-                "exchangeId": exchange,
-                "expiry": {"type": expiry},
-                "mode": "stopMarket",
-                "size": size,
-                "stop": stop,
-                "type": order_type,
+            'type': 'simpleCreateOrder',
+            'clientProcessId': str(uuid.uuid4()),
+            'warningsShown': warnings_shown if warnings_shown else [],
+            'parameters': {
+                'instrumentId': isin,
+                'exchangeId': exchange,
+                'expiry': {'type': expiry},
+                'mode': 'stopMarket',
+                'size': size,
+                'stop': stop,
+                'type': order_type,
             },
         }
-        if expiry == "gtd" and expiry_date:
-            parameters["parameters"]["expiry"]["value"] = expiry_date
+        if expiry == 'gtd' and expiry_date:
+            parameters['parameters']['expiry']['value'] = expiry_date
 
         return await self.subscribe(parameters)
 
     async def cancel_order(self, order_id):
-        return await self.subscribe({"type": "cancelOrder", "orderId": order_id})
+        return await self.subscribe({'type': 'cancelOrder', 'orderId': order_id})
 
     async def savings_plan_overview(self):
-        return await self.subscribe({"type": "savingsPlans"})
+        return await self.subscribe({'type': 'savingsPlans'})
 
     async def savings_plan_parameters(self, isin):
-        return await self.subscribe({"type": "cancelSavingsPlan", "instrumentId": isin})
+        return await self.subscribe({'type': 'cancelSavingsPlan', 'instrumentId': isin})
 
     async def create_savings_plan(
         self,
@@ -529,16 +529,16 @@ class TradeRepublicApi:
         warnings_shown=None,
     ):
         parameters = {
-            "type": "createSavingsPlan",
-            "warningsShown": warnings_shown if warnings_shown else [],
-            "parameters": {
-                "amount": amount,
-                "instrumentId": isin,
-                "interval": interval,
-                "startDate": {
-                    "nextExecutionDate": start_date,
-                    "type": start_date_type,
-                    "value": start_date_value,
+            'type': 'createSavingsPlan',
+            'warningsShown': warnings_shown if warnings_shown else [],
+            'parameters': {
+                'amount': amount,
+                'instrumentId': isin,
+                'interval': interval,
+                'startDate': {
+                    'nextExecutionDate': start_date,
+                    'type': start_date_type,
+                    'value': start_date_value,
                 },
             },
         }
@@ -556,74 +556,74 @@ class TradeRepublicApi:
         warnings_shown=None,
     ):
         parameters = {
-            "id": savings_plan_id,
-            "type": "createSavingsPlan",
-            "warningsShown": warnings_shown if warnings_shown else [],
-            "parameters": {
-                "amount": amount,
-                "instrumentId": isin,
-                "interval": interval,
-                "startDate": {
-                    "nextExecutionDate": start_date,
-                    "type": start_date_type,
-                    "value": start_date_value,
+            'id': savings_plan_id,
+            'type': 'createSavingsPlan',
+            'warningsShown': warnings_shown if warnings_shown else [],
+            'parameters': {
+                'amount': amount,
+                'instrumentId': isin,
+                'interval': interval,
+                'startDate': {
+                    'nextExecutionDate': start_date,
+                    'type': start_date_type,
+                    'value': start_date_value,
                 },
             },
         }
         return await self.subscribe(parameters)
 
     async def cancel_savings_plan(self, savings_plan_id):
-        return await self.subscribe({"type": "cancelSavingsPlan", "id": savings_plan_id})
+        return await self.subscribe({'type': 'cancelSavingsPlan', 'id': savings_plan_id})
 
     async def price_alarm_overview(self):
-        return await self.subscribe({"type": "priceAlarms"})
+        return await self.subscribe({'type': 'priceAlarms'})
 
     async def create_price_alarm(self, isin, price):
-        return await self.subscribe({"type": "createPriceAlarm", "instrumentId": isin, "targetPrice": price})
+        return await self.subscribe({'type': 'createPriceAlarm', 'instrumentId': isin, 'targetPrice': price})
 
     async def cancel_price_alarm(self, price_alarm_id):
-        return await self.subscribe({"type": "cancelPriceAlarm", "id": price_alarm_id})
+        return await self.subscribe({'type': 'cancelPriceAlarm', 'id': price_alarm_id})
 
     async def news(self, isin):
-        return await self.subscribe({"type": "neonNews", "isin": isin})
+        return await self.subscribe({'type': 'neonNews', 'isin': isin})
 
     async def news_subscriptions(self):
-        return await self.subscribe({"type": "newsSubscriptions"})
+        return await self.subscribe({'type': 'newsSubscriptions'})
 
     async def subscribe_news(self, isin):
-        return await self.subscribe({"type": "subscribeNews", "instrumentId": isin})
+        return await self.subscribe({'type': 'subscribeNews', 'instrumentId': isin})
 
     async def unsubscribe_news(self, isin):
-        return await self.subscribe({"type": "unsubscribeNews", "instrumentId": isin})
+        return await self.subscribe({'type': 'unsubscribeNews', 'instrumentId': isin})
 
     def payout(self, amount):
-        return self._sign_request("/api/v1/payout", {"amount": amount}).json()
+        return self._sign_request('/api/v1/payout', {'amount': amount}).json()
 
     def confirm_payout(self, process_id, code):
-        r = self._sign_request(f"/api/v1/payout/{process_id}/code", {"code": code})
+        r = self._sign_request(f'/api/v1/payout/{process_id}/code', {'code': code})
         if r.status_code != 200:
-            raise ValueError(f"Payout failed with response {r.text!r}")
+            raise ValueError(f'Payout failed with response {r.text!r}')
 
     def settings(self):
-        return self._sign_request("/api/v1/auth/account", method="GET").json()
+        return self._sign_request('/api/v1/auth/account', method='GET').json()
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
         url = (
-            f"/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}"
-            f"&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}"
+            f'/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}'
+            f'&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}'
         )
-        return self._sign_request(url, method="GET").text
+        return self._sign_request(url, method='GET').text
 
     def savings_plan_cost(self, isin, amount, interval):
-        url = f"/api/v1/user/savingsplancosttransparency?instrumentId={isin}&amount={amount}&interval={interval}"
-        return self._sign_request(url, method="GET").text
+        url = f'/api/v1/user/savingsplancosttransparency?instrumentId={isin}&amount={amount}&interval={interval}'
+        return self._sign_request(url, method='GET').text
 
     def __getattr__(self, name):
-        if name[:9] == "blocking_":
+        if name[:9] == 'blocking_':
             attr = object.__getattribute__(self, name[9:])
-            if hasattr(attr, "__call__"):
+            if hasattr(attr, '__call__'):
                 return lambda *args, **kwargs: self.run_blocking(
-                    timeout=kwargs.pop("timeout", 5), fut=attr(*args, **kwargs)
+                    timeout=kwargs.pop('timeout', 5), fut=attr(*args, **kwargs)
                 )
         return object.__getattribute__(self, name)
 
