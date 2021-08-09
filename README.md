@@ -19,26 +19,26 @@ pip install .
 ```
 $ pytr help
 usage: pytr [-h] [-s {bash,zsh}] [-v {warning,info,debug}]
-             {help,login,portfolio,dl_docs,set_price_alarms} ...
+            {help,login,portfolio,dl_docs,get_price_alarms,details,set_price_alarms} ...
 
 positional arguments:
-  {help,login,portfolio,dl_docs,set_price_alarms}
+  {help,login,portfolio,dl_docs,get_price_alarms,details,set_price_alarms}
                         Desired action to perform
     help                Print this help message
-    login               Check if credentials file exists. If not create it and
-                        ask for input. Try to login. Ask for device reset if
-                        needed
+    login               Check if credentials file exists. If not create it and ask for input.
+                        Try to login. Ask for device reset if needed
     portfolio           Show current portfolio
-    dl_docs             Download all pdf documents from the timeline and sort
-                        them into folders
+    dl_docs             Download all pdf documents from the timeline and sort them into folders
+    get_price_alarms    Get overview of current price alarms
+    details             Get details for an ISIN
     set_price_alarms    Set price alarms based on diff from current price
 
 optional arguments:
   -h, --help            show this help message and exit
   -s {bash,zsh}, --print-completion {bash,zsh}
-                        print shell completion script
+                        print shell completion script (default: None)
   -v {warning,info,debug}, --verbosity {warning,info,debug}
-                        Set verbosity level
+                        Set verbosity level (default: info)
 ```
 
 ## Authentication
