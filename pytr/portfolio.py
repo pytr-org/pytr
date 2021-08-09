@@ -61,8 +61,8 @@ class Portfolio:
         if totalBuyCost == 0:
             diffP = 0.0
         else:
-            diffP = ((pos['netValue'] / totalBuyCost) - 1) * 100
-        print(f"Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%")
+            diffP = ((totalNetValue / totalBuyCost) - 1) * 100
+        print(f'Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%')
 
         cash = self.cash[0]['amount']
         currency = self.cash[0]['currencyId']
