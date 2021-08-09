@@ -5,6 +5,7 @@ from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
 
 from pytr.utils import preview, Timeline, get_logger
+from pytr.api import TradeRepublicError
 
 
 class DL:
@@ -28,7 +29,10 @@ class DL:
         await self.tl.get_next_timeline()
 
         while True:
-            _subscription_id, subscription, response = await self.tr.recv()
+            try:
+                _subscription_id, subscription, response = await self.tr.recv()
+            except TradeRepublicError as e:
+                self.log.error(str(e))
 
             if subscription['type'] == 'timeline':
                 await self.tl.get_next_timeline(response)
