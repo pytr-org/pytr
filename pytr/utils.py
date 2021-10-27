@@ -80,7 +80,7 @@ class Timeline:
         self.received_detail = 0
         self.requested_detail = 0
 
-    async def get_next_timeline(self, response=None):
+    async def get_next_timeline(self, response=None, max_age_timestamp=0):
         '''
         Get timelines and save time in global list timelines.
         Extract id of timeline events and save them in global list timeline_detail_ids
@@ -89,30 +89,38 @@ class Timeline:
         if response is None:
             # empty response / first timeline
             self.log.info('Awaiting #1  timeline')
-            self.timelines = []
+            # self.timelines = []
+            self.num_timelines = 0
             self.timeline_detail_ids = []
             self.timeline_events = []
             await self.tr.timeline()
         else:
-            self.timelines.append(response)
-            try:
-                after = response['cursors']['after']
-            except KeyError:
-                # last timeline is reached
-                self.log.info(f'Received #{len(self.timelines):<2} (last) timeline')
-                await self.get_timeline_details(5)
+            timestamp = response['data'][-1]['data']['timestamp']
+            if max_age_timestamp != 0 and timestamp > max_age_timestamp:
+                self.log.info(f'Received #{self.num_timelines+1:<2} timeline')
+                self.log.info('Reached last relevant timeline')
+                await self.get_timeline_details(5, max_age_timestamp=max_age_timestamp)
             else:
-                self.log.info(
-                    f'Received #{len(self.timelines):<2} timeline, awaiting #{len(self.timelines)+1:<2} timeline'
-                )
-                await self.tr.timeline(after)
+                # self.timelines.append(response)
+                self.num_timelines += 1
+                try:
+                    after = response['cursors']['after']
+                except KeyError:
+                    # last timeline is reached
+                    self.log.info(f'Received #{self.num_timelines:<2} (last) timeline')
+                    await self.get_timeline_details(5)
+                else:
+                    self.log.info(
+                        f'Received #{self.num_timelines:<2} timeline, awaiting #{self.num_timelines+1:<2} timeline'
+                    )
+                    await self.tr.timeline(after)
 
-            # print(json.dumps(response))
-            for event in response['data']:
-                self.timeline_events.append(event)
-                self.timeline_detail_ids.append(event['data']['id'])
+                # print(json.dumps(response))
+                for event in response['data']:
+                    self.timeline_events.append(event)
+                    self.timeline_detail_ids.append(event['data']['id'])
 
-    async def get_timeline_details(self, num_torequest):
+    async def get_timeline_details(self, num_torequest, max_age_timestamp=0):
         self.requested_detail += num_torequest
 
         while num_torequest > 0:
@@ -121,7 +129,7 @@ class Timeline:
                 event = self.timeline_events.pop()
             except IndexError:
                 return
-            else:
+            if max_age_timestamp == 0 or (max_age_timestamp != 0 and event['data']['timestamp'] > max_age_timestamp):
                 await self.tr.timeline_detail(event['data']['id'])
 
     async def timelineDetail(self, response, dl):

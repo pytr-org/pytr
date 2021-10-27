@@ -29,26 +29,36 @@ import pathlib
 import time
 import urllib.parse
 import uuid
-
 import certifi
 import ssl
 import requests
 import websockets
 from ecdsa import NIST256p, SigningKey
 from ecdsa.util import sigencode_der
+from http.cookiejar import MozillaCookieJar
+from os import path
 
 logger = logging.getLogger(__name__)
 home = pathlib.Path.home()
+BASE_DIR = path.join(home, '.pytr')
+CREDENTIALS_FILE = path.join(BASE_DIR, 'credentials')
+KEY_FILE = path.join(BASE_DIR, 'keyfile.pem')
+COOKIES_FILE = path.join(BASE_DIR, 'cookies.txt')
 
 
 class TradeRepublicApi:
     _default_headers = {'User-Agent': 'TradeRepublic/Android 30/App Version 1.1.5502'}
+    _default_headers_web = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
+    }
     _host = 'https://api.traderepublic.com'
+    _weblogin = False
 
     _refresh_token = None
     _session_token = None
     _session_token_expires_at = None
     _process_id = None
+    _web_session_token_expires_at = 0
 
     _ws = None
     _lock = asyncio.Lock()
@@ -73,22 +83,26 @@ class TradeRepublicApi:
         self._locale = locale
         if not (phone_no and pin):
             try:
-                with open(f'{home}/.pytr/credentials', 'r') as f:
+                with open(CREDENTIALS_FILE, 'r') as f:
                     lines = f.readlines()
                 self.phone_no = lines[0].strip()
                 self.pin = lines[1].strip()
             except FileNotFoundError:
-                raise ValueError(f'phone_no and pin must be specified explicitly or via {home}/.pytr/credentials')
+                raise ValueError(f'phone_no and pin must be specified explicitly or via {CREDENTIALS_FILE}')
         else:
             self.phone_no = phone_no
             self.pin = pin
 
-        self.keyfile = keyfile if keyfile else f'{home}/.pytr/keyfile.pem'
+        self.keyfile = keyfile if keyfile else KEY_FILE
         try:
             with open(self.keyfile, 'rb') as f:
                 self.sk = SigningKey.from_pem(f.read(), hashfunc=hashlib.sha512)
         except FileNotFoundError:
             pass
+
+        self._websession = requests.Session()
+        self._websession.headers = self._default_headers_web
+        self._websession.cookies = MozillaCookieJar(COOKIES_FILE)
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -161,15 +175,96 @@ class TradeRepublicApi:
             headers=headers,
         )
 
+    def inititate_weblogin(self):
+        r = self._websession.post(
+            f'{self._host}/api/v1/auth/web/login',
+            json={'phoneNumber': self.phone_no, 'pin': self.pin},
+        )
+        j = r.json()
+        try:
+            self._process_id = j['processId']
+        except KeyError:
+            err = j.get('errors')
+            if err:
+                raise ValueError(str(err))
+            else:
+                raise ValueError('processId not in reponse')
+        return int(j['countdownInSeconds']) + 1
+
+    def resend_weblogin(self):
+        r = self._websession.post(
+            f'{self._host}/api/v1/auth/web/login/{self._process_id}/resend', headers=self._default_headers
+        )
+        r.raise_for_status()
+
+    def complete_weblogin(self, verify_code):
+        if not self._process_id and not self._websession:
+            raise ValueError('Initiate web login first.')
+
+        r = self._websession.post(f'{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}')
+        r.raise_for_status()
+        self.save_websession()
+        self._weblogin = True
+
+    def save_websession(self):
+        # Saves session cookies too (expirydate=0).
+        self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
+
+    def resume_websession(self):
+        '''
+        Use saved cookie file to resume web session
+        return success
+        '''
+        # Only attempt to load if the cookie file exists.
+        if path.exists(COOKIES_FILE):
+            # Loads session cookies too (expirydate=0).
+            self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
+            self._weblogin = True
+            try:
+                self.settings()
+            except requests.exceptions.HTTPError:
+                return False
+                self._weblogin = False
+            else:
+                return True
+        return False
+
+    def _web_request(self, url_path, payload=None, method='GET'):
+        if self._web_session_token_expires_at < time.time():
+            r = self._websession.get(f'{self._host}/api/v1/auth/web/session')
+            r.raise_for_status()
+            self._web_session_token_expires_at = time.time() + 290
+        return self._websession.request(method=method, url=f'{self._host}{url_path}', data=payload)
+
     async def _get_ws(self):
         if self._ws and self._ws.open:
             return self._ws
 
         logger.info('Connecting to websocket ...')
         ssl_context = ssl.create_default_context(cafile=certifi.where())
-        self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context)
+        extra_headers = None
         connection_message = {'locale': self._locale}
-        await self._ws.send(f'connect 21 {json.dumps(connection_message)}')
+        connect_id = 21
+
+        if self._weblogin:
+            # authenticate with cookies, set different connection message and connect ID
+            cookie_str = ''
+            for cookie in self._websession.cookies:
+                if cookie.domain.endswith('traderepublic.com'):
+                    cookie_str += f'{cookie.name}={cookie.value}; '
+            extra_headers = {'Cookie': cookie_str.rstrip('; ')}
+
+            connection_message = {
+                'locale': self._locale,
+                'platformId': 'webtrading',
+                'platformVersion': 'chrome - 94.0.4606',
+                'clientId': 'app.traderepublic.com',
+                'clientVersion': '5582',
+            }
+            connect_id = 22
+
+        self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context, extra_headers=extra_headers)
+        await self._ws.send(f'connect {connect_id} {json.dumps(connection_message)}')
         response = await self._ws.recv()
 
         if not response == 'connected':
@@ -192,7 +287,8 @@ class TradeRepublicApi:
         self.subscriptions[subscription_id] = payload
 
         payload_with_token = payload.copy()
-        payload_with_token['token'] = self.session_token
+        if not self._weblogin:
+            payload_with_token['token'] = self.session_token
 
         await ws.send(f'sub {subscription_id} {json.dumps(payload_with_token)}')
         return subscription_id
@@ -607,7 +703,12 @@ class TradeRepublicApi:
             raise ValueError(f'Payout failed with response {r.text!r}')
 
     def settings(self):
-        return self._sign_request('/api/v1/auth/account', method='GET').json()
+        if self._weblogin:
+            r = self._web_request('/api/v2/auth/account')
+        else:
+            r = self._sign_request('/api/v1/auth/account', method='GET')
+        r.raise_for_status()
+        return r.json()
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
         url = (

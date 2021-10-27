@@ -3,7 +3,7 @@
 import argparse
 import asyncio
 import signal
-
+import time
 
 import shtab
 
@@ -48,6 +48,7 @@ def get_main_parser():
     parser.add_argument(
         '-v', '--verbosity', help='Set verbosity level', choices=['warning', 'info', 'debug'], default='info'
     )
+    parser.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
     subparsers = parser.add_subparsers(help='Desired action to perform', dest='command')
 
     # help
@@ -81,6 +82,9 @@ def get_main_parser():
         help='available variables:\tiso_date, time, title, doc_num, subtitle',
         metavar='FORMAT_STRING',
         default='{iso_date}{time} {title}{doc_num}',
+    )
+    parser_dl_docs.add_argument(
+        '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
 
     parser_get_price_alarms = subparsers.add_parser(
@@ -134,22 +138,28 @@ def main():
     log = get_logger(__name__, args.verbosity)
     log.setLevel(args.verbosity.upper())
     log.debug('logging is set to debug')
+    weblogin = not args.applogin
 
     if args.command == 'login':
-        login(phone_no=args.phone_no, pin=args.pin)
+        login(phone_no=args.phone_no, pin=args.pin, web=weblogin)
 
     elif args.command == 'dl_docs':
-        dl = DL(login(), args.output, args.format)
+        if args.last_days == 0:
+            since_timestamp = 0
+        else:
+            since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
+
+        dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp)
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
         # TODO
         print('Not implemented yet')
     elif args.command == 'get_price_alarms':
-        Alarms(login()).get()
+        Alarms(login(web=weblogin)).get()
     elif args.command == 'details':
-        Details(login(), args.isin).get()
+        Details(login(web=weblogin), args.isin).get()
     elif args.command == 'portfolio':
-        Portfolio(login()).get()
+        Portfolio(login(web=weblogin)).get()
     else:
         parser.print_help()
 

@@ -9,11 +9,17 @@ from pytr.api import TradeRepublicError
 
 
 class DL:
-    def __init__(self, tr, output_path, filename_fmt, headers={'User-Agent': 'pytr'}):
+    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0):
+        '''
+        tr: api object
+        output_path: name of the directory where the downloaded files are saved
+        filename_fmt: format string to customize the file names
+        since_timestamp: downloaded files since this date (unix timestamp)
+        '''
         self.tr = tr
         self.output_path = output_path
-        self.headers = headers
         self.filename_fmt = filename_fmt
+        self.since_timestamp = since_timestamp
 
         self.session = FuturesSession()
         self.futures = []
@@ -26,7 +32,7 @@ class DL:
         self.log = get_logger(__name__)
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline()
+        await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
 
         while True:
             try:
@@ -35,7 +41,7 @@ class DL:
                 self.log.error(str(e))
 
             if subscription['type'] == 'timeline':
-                await self.tl.get_next_timeline(response)
+                await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
             elif subscription['type'] == 'timelineDetail':
                 await self.tl.timelineDetail(response, self)
             else:
