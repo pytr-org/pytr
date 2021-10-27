@@ -1,17 +1,54 @@
 {
-    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
-    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
-    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Python: Modul",
-            "type": "python",
-            "request": "launch",
-            "module": "pytr",
-            "args": [
-                "details", "DE0006231004"
-            ]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "details",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "details", "DE0006231004"]
+    },
+    {
+      "name": "portfolio",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "portfolio"]
+    },
+    {
+      "name": "get_price_alarms",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "get_price_alarms"]
+    },
+    {
+      "name": "set_price_alarms",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "set_price_alarms"]
+    },
+    {
+      "name": "login",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "login"]
+    },
+    {
+      "name": "dl_docs",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "dl_docs", "dldocs_debug"]
+    },
+    {
+      "name": "dl_docs 2 days",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["-v", "debug", "dl_docs", "dldocs_debug", "--last_days", "2"]
+    }
+  ]
 }
