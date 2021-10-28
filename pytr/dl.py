@@ -5,7 +5,6 @@ from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
 
 from pytr.utils import preview, Timeline, get_logger
-from pytr.api import TradeRepublicError
 
 
 class DL:
@@ -35,15 +34,16 @@ class DL:
         await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
 
         while True:
-            try:
-                _subscription_id, subscription, response = await self.tr.recv()
-            except TradeRepublicError as e:
-                self.log.error(str(e))
+            _subscription_id, subscription, response = await self.tr.recv()
+            # try:
+            #     _subscription_id, subscription, response = await self.tr.recv()
+            # except TradeRepublicError as e:
+            #     self.log.error(str(e))
 
             if subscription['type'] == 'timeline':
                 await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
             elif subscription['type'] == 'timelineDetail':
-                await self.tl.timelineDetail(response, self)
+                await self.tl.timelineDetail(response, self, max_age_timestamp=self.since_timestamp)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 

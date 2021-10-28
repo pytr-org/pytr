@@ -3,6 +3,7 @@
 import logging
 import coloredlogs
 import json
+from datetime import datetime
 
 
 log_level = None
@@ -79,11 +80,13 @@ class Timeline:
         self.log = get_logger(__name__)
         self.received_detail = 0
         self.requested_detail = 0
+        self.num_timeline_details = 0
 
     async def get_next_timeline(self, response=None, max_age_timestamp=0):
         '''
-        Get timelines and save time in global list timelines.
-        Extract id of timeline events and save them in global list timeline_detail_ids
+        Get timelines and save time in list timelines.
+        Extract timeline events and save them in list timeline_events
+
         '''
 
         if response is None:
@@ -91,58 +94,77 @@ class Timeline:
             self.log.info('Awaiting #1  timeline')
             # self.timelines = []
             self.num_timelines = 0
-            self.timeline_detail_ids = []
             self.timeline_events = []
             await self.tr.timeline()
         else:
             timestamp = response['data'][-1]['data']['timestamp']
-            if max_age_timestamp != 0 and timestamp > max_age_timestamp:
+            self.num_timelines += 1
+            # print(json.dumps(response))
+            self.num_timeline_details += len(response['data'])
+            for event in response['data']:
+                self.timeline_events.append(event)
+
+            after = response['cursors'].get('after')
+            if after is None:
+                # last timeline is reached
+                self.log.info(f'Received #{self.num_timelines:<2} (last) timeline')
+                await self._get_timeline_details(5)
+            elif max_age_timestamp != 0 and timestamp < max_age_timestamp:
                 self.log.info(f'Received #{self.num_timelines+1:<2} timeline')
                 self.log.info('Reached last relevant timeline')
-                await self.get_timeline_details(5, max_age_timestamp=max_age_timestamp)
+                await self._get_timeline_details(5, max_age_timestamp=max_age_timestamp)
             else:
-                # self.timelines.append(response)
-                self.num_timelines += 1
-                try:
-                    after = response['cursors']['after']
-                except KeyError:
-                    # last timeline is reached
-                    self.log.info(f'Received #{self.num_timelines:<2} (last) timeline')
-                    await self.get_timeline_details(5)
-                else:
-                    self.log.info(
-                        f'Received #{self.num_timelines:<2} timeline, awaiting #{self.num_timelines+1:<2} timeline'
-                    )
-                    await self.tr.timeline(after)
+                self.log.info(
+                    f'Received #{self.num_timelines:<2} timeline, awaiting #{self.num_timelines+1:<2} timeline'
+                )
+                await self.tr.timeline(after)
 
-                # print(json.dumps(response))
-                for event in response['data']:
-                    self.timeline_events.append(event)
-                    self.timeline_detail_ids.append(event['data']['id'])
-
-    async def get_timeline_details(self, num_torequest, max_age_timestamp=0):
-        self.requested_detail += num_torequest
-
+    async def _get_timeline_details(self, num_torequest, max_age_timestamp=0):
+        '''
+        request timeline details
+        '''
         while num_torequest > 0:
-            num_torequest -= 1
-            try:
-                event = self.timeline_events.pop()
-            except IndexError:
-                return
-            if max_age_timestamp == 0 or (max_age_timestamp != 0 and event['data']['timestamp'] > max_age_timestamp):
-                await self.tr.timeline_detail(event['data']['id'])
+            if len(self.timeline_events) == 0:
+                self.log.info('All timeline details requested')
+                return False
 
-    async def timelineDetail(self, response, dl):
+            else:
+                event = self.timeline_events.pop()
+
+            action = event['data'].get('action')
+            msg = ''
+            if max_age_timestamp != 0 and event['data']['timestamp'] > max_age_timestamp:
+                msg += 'Skip: too old'
+            elif action is None:
+                msg += 'Skip: no action'
+            elif action.get('type') != 'timelineDetail':
+                msg += f"Skip: action type unmatched ({action['type']})"
+            elif action.get('payload') != event['data']['id']:
+                msg += f"Skip: payload unmatched ({action['payload']})"
+
+            if msg != '':
+                self.log.info(f"{msg} {event['data']['title']}: {event['data'].get('body')}")
+                self.num_timeline_details -= 1
+                continue
+
+            num_torequest -= 1
+            self.requested_detail += 1
+            await self.tr.timeline_detail(event['data']['id'])
+
+    async def timelineDetail(self, response, dl, max_age_timestamp=0):
+        '''
+        process timeline response and request timelines
+        '''
 
         self.received_detail += 1
 
+        # when all requested timeline events are received request 5 new
         if self.received_detail == self.requested_detail:
-            await self.get_timeline_details(5)
-
-        timeline_detail_id = response['id']
-        for event in self.timeline_events:
-            if timeline_detail_id == event['data']['id']:
-                self.timeline_events.remove(event)
+            remaining = len(self.timeline_events)
+            if remaining < 5:
+                await self._get_timeline_details(remaining)
+            else:
+                await self._get_timeline_details(5)
 
         # print(f'len timeline_events: {len(self.timeline_events)}')
         isSavingsPlan = False
@@ -163,22 +185,23 @@ class Timeline:
         else:
             isSavingsPlan_fmt = ''
 
-        max_details_digits = len(str(len(self.timeline_detail_ids)))
+        max_details_digits = len(str(self.num_timeline_details))
         self.log.info(
-            f"{self.received_detail:>{max_details_digits}}/{len(self.timeline_detail_ids)}: "
+            f"{self.received_detail:>{max_details_digits}}/{self.num_timeline_details}: "
             + f"{response['titleText']} -- {response['subtitleText']}{isSavingsPlan_fmt}"
         )
 
         for section in response['sections']:
             if section['type'] == 'documents':
                 for doc in section['documents']:
+                    timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
+                    if max_age_timestamp == 0 or max_age_timestamp < timestamp:
+                        # save all savingsplan documents in a subdirectory
+                        if isSavingsPlan:
+                            dl.dl_doc(doc, response['titleText'], response['subtitleText'], subfolder='Sparplan')
+                        else:
+                            dl.dl_doc(doc, response['titleText'], response['subtitleText'])
 
-                    # save all savingsplan documents in a subdirectory
-                    if isSavingsPlan:
-                        dl.dl_doc(doc, response['titleText'], response['subtitleText'], subfolder='Sparplan')
-                    else:
-                        dl.dl_doc(doc, response['titleText'], response['subtitleText'])
-
-        if self.received_detail == len(self.timeline_detail_ids):
+        if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
             dl.work_responses()

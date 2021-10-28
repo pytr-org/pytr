@@ -14,7 +14,6 @@ from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
 
-
 # async def my_loop(tr, dl):
 #     # await tr.subscribe({'type': 'unsubscribeNews'})
 #     # await tr.order_overview()
