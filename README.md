@@ -18,7 +18,7 @@ pip install .
 
 ```
 $ pytr help
-usage: pytr [-h] [-s {bash,zsh}] [-v {warning,info,debug}]
+usage: pytr [-h] [-s {bash,zsh}] [-v {warning,info,debug}] [--applogin]
             {help,login,portfolio,dl_docs,get_price_alarms,details,set_price_alarms} ...
 
 positional arguments:
@@ -39,10 +39,19 @@ optional arguments:
                         print shell completion script (default: None)
   -v {warning,info,debug}, --verbosity {warning,info,debug}
                         Set verbosity level (default: info)
+  --applogin            Use app login instead of web login (default: False)
 ```
 
 ## Authentication
 
+There are two authentication methods:
+
+- Web login (default)
+- App login
+
+Web login is the newer method that uses the same login method as [app.traderepublic.com](https://app.traderepublic.com/), meaning you receive a token in the TradeRepublic app or via SMS.
+
+App login is the older method that uses the same login method as the TradeRepublic app.
 First you need to perform a device reset - a private key will be generated that pins your "device". The private key is saved to your keyfile. This procedure will log you out from your mobile device.
 
 ```sh
