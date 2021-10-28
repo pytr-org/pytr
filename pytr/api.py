@@ -38,7 +38,9 @@ from ecdsa.util import sigencode_der
 from http.cookiejar import MozillaCookieJar
 from os import path
 
-logger = logging.getLogger(__name__)
+from pytr.utils import get_logger
+
+
 home = pathlib.Path.home()
 BASE_DIR = path.join(home, '.pytr')
 CREDENTIALS_FILE = path.join(BASE_DIR, 'credentials')
@@ -80,6 +82,7 @@ class TradeRepublicApi:
         self._session_token = val
 
     def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de'):
+        self.log = get_logger(__name__)
         self._locale = locale
         if not (phone_no and pin):
             try:
@@ -132,7 +135,7 @@ class TradeRepublicApi:
                 f.write(self.sk.to_pem())
 
     def login(self):
-        logger.info('Logging in')
+        self.log.info('Logging in')
         r = self._sign_request(
             '/api/v1/auth/login',
             payload={'phoneNumber': self.phone_no, 'pin': self.pin},
@@ -141,7 +144,7 @@ class TradeRepublicApi:
         self.session_token = r.json()['sessionToken']
 
     def refresh_access_token(self):
-        logger.info('Refreshing access token')
+        self.log.info('Refreshing access token')
         r = self._sign_request('/api/v1/auth/session', method='GET')
         self.session_token = r.json()['sessionToken']
 
@@ -240,7 +243,7 @@ class TradeRepublicApi:
         if self._ws and self._ws.open:
             return self._ws
 
-        logger.info('Connecting to websocket ...')
+        self.log.info('Connecting to websocket ...')
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         extra_headers = None
         connection_message = {'locale': self._locale}
@@ -270,7 +273,7 @@ class TradeRepublicApi:
         if not response == 'connected':
             raise ValueError(f'Connection Error: {response}')
 
-        logger.info('Connected to websocket ...')
+        self.log.info('Connected to websocket ...')
 
         return self._ws
 
@@ -283,7 +286,7 @@ class TradeRepublicApi:
     async def subscribe(self, payload):
         subscription_id = await self._next_subscription_id()
         ws = await self._get_ws()
-        logger.info(f'Subscribing: \'sub {subscription_id} {json.dumps(payload)}\'')
+        self.log.debug(f'Subscribing: \'sub {subscription_id} {json.dumps(payload)}\'')
         self.subscriptions[subscription_id] = payload
 
         payload_with_token = payload.copy()
@@ -296,7 +299,7 @@ class TradeRepublicApi:
     async def unsubscribe(self, subscription_id):
         ws = await self._get_ws()
 
-        logger.info(f'Unubscribing: {subscription_id}')
+        self.log.debug(f'Unsubscribing: {subscription_id}')
         await ws.send(f'unsub {subscription_id}')
 
         self.subscriptions.pop(subscription_id, None)
@@ -306,7 +309,7 @@ class TradeRepublicApi:
         ws = await self._get_ws()
         while True:
             response = await ws.recv()
-            logger.debug(f'Received message: {response!r}')
+            self.log.debug(f'Received message: {response!r}')
 
             subscription_id = response[: response.find(' ')]
             code = response[response.find(' ') + 1 : response.find(' ') + 2]
@@ -314,7 +317,7 @@ class TradeRepublicApi:
 
             if subscription_id not in self.subscriptions:
                 if code != 'C':
-                    logger.info(f'No active subscription for id {subscription_id}, dropping message')
+                    self.log.debug(f'No active subscription for id {subscription_id}, dropping message')
                 continue
             subscription = self.subscriptions[subscription_id]
 
@@ -325,7 +328,7 @@ class TradeRepublicApi:
 
             elif code == 'D':
                 response = self._calculate_delta(subscription_id, payload_str)
-                logger.debug(f'Payload is {response}')
+                self.log.debug(f'Payload is {response}')
 
                 self._previous_responses[subscription_id] = response
                 return subscription_id, subscription, json.loads(response)
@@ -336,7 +339,7 @@ class TradeRepublicApi:
                 continue
 
             elif code == 'E':
-                logger.error(f'Received error message: {response!r}')
+                self.log.error(f'Received error message: {response!r}')
 
                 await self.unsubscribe(subscription_id)
 
