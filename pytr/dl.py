@@ -101,7 +101,7 @@ class DL:
         if os.path.isfile(filepath) is False:
             doc_url_base = doc_url.split('?')[0]
             if doc_url_base in self.doc_urls:
-                self.log.warning(f'URL {doc_url_base} already in queue. Skipping...')
+                self.log.debug(f'URL {doc_url_base} already in queue. Skipping...')
                 return
             else:
                 self.doc_urls.append(doc_url_base)

@@ -194,7 +194,10 @@ class Timeline:
         for section in response['sections']:
             if section['type'] == 'documents':
                 for doc in section['documents']:
-                    timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
+                    try:
+                        timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
+                    except ValueError:
+                        timestamp = datetime.now().timestamp() * 1000
                     if max_age_timestamp == 0 or max_age_timestamp < timestamp:
                         # save all savingsplan documents in a subdirectory
                         if isSavingsPlan:
