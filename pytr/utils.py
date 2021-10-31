@@ -3,6 +3,7 @@
 import logging
 import coloredlogs
 import json
+import os
 from datetime import datetime
 
 
@@ -81,6 +82,7 @@ class Timeline:
         self.received_detail = 0
         self.requested_detail = 0
         self.num_timeline_details = 0
+        self.events_without_docs = []
 
     async def get_next_timeline(self, response=None, max_age_timestamp=0):
         '''
@@ -132,18 +134,30 @@ class Timeline:
                 event = self.timeline_events.pop()
 
             action = event['data'].get('action')
+            # icon = event['data'].get('icon')
             msg = ''
             if max_age_timestamp != 0 and event['data']['timestamp'] > max_age_timestamp:
                 msg += 'Skip: too old'
+            # elif icon is None:
+            #     pass
+            # elif icon.endswith('/human.png'):
+            #     msg += 'Skip: human'
+            # elif icon.endswith('/CashIn.png'):
+            #     msg += 'Skip: CashIn'
+            # elif icon.endswith('/ExemptionOrderChanged.png'):
+            #     msg += 'Skip: ExemptionOrderChanged'
+
             elif action is None:
-                msg += 'Skip: no action'
+                if event['data'].get('actionLabel') is None:
+                    msg += 'Skip: no action'
             elif action.get('type') != 'timelineDetail':
                 msg += f"Skip: action type unmatched ({action['type']})"
             elif action.get('payload') != event['data']['id']:
                 msg += f"Skip: payload unmatched ({action['payload']})"
 
             if msg != '':
-                self.log.info(f"{msg} {event['data']['title']}: {event['data'].get('body')}")
+                self.events_without_docs.append(event)
+                self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
                 self.num_timeline_details -= 1
                 continue
 
@@ -207,4 +221,7 @@ class Timeline:
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
+            os.makedirs(dl.output_path, exist_ok=True)
+            with open(os.path.join(dl.output_path, 'other_events.json'), 'w', encoding='utf-8') as f:
+                json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
             dl.work_responses()
