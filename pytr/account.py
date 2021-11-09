@@ -27,7 +27,7 @@ def login(phone_no=None, pin=None, web=True):
     '''
     log = get_logger(__name__)
 
-    if os.path.isfile(CREDENTIALS_FILE):
+    if phone_no is None and os.path.isfile(CREDENTIALS_FILE):
         log.info('Found credentials file')
         with open(CREDENTIALS_FILE) as f:
             lines = f.readlines()
@@ -35,19 +35,27 @@ def login(phone_no=None, pin=None, web=True):
         pin = lines[1].strip()
         log.info(f'Phone: {phone_no}, PIN: {pin}')
     else:
-        log.info('Credentials file not found')
         os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
         if phone_no is None:
+            log.info('Credentials file not found')
             print('Please enter your TradeRepbulic phone number in the format +4912345678:')
             phone_no = input()
+        else:
+            log.info('Phone number provided as argument')
+
         if pin is None:
             print('Please enter your TradeRepbulic pin:')
             pin = input()
 
-        with open(CREDENTIALS_FILE, 'w') as f:
-            f.writelines([phone_no + '\n', pin + '\n'])
+        print('Save credentials? Type "y" to save credentials:')
+        save = input()
+        if save == 'y':
+            with open(CREDENTIALS_FILE, 'w') as f:
+                f.writelines([phone_no + '\n', pin + '\n'])
 
-        log.info(f'Saved credentials in {CREDENTIALS_FILE}')
+            log.info(f'Saved credentials in {CREDENTIALS_FILE}')
+        else:
+            log.info('Credentials not saved')
 
     # uses CREDENTIALS_FILE and KEY_FILE
     tr = TradeRepublicApi()
