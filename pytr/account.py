@@ -33,7 +33,9 @@ def login(phone_no=None, pin=None, web=True):
             lines = f.readlines()
         phone_no = lines[0].strip()
         pin = lines[1].strip()
-        log.info(f'Phone: {phone_no}, PIN: {pin}')
+        phone_no_masked = phone_no[:-8] + '********'
+        pin_masked = len(pin) * '*'
+        log.info(f'Phone: {phone_no_masked}, PIN: {pin_masked}')
     else:
         os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
         if phone_no is None:
