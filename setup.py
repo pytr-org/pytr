@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='pytr',
-    version='0.0.10',
+    version='0.0.11',
     description='Use TradeRepublic in terminal',
     long_description=readme(),
     long_description_content_type='text/markdown',
@@ -27,7 +27,7 @@ setup(
     },
     #  scripts=['traderep'],
     # install_requires=['py_tr'],
-    install_requires=['coloredlogs', 'ecdsa', 'pygments', 'requests_futures', 'shtab', 'websockets'],
+    install_requires=['coloredlogs', 'ecdsa', 'pygments', 'requests_futures', 'shtab', 'websockets>=10.1'],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         'Programming Language :: Python :: 3 :: Only',
