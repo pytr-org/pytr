@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='pytr',
-    version='0.0.12',
+    version='0.0.13',
     description='Use TradeRepublic in terminal',
     long_description=readme(),
     long_description_content_type='text/markdown',
@@ -19,7 +19,7 @@ setup(
     author_email='853485-marzzzello@users.noreply.gitlab.com',
     license='MIT',
     packages=['pytr'],
-    python_requires='>=3.5',
+    python_requires='>=3.8',
     entry_points={
         'console_scripts': [
             'pytr = pytr.main:main',

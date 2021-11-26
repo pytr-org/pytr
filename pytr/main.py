@@ -7,6 +7,8 @@ import time
 
 import shtab
 
+from importlib.metadata import version
+
 from pytr.utils import get_logger
 from pytr.dl import DL
 from pytr.account import login
@@ -14,40 +16,16 @@ from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
 
-# async def my_loop(tr, dl):
-#     # await tr.subscribe({'type': 'unsubscribeNews'})
-#     # await tr.order_overview()
-
-#     # await tr.timeline_detail('98d13dc6-5bd3-43c8-b74a-dae4e7728f4f')
-
-#     # await tr.ticker('DE0007236101', 'LSX')
-#     # await tr.ticker('DE0007100000', 'LSX')
-
-#     while True:
-#         _subscription_id, subscription, response = await tr.recv()
-
-#         # Identify response by subscription_id:
-#         #   if portfolio_subscription_id == subscription_id:
-
-#         if subscription['type'] == 'orders':
-#             print(f'Orders: {response}')
-
-#         # Or identify response by subscription type:
-#         elif subscription['type'] == 'ticker':
-#             print(f'Current tick for {subscription['id']} is {response}')
-
-#         else:
-#             print(f'unmatched subscription of type '{subscription['type']}':\n{preview(response)}')
-
 
 def get_main_parser():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser()
     shtab.add_argument_to(parser, ['-s', '--print-completion'])  # magic!
 
     parser.add_argument(
         '-v', '--verbosity', help='Set verbosity level', choices=['warning', 'info', 'debug'], default='info'
     )
     parser.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
+    parser.add_argument('-V', '--version', help='Print version information and quit', action='store_true')
     subparsers = parser.add_subparsers(help='Desired action to perform', dest='command')
 
     # help
@@ -159,6 +137,8 @@ def main():
         Details(login(web=weblogin), args.isin).get()
     elif args.command == 'portfolio':
         Portfolio(login(web=weblogin)).get()
+    elif args.version:
+        print(version('pytr'))
     else:
         parser.print_help()
 
