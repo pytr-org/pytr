@@ -54,11 +54,11 @@ def login(phone_no=None, pin=None, web=True):
                 f.writelines([phone_no + '\n', pin + '\n'])
 
             log.info(f'Saved credentials in {CREDENTIALS_FILE}')
+
         else:
             log.info('Credentials not saved')
 
-    # uses CREDENTIALS_FILE and KEY_FILE
-    tr = TradeRepublicApi()
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin)
 
     if web:
         # Use same login as app.traderepublic.com

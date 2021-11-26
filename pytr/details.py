@@ -55,10 +55,10 @@ class Details:
         company = self.stockDetails['company']
         for company_detail in company:
             if company[company_detail] is not None:
-                print(f'{company_detail}: {company[company_detail]}')
+                print(f'{company_detail:15}: {company[company_detail]}')
         for detail in self.stockDetails:
             if detail != 'company' and self.stockDetails[detail] is not None and self.stockDetails[detail] != []:
-                print(f'{detail}: {self.stockDetails[detail]}')
+                print(f'{detail:15}: {self.stockDetails[detail]}')
 
     def news(self, relevant_days=30):
         since = datetime.now() - timedelta(days=relevant_days)
