@@ -27,7 +27,7 @@ setup(
     },
     #  scripts=['traderep'],
     # install_requires=['py_tr'],
-    install_requires=['coloredlogs', 'ecdsa', 'pygments', 'requests_futures', 'shtab', 'websockets>=10.1'],
+    install_requires=['coloredlogs', 'ecdsa', 'pygments', 'requests_futures', 'shtab', 'websockets>=10.1', 'certifi'],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         'Programming Language :: Python :: 3 :: Only',
