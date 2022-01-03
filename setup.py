@@ -1,10 +1,10 @@
-from os import path
+from pathlib import Path
 from setuptools import setup
 
 
 def readme():
-    this_directory = path.abspath(path.dirname(__file__))
-    with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    this_directory = Path(__file__).parent.resolve()
+    with open(this_directory / 'README.md', encoding='utf-8') as f:
         return f.read()
 
 

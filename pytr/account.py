@@ -1,6 +1,4 @@
 import json
-import os
-import pathlib
 import sys
 from pygments import highlight, lexers, formatters
 from requests import HTTPError
@@ -27,7 +25,7 @@ def login(phone_no=None, pin=None, web=True):
     '''
     log = get_logger(__name__)
 
-    if phone_no is None and os.path.isfile(CREDENTIALS_FILE):
+    if phone_no is None and CREDENTIALS_FILE.is_file():
         log.info('Found credentials file')
         with open(CREDENTIALS_FILE) as f:
             lines = f.readlines()
@@ -37,7 +35,7 @@ def login(phone_no=None, pin=None, web=True):
         pin_masked = len(pin) * '*'
         log.info(f'Phone: {phone_no_masked}, PIN: {pin_masked}')
     else:
-        os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
+        CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
             print('Please enter your TradeRepbulic phone number in the format +4912345678:')

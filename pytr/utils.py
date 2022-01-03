@@ -3,7 +3,6 @@
 import logging
 import coloredlogs
 import json
-import os
 from datetime import datetime
 
 
@@ -221,7 +220,7 @@ class Timeline:
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
-            os.makedirs(dl.output_path, exist_ok=True)
-            with open(os.path.join(dl.output_path, 'other_events.json'), 'w', encoding='utf-8') as f:
+            dl.output_path.mkdir(parents=True, exist_ok=True)
+            with open(dl.output_path / 'other_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
             dl.work_responses()
