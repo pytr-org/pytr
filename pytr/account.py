@@ -68,32 +68,16 @@ def login(phone_no=None, pin=None, web=True):
             countdown = tr.inititate_weblogin()
             request_time = time.time()
             print('Enter the code you received to your mobile app as a notification.')
-            print(f'Enter nothing if you want to receive the code as SMS instead. (Countdown: {countdown})')
-            code = input()
+            print(f'Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})')
+            code = input('Code: ')
             if code == '':
                 countdown = countdown - (time.time() - request_time)
-                for remaining in range(countdown):
-                    print(f'Need to wait {countdown-remaining} seconds...', end='\r')
+                for remaining in range(int(countdown)):
+                    print(f'Need to wait {int(countdown-remaining)} seconds before requesting SMS...', end='\r')
                     time.sleep(1)
-                tries = 0
-                while tries <= 3:
-                    try:
-                        tries += 1
-                        tr.resend_weblogin()
-                    except HTTPError as e:
-                        if e.response.status_code == 429:
-                            errors = e.response.json()['errors']
-                            if errors[0]['errorCode'] == 'TOO_MANY_REQUESTS':
-                                towait = errors[0]['meta']['nextAttemptInSeconds']
-                                for x in range(towait + 1):
-                                    print(f'Too many requests: need to wait {towait-x} seconds', end='\r')
-                                    time.sleep(1)
-                                print()
-                            else:
-                                print('Error: {errors}')
-
-                print('SMS requested. Enter the confirmation code:')
-                code = input()
+                print()
+                tr.resend_weblogin()
+                code = input('SMS requested. Enter the confirmation code:')
             tr.complete_weblogin(code)
     else:
         # Try to login. Ask for device reset if needed
