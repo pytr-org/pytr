@@ -5,6 +5,8 @@ from os import name as os_name
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
 
+from pathvalidate import sanitize_filepath
+
 from pytr.utils import preview, Timeline, get_logger
 
 
@@ -92,6 +94,8 @@ class DL:
             filepath = directory / 'Abschlüsse' / f'{filename}', f'{doc_type}.pdf'
         else:
             filepath = directory / doc_type / f'{filename}.pdf'
+
+        filepath = sanitize_filepath(filepath, '_', os_name)
 
         if filepath in self.filepaths:
             self.log.debug(f'File {filepath} already in queue. Skipping...')
