@@ -91,7 +91,7 @@ class DL:
                 filename = filename.replace(badChar, '')
 
         if doc_type in ['Kontoauszug', 'Depotauszug']:
-            filepath = directory / 'Abschlüsse' / f'{filename}', f'{doc_type}.pdf'
+            filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
         else:
             filepath = directory / doc_type / f'{filename}.pdf'
 
