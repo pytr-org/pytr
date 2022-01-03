@@ -3,7 +3,9 @@
 import logging
 import coloredlogs
 import json
+import requests
 from datetime import datetime
+from packaging import version
 
 
 log_level = None
@@ -72,6 +74,22 @@ def preview(response, num_lines=5):
         return f'{head}\n'
     else:
         return f'{head}\n{tail} more lines hidden'
+
+
+def check_version(installed_version):
+    log = get_logger(__name__)
+    try:
+        r = requests.get('https://api.github.com/repos/marzzzello/pytr/tags', timeout=1)
+    except Exception as e:
+        log.error('Could not check for a newer version')
+        log.debug(str(e))
+        return
+    latest_version = r.json()[0]['name']
+
+    if version.parse(installed_version) < version.parse(latest_version):
+        log.warning(f'Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}')
+    else:
+        log.info('pytr is up to date')
 
 
 class Timeline:

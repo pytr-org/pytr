@@ -31,6 +31,7 @@ setup(
         'certifi',
         'coloredlogs',
         'ecdsa',
+        'packaging',
         'pathvalidate',
         'pygments',
         'requests_futures',
