@@ -1,7 +1,6 @@
 import re
 
 from concurrent.futures import as_completed
-from os import name as os_name
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
 
@@ -95,7 +94,7 @@ class DL:
         else:
             filepath = directory / doc_type / f'{filename}.pdf'
 
-        filepath = sanitize_filepath(filepath, '_', os_name)
+        filepath = sanitize_filepath(filepath, '_', 'auto')
 
         if filepath in self.filepaths:
             self.log.debug(f'File {filepath} already in queue. Skipping...')
