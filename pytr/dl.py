@@ -84,11 +84,6 @@ class DL:
         filename = self.filename_fmt.format(
             iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num
         )
-        if os_name == 'nt':
-            badChars = ['/', '\n', ':', '@', '.']
-            for badChar in badChars:
-                filename = filename.replace(badChar, '')
-
         if doc_type in ['Kontoauszug', 'Depotauszug']:
             filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
         else:
