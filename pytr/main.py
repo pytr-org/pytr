@@ -9,7 +9,7 @@ import shtab
 
 from importlib.metadata import version
 
-from pytr.utils import get_logger
+from pytr.utils import get_logger, check_version
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
@@ -138,7 +138,9 @@ def main():
     elif args.command == 'portfolio':
         Portfolio(login(web=weblogin)).get()
     elif args.version:
-        print(version('pytr'))
+        installed_version = version('pytr')
+        print(installed_version)
+        check_version(installed_version)
     else:
         parser.print_help()
 

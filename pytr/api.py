@@ -24,7 +24,6 @@ import asyncio
 import base64
 import hashlib
 import json
-import logging
 import pathlib
 import time
 import urllib.parse
@@ -36,16 +35,15 @@ import websockets
 from ecdsa import NIST256p, SigningKey
 from ecdsa.util import sigencode_der
 from http.cookiejar import MozillaCookieJar
-from os import path
 
 from pytr.utils import get_logger
 
 
 home = pathlib.Path.home()
-BASE_DIR = path.join(home, '.pytr')
-CREDENTIALS_FILE = path.join(BASE_DIR, 'credentials')
-KEY_FILE = path.join(BASE_DIR, 'keyfile.pem')
-COOKIES_FILE = path.join(BASE_DIR, 'cookies.txt')
+BASE_DIR = home / '.pytr'
+CREDENTIALS_FILE = BASE_DIR / 'credentials'
+KEY_FILE = BASE_DIR / 'keyfile.pem'
+COOKIES_FILE = BASE_DIR / 'cookies.txt'
 
 
 class TradeRepublicApi:
@@ -219,7 +217,7 @@ class TradeRepublicApi:
         return success
         '''
         # Only attempt to load if the cookie file exists.
-        if path.exists(COOKIES_FILE):
+        if COOKIES_FILE.exists():
             # Loads session cookies too (expirydate=0).
             self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
             self._weblogin = True

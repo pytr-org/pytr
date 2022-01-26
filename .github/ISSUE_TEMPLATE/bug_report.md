@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Ran the command `pytr ....`
 3. Do '....'
@@ -21,14 +22,16 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Error log**
-```
-Insert here
-```
 
+```
+Insert
+here
+```
 
 **Environment**
- - OS: [e.g. Linux]
- - Version: [e.g. 0.0.7]
+
+- OS: [e.g. Linux]
+- pytr version: [e.g. `0.0.15`, use `pytr -V` to get your version]
 
 **Additional context**
 Add any other context about the problem here.

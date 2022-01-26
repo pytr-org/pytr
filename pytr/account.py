@@ -1,6 +1,4 @@
 import json
-import os
-import pathlib
 import sys
 from pygments import highlight, lexers, formatters
 from requests import HTTPError
@@ -27,7 +25,7 @@ def login(phone_no=None, pin=None, web=True):
     '''
     log = get_logger(__name__)
 
-    if phone_no is None and os.path.isfile(CREDENTIALS_FILE):
+    if phone_no is None and CREDENTIALS_FILE.is_file():
         log.info('Found credentials file')
         with open(CREDENTIALS_FILE) as f:
             lines = f.readlines()
@@ -37,7 +35,7 @@ def login(phone_no=None, pin=None, web=True):
         pin_masked = len(pin) * '*'
         log.info(f'Phone: {phone_no_masked}, PIN: {pin_masked}')
     else:
-        os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
+        CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
             print('Please enter your TradeRepbulic phone number in the format +4912345678:')
@@ -70,32 +68,16 @@ def login(phone_no=None, pin=None, web=True):
             countdown = tr.inititate_weblogin()
             request_time = time.time()
             print('Enter the code you received to your mobile app as a notification.')
-            print(f'Enter nothing if you want to receive the code as SMS instead. (Countdown: {countdown})')
-            code = input()
+            print(f'Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})')
+            code = input('Code: ')
             if code == '':
                 countdown = countdown - (time.time() - request_time)
-                for remaining in range(countdown):
-                    print(f'Need to wait {countdown-remaining} seconds...', end='\r')
+                for remaining in range(int(countdown)):
+                    print(f'Need to wait {int(countdown-remaining)} seconds before requesting SMS...', end='\r')
                     time.sleep(1)
-                tries = 0
-                while tries <= 3:
-                    try:
-                        tries += 1
-                        tr.resend_weblogin()
-                    except HTTPError as e:
-                        if e.response.status_code == 429:
-                            errors = e.response.json()['errors']
-                            if errors[0]['errorCode'] == 'TOO_MANY_REQUESTS':
-                                towait = errors[0]['meta']['nextAttemptInSeconds']
-                                for x in range(towait + 1):
-                                    print(f'Too many requests: need to wait {towait-x} seconds', end='\r')
-                                    time.sleep(1)
-                                print()
-                            else:
-                                print('Error: {errors}')
-
-                print('SMS requested. Enter the confirmation code:')
-                code = input()
+                print()
+                tr.resend_weblogin()
+                code = input('SMS requested. Enter the confirmation code:')
             tr.complete_weblogin(code)
     else:
         # Try to login. Ask for device reset if needed
