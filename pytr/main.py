@@ -9,7 +9,7 @@ import shtab
 
 from importlib.metadata import version
 
-from pytr.utils import get_logger, check_version
+from pytr.utils import get_logger, check_version, auto_calculate_since_timestamp
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
@@ -62,6 +62,9 @@ def get_main_parser():
     )
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
+    )
+    parser_dl_docs.add_argument(
+        '--auto_days', help='Auto calculate days since previous download from existing files (ignores --last_days)', action='store_true'
     )
 
     parser_get_price_alarms = subparsers.add_parser(
@@ -121,13 +124,20 @@ def main():
         login(phone_no=args.phone_no, pin=args.pin, web=weblogin)
 
     elif args.command == 'dl_docs':
-        if args.last_days == 0:
-            since_timestamp = 0
+        if args.auto_days:
+            since_timestamp = auto_calculate_since_timestamp(args.output)
+            if since_timestamp == 0:
+                abort = True
+                print('Last download was today, can\'t use auto-feature')
         else:
-            since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
-
-        dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp)
-        asyncio.get_event_loop().run_until_complete(dl.dl_loop())
+            if args.last_days == 0:
+                since_timestamp = 0
+            else:
+                since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
+        if not abort:
+            print(since_timestamp)
+            dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp)
+            asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
         # TODO
         print('Not implemented yet')

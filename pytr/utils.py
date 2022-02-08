@@ -4,7 +4,8 @@ import logging
 import coloredlogs
 import json
 import requests
-from datetime import datetime
+from os import walk,stat, path
+from datetime import datetime, date
 from packaging import version
 
 
@@ -90,6 +91,16 @@ def check_version(installed_version):
         log.warning(f'Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}')
     else:
         log.info('pytr is up to date')
+
+def auto_calculate_since_timestamp(output_path):
+    # calculates the number of days from mtime of files in output dir
+    newest_file = date.fromtimestamp(1)
+    for root, dirs, files in walk(output_path):
+        for name in files:
+            if (name.split(".").pop() == "pdf"):
+                if (date.fromtimestamp(stat(path.join(root, name)).st_mtime) > newest_file):
+                    newest_file = date.fromtimestamp(stat(path.join(root, name)).st_mtime)
+    return (date.today()-newest_file).days
 
 
 class Timeline:
