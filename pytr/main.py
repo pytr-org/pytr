@@ -63,6 +63,9 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
+    parser_dl_docs.add_argument(
+        '--check_hashes', help='Uses filehashes to avoid duplicates', action='store_true'
+    )
 
     parser_get_price_alarms = subparsers.add_parser(
         'get_price_alarms', parents=[parent_parser], help='Get overview of current price alarms'
@@ -126,7 +129,7 @@ def main():
         else:
             since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
 
-        dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp)
+        dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp, check_hashes=args.check_hashes)
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
         # TODO

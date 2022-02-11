@@ -6,7 +6,8 @@ import json
 import requests
 from datetime import datetime
 from packaging import version
-
+from os import walk, path
+from hashlib import md5
 
 log_level = None
 
@@ -90,6 +91,22 @@ def check_version(installed_version):
         log.warning(f'Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}')
     else:
         log.info('pytr is up to date')
+
+def collect_hashes(output_path):
+    # calculates the number of days from mtime of files in output dir
+    hashes = []
+    for root, dirs, files in walk(output_path):
+        for name in files:
+            if (name.split(".").pop() == "pdf"):
+                hashes.append(get_filehash(path.join(root, name)))
+    return hashes
+
+def get_filehash(path):
+    with open(path, 'rb') as f:
+        file_hash = md5()
+        while chunk := f.read(8192):
+            file_hash.update(chunk)
+        return file_hash.hexdigest()
 
 
 class Timeline:

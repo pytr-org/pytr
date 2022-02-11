@@ -1,3 +1,4 @@
+import os
 import re
 
 from concurrent.futures import as_completed
@@ -6,11 +7,11 @@ from requests_futures.sessions import FuturesSession
 
 from pathvalidate import sanitize_filepath
 
-from pytr.utils import preview, Timeline, get_logger
+from pytr.utils import preview, Timeline, get_logger, collect_hashes, get_filehash
 
 
 class DL:
-    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0):
+    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0, check_hashes=False):
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
@@ -31,6 +32,11 @@ class DL:
         self.doc_urls = []
         self.tl = Timeline(self.tr)
         self.log = get_logger(__name__)
+
+        self.check_hashes = check_hashes
+        self.hashes = []
+        if self.check_hashes:
+            self.hashes.extend(collect_hashes(output_path))
 
     async def dl_loop(self):
         await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
@@ -128,6 +134,10 @@ class DL:
             future.filepath.parent.mkdir(parents=True, exist_ok=True)
             with open(future.filepath, 'wb') as f:
                 f.write(r.content)
+                if get_filehash(future.filepath) in self.hashes:
+                    f.close()
+                    print("Found duplicate, deleting...")
+                    os.remove(future.filepath)
                 self.done += 1
 
                 self.log.debug(f'{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}')
