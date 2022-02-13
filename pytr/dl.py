@@ -152,7 +152,7 @@ class DL:
         # Write deposit_transactions.csv file
         # date, transaction, shares, amount, total, fee, isin, name
         self.log.info("Write deoposit entries")
-        with open("Transactions.csv", "w", newline='', encoding='utf-8') as f:
+        with open(self.output_path / "Transactions.csv", "w", newline='', encoding='utf-8') as f:
             f.write("Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n")
             for event in timeline:
                 event = event["data"]

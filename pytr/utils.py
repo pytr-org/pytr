@@ -246,9 +246,9 @@ class Timeline:
             with open(dl.output_path / 'other_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
 
-            with open(os.path.join(dl.output_path, 'all_events.json'), 'w', encoding='utf-8') as f:
+            with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            dl.createtransferals('other_events.json')
+            dl.createtransferals(dl.output_path / 'other_events.json')
 
             dl.work_responses()
