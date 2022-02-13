@@ -7,7 +7,6 @@ import requests
 from datetime import datetime
 from packaging import version
 
-
 log_level = None
 
 
@@ -100,6 +99,7 @@ class Timeline:
         self.requested_detail = 0
         self.num_timeline_details = 0
         self.events_without_docs = []
+        self.events_with_docs =  []
 
     async def get_next_timeline(self, response=None, max_age_timestamp=0):
         '''
@@ -172,6 +172,10 @@ class Timeline:
             elif action.get('payload') != event['data']['id']:
                 msg += f"Skip: payload unmatched ({action['payload']})"
 
+            if msg == '':
+                self.events_with_docs.append(event)
+                self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
+
             if msg != '':
                 self.events_without_docs.append(event)
                 self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
@@ -241,4 +245,10 @@ class Timeline:
             dl.output_path.mkdir(parents=True, exist_ok=True)
             with open(dl.output_path / 'other_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+
+            with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
+                json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+
+            dl.createtransferals(dl.output_path / 'other_events.json')
+
             dl.work_responses()
