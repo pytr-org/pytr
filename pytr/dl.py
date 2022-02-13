@@ -13,7 +13,7 @@ from pytr.utils import preview, Timeline, get_logger
 
 
 class DL:
-    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0):
+    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0, history_file='pytr_history'):
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
@@ -22,6 +22,7 @@ class DL:
         '''
         self.tr = tr
         self.output_path = Path(output_path)
+        self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
         self.since_timestamp = since_timestamp
 
@@ -32,8 +33,20 @@ class DL:
         self.done = 0
         self.filepaths = []
         self.doc_urls = []
+        self.doc_urls_history = []
         self.tl = Timeline(self.tr)
         self.log = get_logger(__name__)
+        self.load_history()
+
+    def load_history(self):
+        if self.history_file.exists():
+            with self.history_file.open() as f:
+                self.doc_urls_history = f.read().splitlines()
+            self.log.info(f'Found {len(self.doc_urls_history)} lines in history file')
+        else:
+            self.history_file.parent.mkdir(exist_ok=True, parents=True)
+            self.history_file.touch()
+            self.log.info('Created history file')
 
     async def dl_loop(self):
         await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
@@ -105,12 +118,17 @@ class DL:
             if doc_url_base in self.doc_urls:
                 self.log.debug(f'URL {doc_url_base} already in queue. Skipping...')
                 return
+            elif doc_url_base in self.doc_urls_history:
+                self.log.debug(f'URL {doc_url_base} already in history. Skipping...')
+                return
             else:
                 self.doc_urls.append(doc_url_base)
 
             future = self.session.get(doc_url)
             future.filepath = filepath
+            future.doc_url_base = doc_url_base
             self.futures.append(future)
+            self.log.debug(f'Added {filepath} to queue')
         else:
             self.log.debug(f'file {filepath} already exists. Skipping...')
 
@@ -122,27 +140,25 @@ class DL:
             self.log.info('Nothing to download')
             exit(0)
 
-        self.log.info('Waiting for downloads to complete..')
-        for future in as_completed(self.futures):
-            if future.filepath.is_file() is True:
-                self.log.debug(f'file {future.filepath} was already downloaded.')
+        with self.history_file.open('a') as history_file:
+            self.log.info('Waiting for downloads to complete..')
+            for future in as_completed(self.futures):
+                if future.filepath.is_file() is True:
+                    self.log.debug(f'file {future.filepath} was already downloaded.')
 
-            r = future.result()
-            future.filepath.parent.mkdir(parents=True, exist_ok=True)
-            with open(future.filepath, 'wb') as f:
-                f.write(r.content)
-                self.done += 1
+                r = future.result()
+                future.filepath.parent.mkdir(parents=True, exist_ok=True)
+                with open(future.filepath, 'wb') as f:
+                    f.write(r.content)
+                    self.done += 1
+                    history_file.write(f'{future.doc_url_base}\n')
 
-                self.log.debug(f'{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}')
+                    self.log.debug(f'{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}')
 
                 if self.done == len(self.doc_urls):
                     self.log.info('Done.')
                     exit(0)
 
-    def dl_all(output_path):
-        '''
-        TODO
-        '''
 
     def createtransferals(self, filename):
         # Read relevant deposit timeline entries

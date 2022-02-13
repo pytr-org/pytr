@@ -37,14 +37,28 @@
       "args": ["-v", "debug", "login"]
     },
     {
-      "name": "dl_docs",
+      "name": "dl_docs debug",
       "type": "python",
       "request": "launch",
       "module": "pytr",
       "args": ["-v", "debug", "dl_docs", "dldocs_debug"]
     },
     {
-      "name": "dl_docs 2 days",
+      "name": "dl_docs",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["dl_docs", "dldocs"]
+    },
+    {
+      "name": "dl_docs 20 days",
+      "type": "python",
+      "request": "launch",
+      "module": "pytr",
+      "args": ["dl_docs", "dldocs", "--last_days", "20"]
+    },
+    {
+      "name": "dl_docs 2 days debug",
       "type": "python",
       "request": "launch",
       "module": "pytr",
