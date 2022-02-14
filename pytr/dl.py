@@ -7,6 +7,7 @@ from requests_futures.sessions import FuturesSession
 from pathvalidate import sanitize_filepath
 
 from pytr.utils import preview, Timeline, get_logger
+from pytr.api import TradeRepublicError
 
 
 class DL:
@@ -52,11 +53,10 @@ class DL:
         await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
 
         while True:
-            _subscription_id, subscription, response = await self.tr.recv()
-            # try:
-            #     _subscription_id, subscription, response = await self.tr.recv()
-            # except TradeRepublicError as e:
-            #     self.log.error(str(e))
+            try:
+                _subscription_id, subscription, response = await self.tr.recv()
+            except TradeRepublicError as e:
+                self.log.fatal(str(e))
 
             if subscription['type'] == 'timeline':
                 await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
