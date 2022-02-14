@@ -8,8 +8,9 @@ import time
 import shtab
 
 from importlib.metadata import version
+from pathlib import Path
 
-from pytr.utils import get_logger, check_version
+from pytr.utils import get_logger, check_version, export_transactions
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
@@ -18,42 +19,46 @@ from pytr.details import Details
 
 
 def get_main_parser():
-    parser = argparse.ArgumentParser()
+    def formatter(prog):
+        return argparse.HelpFormatter(prog, max_help_position=25)
+
+    parser = argparse.ArgumentParser(formatter_class=formatter)
     shtab.add_argument_to(parser, ['-s', '--print-completion'])  # magic!
 
     parser.add_argument(
-        '-v', '--verbosity', help='Set verbosity level', choices=['warning', 'info', 'debug'], default='info'
+        '-v',
+        '--verbosity',
+        help='Set verbosity level (default: info)',
+        choices=['warning', 'info', 'debug'],
+        default='info',
     )
     parser.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
     parser.add_argument('-V', '--version', help='Print version information and quit', action='store_true')
-    subparsers = parser.add_subparsers(help='Desired action to perform', dest='command')
+    parser_cmd = parser.add_subparsers(help='Desired action to perform', dest='command')
 
     # help
-    subparsers.add_parser('help', help='Print this help message')
+    parser_cmd.add_parser('help', help='Print this help message')
 
-    # Create parent subparser for {dl_docs, check}-parsers with common arguments
-    parent_parser = argparse.ArgumentParser(add_help=False, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    # Create parent subparser with common login arguments
+    parser_login_args = argparse.ArgumentParser(add_help=False)
+    parser_login_args.add_argument('-n', '--phone_no', help='TradeRepbulic phone number (international format)')
+    parser_login_args.add_argument('-p', '--pin', help='TradeRepbulic pin')
 
-    # Subparsers based on parent
-
-    parser_login = subparsers.add_parser(
+    # login
+    parser_login = parser_cmd.add_parser(
         'login',
-        parents=[parent_parser],
+        parents=[parser_login_args],
         help='Check if credentials file exists. If not create it and ask for input.'
         + ' Try to login. Ask for device reset if needed',
     )
-    parser_login.add_argument('-n', '--phone_no', help='TradeRepbulic phone number (international format)')
-    parser_login.add_argument('-p', '--pin', help='TradeRepbulic pin')
-
-    subparsers.add_parser('portfolio', parents=[parent_parser], help='Show current portfolio')
-
-    parser_dl_docs = subparsers.add_parser(
+    # dl_docs
+    parser_dl_docs = parser_cmd.add_parser(
         'dl_docs',
-        parents=[parent_parser],
-        help='Download all pdf documents from the timeline and sort them into folders',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_login_args],
+        help='Download all pdf documents from the timeline and sort them into folders',
     )
-    parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH')
+    parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH', type=Path)
     parser_dl_docs.add_argument(
         '--format',
         help='available variables:\tiso_date, time, title, doc_num, subtitle',
@@ -63,24 +68,41 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
-
-    parser_get_price_alarms = subparsers.add_parser(
-        'get_price_alarms', parents=[parent_parser], help='Get overview of current price alarms'
-    )
-    parser_details = subparsers.add_parser('details', parents=[parent_parser], help='Get details for an ISIN')
+    # portfolio
+    parser_cmd.add_parser('portfolio', parents=[parser_login_args], help='Show current portfolio')
+    parser_details = parser_cmd.add_parser('details', parents=[parser_login_args], help='Get details for an ISIN')
+    # details
     parser_details.add_argument('isin', help='ISIN of intrument')
-    parser_set_price_alarms = subparsers.add_parser(
-        'set_price_alarms', parents=[parent_parser], help='Set price alarms based on diff from current price'
+    # get_price_alarms
+    parser_get_price_alarms = parser_cmd.add_parser(
+        'get_price_alarms',
+        parents=[parser_login_args],
+        help='Get overview of current price alarms',
+    )
+    # set_price_alarms
+    parser_set_price_alarms = parser_cmd.add_parser(
+        'set_price_alarms',
+        parents=[parser_login_args],
+        help='Set price alarms based on diff from current price',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser_set_price_alarms.add_argument(
-        '-p',
-        '--percent',
-        help='Percentage +/-',
-        # choices=range(-1000, 1001),
-        metavar='[-1000 ... 1000]',
-        type=int,
-        default=-10,
+        '-%', '--percent', help='Percentage +/-', metavar='[-1000 ... 1000]', type=int, default=-10
     )
+    # export_transactions
+    parser_export_transactions = parser_cmd.add_parser(
+        'export_transactions',
+        help='Create a CSV with the deposits and removals ready for importing into Portfolio Performance',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser_export_transactions.add_argument(
+        'input', help='Input path to JSON (use other_events.json from dl_docs)', metavar='INPUT', type=Path
+    )
+    parser_export_transactions.add_argument('output', help='Output path of CSV file', metavar='OUTPUT', type=Path)
+    parser_export_transactions.add_argument(
+        '-l', '--lang', help='Two letter language code or "auto" for system language', default='auto'
+    )
+
     return parser
 
 
@@ -137,6 +159,8 @@ def main():
         Details(login(web=weblogin), args.isin).get()
     elif args.command == 'portfolio':
         Portfolio(login(web=weblogin)).get()
+    elif args.command == 'export_transactions':
+        export_transactions(args.input, args.output, args.lang)
     elif args.version:
         installed_version = version('pytr')
         print(installed_version)

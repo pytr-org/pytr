@@ -1,8 +1,5 @@
 import re
 
-import json
-from datetime import datetime
-
 from concurrent.futures import as_completed
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
@@ -39,6 +36,9 @@ class DL:
         self.load_history()
 
     def load_history(self):
+        '''
+        Read history file with URLs if it exists, otherwise create empty file
+        '''
         if self.history_file.exists():
             with self.history_file.open() as f:
                 self.doc_urls_history = f.read().splitlines()
@@ -158,54 +158,3 @@ class DL:
                 if self.done == len(self.doc_urls):
                     self.log.info('Done.')
                     exit(0)
-
-
-    def createtransferals(self, filename):
-        # Read relevant deposit timeline entries
-        with open(filename, "r", encoding="utf-8") as f:
-            timeline = json.loads(f.read())
-
-        # Write deposit_transactions.csv file
-        # date, transaction, shares, amount, total, fee, isin, name
-        self.log.info("Write deoposit entries")
-        with open(self.output_path / "Transactions.csv", "w", newline='', encoding='utf-8') as f:
-            f.write("Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n")
-            for event in timeline:
-                event = event["data"]
-                dateTime = datetime.fromtimestamp(int(event["timestamp"] / 1000))
-                date = dateTime.strftime("%Y-%m-%d")
-
-                title = event["title"]
-                try:
-                    body = event["body"]
-                except:
-                    body = ""
-
-                if "storniert" in body:
-                    continue
-                
-                # Cash in
-                if title == "Einzahlung":
-                    f.write(
-                        "{0};{1};{2};{3};{4};{5};{6};{7}\n".format(
-                            date, "Einlage", "", "", event["cashChangeAmount"], "", "", ""
-                        )
-                    )
-                elif title == "Bonuszahlung":
-                    f.write(
-                        "{0};{1};{2};{3};{4};{5};{6};{7}\n".format(
-                            date, "Einlage", "", "", event["cashChangeAmount"], "", "", ""
-                        )
-                    )    
-                elif title == "Auszahlung":
-                    f.write(
-                        "{0};{1};{2};{3};{4};{5};{6};{7}\n".format(
-                            date, "Entnahme", "", "", abs(event["cashChangeAmount"]), "", "", ""
-                        )
-                    )
-                # Dividend - Shares
-                elif title == "Reinvestierung":
-                    # TODO: Implement reinvestment
-                    self.log.fatal("Detected reivestment, skipping... (not implemented yet)")
-
-        self.log.info("Deposit creation finished!")

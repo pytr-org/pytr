@@ -1,7 +1,6 @@
 import json
 import sys
 from pygments import highlight, lexers, formatters
-from requests import HTTPError
 import time
 
 from pytr.api import TradeRepublicApi, CREDENTIALS_FILE

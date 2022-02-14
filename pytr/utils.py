@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import logging
 import coloredlogs
 import json
+import logging
 import requests
 from datetime import datetime
+from locale import getlocale
 from packaging import version
 
 log_level = None
@@ -91,6 +92,120 @@ def check_version(installed_version):
         log.info('pytr is up to date')
 
 
+def export_transactions(input_path, output_path, lang='auto'):
+    '''
+    Create a CSV with the deposits and removals ready for importing into Portfolio Performance
+    The CSV headers for PP are language dependend
+
+    i18n source from Portfolio Performance:
+    https://github.com/buchen/portfolio/blob/93b73cf69a00b1b7feb136110a51504bede737aa/name.abuchen.portfolio/src/name/abuchen/portfolio/messages_de.properties
+    https://github.com/buchen/portfolio/blob/effa5b7baf9a918e1b5fe83942ddc480e0fd48b9/name.abuchen.portfolio/src/name/abuchen/portfolio/model/labels_de.properties
+
+    '''
+    log = get_logger(__name__)
+    if lang == 'auto':
+        lang = getlocale()[0].split('_')[0]
+
+    if lang not in ['cs', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']:
+        lang = 'en'
+
+    i18n = {
+        "date": {
+            "cs": "Datum",
+            "de": "Datum",
+            "en": "Date",
+            "es": "Fecha",
+            "fr": "Date",
+            "it": "Data",
+            "nl": "Datum",
+            "pt": "Data",
+            "ru": "\u0414\u0430\u0442\u0430",
+        },
+        "type": {
+            "cs": "Typ",
+            "de": "Typ",
+            "en": "Type",
+            "es": "Tipo",
+            "fr": "Type",
+            "it": "Tipo",
+            "nl": "Type",
+            "pt": "Tipo",
+            "ru": "\u0422\u0438\u043F",
+        },
+        "value": {
+            "cs": "Hodnota",
+            "de": "Wert",
+            "en": "Value",
+            "es": "Valor",
+            "fr": "Valeur",
+            "it": "Valore",
+            "nl": "Waarde",
+            "pt": "Valor",
+            "ru": "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435",
+        },
+        "deposit": {
+            "cs": 'Vklad',
+            "de": 'Einlage',
+            "en": 'Deposit',
+            "es": 'Dep\u00F3sito',
+            "fr": 'D\u00E9p\u00F4t',
+            "it": 'Deposito',
+            "nl": 'Storting',
+            "pt": 'Dep\u00F3sito',
+            "ru": '\u041F\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435',
+        },
+        "removal": {
+            "cs": 'V\u00FDb\u011Br',
+            "de": 'Entnahme',
+            "en": 'Removal',
+            "es": 'Removal',
+            "fr": 'Retrait',
+            "it": 'Prelievo',
+            "nl": 'Opname',
+            "pt": 'Levantamento',
+            "ru": '\u0421\u043F\u0438\u0441\u0430\u043D\u0438\u0435',
+        },
+    }
+    # Read relevant deposit timeline entries
+    with open(input_path, encoding='utf-8') as f:
+        timeline = json.load(f)
+
+    # Write deposit_transactions.csv file
+    # date, transaction, shares, amount, total, fee, isin, name
+    log.info('Write deposit entries')
+    with open(output_path, 'w', encoding='utf-8') as f:
+        # f.write('Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n')
+        csv_fmt = '{date};{type};{value}\n'
+        header = csv_fmt.format(date=i18n['date'][lang], type=i18n['type'][lang], value=i18n['value'][lang])
+        f.write(header)
+
+        for event in timeline:
+            event = event['data']
+            dateTime = datetime.fromtimestamp(int(event['timestamp'] / 1000))
+            date = dateTime.strftime('%Y-%m-%d')
+
+            title = event['title']
+            try:
+                body = event['body']
+            except KeyError:
+                body = ''
+
+            if 'storniert' in body:
+                continue
+
+            # Cash in
+            if title in ['Einzahlung', 'Bonuszahlung']:
+                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=event['cashChangeAmount']))
+            elif title == 'Auszahlung':
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=abs(event['cashChangeAmount'])))
+            # Dividend - Shares
+            elif title == 'Reinvestierung':
+                # TODO: Implement reinvestment
+                log.warning('Detected reivestment, skipping... (not implemented yet)')
+
+    log.info('Deposit creation finished!')
+
+
 class Timeline:
     def __init__(self, tr):
         self.tr = tr
@@ -99,7 +214,7 @@ class Timeline:
         self.requested_detail = 0
         self.num_timeline_details = 0
         self.events_without_docs = []
-        self.events_with_docs =  []
+        self.events_with_docs = []
 
     async def get_next_timeline(self, response=None, max_age_timestamp=0):
         '''
@@ -174,9 +289,7 @@ class Timeline:
 
             if msg == '':
                 self.events_with_docs.append(event)
-                self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
-
-            if msg != '':
+            else:
                 self.events_without_docs.append(event)
                 self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
                 self.num_timeline_details -= 1
@@ -246,9 +359,9 @@ class Timeline:
             with open(dl.output_path / 'other_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
 
-            with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
+            with open(dl.output_path / 'events_with_documents.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            dl.createtransferals(dl.output_path / 'other_events.json')
+            export_transactions(dl.output_path / 'other_events.json', dl.output_path / 'account_transactions.csv')
 
             dl.work_responses()
