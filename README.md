@@ -18,28 +18,34 @@ pip install .
 
 ```
 $ pytr help
-usage: pytr [-h] [-s {bash,zsh}] [-v {warning,info,debug}] [--applogin]
-            {help,login,portfolio,dl_docs,get_price_alarms,details,set_price_alarms} ...
+usage: pytr [-h] [-s {bash,zsh,tcsh}] [-v {warning,info,debug}] [--applogin] [-V]
+            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions}
 
 positional arguments:
-  {help,login,portfolio,dl_docs,get_price_alarms,details,set_price_alarms}
-                        Desired action to perform
-    help                Print this help message
-    login               Check if credentials file exists. If not create it and ask for input.
-                        Try to login. Ask for device reset if needed
-    portfolio           Show current portfolio
-    dl_docs             Download all pdf documents from the timeline and sort them into folders
-    get_price_alarms    Get overview of current price alarms
-    details             Get details for an ISIN
-    set_price_alarms    Set price alarms based on diff from current price
+  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions}
+                         Desired action to perform
+    help                 Print this help message
+    login                Check if credentials file exists. If not create it
+                         and ask for input. Try to login. Ask for device reset
+                         if needed
+    dl_docs              Download all pdf documents from the timeline and sort
+                         them into folders
+    portfolio            Show current portfolio
+    details              Get details for an ISIN
+    get_price_alarms     Get overview of current price alarms
+    set_price_alarms     Set price alarms based on diff from current price
+    export_transactions  Create a CSV with the deposits and removals ready for
+                         importing into Portfolio Performance
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -s {bash,zsh}, --print-completion {bash,zsh}
-                        print shell completion script (default: None)
+options:
+  -h, --help             show this help message and exit
+  -s {bash,zsh,tcsh}, --print-completion {bash,zsh,tcsh}
+                         print shell completion script
   -v {warning,info,debug}, --verbosity {warning,info,debug}
-                        Set verbosity level (default: info)
-  --applogin            Use app login instead of web login (default: False)
+                         Set verbosity level (default: info)
+  --applogin             Use app login instead of web login
+  -V, --version          Print version information and quit
+
 ```
 
 ## Authentication
