@@ -148,17 +148,22 @@ def main():
         else:
             since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
 
-        dl = DL(login(web=weblogin), args.output, args.format, since_timestamp=since_timestamp)
+        dl = DL(
+            login(phone_no=args.phone_no, pin=args.pin, web=weblogin),
+            args.output,
+            args.format,
+            since_timestamp=since_timestamp,
+        )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
         # TODO
         print('Not implemented yet')
     elif args.command == 'get_price_alarms':
-        Alarms(login(web=weblogin)).get()
+        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=weblogin)).get()
     elif args.command == 'details':
-        Details(login(web=weblogin), args.isin).get()
+        Details(login(phone_no=args.phone_no, pin=args.pin, web=weblogin), args.isin).get()
     elif args.command == 'portfolio':
-        Portfolio(login(web=weblogin)).get()
+        Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=weblogin)).get()
     elif args.command == 'export_transactions':
         export_transactions(args.input, args.output, args.lang)
     elif args.version:

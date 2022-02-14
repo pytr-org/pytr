@@ -79,9 +79,10 @@ class TradeRepublicApi:
         self._session_token_expires_at = time.time() + 290
         self._session_token = val
 
-    def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de'):
+    def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de', save_cookies=False):
         self.log = get_logger(__name__)
         self._locale = locale
+        self._save_cookies = save_cookies
         if not (phone_no and pin):
             try:
                 with open(CREDENTIALS_FILE, 'r') as f:
@@ -103,7 +104,8 @@ class TradeRepublicApi:
 
         self._websession = requests.Session()
         self._websession.headers = self._default_headers_web
-        self._websession.cookies = MozillaCookieJar(COOKIES_FILE)
+        if self._save_cookies:
+            self._websession.cookies = MozillaCookieJar(COOKIES_FILE)
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -145,6 +147,7 @@ class TradeRepublicApi:
         self.log.info('Refreshing access token')
         r = self._sign_request('/api/v1/auth/session', method='GET')
         self.session_token = r.json()['sessionToken']
+        self.save_websession()
 
     def _sign_request(self, url_path, payload=None, method='POST'):
         ts = int(time.time() * 1000)
@@ -209,7 +212,8 @@ class TradeRepublicApi:
 
     def save_websession(self):
         # Saves session cookies too (expirydate=0).
-        self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
+        if self._save_cookies:
+            self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
 
     def resume_websession(self):
         '''

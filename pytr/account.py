@@ -23,6 +23,7 @@ def login(phone_no=None, pin=None, web=True):
     If no parameters are set but are needed then ask for input
     '''
     log = get_logger(__name__)
+    save_cookies = True
 
     if phone_no is None and CREDENTIALS_FILE.is_file():
         log.info('Found credentials file')
@@ -55,9 +56,10 @@ def login(phone_no=None, pin=None, web=True):
             log.info(f'Saved credentials in {CREDENTIALS_FILE}')
 
         else:
+            save_cookies = False
             log.info('Credentials not saved')
 
-    tr = TradeRepublicApi(phone_no=phone_no, pin=pin)
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
 
     if web:
         # Use same login as app.traderepublic.com
