@@ -220,6 +220,9 @@ class TradeRepublicApi:
         Use saved cookie file to resume web session
         return success
         '''
+        if self._save_cookies is False:
+            return False
+
         # Only attempt to load if the cookie file exists.
         if COOKIES_FILE.exists():
             # Loads session cookies too (expirydate=0).

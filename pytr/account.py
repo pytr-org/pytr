@@ -66,7 +66,11 @@ def login(phone_no=None, pin=None, web=True):
         if tr.resume_websession():
             log.info('Web session resumed')
         else:
-            countdown = tr.inititate_weblogin()
+            try:
+                countdown = tr.inititate_weblogin()
+            except ValueError as e:
+                log.fatal(str(e))
+                exit(1)
             request_time = time.time()
             print('Enter the code you received to your mobile app as a notification.')
             print(f'Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})')
