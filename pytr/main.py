@@ -68,6 +68,9 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
+    parser_dl_docs.add_argument(
+        '--workers', help='Number of workers for parallel downloading', metavar='WORKERS', default=8, type=int
+    )
     # portfolio
     parser_cmd.add_parser('portfolio', parents=[parser_login_args], help='Show current portfolio')
     parser_details = parser_cmd.add_parser('details', parents=[parser_login_args], help='Get details for an ISIN')
@@ -153,6 +156,7 @@ def main():
             args.output,
             args.format,
             since_timestamp=since_timestamp,
+            max_workers=args.workers,
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':

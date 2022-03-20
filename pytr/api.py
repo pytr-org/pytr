@@ -47,9 +47,9 @@ COOKIES_FILE = BASE_DIR / 'cookies.txt'
 
 
 class TradeRepublicApi:
-    _default_headers = {'User-Agent': 'TradeRepublic/Android 30/App Version 1.1.5502'}
+    _default_headers = {'User-Agent': 'TradeRepublic/Android 30/App Version 1.1.5534'}
     _default_headers_web = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
     }
     _host = 'https://api.traderepublic.com'
     _weblogin = False

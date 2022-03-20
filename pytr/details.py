@@ -51,6 +51,16 @@ class Details:
             if recv == 6:
                 return
 
+    def print_instrument(self):
+        print('Name:', self.instrument['name'])
+        print('ShortName:', self.instrument['shortName'])
+        print('Type:', self.instrument['typeId'])
+        for ex in self.instrument['exchanges']:
+            print(f"{ex['slug']}: {ex['symbolAtExchange']} {ex['nameAtExchange']}")
+
+        for tag in self.instrument['tags']:
+            print(f"{tag['type']}: {tag['name']}")
+
     def stock_details(self):
         company = self.stockDetails['company']
         for company_detail in company:
@@ -69,6 +79,7 @@ class Details:
                 print(f"{dateiso}: {news['headline']}")
 
     def overview(self):
+        self.print_instrument()
         self.news()
         self.stock_details()
 

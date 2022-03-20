@@ -3,6 +3,7 @@ import re
 from concurrent.futures import as_completed
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
+from requests import session
 
 from pathvalidate import sanitize_filepath
 
@@ -11,7 +12,7 @@ from pytr.api import TradeRepublicError
 
 
 class DL:
-    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0, history_file='pytr_history'):
+    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0, history_file='pytr_history', max_workers=8):
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
@@ -24,7 +25,12 @@ class DL:
         self.filename_fmt = filename_fmt
         self.since_timestamp = since_timestamp
 
-        self.session = FuturesSession()
+        requests_session = session()
+        if self.tr._weblogin:
+            requests_session.headers = self.tr._default_headers_web
+        else:
+            requests_session.headers = self.tr._default_headers
+        self.session = FuturesSession(max_workers=max_workers, session=requests_session)
         self.futures = []
 
         self.docs_request = 0
@@ -146,7 +152,11 @@ class DL:
                 if future.filepath.is_file() is True:
                     self.log.debug(f'file {future.filepath} was already downloaded.')
 
-                r = future.result()
+                try:
+                    r = future.result()
+                except Exception as e:
+                    self.log.fatal(str(e))
+
                 future.filepath.parent.mkdir(parents=True, exist_ok=True)
                 with open(future.filepath, 'wb') as f:
                     f.write(r.content)
