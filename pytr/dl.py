@@ -79,7 +79,8 @@ class DL:
 
         date = doc['detail']
         iso_date = '-'.join(date.split('.')[::-1])
-
+        doc_id = doc['id']
+        
         # extract time from subtitleText
         time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
         if time == []:
@@ -104,7 +105,7 @@ class DL:
         subtitleText = subtitleText.replace('\n', '').replace('/', '-')
 
         filename = self.filename_fmt.format(
-            iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num
+            iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num, id=doc_id
         )
         if doc_type in ['Kontoauszug', 'Depotauszug']:
             filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
