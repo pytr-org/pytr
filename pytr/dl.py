@@ -80,7 +80,7 @@ class DL:
         date = doc['detail']
         iso_date = '-'.join(date.split('.')[::-1])
         doc_id = doc['id']
-        
+
         # extract time from subtitleText
         time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
         if time == []:
@@ -107,9 +107,9 @@ class DL:
         filename = self.filename_fmt.format(
             iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num, id=doc_id
         )
-        
+
         filename_with_doc_id = filename + f' ({doc_id})'
-        
+
         if doc_type in ['Kontoauszug', 'Depotauszug']:
             filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
             filepath_with_doc_id = directory / 'Abschlüsse' / f'{filename_with_doc_id}' / f'{doc_type}.pdf'
@@ -127,7 +127,6 @@ class DL:
                 return
             else:
                 filepath = filepath_with_doc_id
-
         self.filepaths.append(filepath)
 
         if filepath.is_file() is False:
