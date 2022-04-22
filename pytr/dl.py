@@ -107,18 +107,28 @@ class DL:
         filename = self.filename_fmt.format(
             iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num, id=doc_id
         )
+
+        filename_with_doc_id = filename + f' ({doc_id})'
+
         if doc_type in ['Kontoauszug', 'Depotauszug']:
             filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
+            filepath_with_doc_id = directory / 'Abschlüsse' / f'{filename_with_doc_id}' / f'{doc_type}.pdf'
         else:
             filepath = directory / doc_type / f'{filename}.pdf'
+            filepath_with_doc_id = directory / doc_type / f'{filename_with_doc_id}.pdf'
 
         filepath = sanitize_filepath(filepath, '_', 'auto')
+        filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'auto')
 
         if filepath in self.filepaths:
-            self.log.debug(f'File {filepath} already in queue. Skipping...')
-            return
-        else:
-            self.filepaths.append(filepath)
+            self.log.debug(f'File {filepath} already in queue. Append document id {doc_id}...')
+            if filepath_with_doc_id in self.filepaths:
+                self.log.debug(f'File {filepath_with_doc_id} already in queue. Skipping...')
+                return
+            else:
+                filepath = filepath_with_doc_id
+        
+        self.filepaths.append(filepath)
 
         if filepath.is_file() is False:
             doc_url_base = doc_url.split('?')[0]
