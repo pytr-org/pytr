@@ -10,7 +10,7 @@ def readme():
 
 setup(
     name='pytr',
-    version='0.1.6',
+    version='0.1.7',
     description='Use TradeRepublic in terminal',
     long_description=readme(),
     long_description_content_type='text/markdown',
