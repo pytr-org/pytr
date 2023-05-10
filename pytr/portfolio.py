@@ -8,14 +8,18 @@ class Portfolio:
 
     async def portfolio_loop(self):
         recv = 0
-        await self.tr.portfolio()
+        # await self.tr.portfolio()
+        await self.tr.compact_portfolio()
         await self.tr.cash()
         # await self.tr.available_cash_for_payout()
 
         while True:
             _subscription_id, subscription, response = await self.tr.recv()
-
+            
             if subscription['type'] == 'portfolio':
+                recv += 1
+                self.portfolio = response
+            elif subscription['type'] == 'compactPortfolio':
                 recv += 1
                 self.portfolio = response
             elif subscription['type'] == 'cash':
@@ -31,16 +35,17 @@ class Portfolio:
                 return
 
     def overview(self):
-        for x in ['netValue', 'unrealisedProfit', 'unrealisedProfitPercent', 'unrealisedCost']:
-            print(f'{x:24}: {self.portfolio[x]:>10.2f}')
-        print()
+        # for x in ['netValue', 'unrealisedProfit', 'unrealisedProfitPercent', 'unrealisedCost']:
+        #     print(f'{x:24}: {self.portfolio[x]:>10.2f}')
+        # print()
 
         print('ISIN            avgCost *   quantity =    buyCost ->   netValue       diff   %-diff')
         totalBuyCost = 0.0
         totalNetValue = 0.0
         positions = self.portfolio['positions']
-        for pos in sorted(positions, key=lambda x: x['netValue'], reverse=True):
-            buyCost = pos['unrealisedAverageCost'] * pos['netSize']
+        for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
+            pos['netValue'] = 0 # TODO: Update the value from each Stock request
+            buyCost = pos['averageBuyIn'] * pos['netSize']
             diff = pos['netValue'] - buyCost
             if buyCost == 0:
                 diffP = 0.0
@@ -50,7 +55,7 @@ class Portfolio:
             totalNetValue += pos['netValue']
 
             print(
-                f"{pos['instrumentId']} {pos['unrealisedAverageCost']:>10.2f} * {pos['netSize']:>10.2f}"
+                f"{pos['instrumentId']} {pos['averageBuyIn']:>10.2f} * {pos['netSize']:>10.2f}"
                 + f" = {buyCost:>10.2f} -> {pos['netValue']:>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
             )
 
