@@ -355,7 +355,12 @@ class Timeline:
                         if isSavingsPlan:
                             dl.dl_doc(doc, response['titleText'], response['subtitleText'], subfolder='Sparplan')
                         else:
-                            dl.dl_doc(doc, response['titleText'], response['subtitleText'])
+                            # In case of a stock transfer (Wertpapierübertrag) add additional information to the document title
+                            if response['titleText'] == 'Wertpapierübertrag':
+                                body = next(item['data']['body'] for item in self.events_with_docs if item['data']['id'] == response['id'])
+                                dl.dl_doc(doc, response['titleText'] + " - " + body, response['subtitleText'])
+                            else:
+                                dl.dl_doc(doc, response['titleText'], response['subtitleText'])
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
