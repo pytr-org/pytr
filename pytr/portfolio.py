@@ -54,7 +54,7 @@ class Portfolio:
                 await self.tr.unsubscribe(subscription_id)
                 pos = subscriptions[subscription_id]
                 subscriptions.pop(subscription_id, None)
-                pos['netValue'] = response['last']['price'] * pos['netSize']
+                pos['netValue'] = float(response['last']['price']) * float(pos['netSize'])
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
@@ -81,27 +81,31 @@ class Portfolio:
         #     print(f'{x:24}: {self.portfolio[x]:>10.2f}')
         # print()
 
-        print('Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue       diff   %-diff')
+        print(
+            'Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue       diff   %-diff'
+        )
         totalBuyCost = 0.0
         totalNetValue = 0.0
         positions = self.portfolio['positions']
         for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
             # pos['netValue'] = 0 # TODO: Update the value from each Stock request
-            buyCost = pos['averageBuyIn'] * pos['netSize']
-            diff = pos['netValue'] - buyCost
+            buyCost = float(pos['averageBuyIn']) * float(pos['netSize'])
+            diff = float(pos['netValue']) - buyCost
             if buyCost == 0:
                 diffP = 0.0
             else:
                 diffP = ((pos['netValue'] / buyCost) - 1) * 100
             totalBuyCost += buyCost
-            totalNetValue += pos['netValue']
+            totalNetValue += float(pos['netValue'])
 
             print(
-                f"{pos['name']:<25} {pos['instrumentId']} {pos['averageBuyIn']:>10.2f} * {pos['netSize']:>10.2f}"
-                + f" = {buyCost:>10.2f} -> {pos['netValue']:>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
+                f"{pos['name']:<25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
+                + f" = {float(buyCost):>10.2f} -> {float(pos['netValue']):>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
             )
 
-        print('Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue       diff   %-diff')
+        print(
+            'Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue       diff   %-diff'
+        )
         print()
 
         diff = totalNetValue - totalBuyCost
@@ -111,7 +115,7 @@ class Portfolio:
             diffP = ((totalNetValue / totalBuyCost) - 1) * 100
         print(f'Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%')
 
-        cash = self.cash[0]['amount']
+        cash = float(self.cash[0]['amount'])
         currency = self.cash[0]['currencyId']
         print(f'Cash {currency} {cash:>40.2f} -> {cash:>10.2f}')
         print(f'Total {cash+totalBuyCost:>43.2f} -> {cash+totalNetValue:>10.2f}')
