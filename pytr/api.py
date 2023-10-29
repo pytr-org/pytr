@@ -269,7 +269,7 @@ class TradeRepublicApi:
                 'clientId': 'app.traderepublic.com',
                 'clientVersion': '5582',
             }
-            connect_id = 29
+            connect_id = 30
 
         self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context, extra_headers=extra_headers)
         await self._ws.send(f'connect {connect_id} {json.dumps(connection_message)}')
