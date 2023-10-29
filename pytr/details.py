@@ -72,6 +72,8 @@ class Details:
 
     def news(self, relevant_days=30):
         since = datetime.now() - timedelta(days=relevant_days)
+        if not hasattr(news, 'neonNews'):
+            return
         for news in self.neonNews:
             newsdate = datetime.fromtimestamp(news['createdAt'] / 1000.0)
             if newsdate > since:
