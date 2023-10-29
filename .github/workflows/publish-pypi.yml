@@ -1,23 +1,25 @@
 name: Build and publish Python distributions to PyPI
 
-on: push
+on:
+  - push
+  - workflow_dispatch
 
 jobs:
   build-n-publish:
     name: Build and publish Python distributions to PyPI
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-    - name: Build wheel
-      run: |
-        python3 -m pip install wheel
-        python3 setup.py sdist bdist_wheel
-    - name: Publish distribution to PyPI
-      if: startsWith(github.event.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.pypi_token }}
+      - uses: actions/checkout@master
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Build wheel
+        run: |
+          python3 -m pip install wheel
+          python3 setup.py sdist bdist_wheel
+      - name: Publish distribution to PyPI
+        if: startsWith(github.event.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.pypi_token }}
