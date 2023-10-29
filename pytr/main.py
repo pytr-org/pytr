@@ -91,6 +91,7 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         '--workers', help='Number of workers for parallel downloading', metavar='WORKERS', default=8, type=int
     )
+    parser_dl_docs.add_argument('--universal', help='Platform independent file names', action='store_true')
     # portfolio
     info = 'Show current portfolio'
     parser_cmd.add_parser(
@@ -202,6 +203,7 @@ def main():
             args.format,
             since_timestamp=since_timestamp,
             max_workers=args.workers,
+            universal_filepath=args.universal,
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':

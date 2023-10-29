@@ -12,7 +12,16 @@ from pytr.api import TradeRepublicError
 
 
 class DL:
-    def __init__(self, tr, output_path, filename_fmt, since_timestamp=0, history_file='pytr_history', max_workers=8):
+    def __init__(
+        self,
+        tr,
+        output_path,
+        filename_fmt,
+        since_timestamp=0,
+        history_file='pytr_history',
+        max_workers=8,
+        universal_filepath=False,
+    ):
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
@@ -24,6 +33,7 @@ class DL:
         self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
         self.since_timestamp = since_timestamp
+        self.universal_filepath = universal_filepath
 
         requests_session = session()
         if self.tr._weblogin:
@@ -117,8 +127,12 @@ class DL:
             filepath = directory / doc_type / f'{filename}.pdf'
             filepath_with_doc_id = directory / doc_type / f'{filename_with_doc_id}.pdf'
 
-        filepath = sanitize_filepath(filepath, '_', 'auto')
-        filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'auto')
+        if self.universal_filepath:
+            filepath = sanitize_filepath(filepath, '_', 'universal')
+            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'universal')
+        else:
+            filepath = sanitize_filepath(filepath, '_', 'auto')
+            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'auto')
 
         if filepath in self.filepaths:
             self.log.debug(f'File {filepath} already in queue. Append document id {doc_id}...')
