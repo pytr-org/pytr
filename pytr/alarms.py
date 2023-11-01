@@ -1,11 +1,12 @@
 import asyncio
-from pytr.utils import preview
 from datetime import datetime
 
+from pytr.utils import preview, get_logger
 
 class Alarms:
     def __init__(self, tr):
         self.tr = tr
+        self.log = get_logger(__name__)
 
     async def alarms_loop(self):
         recv = 0
@@ -38,9 +39,14 @@ class Alarms:
                 return
 
     def overview(self):
-        print('ISIN         status created  target diff% createdAt        triggeredAT')
+        print('ISIN         status created  target  diff% createdAt        triggeredAT')
+        self.log.debug(f"Processing {len(self.alarms)} alarms")
+
         for a in self.alarms:  # sorted(positions, key=lambda x: x['netValue'], reverse=True):
+            self.log.debug(f"  Processing {a} alarm")
             ts = int(a['createdAt']) / 1000.0
+            target_price = float(a['targetPrice'])
+            created_price = float(a['createdPrice'])
             created = datetime.fromtimestamp(ts).isoformat(sep=' ', timespec='minutes')
             if a['triggeredAt'] is None:
                 triggered = '-'
@@ -51,11 +57,11 @@ class Alarms:
             if a['createdPrice'] == 0:
                 diffP = 0.0
             else:
-                diffP = (a['targetPrice'] / a['createdPrice']) * 100 - 100
+                diffP = (target_price / created_price) * 100 - 100
 
             print(
-                f"{a['instrumentId']} {a['status']} {a['createdPrice']:>7.2f} {a['targetPrice']:>7.2f} "
-                + f'{diffP:>5.1f} {created} {triggered}'
+                f"{a['instrumentId']} {a['status']} {created_price:>7.2f} {target_price:>7.2f} "
+                + f'{diffP:>5.1f}% {created} {triggered}'
             )
 
     def get(self):
