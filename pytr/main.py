@@ -48,8 +48,8 @@ def get_main_parser():
     # Create parent subparser with common login arguments
     parser_login_args = argparse.ArgumentParser(add_help=False)
     parser_login_args.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
-    parser_login_args.add_argument('-n', '--phone_no', help='TradeRepbulic phone number (international format)')
-    parser_login_args.add_argument('-p', '--pin', help='TradeRepbulic pin')
+    parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
+    parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
 
     # login
     info = (
