@@ -15,7 +15,7 @@ class DL:
         tr,
         output_path,
         filename_fmt,
-        since_timestamp=0,
+        not_before=0,
         history_file="pytr_history",
         max_workers=8,
         universal_filepath=False,
@@ -29,11 +29,13 @@ class DL:
         tr: api object
         output_path: name of the directory where the downloaded files are saved
         filename_fmt: format string to customize the file names
+        not_before: downloaded files since this date (unix timestamp)
         """
         self.tr = tr
         self.output_path = Path(output_path)
         self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
+        self.not_before = not_before
         self.universal_filepath = universal_filepath
         self.lang = lang
         self.date_with_time = date_with_time
@@ -49,7 +51,7 @@ class DL:
         self.filepaths = []
         self.doc_urls = []
         self.doc_urls_history = []
-        self.tl = Timeline(self.tr, since_timestamp)
+        self.tl = Timeline(self.tr, self.not_before)
         self.log = get_logger(__name__)
         self.load_history()
 

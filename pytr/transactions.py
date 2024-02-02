@@ -1,9 +1,13 @@
+import asyncio
 import csv
 import json
 import platform
 from dataclasses import dataclass
+from datetime import datetime
 from locale import getdefaultlocale
 from typing import Any, Iterable, Literal, Optional, TextIO, TypedDict, Union
+
+from pytr.utils import preview
 
 from babel.numbers import format_decimal
 
@@ -176,3 +180,40 @@ class TransactionExporter:
                 fp.write("\n")
 
         self._log.info("Transactions exported.")
+
+
+class TransactionFetcher:
+    def __init__(self, tr, not_before):
+        self.tr = tr
+        self.not_before = not_before
+        self.transactions = []
+
+    async def loop(self):
+        await self.tr.timeline_transactions()
+        while True:
+            _, subscription, response = await self.tr.recv()
+
+            if subscription["type"] == "timelineTransactions":
+                self.transactions.extend(response["items"])
+
+                # Transactions in the response are ordered from newest to oldest
+                # If the oldest (= last) transaction is older than what we want, exit the loop
+                t = self.transactions[-1]
+                if datetime.fromisoformat(t["timestamp"]) < self.not_before:
+                    return
+                if not response["cursors"]["after"]:
+                    break
+
+                await self.tr.timeline_transactions(response["cursors"]["after"])
+
+            else:
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+
+    def get(self):
+        asyncio.get_event_loop().run_until_complete(self.loop())
+
+        # Need to loop over all transactions here since the
+        # event loop might return older transactions, too
+        transactions = [t for t in self.transactions if datetime.fromisoformat(t["timestamp"]) > self.not_before]
+
+        return transactions
