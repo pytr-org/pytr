@@ -62,12 +62,12 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 <!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
+            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion,transactions} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion}
+  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion,transactions}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
@@ -82,6 +82,7 @@ Commands:
     export_transactions                 Create a CSV with the deposits and removals ready for importing into Portfolio
                                         Performance
     completion                          Print shell tab completion
+    transactions                        Export all transactions directly from the API to a file (JSON)
 
 Options:
   -h, --help                            show this help message and exit

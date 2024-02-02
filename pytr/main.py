@@ -5,7 +5,7 @@ import asyncio
 import json
 import shutil
 import signal
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from importlib.metadata import version
 from pathlib import Path
 
@@ -17,7 +17,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import Portfolio
-from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
+from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter, TransactionFetcher
 from pytr.utils import check_version, get_logger
 
 
@@ -284,6 +284,31 @@ def get_main_parser():
         help=info,
         description=info,
     )
+
+    # transactions
+    info = "Export all transactions directly from the API to a file (JSON)"
+    transactions = parser_cmd.add_parser(
+        "transactions",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    transactions.add_argument(
+        "output",
+        help="Output path of JSON file [default: - (stdout)]",
+        metavar="OUTPUT",
+        type=argparse.FileType("w"),
+        default="-",
+        nargs="?",
+    )
+    transactions.add_argument(
+        "--last_days",
+        help="Number of last days to include (defaults to 0, which returns all transactions)",
+        metavar="DAYS",
+        default=0,
+        type=int,
+    )
     shtab.add_argument_to(parser_completion, "shell", parent=parser)
     return parser
 
@@ -320,6 +345,14 @@ def main():
     if args.verbosity.upper() == "DEBUG":
         log.debug("logging is set to debug")
 
+    # Compute the latest timestamp to get data for if last_days is specified
+    if hasattr(args, "last_days") and args.last_days > 0:
+        not_before = datetime.now().astimezone() - timedelta(days=args.last_days)
+    elif args.last_days == 0:
+        not_before = datetime.min.replace(tzinfo=timezone.utc) # Get everything
+    else:
+        not_before = datetime.fromtimestamp(0)
+
     if args.command == "login":
         login(
             phone_no=args.phone_no,
@@ -329,10 +362,6 @@ def main():
         )
 
     elif args.command == "dl_docs":
-        if args.last_days == 0:
-            since_timestamp = 0
-        else:
-            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(
                 phone_no=args.phone_no,
@@ -342,7 +371,7 @@ def main():
             ),
             args.output,
             args.format,
-            since_timestamp=since_timestamp,
+            not_before=not_before,
             max_workers=args.workers,
             universal_filepath=args.universal,
             lang=args.lang,
@@ -405,6 +434,14 @@ def main():
         p.get()
         if args.output is not None:
             p.portfolio_to_csv(args.output)
+    elif args.command == "transactions":
+        transactions = TransactionFetcher(
+            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+            not_before=not_before,
+        ).get()
+
+        json.dump(transactions, args.output)
+
     elif args.command == "export_transactions":
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(
