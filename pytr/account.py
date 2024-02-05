@@ -38,13 +38,13 @@ def login(phone_no=None, pin=None, web=True):
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
-            print('Please enter your TradeRepbulic phone number in the format +4912345678:')
+            print('Please enter your TradeRepublic phone number in the format +4912345678:')
             phone_no = input()
         else:
             log.info('Phone number provided as argument')
 
         if pin is None:
-            print('Please enter your TradeRepbulic pin:')
+            print('Please enter your TradeRepublic pin:')
             pin = input()
 
         print('Save credentials? Type "y" to save credentials:')
