@@ -231,7 +231,7 @@ def export_transactions(input_path, output_path, lang='auto'):
 
             try:
                 decdot = i18n['decimal dot'][lang]
-                amount = str(event['amount']['value']).replace('.', decdot)
+                amount = str(abs(event['amount']['value'])).replace('.', decdot)
             except (KeyError, TypeError):
                 continue
 
@@ -239,7 +239,7 @@ def export_transactions(input_path, output_path, lang='auto'):
             if event["eventType"] in ("PAYMENT_INBOUND", "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT"):
                 f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount))
             elif event["eventType"] == "PAYMENT_OUTBOUND":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=abs(amount)))
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount))
             elif event["eventType"] == "INTEREST_PAYOUT_CREATED":
                 f.write(csv_fmt.format(date=date, type=i18n['interest'][lang], value=amount))
             # Dividend - Shares
@@ -247,7 +247,7 @@ def export_transactions(input_path, output_path, lang='auto'):
                 # TODO: Implement reinvestment
                 log.warning('Detected reivestment, skipping... (not implemented yet)')
             elif event["eventType"] == "card_successful_transaction":
-                f.write(csv_fmt.format(date=date, type=i18n['card transaction'][lang], value=abs(amount)))
+                f.write(csv_fmt.format(date=date, type=i18n['card transaction'][lang], value=amount))
 
     log.info('Deposit creation finished!')
 
