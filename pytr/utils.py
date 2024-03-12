@@ -169,6 +169,39 @@ def export_transactions(input_path, output_path, lang='auto'):
             "pt": 'Levantamento',
             "ru": '\u0421\u043F\u0438\u0441\u0430\u043D\u0438\u0435',
         },
+        "interest": {
+            "cs": 'Úrokové poplatky',
+            "de": 'Zinsen',
+            "en": 'Interest',
+            "es": 'Interés',
+            "fr": 'L\'intérêts',
+            "it": 'Interessi',
+            "nl": 'Interest',
+            "pt": 'Odsetki',
+            "ru": '\u041f\u0440\u043e\u0446\u0435\u0301\u043d\u0442\u044b',
+        },
+        "card transaction": {
+            "cs": 'Platba kartou',
+            "de": 'Kartentransaktion',
+            "en": 'Card Transaction',
+            "es": 'Transacción con tarjeta',
+            "fr": 'Transaction par carte',
+            "it": 'Transazione con carta',
+            "nl": 'Kaarttransactie',
+            "pt": 'Transakcja kartą',
+            "ru": '\u041e\u043f\u0435\u0440\u0430\u0446\u0438\u044f\u0020\u043f\u043e\u0020\u043a\u0430\u0440\u0442\u0435',
+        },
+        "decimal dot": {
+            "cs": ',',
+            "de": ',',
+            "en": '.',
+            "es": ',',
+            "fr": ',',
+            "it": ',',
+            "nl": ',',
+            "pt": ',',
+            "ru": ',',
+        },
     }
     # Read relevant deposit timeline entries
     with open(input_path, encoding='utf-8') as f:
@@ -196,15 +229,25 @@ def export_transactions(input_path, output_path, lang='auto'):
             if 'storniert' in body:
                 continue
 
+            try:
+                decdot = i18n['decimal dot'][lang]
+                amount = str(event['amount']['value']).replace('.', decdot)
+            except (KeyError, TypeError):
+                continue
+
             # Cash in
-            if title in ['Einzahlung', 'Bonuszahlung']:
-                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=event['cashChangeAmount']))
-            elif title == 'Auszahlung':
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=abs(event['cashChangeAmount'])))
+            if event["eventType"] in ("PAYMENT_INBOUND", "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT"):
+                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount))
+            elif event["eventType"] == "PAYMENT_OUTBOUND":
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=abs(amount)))
+            elif event["eventType"] == "INTEREST_PAYOUT_CREATED":
+                f.write(csv_fmt.format(date=date, type=i18n['interest'][lang], value=amount))
             # Dividend - Shares
             elif title == 'Reinvestierung':
                 # TODO: Implement reinvestment
                 log.warning('Detected reivestment, skipping... (not implemented yet)')
+            elif event["eventType"] == "card_successful_transaction":
+                f.write(csv_fmt.format(date=date, type=i18n['card transaction'][lang], value=abs(amount)))
 
     log.info('Deposit creation finished!')
 
@@ -407,6 +450,6 @@ class Timeline:
             with open(dl.output_path / 'events_with_documents.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            export_transactions(dl.output_path / 'other_events.json', dl.output_path / 'account_transactions.csv')
+            export_transactions(dl.output_path / 'events_with_documents.json', dl.output_path / 'account_transactions.csv')
 
             dl.work_responses()
