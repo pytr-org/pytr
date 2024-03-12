@@ -66,7 +66,7 @@ class DL:
             self.log.info('Created history file')
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
+        await self.tl.get_next_timeline_transactions(max_age_timestamp=self.since_timestamp)
 
         while True:
             try:
@@ -74,9 +74,11 @@ class DL:
             except TradeRepublicError as e:
                 self.log.fatal(str(e))
 
-            if subscription['type'] == 'timeline':
-                await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
-            elif subscription['type'] == 'timelineDetail':
+            if subscription['type'] == 'timelineTransactions':
+                await self.tl.get_next_timeline_transactions(response, max_age_timestamp=self.since_timestamp)
+            elif subscription['type'] == 'timelineActivityLog':
+                await self.tl.get_next_timeline_activity_log(response, max_age_timestamp=self.since_timestamp)
+            elif subscription['type'] == 'timelineDetailV2':
                 await self.tl.timelineDetail(response, self, max_age_timestamp=self.since_timestamp)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
