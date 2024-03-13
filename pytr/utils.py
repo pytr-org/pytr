@@ -283,6 +283,7 @@ class Timeline:
             # print(json.dumps(response))
             self.num_timeline_details += len(response['items'])
             for event in response['items']:
+                event['source'] = "timelineTransaction"
                 self.timeline_events[event['id']] = event
 
             after = response['cursors'].get('after')
@@ -315,6 +316,7 @@ class Timeline:
             self.num_timeline_details += len(response['items'])
             for event in response['items']:
                 if event['id'] not in self.timeline_events:
+                    event['source'] = "timelineActivity"
                     self.timeline_events[event['id']] = event
 
             after = response['cursors'].get('after')
@@ -397,30 +399,27 @@ class Timeline:
             else:
                 await self._get_timeline_details(5)
 
-        # print(f'len timeline_events: {len(self.timeline_events)}')
-        isSavingsPlan = False
-        if event['subtitle'] == 'Sparplan':
-            isSavingsPlan = True
-        else:
-            # some savingsPlan don't have the subtitle == 'Sparplan' but there are actions just for savingsPans
-            # but maybe these are unneeded duplicates
-            for section in response['sections']:
-                if section['type'] == 'actionButtons':
-                    for button in section['data']:
-                        if button['action']['type'] in ['editSavingsPlan', 'deleteSavingsPlan']:
-                            isSavingsPlan = True
-                            break
+        isSavingsPlan = (event["eventType"] == "SAVINGS_PLAN_EXECUTED")
 
-        if event['subtitle'] != 'Sparplan' and isSavingsPlan is True:
-            isSavingsPlan_fmt = ' -- SPARPLAN'
-        else:
-            isSavingsPlan_fmt = ''
+        isSavingsPlan_fmt = ''
+        if not isSavingsPlan and event['subtitle'] is not None:
+            isSavingsPlan = 'Sparplan' in event['subtitle']
+            isSavingsPlan_fmt = ' -- SPARPLAN' if isSavingsPlan else ''
 
         max_details_digits = len(str(self.num_timeline_details))
         self.log.info(
             f"{self.received_detail:>{max_details_digits}}/{self.num_timeline_details}: "
             + f"{event['title']} -- {event['subtitle']}{isSavingsPlan_fmt}"
         )
+
+        if isSavingsPlan:
+            subfolder = 'Sparplan'
+        else:
+            subfolder = {
+                'benefits_saveback_execution': 'Saveback',
+                'benefits_spare_change_execution': 'RoundUp',
+                'INTEREST_PAYOUT_CREATED': 'Zinsen',
+            }.get(event["eventType"])
 
         for section in response['sections']:
             if section['type'] == 'documents':
@@ -431,15 +430,10 @@ class Timeline:
                         timestamp = datetime.now().timestamp() * 1000
                     if max_age_timestamp == 0 or max_age_timestamp < timestamp:
                         # save all savingsplan documents in a subdirectory
-                        if isSavingsPlan:
-                            dl.dl_doc(doc, doc['title'], doc['detail'], subfolder='Sparplan')
-                        else:
-                            # In case of a stock transfer (Wertpapierübertrag) add additional information to the document title
-                            if event['title'] == 'Wertpapierübertrag':
-                                body = next(item['data']['body'] for item in self.events_with_docs if item['data']['id'] == response['id'])
-                                dl.dl_doc(doc, doc['title'] + " - " + body, doc['detail'])
-                            else:
-                                dl.dl_doc(doc, doc['title'], doc['detail'])
+                        title = f"{doc['title']} - {event['title']}"
+                        if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING"]:
+                            title += f" - {event['subtitle']}"
+                        dl.dl_doc(doc, title, doc['detail'], subfolder)
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')

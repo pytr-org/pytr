@@ -143,6 +143,7 @@ class DL:
                 return
             else:
                 filepath = filepath_with_doc_id
+        doc['local filepath'] = str(filepath)
         self.filepaths.append(filepath)
 
         if filepath.is_file() is False:
