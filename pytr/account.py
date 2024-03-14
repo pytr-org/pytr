@@ -16,7 +16,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True):
+def login(phone_no=None, pin=None, web=True, save_credentials=None):
     '''
     If web is true, use web login method as else simulate app login.
     Check if credentials file exists else create it.
@@ -24,37 +24,53 @@ def login(phone_no=None, pin=None, web=True):
     '''
     log = get_logger(__name__)
     save_cookies = True
+    save_credentials = (save_credentials == 'y')
 
-    if phone_no is None and CREDENTIALS_FILE.is_file():
+    if CREDENTIALS_FILE.is_file():
         log.info('Found credentials file')
         with open(CREDENTIALS_FILE) as f:
             lines = f.readlines()
-        phone_no = lines[0].strip()
-        pin = lines[1].strip()
-        phone_no_masked = phone_no[:-8] + '********'
-        pin_masked = len(pin) * '*'
+        phone_no_cf = lines[0].strip()
+        pin_cf = lines[1].strip()
+        phone_no_masked = phone_no_cf[:-8] + '********'
+        pin_masked = len(pin_cf) * '*'
         log.info(f'Phone: {phone_no_masked}, PIN: {pin_masked}')
     else:
+        phone_no_cf = None
+        pin_cf = None
+
+    ask_for_save = False
+    different_account = False
+    if phone_no is not None and phone_no_cf is not None and phone_no != phone_no_cf:
+        log.info('Phone number different from credential files. Assuming different account.')
+        different_account = True
+        ask_for_save = True
+
+    if phone_no is None and phone_no_cf is None:
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
             print('Please enter your TradeRepublic phone number in the format +4912345678:')
             phone_no = input()
+            ask_for_save = True
         else:
             log.info('Phone number provided as argument')
 
         if pin is None:
             print('Please enter your TradeRepublic pin:')
             pin = input()
+            ask_for_save = True
 
-        print('Save credentials? Type "y" to save credentials:')
-        save = input()
-        if save == 'y':
+    if save_credentials or ask_for_save:
+        save = save_credentials
+        if save_credentials is None:
+            print('Save credentials? Type "y" to save credentials:')
+            save = input() == 'y'
+        if save:
             with open(CREDENTIALS_FILE, 'w') as f:
                 f.writelines([phone_no + '\n', pin + '\n'])
 
             log.info(f'Saved credentials in {CREDENTIALS_FILE}')
-
         else:
             save_cookies = False
             log.info('Credentials not saved')
@@ -63,7 +79,7 @@ def login(phone_no=None, pin=None, web=True):
 
     if web:
         # Use same login as app.traderepublic.com
-        if tr.resume_websession():
+        if not different_account and tr.resume_websession():
             log.info('Web session resumed')
         else:
             try:

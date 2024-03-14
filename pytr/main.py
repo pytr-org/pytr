@@ -50,6 +50,7 @@ def get_main_parser():
     parser_login_args.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
     parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
     parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
+    parser_login_args.add_argument('-s', '--save_credentials', choices=['y', 'n'], help='Save credentials')
 
     # login
     info = (
@@ -189,7 +190,7 @@ def main():
     log.debug('logging is set to debug')
 
     if args.command == 'login':
-        login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
+        login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)
 
     elif args.command == 'dl_docs':
         if args.last_days == 0:
@@ -198,7 +199,7 @@ def main():
             since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
 
         dl = DL(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials),
             args.output,
             args.format,
             since_timestamp=since_timestamp,
@@ -210,11 +211,11 @@ def main():
         # TODO
         print('Not implemented yet')
     elif args.command == 'get_price_alarms':
-        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)).get()
+        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)).get()
     elif args.command == 'details':
-        Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin), args.isin).get()
+        Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials), args.isin).get()
     elif args.command == 'portfolio':
-        Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)).get()
+        Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)).get()
     elif args.command == 'export_transactions':
         export_transactions(args.input, args.output, args.lang)
     elif args.version:
