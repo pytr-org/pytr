@@ -4,10 +4,9 @@ from pytr.utils import preview
 
 
 class Portfolio:
-    def __init__(self, tr, output_path):
+    def __init__(self, tr):
         self.tr = tr
-        self.output_path = output_path
-
+        
     async def portfolio_loop(self):
         recv = 0
         # await self.tr.portfolio()
@@ -77,7 +76,7 @@ class Portfolio:
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def portfolio_to_csv(self):
+    def portfolio_to_csv(self, output_path):
         positions = self.portfolio['positions']
         csv_lines = []
         for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
@@ -85,7 +84,7 @@ class Portfolio:
                 f"{pos['name']};{pos['instrumentId']};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
             )
         
-        with open(self.output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write('Name;ISIN;avgCost;netValue\n')
             f.write('\n'.join(csv_lines))
         
