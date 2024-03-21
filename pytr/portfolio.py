@@ -6,7 +6,7 @@ from pytr.utils import preview
 class Portfolio:
     def __init__(self, tr):
         self.tr = tr
-        
+
     async def portfolio_loop(self):
         recv = 0
         # await self.tr.portfolio()
