@@ -220,7 +220,7 @@ def main():
         p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin))
         p.get()
         if args.output is not None:
-            p.portfolio_to_csv()
+            p.portfolio_to_csv(args.output)
     elif args.command == 'export_transactions':
         export_transactions(args.input, args.output, args.lang)
     elif args.version:
