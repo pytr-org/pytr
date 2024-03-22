@@ -88,7 +88,7 @@ class Portfolio:
             f.write('Name;ISIN;avgCost;netValue\n')
             f.write('\n'.join(csv_lines))
         
-        print(f'Wrote {len(csv_lines) + 1} lines to {self.output_path}')
+        print(f'Wrote {len(csv_lines) + 1} lines to {output_path}')
 
     def overview(self):
         # for x in ['netValue', 'unrealisedProfit', 'unrealisedProfitPercent', 'unrealisedCost']:
