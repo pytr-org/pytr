@@ -217,7 +217,7 @@ def main():
     elif args.command == 'details':
         Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin), args.isin).get()
     elif args.command == 'portfolio':
-        p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin), args.output)
+        p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin))
         p.get()
         if args.output is not None:
             p.portfolio_to_csv()
