@@ -65,7 +65,7 @@ class TradeRepublicApi:
     _subscription_id_counter = 1
     _previous_responses = {}
     subscriptions = {}
-    
+
     _credentials_file = CREDENTIALS_FILE
     _cookies_file = COOKIES_FILE
 
@@ -86,10 +86,10 @@ class TradeRepublicApi:
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
-        
+
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
         self._cookies_file = pathlib.Path(cookies_file) if cookies_file else COOKIES_FILE
-        
+
         if not (phone_no and pin):
             try:
                 with open(self._credentials_file, 'r') as f:
@@ -101,8 +101,8 @@ class TradeRepublicApi:
         else:
             self.phone_no = phone_no
             self.pin = pin
-        
-        
+
+
 
         self.keyfile = keyfile if keyfile else KEY_FILE
         try:
@@ -278,7 +278,7 @@ class TradeRepublicApi:
                 'clientId': 'app.traderepublic.com',
                 'clientVersion': '5582',
             }
-            connect_id = 30
+            connect_id = 31
 
         self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context, extra_headers=extra_headers)
         await self._ws.send(f'connect {connect_id} {json.dumps(connection_message)}')
