@@ -2,6 +2,7 @@ import json
 import sys
 from pygments import highlight, lexers, formatters
 import time
+import pathlib
 
 from pytr.api import TradeRepublicApi, CREDENTIALS_FILE, COOKIES_FILE
 from pytr.utils import get_logger
@@ -23,9 +24,7 @@ def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials
     If no parameters are set but are needed then ask for input
     '''
     log = get_logger(__name__)
-    save_cookies = True
-    if credentials_file is None:
-        credentials_file = CREDENTIALS_FILE
+    credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
     if credentials_file.is_file():
         log.info('Found credentials file')
