@@ -16,8 +16,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True, save_credentials=None,
-          credentials_file=CREDENTIALS_FILE, cookies_file=COOKIES_FILE):
+def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials_file=None, cookies_file=None):
     '''
     If web is true, use web login method as else simulate app login.
     Check if credentials file exists else create it.
@@ -25,6 +24,8 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None,
     '''
     log = get_logger(__name__)
     save_cookies = True
+    if credentials_file is None:
+        credentials_file = CREDENTIALS_FILE
 
     if credentials_file.is_file():
         log.info('Found credentials file')

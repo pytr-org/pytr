@@ -51,6 +51,8 @@ def get_main_parser():
     parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
     parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
     parser_login_args.add_argument('-s', '--save_credentials', action='store_true', help='Save credentials')
+    parser_login_args.add_argument('-c', '--credentials', help='Storage file for credentials')
+    parser_login_args.add_argument('-k', '--cookies', help='Storage file for cookies')
 
     # login
     info = (
@@ -191,9 +193,12 @@ def main():
     log = get_logger(__name__, args.verbosity)
     log.setLevel(args.verbosity.upper())
     log.debug('logging is set to debug')
+    login_kwargs = dict(phone_no=args.phone_no, pin=args.pin, web=not args.applogin,
+                        save_credentials=args.save_credentials, credentials_file=args.credentials,
+                        cookies_file=args.cookies)
 
     if args.command == 'login':
-        login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)
+        login(**login_kwargs)
 
     elif args.command == 'dl_docs':
         if args.last_days == 0:
@@ -202,7 +207,7 @@ def main():
             since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
 
         dl = DL(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials),
+            login(**login_kwargs),
             args.output,
             args.format,
             since_timestamp=since_timestamp,
@@ -214,11 +219,11 @@ def main():
         # TODO
         print('Not implemented yet')
     elif args.command == 'get_price_alarms':
-        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)).get()
+        Alarms(login(login(**login_kwargs))).get()
     elif args.command == 'details':
-        Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials), args.isin).get()
+        Details(login(login(**login_kwargs)), args.isin).get()
     elif args.command == 'portfolio':
-        p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials))
+        p = Portfolio(login(login(**login_kwargs)))
         p.get()
         if args.output is not None:
             p.portfolio_to_csv(args.output)
