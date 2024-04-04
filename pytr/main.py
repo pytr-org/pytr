@@ -95,12 +95,15 @@ def get_main_parser():
     parser_dl_docs.add_argument('--universal', help='Platform independent file names', action='store_true')
     # portfolio
     info = 'Show current portfolio'
-    parser_cmd.add_parser(
+    parser_portfolio = parser_cmd.add_parser(
         'portfolio',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         parents=[parser_login_args],
         help=info,
         description=info,
+    )
+    parser_portfolio.add_argument(
+        '-o', '--output', help='Output path of CSV file', metavar='OUTPUT', type=Path
     )
     # details
     info = 'Get details for an ISIN'
@@ -215,7 +218,10 @@ def main():
     elif args.command == 'details':
         Details(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials), args.isin).get()
     elif args.command == 'portfolio':
-        Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials)).get()
+        p = Portfolio(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, save_credentials=args.save_credentials))
+        p.get()
+        if args.output is not None:
+            p.portfolio_to_csv(args.output)
     elif args.command == 'export_transactions':
         export_transactions(args.input, args.output, args.lang)
     elif args.version:

@@ -76,6 +76,20 @@ class Portfolio:
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
+    def portfolio_to_csv(self, output_path):
+        positions = self.portfolio['positions']
+        csv_lines = []
+        for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
+            csv_lines.append(
+                f"{pos['name']};{pos['instrumentId']};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
+            )
+        
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write('Name;ISIN;avgCost;netValue\n')
+            f.write('\n'.join(csv_lines))
+        
+        print(f'Wrote {len(csv_lines) + 1} lines to {output_path}')
+
     def overview(self):
         # for x in ['netValue', 'unrealisedProfit', 'unrealisedProfitPercent', 'unrealisedCost']:
         #     print(f'{x:24}: {self.portfolio[x]:>10.2f}')

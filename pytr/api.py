@@ -66,6 +66,9 @@ class TradeRepublicApi:
     _previous_responses = {}
     subscriptions = {}
 
+    _credentials_file = CREDENTIALS_FILE
+    _cookies_file = COOKIES_FILE
+
     @property
     def session_token(self):
         if not self._refresh_token:
@@ -79,21 +82,27 @@ class TradeRepublicApi:
         self._session_token_expires_at = time.time() + 290
         self._session_token = val
 
-    def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de', save_cookies=False):
+    def __init__(self, phone_no=None, pin=None, keyfile=None, locale='de', save_cookies=False, credentials_file = None, cookies_file = None):
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
+
+        self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
+        self._cookies_file = pathlib.Path(cookies_file) if cookies_file else COOKIES_FILE
+
         if not (phone_no and pin):
             try:
-                with open(CREDENTIALS_FILE, 'r') as f:
+                with open(self._credentials_file, 'r') as f:
                     lines = f.readlines()
                 self.phone_no = lines[0].strip()
                 self.pin = lines[1].strip()
             except FileNotFoundError:
-                raise ValueError(f'phone_no and pin must be specified explicitly or via {CREDENTIALS_FILE}')
+                raise ValueError(f'phone_no and pin must be specified explicitly or via {self._credentials_file}')
         else:
             self.phone_no = phone_no
             self.pin = pin
+
+
 
         self.keyfile = keyfile if keyfile else KEY_FILE
         try:
@@ -105,7 +114,7 @@ class TradeRepublicApi:
         self._websession = requests.Session()
         self._websession.headers = self._default_headers_web
         if self._save_cookies:
-            self._websession.cookies = MozillaCookieJar(COOKIES_FILE)
+            self._websession.cookies = MozillaCookieJar(self._cookies_file)
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -224,7 +233,7 @@ class TradeRepublicApi:
             return False
 
         # Only attempt to load if the cookie file exists.
-        if COOKIES_FILE.exists():
+        if self._cookies_file.exists():
             # Loads session cookies too (expirydate=0).
             try:
                 self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
@@ -274,7 +283,7 @@ class TradeRepublicApi:
                 'clientId': 'app.traderepublic.com',
                 'clientVersion': '5582',
             }
-            connect_id = 30
+            connect_id = 31
 
         self._ws = await websockets.connect('wss://api.traderepublic.com', ssl=ssl_context, extra_headers=extra_headers)
         await self._ws.send(f'connect {connect_id} {json.dumps(connection_message)}')
