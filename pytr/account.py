@@ -38,12 +38,10 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
         phone_no_cf = None
         pin_cf = None
 
-    ask_for_save = False
     different_account = False
     if phone_no is not None and phone_no_cf is not None and phone_no != phone_no_cf:
         log.info('Phone number different from credential files. Assuming different account.')
         different_account = True
-        ask_for_save = True
 
     if phone_no is None and phone_no_cf is None:
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -51,28 +49,20 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
             log.info('Credentials file not found')
             print('Please enter your TradeRepublic phone number in the format +4912345678:')
             phone_no = input()
-            ask_for_save = True
         else:
             log.info('Phone number provided as argument')
 
         if pin is None:
             print('Please enter your TradeRepublic pin:')
             pin = input()
-            ask_for_save = True
 
-    if save_credentials or ask_for_save:
-        save = save_credentials
-        if save_credentials is None:
-            print('Save credentials? Type "y" to save credentials:')
-            save = input() == 'y'
-        if save:
-            with open(CREDENTIALS_FILE, 'w') as f:
-                f.writelines([phone_no + '\n', pin + '\n'])
-
-            log.info(f'Saved credentials in {CREDENTIALS_FILE}')
-        else:
-            save_cookies = False
-            log.info('Credentials not saved')
+    if save_credentials:
+        with open(CREDENTIALS_FILE, 'w') as f:
+            f.writelines([phone_no + '\n', pin + '\n'])
+        log.info(f'Saved credentials in {CREDENTIALS_FILE}')
+    else:
+        save_cookies = False
+        log.info('Credentials not saved')
 
     tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
 
