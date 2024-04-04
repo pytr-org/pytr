@@ -3,7 +3,7 @@ import sys
 from pygments import highlight, lexers, formatters
 import time
 
-from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
+from pytr.api import TradeRepublicApi, CREDENTIALS_FILE, COOKIES_FILE
 from pytr.utils import get_logger
 
 
@@ -16,7 +16,8 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True, save_credentials=None):
+def login(phone_no=None, pin=None, web=True, save_credentials=None,
+          credentials_file=CREDENTIALS_FILE, cookies_file=COOKIES_FILE):
     '''
     If web is true, use web login method as else simulate app login.
     Check if credentials file exists else create it.
@@ -25,9 +26,9 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
     log = get_logger(__name__)
     save_cookies = True
 
-    if CREDENTIALS_FILE.is_file():
+    if credentials_file.is_file():
         log.info('Found credentials file')
-        with open(CREDENTIALS_FILE) as f:
+        with open(credentials_file) as f:
             lines = f.readlines()
         phone_no_cf = lines[0].strip()
         pin_cf = lines[1].strip()
@@ -44,7 +45,7 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
         different_account = True
 
     if phone_no is None and phone_no_cf is None:
-        CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        credentials_file.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
             print('Please enter your TradeRepublic phone number in the format +4912345678:')
@@ -57,14 +58,15 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
             pin = input()
 
     if save_credentials:
-        with open(CREDENTIALS_FILE, 'w') as f:
+        with open(credentials_file, 'w') as f:
             f.writelines([phone_no + '\n', pin + '\n'])
-        log.info(f'Saved credentials in {CREDENTIALS_FILE}')
+        log.info(f'Saved credentials in {credentials_file}')
     else:
         save_cookies = False
         log.info('Credentials not saved')
 
-    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies,
+                          credentials_file=credentials_file, cookies_file=cookies_file)
 
     if web:
         # Use same login as app.traderepublic.com
