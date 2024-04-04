@@ -17,7 +17,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials_file=None, cookies_file=None):
+def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials_file=None, save_cookies=True, cookies_file=None):
     '''
     If web is true, use web login method as else simulate app login.
     Check if credentials file exists else create it.
@@ -62,7 +62,8 @@ def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials
             f.writelines([phone_no + '\n', pin + '\n'])
         log.info(f'Saved credentials in {credentials_file}')
     else:
-        save_cookies = False
+        if different_account:
+            save_cookies = False
         log.info('Credentials not saved')
 
     tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies,
