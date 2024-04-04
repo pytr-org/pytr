@@ -50,7 +50,7 @@ def get_main_parser():
     parser_login_args.add_argument('--applogin', help='Use app login instead of  web login', action='store_true')
     parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
     parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
-    parser_login_args.add_argument('-s', '--save_credentials', choices=['y', 'n'], help='Save credentials')
+    parser_login_args.add_argument('-s', '--save_credentials', action='store_true', help='Save credentials')
 
     # login
     info = (

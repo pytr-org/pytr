@@ -24,7 +24,6 @@ def login(phone_no=None, pin=None, web=True, save_credentials=None):
     '''
     log = get_logger(__name__)
     save_cookies = True
-    save_credentials = (save_credentials == 'y')
 
     if CREDENTIALS_FILE.is_file():
         log.info('Found credentials file')
