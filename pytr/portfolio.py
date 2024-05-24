@@ -62,9 +62,11 @@ class Portfolio:
         subscriptions = {}
         for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
             isin = pos['instrumentId']
-            # subscription_id = await self.tr.instrument_details(pos['instrumentId'])
-            subscription_id = await self.tr.ticker(isin, exchange=pos['exchangeIds'][0])
-            subscriptions[subscription_id] = pos
+            if len(pos['exchangeIds']) > 0:
+                subscription_id = await self.tr.ticker(isin, exchange=pos['exchangeIds'][0])
+                subscriptions[subscription_id] = pos
+            else:
+                pos['netValue'] = float(pos['averageBuyIn'] )* float(pos['netSize'])
 
         while len(subscriptions) > 0:
             subscription_id, subscription, response = await self.tr.recv()
