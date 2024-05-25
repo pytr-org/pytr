@@ -4,6 +4,8 @@ import coloredlogs
 import json
 import logging
 import requests
+import re
+import os
 from datetime import datetime
 from locale import getdefaultlocale
 from packaging import version
@@ -90,7 +92,6 @@ def check_version(installed_version):
         log.warning(f'Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}')
     else:
         log.info('pytr is up to date')
-
 
 def export_transactions(input_path, output_path, lang='auto'):
     '''
@@ -208,6 +209,69 @@ def export_transactions(input_path, output_path, lang='auto'):
                 log.warning('Detected reivestment, skipping... (not implemented yet)')
 
     log.info('Deposit creation finished!')
+
+def export_banking4(input_path, output_path, lang='auto'):
+    '''
+    Create a CSV with most of transactions available for import in banking4
+    '''
+    log = get_logger(__name__)
+    if lang == 'auto':
+        locale = getdefaultlocale()[0]
+        if locale is None:
+            lang = 'en'
+        else:
+            lang = locale.split('_')[0]
+    #Build Strings
+    timeline1_loc = os.path.join(input_path,"other_events.json")
+    timeline2_loc = os.path.join(input_path,"events_with_documents.json")
+
+    # Read relevant deposit timeline entries
+    with open(timeline1_loc, encoding='utf-8') as f:
+        timeline1 = json.load(f)
+    with open(timeline2_loc, encoding='utf-8') as f:
+        timeline2 = json.load(f)    
+
+    # Write deposit_transactions.csv file
+    # date, transaction, shares, amount, total, fee, isin, name
+    log.info('Write transaction entries')
+    with open(output_path, 'w', encoding='utf-8') as f:
+        # f.write('Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n')
+        csv_fmt = '{date};{type};{value}\n'
+        header = csv_fmt.format(date='date', type='type', value='value')
+        f.write(header)
+
+        for event in timeline1+timeline2:
+            event = event['data']
+            dateTime = datetime.fromtimestamp(int(event['timestamp'] / 1000))
+            date = dateTime.strftime('%Y-%m-%d')
+
+            title = event['title']
+            try:
+                body = event['body']
+            except KeyError:
+                body = ''
+
+            if 'storniert' in body:
+                continue
+
+            # Cash in
+            if title in ['Einzahlung', 'Bonuszahlung','Steuerabrechnung']:
+                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount']))
+            elif title == 'Auszahlung':
+                f.write(csv_fmt.format(date=date, type=title, value=event['cashChangeAmount']))
+            elif bool(re.search(r'\b(VERDIENTE\sZINSEN|Vorabpauschale)\b', title, re.IGNORECASE)):
+                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount']))  
+            elif bool(re.search(r'\b(Ausschüttung|Dividende\spro\s|Sparplan\sausgeführt|Kauf\s|Verkauf)', body)):
+                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount'])) 
+            # Dividend - Shares
+            elif title == 'Reinvestierung':
+                # TODO: Implement reinvestment
+                log.warning('Detected reivestment, skipping... (not implemented yet)')
+
+    log.info('transaction creation finished!')
+
+def clean_strings(text: str):
+    return text.replace("\n", "")
 
 
 class Timeline:
