@@ -191,6 +191,28 @@ def export_transactions(input_path, output_path, lang='auto'):
             "pt": 'Transakcja kartą',
             "ru": '\u041e\u043f\u0435\u0440\u0430\u0446\u0438\u044f\u0020\u043f\u043e\u0020\u043a\u0430\u0440\u0442\u0435',
         },
+        "card atm withdrawal": {
+            "cs": 'Výběr hotovosti',
+            "de": 'Barabhebung',
+            "en": 'ATM withdrawal',
+            "es": 'Retiradas de efectivo',
+            "fr": 'Retrait en espèces',
+            "it": 'Prelievo di contanti',
+            "nl": 'Geldopname',
+            "pt": 'Levantamento de dinheiro',
+            "ru": '\u0412\u044b\u0434\u0430\u0447\u0430\u0020\u043d\u0430\u043b\u0438\u0447\u043d\u044b\u0445',
+        },
+        "card order": {
+            "cs": 'Poplatek za kartu',
+            "de": 'Kartengebühr',
+            "en": 'Card fee',
+            "es": 'Transacción con tarjeta',
+            "fr": 'Frais de carte',
+            "it": 'Tassa sulla carta',
+            "nl": 'Kosten kaart',
+            "pt": 'Taxa do cartão',
+            "ru": '\u041f\u043b\u0430\u0442\u0430\u0020\u0437\u0430\u0020\u043e\u0431\u0441\u043b\u0443\u0436\u0438\u0432\u0430\u043d\u0438\u0435\u0020\u043a\u0430\u0440\u0442\u044b',
+        },
         "decimal dot": {
             "cs": ',',
             "de": ',',
@@ -248,6 +270,10 @@ def export_transactions(input_path, output_path, lang='auto'):
                 log.warning('Detected reivestment, skipping... (not implemented yet)')
             elif event["eventType"] == "card_successful_transaction":
                 f.write(csv_fmt.format(date=date, type=i18n['card transaction'][lang], value=amount))
+            elif event["eventType"] == "card_successful_atm_withdrawal":
+                f.write(csv_fmt.format(date=date, type=i18n['card atm withdrawal'][lang], value=amount))
+            elif event["eventType"] == "card_order_billed":
+                f.write(csv_fmt.format(date=date, type=i18n['card order'][lang], value=amount))
 
     log.info('Deposit creation finished!')
 
