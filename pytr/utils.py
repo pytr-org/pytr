@@ -147,6 +147,17 @@ def export_transactions(input_path, output_path, lang='auto'):
             "pt": "Valor",
             "ru": "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435",
         },
+        "note": {
+            "cs": "Poznámka",
+            "de": "Notiz",
+            "en": "Note",
+            "es": "Nota",
+            "fr": "Note",
+            "it": "Nota",
+            "nl": "Noot",
+            "pt": "Nota",
+            "ru": "\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u0435",
+        },
         "deposit": {
             "cs": 'Vklad',
             "de": 'Einlage',
@@ -234,8 +245,8 @@ def export_transactions(input_path, output_path, lang='auto'):
     log.info('Write deposit entries')
     with open(output_path, 'w', encoding='utf-8') as f:
         # f.write('Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n')
-        csv_fmt = '{date};{type};{value}\n'
-        header = csv_fmt.format(date=i18n['date'][lang], type=i18n['type'][lang], value=i18n['value'][lang])
+        csv_fmt = '{date};{type};{value};{note}\n'
+        header = csv_fmt.format(date=i18n['date'][lang], type=i18n['type'][lang], value=i18n['value'][lang], note=i18n['note'][lang])
         f.write(header)
 
         for event in timeline:
@@ -259,21 +270,21 @@ def export_transactions(input_path, output_path, lang='auto'):
 
             # Cash in
             if event["eventType"] in ("PAYMENT_INBOUND", "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT"):
-                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount, note=''))
             elif event["eventType"] == "PAYMENT_OUTBOUND":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=''))
             elif event["eventType"] == "INTEREST_PAYOUT_CREATED":
-                f.write(csv_fmt.format(date=date, type=i18n['interest'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['interest'][lang], value=amount, note=''))
             # Dividend - Shares
             elif title == 'Reinvestierung':
                 # TODO: Implement reinvestment
                 log.warning('Detected reivestment, skipping... (not implemented yet)')
             elif event["eventType"] == "card_successful_transaction":
-                f.write(csv_fmt.format(date=date, type=i18n['card transaction'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card transaction'][lang]))
             elif event["eventType"] == "card_successful_atm_withdrawal":
-                f.write(csv_fmt.format(date=date, type=i18n['card atm withdrawal'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card atm withdrawal'][lang]))
             elif event["eventType"] == "card_order_billed":
-                f.write(csv_fmt.format(date=date, type=i18n['card order'][lang], value=amount))
+                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card order'][lang]))
 
     log.info('Deposit creation finished!')
 
