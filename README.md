@@ -8,15 +8,24 @@ This is a library for the private API of the Trade Republic online brokerage. I 
 
 ## Installation
 
-Install with `pip install pytr`
+Make sure Python and a Python package manager like pip or [pipx](https://pipx.pypa.io/) (recommended) is installed.
 
-Or you can clone the repo like so:
+Install release from PyPI with `pipx install pytr`
+
+Or install from git repo like so:
 
 ```sh
-git clone https://github.com/marzzzello/pytr.git
-cd pytr
-pip install .
+pipx install git+https://github.com/marzzzello/pytr
 ```
+
+### Update
+
+```sh
+pipx upgrade pytr
+# or
+pipx upgrade-all
+```
+
 
 ## Usage
 
