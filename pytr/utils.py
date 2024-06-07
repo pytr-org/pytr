@@ -217,7 +217,7 @@ def export_transactions(input_path, output_path, lang='auto'):
         f.write(header)
 
         for event in timeline:
-            dateTime = datetime.fromisoformat(event['timestamp'])
+            dateTime = datetime.fromisoformat(event['timestamp'][:19])
             date = dateTime.strftime('%Y-%m-%d')
 
             title = event['title']
