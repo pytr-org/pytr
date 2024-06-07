@@ -88,17 +88,26 @@ class DL:
         send asynchronous request, append future with filepath to self.futures
         '''
         doc_url = doc['action']['payload']
+        if subtitleText is None:
+            subtitleText = ''
 
-        date = doc['detail']
-        iso_date = '-'.join(date.split('.')[::-1])
+        try:
+            date = doc['detail']
+            iso_date = '-'.join(date.split('.')[::-1])
+        except KeyError:
+            date = ''
+            iso_date = ''
         doc_id = doc['id']
 
         # extract time from subtitleText
-        time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
-        if time == []:
+        try:
+            time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
+            if time == []:
+                time = ''
+            else:
+                time = f' {time[0]}'
+        except TypeError:
             time = ''
-        else:
-            time = f' {time[0]}'
 
         if subfolder is not None:
             directory = self.output_path / subfolder

@@ -426,14 +426,14 @@ class Timeline:
                 for doc in section['data']:
                     try:
                         timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
-                    except ValueError:
+                    except (ValueError, KeyError):
                         timestamp = datetime.now().timestamp() * 1000
                     if max_age_timestamp == 0 or max_age_timestamp < timestamp:
                         # save all savingsplan documents in a subdirectory
                         title = f"{doc['title']} - {event['title']}"
                         if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING"]:
                             title += f" - {event['subtitle']}"
-                        dl.dl_doc(doc, title, doc['detail'], subfolder)
+                        dl.dl_doc(doc, title, doc.get('detail'), subfolder)
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
