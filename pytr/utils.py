@@ -310,7 +310,7 @@ class Timeline:
             self.num_timelines = 0
             await self.tr.timeline_activity_log()
         else:
-            timestamp = response['items'][-1]['timestamp']
+            timestamp = datetime.fromisoformat(response['items'][-1]['timestamp']).timestamp()
             self.num_timelines += 1
             # print(json.dumps(response))
             self.num_timeline_details += len(response['items'])
