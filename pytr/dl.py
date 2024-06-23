@@ -74,9 +74,9 @@ class DL:
             except TradeRepublicError as e:
                 self.log.fatal(str(e))
 
-            if subscription['type'] == 'timeline':
+            if subscription['type'] == 'timelineTransactions':
                 await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
-            elif subscription['type'] == 'timelineDetail':
+            elif subscription['type'] == 'timelineDetailV2':
                 await self.tl.timelineDetail(response, self, max_age_timestamp=self.since_timestamp)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")

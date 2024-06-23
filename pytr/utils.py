@@ -4,7 +4,7 @@ import coloredlogs
 import json
 import logging
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from locale import getdefaultlocale
 from packaging import version
 
@@ -184,8 +184,7 @@ def export_transactions(input_path, output_path, lang='auto'):
         f.write(header)
 
         for event in timeline:
-            event = event['data']
-            dateTime = datetime.fromtimestamp(int(event['timestamp'] / 1000))
+            dateTime = datetime.strptime(event['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z")
             date = dateTime.strftime('%Y-%m-%d')
 
             title = event['title']
@@ -230,16 +229,15 @@ class Timeline:
         if response is None:
             # empty response / first timeline
             self.log.info('Awaiting #1  timeline')
-            # self.timelines = []
             self.num_timelines = 0
             self.timeline_events = []
             await self.tr.timeline()
         else:
-            timestamp = response['data'][-1]['data']['timestamp']
+            timestamp = datetime.strptime(response['items'][-1]['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z")
+            max_timestamp = datetime.now(timestamp.tzinfo) - timedelta(max_age_timestamp)
             self.num_timelines += 1
-            # print(json.dumps(response))
-            self.num_timeline_details += len(response['data'])
-            for event in response['data']:
+            self.num_timeline_details += len(response['items'])
+            for event in response['items']:
                 self.timeline_events.append(event)
 
             after = response['cursors'].get('after')
@@ -247,7 +245,7 @@ class Timeline:
                 # last timeline is reached
                 self.log.info(f'Received #{self.num_timelines:<2} (last) timeline')
                 await self._get_timeline_details(5)
-            elif max_age_timestamp != 0 and timestamp < max_age_timestamp:
+            elif max_age_timestamp != 0 and timestamp < max_timestamp:
                 self.log.info(f'Received #{self.num_timelines+1:<2} timeline')
                 self.log.info('Reached last relevant timeline')
                 await self._get_timeline_details(5, max_age_timestamp=max_age_timestamp)
@@ -269,10 +267,12 @@ class Timeline:
             else:
                 event = self.timeline_events.pop()
 
-            action = event['data'].get('action')
+            action = event.get('action')
             # icon = event['data'].get('icon')
             msg = ''
-            if max_age_timestamp != 0 and event['data']['timestamp'] > max_age_timestamp:
+            timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z")
+            max_timestamp = datetime.now(timestamp.tzinfo) - timedelta(max_age_timestamp)
+            if max_age_timestamp != 0 and timestamp > max_timestamp:
                 msg += 'Skip: too old'
             # elif icon is None:
             #     pass
@@ -284,24 +284,24 @@ class Timeline:
             #     msg += 'Skip: ExemptionOrderChanged'
 
             elif action is None:
-                if event['data'].get('actionLabel') is None:
+                if event.get('actionLabel') is None:
                     msg += 'Skip: no action'
             elif action.get('type') != 'timelineDetail':
                 msg += f"Skip: action type unmatched ({action['type']})"
-            elif action.get('payload') != event['data']['id']:
+            elif action.get('payload') != event['id']:
                 msg += f"Skip: payload unmatched ({action['payload']})"
 
             if msg == '':
                 self.events_with_docs.append(event)
             else:
                 self.events_without_docs.append(event)
-                self.log.debug(f"{msg} {event['data']['title']}: {event['data'].get('body')} {json.dumps(event)}")
+                self.log.debug(f"{msg} {event['title']}: {event.get('body')} {json.dumps(event)}")
                 self.num_timeline_details -= 1
                 continue
 
             num_torequest -= 1
             self.requested_detail += 1
-            await self.tr.timeline_detail(event['data']['id'])
+            await self.tr.timeline_detail(event['id'])
 
     async def timelineDetail(self, response, dl, max_age_timestamp=0):
         '''
@@ -319,48 +319,34 @@ class Timeline:
                 await self._get_timeline_details(5)
 
         # print(f'len timeline_events: {len(self.timeline_events)}')
-        isSavingsPlan = False
-        if response['subtitleText'] == 'Sparplan':
-            isSavingsPlan = True
-        else:
-            # some savingsPlan don't have the subtitleText == 'Sparplan' but there are actions just for savingsPans
-            # but maybe these are unneeded duplicates
-            for section in response['sections']:
-                if section['type'] == 'actionButtons':
-                    for button in section['data']:
-                        if button['action']['type'] in ['editSavingsPlan', 'deleteSavingsPlan']:
-                            isSavingsPlan = True
-                            break
-
-        if response['subtitleText'] != 'Sparplan' and isSavingsPlan is True:
-            isSavingsPlan_fmt = ' -- SPARPLAN'
-        else:
-            isSavingsPlan_fmt = ''
-
+        is_savings_plan = self.is_savings_plan(response)
+        title_text = self.get_title_text(response)
+        sub_title_text = self.get_sub_title_text(response)
+        
         max_details_digits = len(str(self.num_timeline_details))
         self.log.info(
             f"{self.received_detail:>{max_details_digits}}/{self.num_timeline_details}: "
-            + f"{response['titleText']} -- {response['subtitleText']}{isSavingsPlan_fmt}"
+            + f"{title_text} -- {sub_title_text}"
         )
 
         for section in response['sections']:
             if section['type'] == 'documents':
-                for doc in section['documents']:
+                for doc in section['data']:
                     try:
                         timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
                     except ValueError:
                         timestamp = datetime.now().timestamp() * 1000
                     if max_age_timestamp == 0 or max_age_timestamp < timestamp:
                         # save all savingsplan documents in a subdirectory
-                        if isSavingsPlan:
-                            dl.dl_doc(doc, response['titleText'], response['subtitleText'], subfolder='Sparplan')
+                        if is_savings_plan:
+                            dl.dl_doc(doc, title_text, sub_title_text, subfolder='Sparplan')
                         else:
                             # In case of a stock transfer (Wertpapierübertrag) add additional information to the document title
-                            if response['titleText'] == 'Wertpapierübertrag':
+                            if title_text== 'Wertpapierübertrag':
                                 body = next(item['data']['body'] for item in self.events_with_docs if item['data']['id'] == response['id'])
-                                dl.dl_doc(doc, response['titleText'] + " - " + body, response['subtitleText'])
+                                dl.dl_doc(doc, title_text + " - " + body, sub_title_text)
                             else:
-                                dl.dl_doc(doc, response['titleText'], response['subtitleText'])
+                                dl.dl_doc(doc, title_text, sub_title_text)
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
@@ -374,3 +360,40 @@ class Timeline:
             export_transactions(dl.output_path / 'other_events.json', dl.output_path / 'account_transactions.csv')
 
             dl.work_responses()
+            
+          
+    def is_savings_plan(self, response):
+        '''
+        Check if the response is a savingsPlan by checking all the sections
+        '''
+        return self.get_sub_title_text(response) == 'Sparplan'
+
+    def get_sub_title_text(self, response):
+        '''
+        Extract the subtitleText from the response
+        '''
+        for section in response['sections']:
+            if section['title'] == 'Übersicht':
+                for data in section['data']:
+                    # Pattern for Dividend/Sparplan/Kauf/Verkauf
+                    if data['title'] in ['Event', 'Ereignis', 'Orderart']:
+                        return data['detail']['text']
+        return ''
+
+    def get_title_text(self, response):
+        '''
+        Extract the titleText from the response
+        '''
+        for section in response['sections']:
+            if section['title'] == 'Übersicht':
+                for data in section['data']:
+                    # Pattern for Dividend/Sparplan/Kauf/Verkauf/Reinvestierung
+                    if data['title'] in ['Asset', 'Wertpapier', 'Eingebuchte Anteile']:
+                        return data['detail']['text']
+                    elif data['title'] == 'IBAN':
+                        return 'Einzahlung/Auszahlung'
+                    elif data['title'] == 'Jahressatz':
+                        return f"Zinsen ({data['detail']['text']})"
+
+        self.log.debug(json.dumps(response))
+        raise RuntimeError('Unable to detect titleText from response')
