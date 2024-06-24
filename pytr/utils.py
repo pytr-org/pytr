@@ -234,7 +234,7 @@ class Timeline:
             await self.tr.timeline()
         else:
             timestamp = datetime.strptime(response['items'][-1]['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z")
-            lower_timestamp = datetime.fromtimestamp(max_age_timestamp // 1000, timestamp.tzinfo)
+            max_timestamp = datetime.fromtimestamp(max_age_timestamp // 1000, timestamp.tzinfo)
             self.num_timelines += 1
             self.num_timeline_details += len(response['items'])
             for event in response['items']:
@@ -245,7 +245,7 @@ class Timeline:
                 # last timeline is reached
                 self.log.info(f'Received #{self.num_timelines:<2} (last) timeline')
                 await self._get_timeline_details(5)
-            elif max_age_timestamp != 0 and timestamp < lower_timestamp:
+            elif max_age_timestamp != 0 and timestamp < max_timestamp:
                 self.log.info(f'Received #{self.num_timelines+1:<2} timeline')
                 self.log.info('Reached last relevant timeline')
                 await self._get_timeline_details(5, max_age_timestamp=max_age_timestamp)
@@ -271,7 +271,7 @@ class Timeline:
             # icon = event['data'].get('icon')
             msg = ''
             timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%dT%H:%M:%S.%f%z")
-            max_timestamp = datetime.now(timestamp.tzinfo) - timedelta(max_age_timestamp)
+            max_timestamp = datetime.fromtimestamp(max_age_timestamp // 1000, timestamp.tzinfo)
             if max_age_timestamp != 0 and timestamp > max_timestamp:
                 msg += 'Skip: too old'
             # elif icon is None:
