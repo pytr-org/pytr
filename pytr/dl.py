@@ -66,7 +66,7 @@ class DL:
             self.log.info('Created history file')
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline(max_age_timestamp=self.since_timestamp)
+        await self.tl.get_next_timeline_transactions(max_age_timestamp=self.since_timestamp)
 
         while True:
             try:
@@ -74,9 +74,11 @@ class DL:
             except TradeRepublicError as e:
                 self.log.fatal(str(e))
 
-            if subscription['type'] == 'timeline':
-                await self.tl.get_next_timeline(response, max_age_timestamp=self.since_timestamp)
-            elif subscription['type'] == 'timelineDetail':
+            if subscription['type'] == 'timelineTransactions':
+                await self.tl.get_next_timeline_transactions(response, max_age_timestamp=self.since_timestamp)
+            elif subscription['type'] == 'timelineActivityLog':
+                await self.tl.get_next_timeline_activity_log(response, max_age_timestamp=self.since_timestamp)
+            elif subscription['type'] == 'timelineDetailV2':
                 await self.tl.timelineDetail(response, self, max_age_timestamp=self.since_timestamp)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
@@ -86,17 +88,26 @@ class DL:
         send asynchronous request, append future with filepath to self.futures
         '''
         doc_url = doc['action']['payload']
+        if subtitleText is None:
+            subtitleText = ''
 
-        date = doc['detail']
-        iso_date = '-'.join(date.split('.')[::-1])
+        try:
+            date = doc['detail']
+            iso_date = '-'.join(date.split('.')[::-1])
+        except KeyError:
+            date = ''
+            iso_date = ''
         doc_id = doc['id']
 
         # extract time from subtitleText
-        time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
-        if time == []:
+        try:
+            time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
+            if time == []:
+                time = ''
+            else:
+                time = f' {time[0]}'
+        except TypeError:
             time = ''
-        else:
-            time = f' {time[0]}'
 
         if subfolder is not None:
             directory = self.output_path / subfolder
@@ -141,6 +152,7 @@ class DL:
                 return
             else:
                 filepath = filepath_with_doc_id
+        doc['local filepath'] = str(filepath)
         self.filepaths.append(filepath)
 
         if filepath.is_file() is False:

@@ -466,6 +466,15 @@ class TradeRepublicApi:
     async def timeline_detail_savings_plan(self, savings_plan_id):
         return await self.subscribe({'type': 'timelineDetail', 'savingsPlanId': savings_plan_id})
 
+    async def timeline_transactions(self, after=None):
+        return await self.subscribe({'type': 'timelineTransactions', 'after': after})
+
+    async def timeline_activity_log(self, after=None):
+        return await self.subscribe({'type': 'timelineActivityLog', 'after': after})
+
+    async def timeline_detail_v2(self, timeline_id):
+        return await self.subscribe({'type': 'timelineDetailV2', 'id': timeline_id})
+
     async def search_tags(self):
         return await self.subscribe({'type': 'neonSearchTags'})
 
