@@ -2,8 +2,9 @@ import json
 import sys
 from pygments import highlight, lexers, formatters
 import time
+import pathlib
 
-from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
+from pytr.api import TradeRepublicApi, CREDENTIALS_FILE, COOKIES_FILE
 from pytr.utils import get_logger
 
 
@@ -16,26 +17,35 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True):
+def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials_file=None, save_cookies=True, cookies_file=None):
     '''
     If web is true, use web login method as else simulate app login.
     Check if credentials file exists else create it.
     If no parameters are set but are needed then ask for input
     '''
     log = get_logger(__name__)
-    save_cookies = True
+    credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
-    if phone_no is None and CREDENTIALS_FILE.is_file():
+    if credentials_file.is_file():
         log.info('Found credentials file')
-        with open(CREDENTIALS_FILE) as f:
+        with open(credentials_file) as f:
             lines = f.readlines()
-        phone_no = lines[0].strip()
-        pin = lines[1].strip()
-        phone_no_masked = phone_no[:-8] + '********'
-        pin_masked = len(pin) * '*'
+        phone_no_cf = lines[0].strip()
+        pin_cf = lines[1].strip()
+        phone_no_masked = phone_no_cf[:-8] + '********'
+        pin_masked = len(pin_cf) * '*'
         log.info(f'Phone: {phone_no_masked}, PIN: {pin_masked}')
     else:
-        CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        phone_no_cf = None
+        pin_cf = None
+
+    different_account = False
+    if phone_no is not None and phone_no_cf is not None and phone_no != phone_no_cf:
+        log.info('Phone number different from credential files. Assuming different account.')
+        different_account = True
+
+    if phone_no is None and phone_no_cf is None:
+        credentials_file.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info('Credentials file not found')
             print('Please enter your TradeRepublic phone number in the format +4912345678:')
@@ -47,23 +57,21 @@ def login(phone_no=None, pin=None, web=True):
             print('Please enter your TradeRepublic pin:')
             pin = input()
 
-        print('Save credentials? Type "y" to save credentials:')
-        save = input()
-        if save == 'y':
-            with open(CREDENTIALS_FILE, 'w') as f:
-                f.writelines([phone_no + '\n', pin + '\n'])
-
-            log.info(f'Saved credentials in {CREDENTIALS_FILE}')
-
-        else:
+    if save_credentials:
+        with open(credentials_file, 'w') as f:
+            f.writelines([phone_no + '\n', pin + '\n'])
+        log.info(f'Saved credentials in {credentials_file}')
+    else:
+        if different_account:
             save_cookies = False
-            log.info('Credentials not saved')
+        log.info('Credentials not saved')
 
-    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies,
+                          credentials_file=credentials_file, cookies_file=cookies_file)
 
     if web:
         # Use same login as app.traderepublic.com
-        if tr.resume_websession():
+        if not different_account and tr.resume_websession():
             log.info('Web session resumed')
         else:
             try:
