@@ -409,7 +409,7 @@ class Timeline:
         max_details_digits = len(str(self.num_timeline_details))
         self.log.info(
             f"{self.received_detail:>{max_details_digits}}/{self.num_timeline_details}: "
-            + f"{event['title']} -- {event['subtitle']}{isSavingsPlan_fmt}"
+            + f"{event['title']} -- {event['subtitle']}{isSavingsPlan_fmt} [{event["eventType"]}]"
         )
 
         if isSavingsPlan:
@@ -419,21 +419,24 @@ class Timeline:
                 'benefits_saveback_execution': 'Saveback',
                 'benefits_spare_change_execution': 'RoundUp',
                 'INTEREST_PAYOUT_CREATED': 'Zinsen',
+                'CREDIT': 'Zinsen',  # It is equal to Dividende documents
             }.get(event["eventType"])
 
         for section in response['sections']:
-            if section['type'] == 'documents':
-                for doc in section['data']:
-                    try:
-                        timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
-                    except (ValueError, KeyError):
-                        timestamp = datetime.now().timestamp() * 1000
-                    if max_age_timestamp == 0 or max_age_timestamp < timestamp:
-                        # save all savingsplan documents in a subdirectory
-                        title = f"{doc['title']} - {event['title']}"
-                        if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING"]:
-                            title += f" - {event['subtitle']}"
-                        dl.dl_doc(doc, title, doc.get('detail'), subfolder)
+            if section['type'] != 'documents':
+                continue
+
+            for doc in section['data']:
+                try:
+                    timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
+                except (ValueError, KeyError):
+                    timestamp = datetime.now().timestamp() * 1000
+                if max_age_timestamp == 0 or max_age_timestamp < timestamp:
+                    # save all savingsplan documents in a subdirectory
+                    title = f"{doc['title']} - {event['title']}"
+                    if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING", "CREDIT"]:
+                        title += f" - {event['subtitle']}"
+                    dl.dl_doc(doc, title, doc.get('detail'), subfolder)
 
         if self.received_detail == self.num_timeline_details:
             self.log.info('Received all details')
