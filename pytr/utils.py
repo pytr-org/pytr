@@ -351,7 +351,8 @@ class Timeline:
             action = event.get('action')
             # icon = event.get('icon')
             msg = ''
-            if max_age_timestamp != 0 and event['timestamp'] > max_age_timestamp:
+            timestamp_field = datetime.fromisoformat(event['timestamp'][:19]).timestamp() 
+            if max_age_timestamp != 0 and timestamp_field > max_age_timestamp:
                 msg += 'Skip: too old'
             # elif icon is None:
             #     pass
