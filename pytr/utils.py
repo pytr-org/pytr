@@ -376,20 +376,15 @@ class Timeline:
         event = self.timeline_events[response['id']]
         event['details'] = response
 
-        isSavingsPlan = (event["eventType"] == "SAVINGS_PLAN_EXECUTED")
-
-        isSavingsPlan_fmt = ''
-        if not isSavingsPlan and event['subtitle'] is not None:
-            isSavingsPlan = 'Sparplan' in event['subtitle']
-            isSavingsPlan_fmt = ' -- SPARPLAN' if isSavingsPlan else ''
-
+        is_savings_plan = (event["eventType"] == "SAVINGS_PLAN_EXECUTED")
+        
         max_details_digits = len(str(self.num_timeline_details))
         self.log.info(
             f"{self.received_detail:>{max_details_digits}}/{self.num_timeline_details}: "
-            + f"{event['title']} -- {event['subtitle']}{isSavingsPlan_fmt}"
+            + f"{event['title']} -- {event['subtitle']}"
         )
 
-        if isSavingsPlan:
+        if is_savings_plan:
             subfolder = 'Sparplan'
         else:
             subfolder = {
@@ -402,11 +397,10 @@ class Timeline:
             if section['type'] == 'documents':
                 for doc in section['data']:
                     try:
-                        timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
+                        timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp()
                     except (ValueError, KeyError):
-                        timestamp = datetime.now().timestamp() * 1000
+                        timestamp = datetime.now().timestamp()
                     if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
-                        # save all savingsplan documents in a subdirectory
                         title = f"{doc['title']} - {event['title']}"
                         if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING"]:
                             title += f" - {event['subtitle']}"
