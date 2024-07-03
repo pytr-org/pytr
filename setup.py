@@ -14,7 +14,7 @@ setup(
     description='Use TradeRepublic in terminal',
     long_description=readme(),
     long_description_content_type='text/markdown',
-    url='https://gitlab.com/marzzzello/pytr/',
+    url='https://gitlab.com/pytr-org/pytr/',
     author='marzzzello',
     author_email='853485-marzzzello@users.noreply.gitlab.com',
     license='MIT',

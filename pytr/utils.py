@@ -79,7 +79,7 @@ def preview(response, num_lines=5):
 def check_version(installed_version):
     log = get_logger(__name__)
     try:
-        r = requests.get('https://api.github.com/repos/marzzzello/pytr/tags', timeout=1)
+        r = requests.get('https://api.github.com/repos/pytr-org/pytr/tags', timeout=1)
     except Exception as e:
         log.error('Could not check for a newer version')
         log.debug(str(e))
