@@ -224,6 +224,17 @@ def export_transactions(input_path, output_path, lang='auto'):
             "pt": 'Taxa do cartão',
             "ru": '\u041f\u043b\u0430\u0442\u0430\u0020\u0437\u0430\u0020\u043e\u0431\u0441\u043b\u0443\u0436\u0438\u0432\u0430\u043d\u0438\u0435\u0020\u043a\u0430\u0440\u0442\u044b',
         },
+        "card refund": {
+            "cs": "Vrácení peněz na kartu",
+            "de": "Kartenerstattung",
+            "en": "Card refund",
+            "es": "Reembolso de tarjeta",
+            "fr": "Remboursement par carte",
+            "it": "Rimborso sulla carta",
+            "nl": "Terugbetaling op kaart",
+            "pt": "Reembolso do cartão",
+            "ru": "\u0412\u043e\u0437\u0432\u0440\u0430\u0442\u0020\u043d\u0430\u0020\u043a\u0430\u0440\u0442\u0443"
+        },
         "decimal dot": {
             "cs": ',',
             "de": ',',
@@ -285,6 +296,8 @@ def export_transactions(input_path, output_path, lang='auto'):
                 f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card atm withdrawal'][lang]))
             elif event["eventType"] == "card_order_billed":
                 f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card order'][lang]))
+            elif event["eventType"] == "card_refund":
+                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount, note=i18n['card refund'][lang]))
 
     log.info('Deposit creation finished!')
 
