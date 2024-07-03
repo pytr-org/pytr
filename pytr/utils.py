@@ -253,7 +253,7 @@ def export_transactions(input_path, output_path, lang='auto'):
 
 
 class Timeline:
-    def __init__(self, tr):
+    def __init__(self, tr, max_age_timestamp):
         self.tr = tr
         self.log = get_logger(__name__)
         self.received_detail = 0
@@ -264,21 +264,20 @@ class Timeline:
         self.num_timelines = 0
         self.timeline_events = {}
         self.timeline_events_iter = None
+        self.max_age_timestamp = max_age_timestamp
 
-    async def get_next_timeline_transactions(self, response=None, max_age_timestamp=0):
+    async def get_next_timeline_transactions(self, response=None):
         '''
         Get timelines transactions and save time in list timelines.
         Extract timeline transactions events and save them in list timeline_events
 
         '''
-
         if response is None:
             # empty response / first timeline
-            self.log.info('Awaiting #1  timeline transactions')
+            self.log.info('Subscribing to #1 timeline transactions')
             self.num_timelines = 0
             await self.tr.timeline_transactions()
         else:
-            timestamp = response['items'][-1]['timestamp']
             self.num_timelines += 1
             # print(json.dumps(response))
             self.num_timeline_details += len(response['items'])
@@ -287,30 +286,37 @@ class Timeline:
                 self.timeline_events[event['id']] = event
 
             after = response['cursors'].get('after')
-            if after is None:
-                # last timeline is reached
-                await self.get_next_timeline_activity_log()
-            else:
+            
+            last_transaction_time = response['items'][-1]['timestamp'][:19]
+            timestamp = datetime.fromisoformat(last_transaction_time).timestamp()
+            self.log.info(
+                f'Received #{self.num_timelines:<2} timeline transactions until {last_transaction_time}'
+            )
+            if (after is not None) and ((self.max_age_timestamp == 0) or (timestamp >= self.max_age_timestamp)):
                 self.log.info(
-                    f'Received #{self.num_timelines:<2} timeline transactions, awaiting #{self.num_timelines+1:<2} timeline transactions'
+                f'Subscribing #{self.num_timelines+1:<2} timeline transactions'
                 )
-                await self.tr.timeline_transactions(after)
+                await self.tr.timeline_transactions(after)                
+            else:
+                # last timeline is reached
+                self.log.info('Received last relevant timeline transaction')
+                await self.get_next_timeline_activity_log()
 
 
-    async def get_next_timeline_activity_log(self, response=None, max_age_timestamp=0):
+    async def get_next_timeline_activity_log(self, response=None):
         '''
         Get timelines acvtivity log and save time in list timelines.
         Extract timeline acvtivity log events and save them in list timeline_events
 
         '''
-
         if response is None:
             # empty response / first timeline
             self.log.info('Awaiting #1  timeline activity log')
             self.num_timelines = 0
             await self.tr.timeline_activity_log()
         else:
-            timestamp = datetime.fromisoformat(response['items'][-1]['timestamp'][:19]).timestamp()
+            last_transaction_time = response['items'][-1]['timestamp'][:19]
+            timestamp = datetime.fromisoformat(last_transaction_time).timestamp()
             self.num_timelines += 1
             # print(json.dumps(response))
             self.num_timeline_details += len(response['items'])
@@ -320,49 +326,26 @@ class Timeline:
                     self.timeline_events[event['id']] = event
 
             after = response['cursors'].get('after')
-            if after is None:
-                # last timeline is reached
-                self.log.info(f'Received #{self.num_timelines:<2} (last) timeline activity log')
-                self.timeline_events_iter = iter(self.timeline_events.values())
-                await self._get_timeline_details(5)
-            elif max_age_timestamp != 0 and timestamp < max_age_timestamp:
-                self.log.info(f'Received #{self.num_timelines+1:<2} timeline activity log')
-                self.log.info('Reached last relevant timeline activity log')
-                self.timeline_events_iter = iter(self.timeline_events.values())
-                await self._get_timeline_details(5, max_age_timestamp=max_age_timestamp)
-            else:
+            self.log.info(f'Received #{self.num_timelines:<2} timeline activity log unitl {last_transaction_time}')
+            if (after is not None) and ((self.max_age_timestamp == 0) or (timestamp >= self.max_age_timestamp)):
                 self.log.info(
-                    f'Received #{self.num_timelines:<2} timeline activity log, awaiting #{self.num_timelines+1:<2} timeline activity log'
+                    f'Subscribing #{self.num_timelines+1:<2} timeline activity log'
                 )
                 await self.tr.timeline_activity_log(after)
+            else:
+                self.log.info('Received last relevant timeline activity log')
+                await self._get_timeline_details()
 
-    async def _get_timeline_details(self, num_torequest, max_age_timestamp=0):
+    async def _get_timeline_details(self):
         '''
         request timeline details
         '''
-        while num_torequest > 0:
-
-            try:
-                event = next(self.timeline_events_iter)
-            except StopIteration:
-                self.log.info('All timeline details requested')
-                return False
-
+        for event in self.timeline_events.values():
             action = event.get('action')
-            # icon = event.get('icon')
             msg = ''
             timestamp_field = datetime.fromisoformat(event['timestamp'][:19]).timestamp() 
-            if max_age_timestamp != 0 and timestamp_field > max_age_timestamp:
+            if self.max_age_timestamp != 0 and (timestamp_field < self.max_age_timestamp):
                 msg += 'Skip: too old'
-            # elif icon is None:
-            #     pass
-            # elif icon.endswith('/human.png'):
-            #     msg += 'Skip: human'
-            # elif icon.endswith('/CashIn.png'):
-            #     msg += 'Skip: CashIn'
-            # elif icon.endswith('/ExemptionOrderChanged.png'):
-            #     msg += 'Skip: ExemptionOrderChanged'
-
             elif action is None:
                 if event.get('actionLabel') is None:
                     msg += 'Skip: no action'
@@ -379,11 +362,12 @@ class Timeline:
                 self.num_timeline_details -= 1
                 continue
 
-            num_torequest -= 1
             self.requested_detail += 1
             await self.tr.timeline_detail_v2(event['id'])
+        self.log.info('All timeline details requested')
+        return False
 
-    async def timelineDetail(self, response, dl, max_age_timestamp=0):
+    async def timelineDetail(self, response, dl):
         '''
         process timeline response and request timelines
         '''
@@ -391,14 +375,6 @@ class Timeline:
         self.received_detail += 1
         event = self.timeline_events[response['id']]
         event['details'] = response
-
-        # when all requested timeline events are received request 5 new
-        if self.received_detail == self.requested_detail:
-            remaining = len(self.timeline_events)
-            if remaining < 5:
-                await self._get_timeline_details(remaining)
-            else:
-                await self._get_timeline_details(5)
 
         isSavingsPlan = (event["eventType"] == "SAVINGS_PLAN_EXECUTED")
 
@@ -429,7 +405,7 @@ class Timeline:
                         timestamp = datetime.strptime(doc['detail'], '%d.%m.%Y').timestamp() * 1000
                     except (ValueError, KeyError):
                         timestamp = datetime.now().timestamp() * 1000
-                    if max_age_timestamp == 0 or max_age_timestamp < timestamp:
+                    if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
                         # save all savingsplan documents in a subdirectory
                         title = f"{doc['title']} - {event['title']}"
                         if event['eventType'] in ["ACCOUNT_TRANSFER_INCOMING", "ACCOUNT_TRANSFER_OUTGOING"]:
