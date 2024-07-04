@@ -79,7 +79,7 @@ class DL:
             elif subscription['type'] == 'timelineActivityLog':
                 await self.tl.get_next_timeline_activity_log(response)
             elif subscription['type'] == 'timelineDetailV2':
-                await self.tl.timelineDetail(response, self)
+                await self.tl.process_timelineDetail(response, self)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
