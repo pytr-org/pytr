@@ -9,7 +9,7 @@ import shtab
 
 from importlib.metadata import version
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pytr.utils import get_logger, check_version, export_transactions
 from pytr.dl import DL
@@ -199,7 +199,7 @@ def main():
         if args.last_days == 0:
             since_timestamp = 0
         else:
-            since_timestamp = datetime.now().timestamp() - (24 * 3600 * args.last_days)
+            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
