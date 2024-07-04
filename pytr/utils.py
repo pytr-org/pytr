@@ -393,10 +393,7 @@ class Timeline:
         for event in self.timeline_events.values():
             action = event.get('action')
             msg = ''
-            timestamp_field = datetime.fromisoformat(event['timestamp'][:19]).timestamp()
-            if self.max_age_timestamp != 0 and (timestamp_field < self.max_age_timestamp):
-                continue
-            elif action is None:
+            if action is None:
                 if event.get('actionLabel') is None:
                     msg += 'Skip: no action'
             elif action.get('type') != 'timelineDetail':
