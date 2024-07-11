@@ -283,11 +283,9 @@ def export_banking4(input_path, output_path, lang='auto'):
         f.write(header)
 
         for event in timeline1+timeline2:
-            event = event['data']
-            dateTime = datetime.fromtimestamp(int(event['timestamp'] / 1000))
+            dateTime = datetime.fromisoformat(event['timestamp'][:19])
             date = dateTime.strftime('%Y-%m-%d')
 
-            title = event['title']
             try:
                 body = event['body']
             except KeyError:
@@ -296,19 +294,35 @@ def export_banking4(input_path, output_path, lang='auto'):
             if 'storniert' in body:
                 continue
 
-            # Cash in
-            if title in ['Einzahlung', 'Bonuszahlung','Steuerabrechnung']:
-                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount']))
-            elif title == 'Auszahlung':
-                f.write(csv_fmt.format(date=date, type=title, value=event['cashChangeAmount']))
-            elif bool(re.search(r'\b(VERDIENTE\sZINSEN|Vorabpauschale)\b', title, re.IGNORECASE)):
-                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount']))  
-            elif bool(re.search(r'\b(Ausschüttung|Dividende\spro\s|Sparplan\sausgeführt|Kauf\s|Verkauf)', body)):
-                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+body), value=event['cashChangeAmount'])) 
-            # Dividend - Shares
-            elif title == 'Reinvestierung':
-                # TODO: Implement reinvestment
-                log.warning('Detected reivestment, skipping... (not implemented yet)')
+            # inflows
+            if event["eventType"] in ["PAYMENT_INBOUND"]:
+                 f.write(csv_fmt.format(date=date, type=clean_strings(event['eventType']), value=event['amount']["value"]))
+            # Card refund, Buys, atm withdrawal
+            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND"]:
+                title = event['title']
+                subtitle = event["subtitle"]
+                if title is None:
+                    title = 'no title'
+                if subtitle is None:
+                    subtitle = "no subtitle"
+                f.write(csv_fmt.format(date=date, type=clean_strings(title+": "+subtitle), value=event['amount']["value"]))
+            #Debit payments    
+            elif event["eventType"] in ["card_successful_transaction"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["eventType"]+": "+event['title'] ), value=event['amount']["value"]))
+            #dividends
+            elif event["eventType"] in ["ssp_corporate_action_invoice_cash","CREDIT"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
+            #Saveback
+            elif event["eventType"] in ["SAVINGS_PLAN_EXECUTED"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
+            
+            #Tax payments
+            elif event["eventType"] in ["PRE_DETERMINED_TAX_BASE"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
+    
+            #Card order
+            elif event["eventType"] in ["card_order_billed"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]), value=event['amount']["value"]))          
 
     log.info('transaction creation finished!')
 
