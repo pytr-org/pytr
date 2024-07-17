@@ -2,6 +2,27 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "买入"
+
+msgid "DEPOSIT"
+msgstr "存款"
+
+msgid "DIVIDENDS"
+msgstr "股息"
+
+msgid "FEES"
+msgstr "费用"
+
+msgid "FEES_REFUND"
+msgstr "费用退款"
+
+msgid "INTEREST"
+msgstr "利息"
+
+msgid "INTEREST_CHARGE"
 msgstr "利息支出"
 
 msgid "REMOVAL"

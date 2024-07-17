@@ -2,7 +2,28 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
-msgstr "利息支出"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Achat"
+
+msgid "DEPOSIT"
+msgstr "Dépôt"
+
+msgid "DIVIDENDS"
+msgstr "Dividendes"
+
+msgid "FEES"
+msgstr "Frais"
+
+msgid "FEES_REFUND"
+msgstr "Remboursement de Frais"
+
+msgid "INTEREST"
+msgstr "Intérêts"
+
+msgid "INTEREST_CHARGE"
+msgstr "Frais d'Intérêts"
 
 msgid "REMOVAL"
 msgstr "Retrait"

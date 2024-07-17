@@ -2,7 +2,28 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: cs\n"
-msgstr "利息支出"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Koupit"
+
+msgid "DEPOSIT"
+msgstr "Vklad"
+
+msgid "DIVIDENDS"
+msgstr "Dividendy"
+
+msgid "FEES"
+msgstr "Poplatky"
+
+msgid "FEES_REFUND"
+msgstr "Vratka poplatku"
+
+msgid "INTEREST"
+msgstr "Úrok"
+
+msgid "INTEREST_CHARGE"
+msgstr "Úrokový poplatek"
 
 msgid "REMOVAL"
 msgstr "Výběr"

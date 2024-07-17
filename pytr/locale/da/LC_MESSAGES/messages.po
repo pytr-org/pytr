@@ -2,7 +2,28 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: da\n"
-msgstr "利息支出"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Køb"
+
+msgid "DEPOSIT"
+msgstr "Indsæt"
+
+msgid "DIVIDENDS"
+msgstr "Udbytte"
+
+msgid "FEES"
+msgstr "Gebyrer"
+
+msgid "FEES_REFUND"
+msgstr "Refunderede gebyrer"
+
+msgid "INTEREST"
+msgstr "Renteindtægter"
+
+msgid "INTEREST_CHARGE"
+msgstr "Renteudgifter"
 
 msgid "REMOVAL"
 msgstr "Hævning"
