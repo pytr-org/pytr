@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ru\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Покупка"
+
+msgid "DEPOSIT"
+msgstr "Пополнение"
+
+msgid "DIVIDENDS"
+msgstr "Дивиденд"
+
+msgid "FEES"
+msgstr "Сборы"
+
+msgid "FEES_REFUND"
+msgstr "Возврат сборов"
+
+msgid "INTEREST"
+msgstr "Процент"
+
+msgid "INTEREST_CHARGE"
+msgstr "Возврат процента"
+
+msgid "REMOVAL"
+msgstr "Списание"
+
+msgid "SELL"
+msgstr "Продажа"
+
+msgid "TAXES"
+msgstr "Налоги"
+
+msgid "TAX_REFUND"
+msgstr "Возврат налога"
+
+msgid "TRANSFER_IN"
+msgstr "Перевод (Входящий)"
+
+msgid "TRANSFER_OUT"
+msgstr "Перевод (Исходящий)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Денежный счет"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Зачетный счет"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Суммарная эффективность в %"
+
+msgid "CSVColumn_Currency"
+msgstr "Валюта"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Валюта сумма (брутто)"
+
+msgid "CSVColumn_Date"
+msgstr "Дата"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Дата котировки"
+
+msgid "CSVColumn_DateValue"
+msgstr "Дата значения"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Дельта в %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Курс"
+
+msgid "CSVColumn_Fees"
+msgstr "Сборы"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Валовая Сумма"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Входящие переводы"
+
+msgid "CSVColumn_Name"
+msgstr "Название"
+
+msgid "CSVColumn_Note"
+msgstr "Заметка"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Исходящие переводы"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Счет ценных бумаг"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Зачетный счет ценных бумаг"
+
+msgid "CSVColumn_Quote"
+msgstr "Цена"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Имя ценной бумаги"
+
+msgid "CSVColumn_Shares"
+msgstr "Акций"
+
+msgid "CSVColumn_Taxes"
+msgstr "Налоги"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Тикер"
+
+msgid "CSVColumn_Time"
+msgstr "Время"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Валюта Транзакции"
+
+msgid "CSVColumn_Type"
+msgstr "Тип"
+
+msgid "CSVColumn_Value"
+msgstr "Значение"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Операция по карте"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Выдача наличных"
+
+msgid "card_order_billed"
+msgstr "Плата за обслуживание карты"
+
+msgid "card_refund"
+msgstr "Возврат на карту"

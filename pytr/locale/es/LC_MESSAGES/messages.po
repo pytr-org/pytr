@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: es\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Compra"
+
+msgid "DEPOSIT"
+msgstr "Depósito"
+
+msgid "DIVIDENDS"
+msgstr "Dividendo"
+
+msgid "FEES"
+msgstr "Comisiones"
+
+msgid "FEES_REFUND"
+msgstr "Reembolso de comisiones"
+
+msgid "INTEREST"
+msgstr "Intereses"
+
+msgid "INTEREST_CHARGE"
+msgstr "Cargo por intereses"
+
+msgid "REMOVAL"
+msgstr "Retirada"
+
+msgid "SELL"
+msgstr "Venta"
+
+msgid "TAXES"
+msgstr "Impuestos"
+
+msgid "TAX_REFUND"
+msgstr "Devolución de impuestos"
+
+msgid "TRANSFER_IN"
+msgstr "Traspaso (entrada)"
+
+msgid "TRANSFER_OUT"
+msgstr "Traspaso (salida)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Cuenta"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Cuenta de contrapartida"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Rendimiento acumulado en %"
+
+msgid "CSVColumn_Currency"
+msgstr "Divisa"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Importe bruto de divisa"
+
+msgid "CSVColumn_Date"
+msgstr "Fecha"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Fecha de cotización"
+
+msgid "CSVColumn_DateValue"
+msgstr "Fecha de valor"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta en %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Tipo de cambio"
+
+msgid "CSVColumn_Fees"
+msgstr "Comisiones"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Valor bruto"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Traspasos entrantes"
+
+msgid "CSVColumn_Name"
+msgstr "Nombre"
+
+msgid "CSVColumn_Note"
+msgstr "Nota"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Traspasos salientes"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Cuenta de valores"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Cuenta de valores compensados"
+
+msgid "CSVColumn_Quote"
+msgstr "Cotización"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Nombre del valor"
+
+msgid "CSVColumn_Shares"
+msgstr "Cantidad"
+
+msgid "CSVColumn_Taxes"
+msgstr "Impuestos"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Símbolo del ticker"
+
+msgid "CSVColumn_Time"
+msgstr "Hora"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Moneda de la transacción"
+
+msgid "CSVColumn_Type"
+msgstr "Tipo"
+
+msgid "CSVColumn_Value"
+msgstr "Valor"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Transacción con tarjeta"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Retiradas de efectivo"
+
+msgid "card_order_billed"
+msgstr "Transacción con tarjeta"
+
+msgid "card_refund"
+msgstr "Reembolso de tarjeta"
