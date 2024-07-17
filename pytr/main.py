@@ -19,7 +19,6 @@ from pytr.alarms import Alarms
 from pytr.details import Details
 
 
-
 def get_main_parser():
     def formatter(prog):
         return argparse.HelpFormatter(prog, max_help_position=25)

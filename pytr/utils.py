@@ -4,10 +4,10 @@ import coloredlogs
 import json
 import logging
 import requests
-from datetime import datetime 
+from datetime import datetime
 from locale import getdefaultlocale
 from packaging import version
-from .event import Event, i18n
+from .event import Event
 from .translation import setup_translation
 
 log_level = None
