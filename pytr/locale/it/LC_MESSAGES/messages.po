@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: it\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Compra"
+
+msgid "DEPOSIT"
+msgstr "Deposito"
+
+msgid "DIVIDENDS"
+msgstr "Dividendo"
+
+msgid "FEES"
+msgstr "Commissioni"
+
+msgid "FEES_REFUND"
+msgstr "Rimborso commissioni"
+
+msgid "INTEREST"
+msgstr "Interessi"
+
+msgid "INTEREST_CHARGE"
+msgstr "Interessi passivi"
+
+msgid "REMOVAL"
+msgstr "Prelievo"
+
+msgid "SELL"
+msgstr "Vendi"
+
+msgid "TAXES"
+msgstr "Tasse"
+
+msgid "TAX_REFUND"
+msgstr "Rimborso tasse"
+
+msgid "TRANSFER_IN"
+msgstr "Trasferimento (in entrata)"
+
+msgid "TRANSFER_OUT"
+msgstr "Trasferimento (in uscita)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Conto di cassa"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Conto di compensazione"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Rendimento cumulato in %"
+
+msgid "CSVColumn_Currency"
+msgstr "Valuta"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Importo lordo valuta"
+
+msgid "CSVColumn_Date"
+msgstr "Data"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Data Quotazione"
+
+msgid "CSVColumn_DateValue"
+msgstr "Data Valorizzazione"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta in %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Tasso di cambio"
+
+msgid "CSVColumn_Fees"
+msgstr "Commissioni"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Importo Lordo"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Trasferimento in entrata"
+
+msgid "CSVColumn_Name"
+msgstr "Nome"
+
+msgid "CSVColumn_Note"
+msgstr "Note"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Trasferimento in uscita"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Conto titoli"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Conto titoli di compensazione"
+
+msgid "CSVColumn_Quote"
+msgstr "Quotazione"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Nome Titolo"
+
+msgid "CSVColumn_Shares"
+msgstr "Azioni"
+
+msgid "CSVColumn_Taxes"
+msgstr "Tasse"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Simbolo Titolo"
+
+msgid "CSVColumn_Time"
+msgstr "Ora"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Valuta  Operazione"
+
+msgid "CSVColumn_Type"
+msgstr "Tipo"
+
+msgid "CSVColumn_Value"
+msgstr "Valore"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Transazione con carta"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Prelievo di contanti"
+
+msgid "card_order_billed"
+msgstr "Tassa sulla carta"
+
+msgid "card_refund"
+msgstr "Rimborso sulla carta"

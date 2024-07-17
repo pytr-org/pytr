@@ -38,28 +38,9 @@ class Portfolio:
 
             await self.tr.unsubscribe(subscription_id)
 
-        # Populate netValue for each ISIN
-        positions = self.portfolio['positions']
-        subscriptions = {}
-        for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
-            isin = pos['instrumentId']
-            # subscription_id = await self.tr.instrument_details(pos['instrumentId'])
-            subscription_id = await self.tr.ticker(isin, exchange='LSX')
-            subscriptions[subscription_id] = pos
-
-        while len(subscriptions) > 0:
-            subscription_id, subscription, response = await self.tr.recv()
-
-            if subscription['type'] == 'ticker':
-                await self.tr.unsubscribe(subscription_id)
-                pos = subscriptions[subscription_id]
-                subscriptions.pop(subscription_id, None)
-                pos['netValue'] = float(response['last']['price']) * float(pos['netSize'])
-            else:
-                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
-
         # Populate name for each ISIN
         subscriptions = {}
+        positions = self.portfolio['positions']
         for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
             isin = pos['instrumentId']
             subscription_id = await self.tr.instrument_details(pos['instrumentId'])
@@ -73,6 +54,28 @@ class Portfolio:
                 pos = subscriptions[subscription_id]
                 subscriptions.pop(subscription_id, None)
                 pos['name'] = response['shortName']
+                pos['exchangeIds'] = response['exchangeIds']
+            else:
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+
+        # Populate netValue for each ISIN
+        subscriptions = {}
+        for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
+            isin = pos['instrumentId']
+            if len(pos['exchangeIds']) > 0:
+                subscription_id = await self.tr.ticker(isin, exchange=pos['exchangeIds'][0])
+                subscriptions[subscription_id] = pos
+            else:
+                pos['netValue'] = float(pos['averageBuyIn'] )* float(pos['netSize'])
+
+        while len(subscriptions) > 0:
+            subscription_id, subscription, response = await self.tr.recv()
+
+            if subscription['type'] == 'ticker':
+                await self.tr.unsubscribe(subscription_id)
+                pos = subscriptions[subscription_id]
+                subscriptions.pop(subscription_id, None)
+                pos['netValue'] = float(response['last']['price']) * float(pos['netSize'])
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
@@ -113,7 +116,7 @@ class Portfolio:
             totalNetValue += float(pos['netValue'])
 
             print(
-                f"{pos['name']:<25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
+                f"{pos['name']:<25.25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
                 + f" = {float(buyCost):>10.2f} -> {float(pos['netValue']):>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
             )
 

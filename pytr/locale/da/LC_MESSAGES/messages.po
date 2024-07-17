@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: da\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Køb"
+
+msgid "DEPOSIT"
+msgstr "Indsæt"
+
+msgid "DIVIDENDS"
+msgstr "Udbytte"
+
+msgid "FEES"
+msgstr "Gebyrer"
+
+msgid "FEES_REFUND"
+msgstr "Refunderede gebyrer"
+
+msgid "INTEREST"
+msgstr "Renteindtægter"
+
+msgid "INTEREST_CHARGE"
+msgstr "Renteudgifter"
+
+msgid "REMOVAL"
+msgstr "Hævning"
+
+msgid "SELL"
+msgstr "Sælg"
+
+msgid "TAXES"
+msgstr "Skatter"
+
+msgid "TAX_REFUND"
+msgstr "Tilbagebetalte skatter"
+
+msgid "TRANSFER_IN"
+msgstr "Overfør (Intern)"
+
+msgid "TRANSFER_OUT"
+msgstr "Overfør (Ekstern)"
+
+msgid "CSVColumn_AccountName"
+msgstr "kontantkonto"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Modregningskonto"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Akkumuleret Afkast i %"
+
+msgid "CSVColumn_Currency"
+msgstr "Valuta"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Valuta bruttobeløb"
+
+msgid "CSVColumn_Date"
+msgstr "Dato"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Dato for kurs"
+
+msgid "CSVColumn_DateValue"
+msgstr "Dato for værdi"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta i %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Vekselkurs"
+
+msgid "CSVColumn_Fees"
+msgstr "Gebyrer"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Bruttobeløb"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Indgående overførsler"
+
+msgid "CSVColumn_Name"
+msgstr "Navn"
+
+msgid "CSVColumn_Note"
+msgstr "Bemærkning"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Udgående overførsler"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Værdipapirkonto"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Modregnings værdipapirkonto"
+
+msgid "CSVColumn_Quote"
+msgstr "Kurs"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Værdipapirnavn"
+
+msgid "CSVColumn_Shares"
+msgstr "Aktier"
+
+msgid "CSVColumn_Taxes"
+msgstr "Skatter"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Værdipapirkode"
+
+msgid "CSVColumn_Time"
+msgstr "Tid"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Transaktionsvaluta"
+
+msgid "CSVColumn_Type"
+msgstr "Type"
+
+msgid "CSVColumn_Value"
+msgstr "Værdi"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Platba kartou"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Výběr hotovosti"
+
+msgid "card_order_billed"
+msgstr "Poplatek za kartu"
+
+msgid "card_refund"
+msgstr "Vrácení peněz na kartu"

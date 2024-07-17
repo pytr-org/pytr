@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: nl\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Aankoop"
+
+msgid "DEPOSIT"
+msgstr "Storting"
+
+msgid "DIVIDENDS"
+msgstr "Dividend"
+
+msgid "FEES"
+msgstr "Kosten"
+
+msgid "FEES_REFUND"
+msgstr "Terugbetaling van kosten"
+
+msgid "INTEREST"
+msgstr "Rentebaten"
+
+msgid "INTEREST_CHARGE"
+msgstr "Rentelasten"
+
+msgid "REMOVAL"
+msgstr "Onttrekking"
+
+msgid "SELL"
+msgstr "Verkoop"
+
+msgid "TAXES"
+msgstr "Belastingen"
+
+msgid "TAX_REFUND"
+msgstr "Terugbetaling van belastingen"
+
+msgid "TRANSFER_IN"
+msgstr "Inkomende overboeking"
+
+msgid "TRANSFER_OUT"
+msgstr "Uitgaande overboeking"
+
+msgid "CSVColumn_AccountName"
+msgstr "Rekening"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Tegenrekening"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Resultaat (%, cumulatief)"
+
+msgid "CSVColumn_Currency"
+msgstr "Valuta"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Valuta (bruto)"
+
+msgid "CSVColumn_Date"
+msgstr "Datum"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Koersdatum"
+
+msgid "CSVColumn_DateValue"
+msgstr "Datum"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta (%)"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Wisselkoers"
+
+msgid "CSVColumn_Fees"
+msgstr "Kosten"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Waarde (bruto)"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Inkomende overschrijvingen"
+
+msgid "CSVColumn_Name"
+msgstr "Naam"
+
+msgid "CSVColumn_Note"
+msgstr "Opmerking"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Uitgaande overschrijvingen"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Portefeuille"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Portefeuilletegenrekening"
+
+msgid "CSVColumn_Quote"
+msgstr "Koers"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Effect"
+
+msgid "CSVColumn_Shares"
+msgstr "Aantal"
+
+msgid "CSVColumn_Taxes"
+msgstr "Belasting"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Tickersymbool"
+
+msgid "CSVColumn_Time"
+msgstr "Tijd"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Transactievaluta"
+
+msgid "CSVColumn_Type"
+msgstr "Transactietype"
+
+msgid "CSVColumn_Value"
+msgstr "Waarde (netto)"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Kaarttransactie"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Geldopname"
+
+msgid "card_order_billed"
+msgstr "Kosten kaart"
+
+msgid "card_refund"
+msgstr "Terugbetaling op kaart"

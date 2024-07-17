@@ -3,6 +3,7 @@ import sys
 from pygments import highlight, lexers, formatters
 import time
 import pathlib
+from getpass import getpass
 
 from pytr.api import TradeRepublicApi, CREDENTIALS_FILE, COOKIES_FILE
 from pytr.utils import get_logger
@@ -55,7 +56,7 @@ def login(phone_no=None, pin=None, web=True, save_credentials=False, credentials
 
         if pin is None:
             print('Please enter your TradeRepublic pin:')
-            pin = input()
+            pin = getpass(prompt='Pin (Input is hidden):')
 
     if save_credentials:
         with open(credentials_file, 'w') as f:

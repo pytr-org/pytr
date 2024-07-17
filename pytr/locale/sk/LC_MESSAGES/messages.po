@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: sk\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Kúpiť"
+
+msgid "DEPOSIT"
+msgstr "Vklad"
+
+msgid "DIVIDENDS"
+msgstr "Dividenda"
+
+msgid "FEES"
+msgstr "Poplatky"
+
+msgid "FEES_REFUND"
+msgstr "Vrátenie poplatkov"
+
+msgid "INTEREST"
+msgstr "Úroky"
+
+msgid "INTEREST_CHARGE"
+msgstr "Úrokový poplatok"
+
+msgid "REMOVAL"
+msgstr "Výber"
+
+msgid "SELL"
+msgstr "Predaj"
+
+msgid "TAXES"
+msgstr "Dane"
+
+msgid "TAX_REFUND"
+msgstr "Vrátenie dane"
+
+msgid "TRANSFER_IN"
+msgstr "Prevod (prichádzajúci)"
+
+msgid "TRANSFER_OUT"
+msgstr "Prevod (odchádzajúci)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Účet cenných papierov"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Hotovostný účet"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Kumulovaný výkon v %"
+
+msgid "CSVColumn_Currency"
+msgstr "Mena"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Mena Hrubá suma"
+
+msgid "CSVColumn_Date"
+msgstr "Dátum"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Dátum kurzu"
+
+msgid "CSVColumn_DateValue"
+msgstr "Dátum vysporiadania"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta v %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Výmenný kurz"
+
+msgid "CSVColumn_Fees"
+msgstr "Poplatky"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Hrubá suma"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Prichádzajúce prevod"
+
+msgid "CSVColumn_Name"
+msgstr "Názov"
+
+msgid "CSVColumn_Note"
+msgstr "Poznámka"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Odchádzajúce prevod"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Účet cenných papierov"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Účet cenných papierov pre vyrovnanie"
+
+msgid "CSVColumn_Quote"
+msgstr "Kurz"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Názov cenného papiera"
+
+msgid "CSVColumn_Shares"
+msgstr "Akcie"
+
+msgid "CSVColumn_Taxes"
+msgstr "Daň"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Ticker"
+
+msgid "CSVColumn_Time"
+msgstr "Čas"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Mena transakcie"
+
+msgid "CSVColumn_Type"
+msgstr "Typ"
+
+msgid "CSVColumn_Value"
+msgstr "Hodnota"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Операция по карте"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Выдача наличных"
+
+msgid "card_order_billed"
+msgstr "Плата за обслуживание карты"
+
+msgid "card_refund"
+msgstr "Возврат на карту"
