@@ -1,9 +1,9 @@
 import os
 import subprocess
-from setuptools import setup, find_packages
-from setuptools.command.install import install
+from setuptools import setup
+from setuptools.command.build_py import build_py
 
-class InstallWithCompile(install):
+class BuildWithCompile(build_py):
     def run(self):
         locale_dir = os.path.abspath('pytr/locale')
         if not os.path.exists(locale_dir):
@@ -13,11 +13,8 @@ class InstallWithCompile(install):
         except subprocess.CalledProcessError as e:
             print(f"Error while compiling catalog: {e}")
             raise
-        install.run(self)
+        build_py.run(self)
 
 setup(
-    package_data={
-        '': ['pytr/locale/*/*/*.mo', 'pytr/locale/*/*/*.po'],  # Include locale files
-    },
-    cmdclass={'install': InstallWithCompile}
+    cmdclass={'build_py': BuildWithCompile}
 )
