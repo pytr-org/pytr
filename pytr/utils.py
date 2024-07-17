@@ -114,7 +114,7 @@ def export_transactions(input_path, output_path, lang='auto'):
 
     if lang not in ['cs', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']:
         lang = 'en'
-    lang = 'de'
+    lang = 'en'
     _ = setup_translation(language=lang)
 
     # Read relevant deposit timeline entries
