@@ -1,122 +1,122 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: de\n"
+"Language: nl\n"
 msgstr "利息支出"
 
 msgid "REMOVAL"
-msgstr "Entnahme"
+msgstr "Onttrekking"
 
 msgid "SELL"
-msgstr "Verkauf"
+msgstr "Verkoop"
 
 msgid "TAXES"
-msgstr "Steuern"
+msgstr "Belastingen"
 
 msgid "TAX_REFUND"
-msgstr "Steuerrückerstattung"
+msgstr "Terugbetaling van belastingen"
 
 msgid "TRANSFER_IN"
-msgstr "Umbuchung (Eingang)"
+msgstr "Inkomende overboeking"
 
 msgid "TRANSFER_OUT"
-msgstr "Umbuchung (Ausgang)"
+msgstr "Uitgaande overboeking"
 
 msgid "CSVColumn_AccountName"
-msgstr "Konto"
+msgstr "Rekening"
 
 msgid "CSVColumn_AccountName2nd"
-msgstr "Gegenkonto"
+msgstr "Tegenrekening"
 
 msgid "CSVColumn_CumulatedPerformanceInPercent"
-msgstr "Kumulierte Performance in %"
+msgstr "Resultaat (%, cumulatief)"
 
 msgid "CSVColumn_Currency"
-msgstr "Währung"
+msgstr "Valuta"
 
 msgid "CSVColumn_CurrencyGrossAmount"
-msgstr "Währung Bruttobetrag"
+msgstr "Valuta (bruto)"
 
 msgid "CSVColumn_Date"
 msgstr "Datum"
 
 msgid "CSVColumn_DateQuote"
-msgstr "Kursdatum"
+msgstr "Koersdatum"
 
 msgid "CSVColumn_DateValue"
-msgstr "Datum Wert"
+msgstr "Datum"
 
 msgid "CSVColumn_DeltaInPercent"
-msgstr "Delta in %"
+msgstr "Delta (%)"
 
 msgid "CSVColumn_ExchangeRate"
-msgstr "Wechselkurs"
+msgstr "Wisselkoers"
 
 msgid "CSVColumn_Fees"
-msgstr "Gebühren"
+msgstr "Kosten"
 
 msgid "CSVColumn_GrossAmount"
-msgstr "Bruttobetrag"
+msgstr "Waarde (bruto)"
 
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
 msgid "CSVColumn_InboundTransferals"
-msgstr "Zugänge"
+msgstr "Inkomende overschrijvingen"
 
 msgid "CSVColumn_Name"
-msgstr "Name"
+msgstr "Naam"
 
 msgid "CSVColumn_Note"
-msgstr "Notiz"
+msgstr "Opmerking"
 
 msgid "CSVColumn_OutboundTransferals"
-msgstr "Abgänge"
+msgstr "Uitgaande overschrijvingen"
 
 msgid "CSVColumn_PortfolioName"
-msgstr "Depot"
+msgstr "Portefeuille"
 
 msgid "CSVColumn_PortfolioName2nd"
-msgstr "Gegendepot"
+msgstr "Portefeuilletegenrekening"
 
 msgid "CSVColumn_Quote"
-msgstr "Kurs"
+msgstr "Koers"
 
 msgid "CSVColumn_SecurityName"
-msgstr "Wertpapiername"
+msgstr "Effect"
 
 msgid "CSVColumn_Shares"
-msgstr "Stück"
+msgstr "Aantal"
 
 msgid "CSVColumn_Taxes"
-msgstr "Steuern"
+msgstr "Belasting"
 
 msgid "CSVColumn_TickerSymbol"
-msgstr "Ticker-Symbol"
+msgstr "Tickersymbool"
 
 msgid "CSVColumn_Time"
-msgstr "Uhrzeit"
+msgstr "Tijd"
 
 msgid "CSVColumn_TransactionCurrency"
-msgstr "Buchungswährung"
+msgstr "Transactievaluta"
 
 msgid "CSVColumn_Type"
-msgstr "Typ"
+msgstr "Transactietype"
 
 msgid "CSVColumn_Value"
-msgstr "Wert"
+msgstr "Waarde (netto)"
 
 msgid "CSVColumn_WKN"
 msgstr "WKN"
 
 msgid "card_successful_transaction"
-msgstr "Kartentransaktion"
+msgstr "Kaarttransactie"
 
 msgid "card_successful_atm_withdrawal"
-msgstr "Barabhebung"
+msgstr "Geldopname"
 
 msgid "card_order_billed"
-msgstr "Kartengebühr"
+msgstr "Kosten kaart"
 
 msgid "card_refund"
-msgstr "Kartenerstattung"
+msgstr "Terugbetaling op kaart"

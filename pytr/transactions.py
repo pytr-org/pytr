@@ -24,9 +24,9 @@ def export_transactions(input_path, output_path, lang='auto'):
         else:
             lang = locale.split('_')[0]
 
-    if lang not in ['cs', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']:
+    if lang not in ['cs', 'da', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'zh']:
+        log.info(f'Language not yet supported {lang}')
         lang = 'en'
-    lang = 'en'
     _ = setup_translation(language=lang)
 
     # Read relevant deposit timeline entries

@@ -1,122 +1,122 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: de\n"
+"Language: sk\n"
 msgstr "利息支出"
 
 msgid "REMOVAL"
-msgstr "Entnahme"
+msgstr "Výber"
 
 msgid "SELL"
-msgstr "Verkauf"
+msgstr "Predaj"
 
 msgid "TAXES"
-msgstr "Steuern"
+msgstr "Dane"
 
 msgid "TAX_REFUND"
-msgstr "Steuerrückerstattung"
+msgstr "Vrátenie dane"
 
 msgid "TRANSFER_IN"
-msgstr "Umbuchung (Eingang)"
+msgstr "Prevod (prichádzajúci)"
 
 msgid "TRANSFER_OUT"
-msgstr "Umbuchung (Ausgang)"
+msgstr "Prevod (odchádzajúci)"
 
 msgid "CSVColumn_AccountName"
-msgstr "Konto"
+msgstr "Účet cenných papierov"
 
 msgid "CSVColumn_AccountName2nd"
-msgstr "Gegenkonto"
+msgstr "Hotovostný účet"
 
 msgid "CSVColumn_CumulatedPerformanceInPercent"
-msgstr "Kumulierte Performance in %"
+msgstr "Kumulovaný výkon v %"
 
 msgid "CSVColumn_Currency"
-msgstr "Währung"
+msgstr "Mena"
 
 msgid "CSVColumn_CurrencyGrossAmount"
-msgstr "Währung Bruttobetrag"
+msgstr "Mena Hrubá suma"
 
 msgid "CSVColumn_Date"
-msgstr "Datum"
+msgstr "Dátum"
 
 msgid "CSVColumn_DateQuote"
-msgstr "Kursdatum"
+msgstr "Dátum kurzu"
 
 msgid "CSVColumn_DateValue"
-msgstr "Datum Wert"
+msgstr "Dátum vysporiadania"
 
 msgid "CSVColumn_DeltaInPercent"
-msgstr "Delta in %"
+msgstr "Delta v %"
 
 msgid "CSVColumn_ExchangeRate"
-msgstr "Wechselkurs"
+msgstr "Výmenný kurz"
 
 msgid "CSVColumn_Fees"
-msgstr "Gebühren"
+msgstr "Poplatky"
 
 msgid "CSVColumn_GrossAmount"
-msgstr "Bruttobetrag"
+msgstr "Hrubá suma"
 
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
 msgid "CSVColumn_InboundTransferals"
-msgstr "Zugänge"
+msgstr "Prichádzajúce prevod"
 
 msgid "CSVColumn_Name"
-msgstr "Name"
+msgstr "Názov"
 
 msgid "CSVColumn_Note"
-msgstr "Notiz"
+msgstr "Poznámka"
 
 msgid "CSVColumn_OutboundTransferals"
-msgstr "Abgänge"
+msgstr "Odchádzajúce prevod"
 
 msgid "CSVColumn_PortfolioName"
-msgstr "Depot"
+msgstr "Účet cenných papierov"
 
 msgid "CSVColumn_PortfolioName2nd"
-msgstr "Gegendepot"
+msgstr "Účet cenných papierov pre vyrovnanie"
 
 msgid "CSVColumn_Quote"
-msgstr "Kurs"
+msgstr "Kurz"
 
 msgid "CSVColumn_SecurityName"
-msgstr "Wertpapiername"
+msgstr "Názov cenného papiera"
 
 msgid "CSVColumn_Shares"
-msgstr "Stück"
+msgstr "Akcie"
 
 msgid "CSVColumn_Taxes"
-msgstr "Steuern"
+msgstr "Daň"
 
 msgid "CSVColumn_TickerSymbol"
-msgstr "Ticker-Symbol"
+msgstr "Ticker"
 
 msgid "CSVColumn_Time"
-msgstr "Uhrzeit"
+msgstr "Čas"
 
 msgid "CSVColumn_TransactionCurrency"
-msgstr "Buchungswährung"
+msgstr "Mena transakcie"
 
 msgid "CSVColumn_Type"
 msgstr "Typ"
 
 msgid "CSVColumn_Value"
-msgstr "Wert"
+msgstr "Hodnota"
 
 msgid "CSVColumn_WKN"
 msgstr "WKN"
 
 msgid "card_successful_transaction"
-msgstr "Kartentransaktion"
+msgstr "Операция по карте"
 
 msgid "card_successful_atm_withdrawal"
-msgstr "Barabhebung"
+msgstr "Выдача наличных"
 
 msgid "card_order_billed"
-msgstr "Kartengebühr"
+msgstr "Плата за обслуживание карты"
 
 msgid "card_refund"
-msgstr "Kartenerstattung"
+msgstr "Возврат на карту"

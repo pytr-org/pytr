@@ -1,122 +1,122 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: de\n"
+"Language: zh\n"
 msgstr "利息支出"
 
 msgid "REMOVAL"
-msgstr "Entnahme"
+msgstr "取款"
 
 msgid "SELL"
-msgstr "Verkauf"
+msgstr "卖出"
 
 msgid "TAXES"
-msgstr "Steuern"
+msgstr "税款"
 
 msgid "TAX_REFUND"
-msgstr "Steuerrückerstattung"
+msgstr "退税"
 
 msgid "TRANSFER_IN"
-msgstr "Umbuchung (Eingang)"
+msgstr "转入"
 
 msgid "TRANSFER_OUT"
-msgstr "Umbuchung (Ausgang)"
+msgstr "转出"
 
 msgid "CSVColumn_AccountName"
-msgstr "Konto"
+msgstr "现金账户"
 
 msgid "CSVColumn_AccountName2nd"
-msgstr "Gegenkonto"
+msgstr "目标账户"
 
 msgid "CSVColumn_CumulatedPerformanceInPercent"
-msgstr "Kumulierte Performance in %"
+msgstr "累计收益率 %"
 
 msgid "CSVColumn_Currency"
-msgstr "Währung"
+msgstr "货币"
 
 msgid "CSVColumn_CurrencyGrossAmount"
-msgstr "Währung Bruttobetrag"
+msgstr "总额货币"
 
 msgid "CSVColumn_Date"
-msgstr "Datum"
+msgstr "日期"
 
 msgid "CSVColumn_DateQuote"
-msgstr "Kursdatum"
+msgstr "报价日期"
 
 msgid "CSVColumn_DateValue"
-msgstr "Datum Wert"
+msgstr "账目日期"
 
 msgid "CSVColumn_DeltaInPercent"
-msgstr "Delta in %"
+msgstr "变化 %"
 
 msgid "CSVColumn_ExchangeRate"
-msgstr "Wechselkurs"
+msgstr "汇率"
 
 msgid "CSVColumn_Fees"
-msgstr "Gebühren"
+msgstr "费用"
 
 msgid "CSVColumn_GrossAmount"
-msgstr "Bruttobetrag"
+msgstr "总额"
 
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
 msgid "CSVColumn_InboundTransferals"
-msgstr "Zugänge"
+msgstr "总转入"
 
 msgid "CSVColumn_Name"
-msgstr "Name"
+msgstr "名称"
 
 msgid "CSVColumn_Note"
-msgstr "Notiz"
+msgstr "备注"
 
 msgid "CSVColumn_OutboundTransferals"
-msgstr "Abgänge"
+msgstr "总转出"
 
 msgid "CSVColumn_PortfolioName"
-msgstr "Depot"
+msgstr "证券账户"
 
 msgid "CSVColumn_PortfolioName2nd"
-msgstr "Gegendepot"
+msgstr "目标证券账户"
 
 msgid "CSVColumn_Quote"
-msgstr "Kurs"
+msgstr "报价"
 
 msgid "CSVColumn_SecurityName"
-msgstr "Wertpapiername"
+msgstr "证券名称"
 
 msgid "CSVColumn_Shares"
-msgstr "Stück"
+msgstr "份额"
 
 msgid "CSVColumn_Taxes"
-msgstr "Steuern"
+msgstr "税款"
 
 msgid "CSVColumn_TickerSymbol"
-msgstr "Ticker-Symbol"
+msgstr "证券代码"
 
 msgid "CSVColumn_Time"
-msgstr "Uhrzeit"
+msgstr "时间"
 
 msgid "CSVColumn_TransactionCurrency"
-msgstr "Buchungswährung"
+msgstr "账目货币"
 
 msgid "CSVColumn_Type"
-msgstr "Typ"
+msgstr "类型"
 
 msgid "CSVColumn_Value"
-msgstr "Wert"
+msgstr "净额"
 
 msgid "CSVColumn_WKN"
 msgstr "WKN"
 
 msgid "card_successful_transaction"
-msgstr "Kartentransaktion"
+msgstr "Операция по карте"
 
 msgid "card_successful_atm_withdrawal"
-msgstr "Barabhebung"
+msgstr "Выдача наличных"
 
 msgid "card_order_billed"
-msgstr "Kartengebühr"
+msgstr "Плата за обслуживание карты"
 
 msgid "card_refund"
-msgstr "Kartenerstattung"
+msgstr "Возврат на карту"

@@ -9,7 +9,6 @@ def setup_translation(language='en'):
     """Set up translations for the specified language."""
     # Get the absolute path of the locale directory
     locale_dir = os.path.join(os.path.dirname(__file__), '.', 'locale') # Works only with pip install -e .
-    log.info(f"locale_dir {locale_dir}")
     # Set the locale directory and the language
     lang = gettext.translation('messages', localedir=locale_dir, languages=[language], fallback=True)
     lang.install()

@@ -1,122 +1,122 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: de\n"
+"Language: pl\n"
 msgstr "利息支出"
 
 msgid "REMOVAL"
-msgstr "Entnahme"
+msgstr "Wypłata"
 
 msgid "SELL"
-msgstr "Verkauf"
+msgstr "Sprzedaż"
 
 msgid "TAXES"
-msgstr "Steuern"
+msgstr "Podatki"
 
 msgid "TAX_REFUND"
-msgstr "Steuerrückerstattung"
+msgstr "Zwrot podatku"
 
 msgid "TRANSFER_IN"
-msgstr "Umbuchung (Eingang)"
+msgstr "Transfer (Przychodzący)"
 
 msgid "TRANSFER_OUT"
-msgstr "Umbuchung (Ausgang)"
+msgstr "Transfer (Wychodzący)"
 
 msgid "CSVColumn_AccountName"
-msgstr "Konto"
+msgstr "Konto pieniężne"
 
 msgid "CSVColumn_AccountName2nd"
-msgstr "Gegenkonto"
+msgstr "Konto przeciwstawne"
 
 msgid "CSVColumn_CumulatedPerformanceInPercent"
-msgstr "Kumulierte Performance in %"
+msgstr "Skumulowany wynik w %"
 
 msgid "CSVColumn_Currency"
-msgstr "Währung"
+msgstr "Waluta"
 
 msgid "CSVColumn_CurrencyGrossAmount"
-msgstr "Währung Bruttobetrag"
+msgstr "Kwota waluty brutto"
 
 msgid "CSVColumn_Date"
-msgstr "Datum"
+msgstr "Data"
 
 msgid "CSVColumn_DateQuote"
-msgstr "Kursdatum"
+msgstr "Data notowania"
 
 msgid "CSVColumn_DateValue"
-msgstr "Datum Wert"
+msgstr "Data wartości"
 
 msgid "CSVColumn_DeltaInPercent"
-msgstr "Delta in %"
+msgstr "Różnica w %"
 
 msgid "CSVColumn_ExchangeRate"
-msgstr "Wechselkurs"
+msgstr "Kurs wymiany"
 
 msgid "CSVColumn_Fees"
-msgstr "Gebühren"
+msgstr "Opłaty"
 
 msgid "CSVColumn_GrossAmount"
-msgstr "Bruttobetrag"
+msgstr "Kwota brutto"
 
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
 msgid "CSVColumn_InboundTransferals"
-msgstr "Zugänge"
+msgstr "Przelewy przychodzące"
 
 msgid "CSVColumn_Name"
-msgstr "Name"
+msgstr "Nazwa"
 
 msgid "CSVColumn_Note"
-msgstr "Notiz"
+msgstr "Uwaga"
 
 msgid "CSVColumn_OutboundTransferals"
-msgstr "Abgänge"
+msgstr "Przelewy wychodzące"
 
 msgid "CSVColumn_PortfolioName"
-msgstr "Depot"
+msgstr "Konto walorów"
 
 msgid "CSVColumn_PortfolioName2nd"
-msgstr "Gegendepot"
+msgstr "Konto przeciwstawne walorów"
 
 msgid "CSVColumn_Quote"
 msgstr "Kurs"
 
 msgid "CSVColumn_SecurityName"
-msgstr "Wertpapiername"
+msgstr "Nazwa waloru"
 
 msgid "CSVColumn_Shares"
-msgstr "Stück"
+msgstr "Akcje"
 
 msgid "CSVColumn_Taxes"
-msgstr "Steuern"
+msgstr "Podatki"
 
 msgid "CSVColumn_TickerSymbol"
-msgstr "Ticker-Symbol"
+msgstr "Symbol giełdowy waloru"
 
 msgid "CSVColumn_Time"
-msgstr "Uhrzeit"
+msgstr "Czas"
 
 msgid "CSVColumn_TransactionCurrency"
-msgstr "Buchungswährung"
+msgstr "Waluta transakcji"
 
 msgid "CSVColumn_Type"
 msgstr "Typ"
 
 msgid "CSVColumn_Value"
-msgstr "Wert"
+msgstr "Wartość"
 
 msgid "CSVColumn_WKN"
 msgstr "WKN"
 
 msgid "card_successful_transaction"
-msgstr "Kartentransaktion"
+msgstr "Kaarttransactie"
 
 msgid "card_successful_atm_withdrawal"
-msgstr "Barabhebung"
+msgstr "Geldopname"
 
 msgid "card_order_billed"
-msgstr "Kartengebühr"
+msgstr "Kosten kaart"
 
 msgid "card_refund"
-msgstr "Kartenerstattung"
+msgstr "Terugbetaling op kaart"
