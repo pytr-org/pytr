@@ -1,2 +1,1 @@
-include locale/*
-recursive-include locale *
+recursive-include pytr/locale *.mo *.po

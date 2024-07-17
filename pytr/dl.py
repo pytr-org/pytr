@@ -7,9 +7,9 @@ from requests import session
 
 from pathvalidate import sanitize_filepath
 
-from pytr.utils import preview, Timeline, get_logger
+from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
-
+from pytr.timeline import Timeline
 
 class DL:
     def __init__(
