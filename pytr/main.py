@@ -3,7 +3,6 @@
 import argparse
 import asyncio
 import signal
-import time
 
 import shtab
 
@@ -11,7 +10,8 @@ from importlib.metadata import version
 from pathlib import Path
 from datetime import datetime, timedelta
 
-from pytr.utils import get_logger, check_version, export_transactions
+from pytr.utils import get_logger, check_version
+from pytr.transactions import export_transactions
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
