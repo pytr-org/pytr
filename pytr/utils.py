@@ -4,9 +4,11 @@ import coloredlogs
 import json
 import logging
 import requests
-from datetime import datetime
+from datetime import datetime 
 from locale import getdefaultlocale
 from packaging import version
+from .event import Event, i18n
+from .translation import setup_translation
 
 log_level = None
 
@@ -112,203 +114,28 @@ def export_transactions(input_path, output_path, lang='auto'):
 
     if lang not in ['cs', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pt', 'ru']:
         lang = 'en'
+    lang = 'de'
+    _ = setup_translation(language=lang)
 
-    i18n = {
-        "date": {
-            "cs": "Datum",
-            "de": "Datum",
-            "en": "Date",
-            "es": "Fecha",
-            "fr": "Date",
-            "it": "Data",
-            "nl": "Datum",
-            "pt": "Data",
-            "ru": "\u0414\u0430\u0442\u0430",
-        },
-        "type": {
-            "cs": "Typ",
-            "de": "Typ",
-            "en": "Type",
-            "es": "Tipo",
-            "fr": "Type",
-            "it": "Tipo",
-            "nl": "Type",
-            "pt": "Tipo",
-            "ru": "\u0422\u0438\u043F",
-        },
-        "value": {
-            "cs": "Hodnota",
-            "de": "Wert",
-            "en": "Value",
-            "es": "Valor",
-            "fr": "Valeur",
-            "it": "Valore",
-            "nl": "Waarde",
-            "pt": "Valor",
-            "ru": "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435",
-        },
-        "note": {
-            "cs": "Poznámka",
-            "de": "Notiz",
-            "en": "Note",
-            "es": "Nota",
-            "fr": "Note",
-            "it": "Nota",
-            "nl": "Noot",
-            "pt": "Nota",
-            "ru": "\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u0435",
-        },
-        "deposit": {
-            "cs": 'Vklad',
-            "de": 'Einlage',
-            "en": 'Deposit',
-            "es": 'Dep\u00F3sito',
-            "fr": 'D\u00E9p\u00F4t',
-            "it": 'Deposito',
-            "nl": 'Storting',
-            "pt": 'Dep\u00F3sito',
-            "ru": '\u041F\u043E\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435',
-        },
-        "removal": {
-            "cs": 'V\u00FDb\u011Br',
-            "de": 'Entnahme',
-            "en": 'Removal',
-            "es": 'Removal',
-            "fr": 'Retrait',
-            "it": 'Prelievo',
-            "nl": 'Opname',
-            "pt": 'Levantamento',
-            "ru": '\u0421\u043F\u0438\u0441\u0430\u043D\u0438\u0435',
-        },
-        "interest": {
-            "cs": 'Úrokové poplatky',
-            "de": 'Zinsen',
-            "en": 'Interest',
-            "es": 'Interés',
-            "fr": 'L\'intérêts',
-            "it": 'Interessi',
-            "nl": 'Interest',
-            "pt": 'Odsetki',
-            "ru": '\u041f\u0440\u043e\u0446\u0435\u0301\u043d\u0442\u044b',
-        },
-        "card transaction": {
-            "cs": 'Platba kartou',
-            "de": 'Kartentransaktion',
-            "en": 'Card Transaction',
-            "es": 'Transacción con tarjeta',
-            "fr": 'Transaction par carte',
-            "it": 'Transazione con carta',
-            "nl": 'Kaarttransactie',
-            "pt": 'Transakcja kartą',
-            "ru": '\u041e\u043f\u0435\u0440\u0430\u0446\u0438\u044f\u0020\u043f\u043e\u0020\u043a\u0430\u0440\u0442\u0435',
-        },
-        "card atm withdrawal": {
-            "cs": 'Výběr hotovosti',
-            "de": 'Barabhebung',
-            "en": 'ATM withdrawal',
-            "es": 'Retiradas de efectivo',
-            "fr": 'Retrait en espèces',
-            "it": 'Prelievo di contanti',
-            "nl": 'Geldopname',
-            "pt": 'Levantamento de dinheiro',
-            "ru": '\u0412\u044b\u0434\u0430\u0447\u0430\u0020\u043d\u0430\u043b\u0438\u0447\u043d\u044b\u0445',
-        },
-        "card order": {
-            "cs": 'Poplatek za kartu',
-            "de": 'Kartengebühr',
-            "en": 'Card fee',
-            "es": 'Transacción con tarjeta',
-            "fr": 'Frais de carte',
-            "it": 'Tassa sulla carta',
-            "nl": 'Kosten kaart',
-            "pt": 'Taxa do cartão',
-            "ru": '\u041f\u043b\u0430\u0442\u0430\u0020\u0437\u0430\u0020\u043e\u0431\u0441\u043b\u0443\u0436\u0438\u0432\u0430\u043d\u0438\u0435\u0020\u043a\u0430\u0440\u0442\u044b',
-        },
-        "card refund": {
-            "cs": "Vrácení peněz na kartu",
-            "de": "Kartenerstattung",
-            "en": "Card refund",
-            "es": "Reembolso de tarjeta",
-            "fr": "Remboursement par carte",
-            "it": "Rimborso sulla carta",
-            "nl": "Terugbetaling op kaart",
-            "pt": "Reembolso do cartão",
-            "ru": "\u0412\u043e\u0437\u0432\u0440\u0430\u0442\u0020\u043d\u0430\u0020\u043a\u0430\u0440\u0442\u0443"
-        },
-        "decimal dot": {
-            "cs": ',',
-            "de": ',',
-            "en": '.',
-            "es": ',',
-            "fr": ',',
-            "it": ',',
-            "nl": ',',
-            "pt": ',',
-            "ru": ',',
-        },
-        "title": {
-            "cs": "Titul",
-            "de": "Titel",
-            "en": "Title",
-            "es": "Título",
-            "fr": "Titre",
-            "it": "Titolo",
-            "nl": "Titel",
-            "pt": "Título",
-            "ru": "\u0417\u0430\u0433\u043e\u043b\u043e\u0432\u043e\u043a"
-        },
-    }
     # Read relevant deposit timeline entries
     with open(input_path, encoding='utf-8') as f:
         timeline = json.load(f)
 
-    # Write deposit_transactions.csv file
-    # date, transaction, shares, amount, total, fee, isin, name
     log.info('Write deposit entries')
     with open(output_path, 'w', encoding='utf-8') as f:
-        # f.write('Datum;Typ;Stück;amount;Wert;Gebühren;ISIN;name\n')
-        csv_fmt = '{date};{type};{value};{note};{title}\n'
-        header = csv_fmt.format(date=i18n['date'][lang], type=i18n['type'][lang], value=i18n['value'][lang], note=i18n['note'][lang], title=i18n['title'][lang])
+        csv_fmt = '{date};{type};{value};{note};{isin};{shares}\n'
+        header = csv_fmt.format(date=_("CSVColumn_Date"), type=_("CSVColumn_Type"), \
+                                value=_("CSVColumn_Value"), note=_("CSVColumn_Note"), \
+                                isin=_("CSVColumn_ISIN"), shares=_("CSVColumn_Shares"))
         f.write(header)
 
-        for event in timeline:
-            dateTime = datetime.fromisoformat(event['timestamp'][:19])
-            date = dateTime.strftime('%Y-%m-%d')
-
-            title = event['title']
-            try:
-                body = event['body']
-            except KeyError:
-                body = ''
-
-            if 'storniert' in body:
+        for event_json in timeline:
+            event = Event(event_json)
+            if not event.is_pp_relevant:
                 continue
 
-            try:
-                decdot = i18n['decimal dot'][lang]
-                amount = str(abs(event['amount']['value'])).replace('.', decdot)
-            except (KeyError, TypeError):
-                continue
-
-            # Cash in
-            if event["eventType"] in ("PAYMENT_INBOUND", "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT"):
-                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount, note='', title=title))
-            elif event["eventType"] == "PAYMENT_OUTBOUND":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note='', title=title))
-            elif event["eventType"] == "INTEREST_PAYOUT_CREATED":
-                f.write(csv_fmt.format(date=date, type=i18n['interest'][lang], value=amount, note='', title=title))
-            # Dividend - Shares
-            elif title == 'Reinvestierung':
-                # TODO: Implement reinvestment
-                log.warning('Detected reivestment, skipping... (not implemented yet)')
-            elif event["eventType"] == "card_successful_transaction":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card transaction'][lang], title=title))
-            elif event["eventType"] == "card_successful_atm_withdrawal":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card atm withdrawal'][lang], title=title))
-            elif event["eventType"] == "card_order_billed":
-                f.write(csv_fmt.format(date=date, type=i18n['removal'][lang], value=amount, note=i18n['card order'][lang], title=title))
-            elif event["eventType"] == "card_refund":
-                f.write(csv_fmt.format(date=date, type=i18n['deposit'][lang], value=amount, note=i18n['card refund'][lang], title=title))
+            f.write(csv_fmt.format(date=event.date, type=_(event.pp_type), value=event.amount, 
+                                    note=(_(event.note)+" "+event.title), isin=event.isin, shares=event.shares))
 
     log.info('Deposit creation finished!')
 
@@ -476,7 +303,10 @@ class Timeline:
 
             with open(dl.output_path / 'events_with_documents.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+            
+            with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
+                json.dump(self.events_without_docs + self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            export_transactions(dl.output_path / 'events_with_documents.json', dl.output_path / 'account_transactions.csv')
+            export_transactions(dl.output_path / 'all_events.json', dl.output_path / 'account_transactions.csv')
 
             dl.work_responses()

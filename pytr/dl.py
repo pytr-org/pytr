@@ -172,7 +172,7 @@ class DL:
             self.futures.append(future)
             self.log.debug(f'Added {filepath} to queue')
         else:
-            self.log.debug(f'file {filepath} already exists. Skipping...')
+            self.log.info(f'file {filepath} already exists. Skipping...')
 
     def work_responses(self):
         '''

@@ -1,6 +1,15 @@
 from pathlib import Path
 from setuptools import setup
+import os
 
+def find_locale_files(directory):
+    paths = []
+    for (path, _, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
+
+locale_files = find_locale_files('locale')
 
 def readme():
     this_directory = Path(__file__).parent.resolve()
@@ -25,8 +34,9 @@ setup(
             'pytr = pytr.main:main',
         ],
     },
-    #  scripts=['traderep'],
-    # install_requires=['py_tr'],
+    package_data={
+        '': locale_files,  # Include locale files
+    },
     install_requires=[
         'certifi',
         'coloredlogs',
