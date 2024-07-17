@@ -1,4 +1,5 @@
 from locale import getdefaultlocale
+from babel.numbers import format_decimal
 import json
 
 from .event import Event
@@ -64,14 +65,18 @@ def export_transactions(input_path, output_path, lang="auto"):
             if not event.is_pp_relevant:
                 continue
 
+            amount = format_decimal(event.amount, locale=lang) if event.amount else ""
+            note = (_(event.note) + " - " + event.title) if event.note else event.title
+            shares = format_decimal(event.shares, locale=lang) if event.shares else ""
+
             f.write(
                 csv_fmt.format(
                     date=event.date,
                     type=_(event.pp_type),
-                    value=event.amount,
-                    note=(_(event.note) + " " + event.title),
+                    value=amount,
+                    note=note,
                     isin=event.isin,
-                    shares=event.shares,
+                    shares=shares,
                 )
             )
 
