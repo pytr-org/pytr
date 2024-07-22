@@ -1,22 +1,24 @@
-import re
+import os
 
 from concurrent.futures import as_completed
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
 from requests import session
+from datetime import datetime
 
 from pathvalidate import sanitize_filepath
 
 from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline
+from pytr.file_destination_provider import FileDestinationProvider
 
 class DL:
     def __init__(
         self,
         tr,
         output_path,
-        filename_fmt,
+        file_destination_provider:FileDestinationProvider,
         since_timestamp=0,
         history_file='pytr_history',
         max_workers=8,
@@ -25,13 +27,13 @@ class DL:
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
-        filename_fmt: format string to customize the file names
+        file_destination_provider: The destination provider for the file path and file names based on the event type and other parameters.
         since_timestamp: downloaded files since this date (unix timestamp)
         '''
         self.tr = tr
         self.output_path = Path(output_path)
         self.history_file = self.output_path / history_file
-        self.filename_fmt = filename_fmt
+        self.file_destination_provider = file_destination_provider
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
 
@@ -83,75 +85,37 @@ class DL:
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def dl_doc(self, doc, titleText, subtitleText, subfolder=None):
+    def dl_doc(self, doc,  event_type: str, event_title: str, event_subtitle: str, section_title: str, timestamp: datetime):
         '''
         send asynchronous request, append future with filepath to self.futures
         '''
         doc_url = doc['action']['payload']
-        if subtitleText is None:
-            subtitleText = ''
+        document_title =  doc.get('title', '')
 
-        try:
-            date = doc['detail']
-            iso_date = '-'.join(date.split('.')[::-1])
-        except KeyError:
-            date = ''
-            iso_date = ''
-        doc_id = doc['id']
+        
+        variables = {}
+        variables['iso_date'] = timestamp.strftime('%Y-%m-%d')
+        variables['iso_date_year'] = timestamp.strftime('%Y')
+        variables['iso_date_month'] = timestamp.strftime('%m')
+        variables['iso_date_day'] = timestamp.strftime('%d')
+        variables['iso_time'] = timestamp.strftime('%H-%M')
+        
+        filepath = self.file_destination_provider.get_file_path(event_type, event_title, event_subtitle, section_title, document_title, variables)
+        if filepath.endswith('.pdf') is False:
+            filepath = f'{filepath}.pdf'
 
-        # extract time from subtitleText
-        try:
-            time = re.findall('um (\\d+:\\d+) Uhr', subtitleText)
-            if time == []:
-                time = ''
-            else:
-                time = f' {time[0]}'
-        except TypeError:
-            time = ''
-
-        if subfolder is not None:
-            directory = self.output_path / subfolder
-        else:
-            directory = self.output_path
-
-        # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
-        doc_type = doc['title'].rsplit(' ')
-        if doc_type[-1].isnumeric() is True:
-            doc_type_num = f' {doc_type.pop()}'
-        else:
-            doc_type_num = ''
-
-        doc_type = ' '.join(doc_type)
-        titleText = titleText.replace('\n', '').replace('/', '-')
-        subtitleText = subtitleText.replace('\n', '').replace('/', '-')
-
-        filename = self.filename_fmt.format(
-            iso_date=iso_date, time=time, title=titleText, subtitle=subtitleText, doc_num=doc_type_num, id=doc_id
-        )
-
-        filename_with_doc_id = filename + f' ({doc_id})'
-
-        if doc_type in ['Kontoauszug', 'Depotauszug']:
-            filepath = directory / 'Abschlüsse' / f'{filename}' / f'{doc_type}.pdf'
-            filepath_with_doc_id = directory / 'Abschlüsse' / f'{filename_with_doc_id}' / f'{doc_type}.pdf'
-        else:
-            filepath = directory / doc_type / f'{filename}.pdf'
-            filepath_with_doc_id = directory / doc_type / f'{filename_with_doc_id}.pdf'
+        filepath = Path(os.path.join( self.output_path , filepath))
 
         if self.universal_filepath:
             filepath = sanitize_filepath(filepath, '_', 'universal')
-            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'universal')
         else:
             filepath = sanitize_filepath(filepath, '_', 'auto')
-            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'auto')
+
 
         if filepath in self.filepaths:
-            self.log.debug(f'File {filepath} already in queue. Append document id {doc_id}...')
-            if filepath_with_doc_id in self.filepaths:
-                self.log.debug(f'File {filepath_with_doc_id} already in queue. Skipping...')
-                return
-            else:
-                filepath = filepath_with_doc_id
+            self.log.debug(f'File {filepath} already in queue. Skipping...')
+            return
+        
         doc['local filepath'] = str(filepath)
         self.filepaths.append(filepath)
 

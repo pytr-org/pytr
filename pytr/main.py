@@ -17,6 +17,7 @@ from pytr.account import login
 from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
+from pytr.file_destination_provider import FileDestinationProvider
 
 
 def get_main_parser():
@@ -80,12 +81,7 @@ def get_main_parser():
     )
 
     parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH', type=Path)
-    parser_dl_docs.add_argument(
-        '--format',
-        help='available variables:\tiso_date, time, title, doc_num, subtitle, id',
-        metavar='FORMAT_STRING',
-        default='{iso_date}{time} {title}{doc_num}',
-    )
+
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
@@ -200,10 +196,11 @@ def main():
             since_timestamp = 0
         else:
             since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
+        
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
-            args.format,
+            FileDestinationProvider(),
             since_timestamp=since_timestamp,
             max_workers=args.workers,
             universal_filepath=args.universal,

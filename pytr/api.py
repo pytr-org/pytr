@@ -32,18 +32,15 @@ import certifi
 import ssl
 import requests
 import websockets
+
 from ecdsa import NIST256p, SigningKey
 from ecdsa.util import sigencode_der
 from http.cookiejar import MozillaCookieJar
 
 from pytr.utils import get_logger
+from pytr.app_path import *
 
 
-home = pathlib.Path.home()
-BASE_DIR = home / '.pytr'
-CREDENTIALS_FILE = BASE_DIR / 'credentials'
-KEY_FILE = BASE_DIR / 'keyfile.pem'
-COOKIES_FILE = BASE_DIR / 'cookies.txt'
 
 
 class TradeRepublicApi:
