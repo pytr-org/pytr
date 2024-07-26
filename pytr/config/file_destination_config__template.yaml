@@ -1,6 +1,6 @@
 destination:
 # valid for all blocks without explicit filename
-  all:
+  default:
     filename: "{iso_date}.{iso_time} {event_title}" # {event_title} = Wertpapier-/ETF-/Produkt-Name
 
 
@@ -10,8 +10,14 @@ destination:
     filename: "{iso_date}.{iso_time} {event_type} - {event_subtitle} - {document_title} - {event_title}"
 
 
-# Aktien
-  aktien_kauf_abrechnung:
+# if pattern found multiple times, use this block
+  multiple_match:
+    path: "MultipleMatchPattern/{section_title}/"
+    filename: "{iso_date}.{iso_time} {event_type} - {event_subtitle} - {document_title} - {event_title}"
+
+
+# stocks
+  stock_order_settlement:
     pattern: [
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Kauforder",        section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit gekauft
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Limit-Buy-Order",  section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit gekauft
@@ -21,10 +27,10 @@ destination:
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",        section_title: "Dokumente", document_title: "Abrechnung" }, # Aktiengeschenk
       { event_type: "SHAREBOOKING",         event_subtitle: "Verkauf",          section_title: "Dokumente", document_title: "Abrechnung \\d" }, # Kapitalmassnahme
     ]
-    path: "Wertpapiere/Abrechnung/{iso_date_year}/"
+    path: "Stocks/Settlement/{iso_date_year}/"
 
 
-  aktien_kauf_kosteninfo:
+  stock_order_cost_report:
     pattern: [
       { event_type: "ORDER_CREATED",        event_subtitle: "Limit-Buy-Order erstellt", section_title: "Dokumente", document_title: "Kosteninformation" }, # limit erstellt
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Kosteninformation" },
@@ -34,32 +40,32 @@ destination:
       { event_type: "TRADE_INVOICE",        event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Kosteninformation" },
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",                section_title: "Dokumente", document_title: "Kosteninformation" }, # Aktiengeschenk
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",                section_title: "Dokumente", document_title: "Kosteninformation \\d" }, # Aktiengeschenk
-      { event_type: "EX_POST_COST_REPORT",  event_subtitle: , event_title: "Ex-Post Kosteninformation", section_title: "Dokumente", document_title: "Ex-Post Kosteninformation \\d+" },
+      { event_type: "EX_POST_COST_REPORT",  event_title: "Ex-Post Kosteninformation",   section_title: "Dokumente", document_title: "Ex-Post Kosteninformation \\d+" },
     ]
-    path: "Wertpapiere/Kosteninfo/{iso_date_year}/"
+    path: "Stocks/Cost report/{iso_date_year}/"
 
 
-  aktien_kauf_limit_erstellt:
+  stock_order_created:
     pattern: [
+      { event_type: "TRADE_INVOICE",  event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Auftragsbestätigung" },
       { event_type: "ORDER_CREATED",  event_subtitle: "Limit-Buy-Order erstellt", section_title: "Dokumente", document_title: "Auftragsbestätigung" },
       { event_type: "ORDER_EXECUTED", event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Auftragsbestätigung" },
       { event_type: "ORDER_EXECUTED", event_subtitle: "Stop-Sell-Order",          section_title: "Dokumente", document_title: "Auftragsbestätigung" },
-      { event_type: "TRADE_INVOICE",  event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Auftragsbestätigung" },
     ]
-    path: "Wertpapiere/Order erstellt/{iso_date_year}/"
+    path: "Stocks/Order created/{iso_date_year}/"
 
 
-  aktien_limit_storno:
+  stock_order_canceled:
     pattern: [
-      { event_type: "TRADE_CANCELED",         event_subtitle: "Verkauf-Abrechnung storniert", section_title: "Dokumente", document_title: "Abrechnung \\d" },
       { event_type: "ORDER_CANCELED",         event_subtitle: "Limit-Buy-Order storniert",    section_title: "Dokumente", document_title: "Löschbestätigung" },
+      { event_type: "TRADE_CANCELED",         event_subtitle: "Verkauf-Abrechnung storniert", section_title: "Dokumente", document_title: "Abrechnung \\d" },
       { event_type: "SAVINGS_PLAN_CANCELED",  event_subtitle: "Sparplan storniert",           section_title: "Dokumente", document_title: "Stornierungsbestätigung" },
     ]
-    path: "Wertpapiere/Order storno/{iso_date_year}/"
+    path: "Stocks/Order canceled/{iso_date_year}/"
 
 
-# Kapitalmaßnahmen
-  info_anzeigen1:
+# stocks Notice
+  stock_notice1:
     pattern: [
       { event_type: "EXERCISE",     event_subtitle: "Ausübung",                                 section_title: "Dokumente", document_title: "Kundenanschreiben" },
       { event_type: "SHAREBOOKING", event_subtitle: "Split",                                    section_title: "Dokumente", document_title: "Ausführungsanzeige" },
@@ -80,215 +86,227 @@ destination:
       { event_type: "SHAREBOOKING", event_subtitle: "Kapitalerhöhung gegen Bar",                section_title: "Dokumente", document_title: "Ausführungsanzeige" },
       { event_type: "SHAREBOOKING", event_subtitle: "Kapitalerhöhung aus Gesellschaftsmitteln", section_title: "Dokumente", document_title: "Ausführungsanzeige" },
     ]
-    path: "Wertpapiere/Anzeigen/{iso_date_year}/"
+    path: "Stocks/Notice/{iso_date_year}/"
     filename: "{iso_date}.{iso_time} {event_subtitle} {event_title}"
 
 # split for better readability
-  info_anzeigen2:
+  stock_notice2:
     pattern: [
       { event_type: "CORPORATE_ACTION",      event_subtitle: "Kapitalherabsetzung",                 section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "SHAREBOOKING_CANCELED", event_subtitle: "Entflechtung storniert",              section_title: "Dokumente", document_title: "Ausführungsanzeige" },
       { event_type: "SHAREBOOKING_CANCELED", event_subtitle: "Stockdividende storniert",            section_title: "Dokumente", document_title: "Ausführungsanzeige" },
       { event_type: "SHAREBOOKING_CANCELED", event_subtitle: "Kapitalerhöhung gegen Bar storniert", section_title: "Dokumente", document_title: "Ausführungsanzeige" },
     ]
-    path: "Wertpapiere/Anzeigen/{iso_date_year}/"
+    path: "Stocks/Notice/{iso_date_year}/"
     filename: "{iso_date}.{iso_time} {event_subtitle} {event_title}"
 
 # split for better readability
-  info_anzeigen3:
+  stock_notice3:
     pattern: [
       { event_type: "SHAREBOOKING_TRANSACTIONAL",   event_subtitle: "Fusion",                      section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "SHAREBOOKING_TRANSACTIONAL",   event_subtitle: "Reinvestierung",              section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "SHAREBOOKING_TRANSACTIONAL",   event_subtitle: "Umtausch/Bezug",              section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "SHAREBOOKING_TRANSACTIONAL",   event_subtitle: "Zwangsübernahme",             section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "SHAREBOOKING_TRANSACTIONAL",   event_subtitle: "Kapitalreduktion",            section_title: "Dokumente", document_title: "Abrechnung" },
-      { event_type: "INSTRUCTION_CORPORATE_ACTION", event_subtitle: "Weisung zur Aktiendividende", section_title: "Dokumente", document_title: "Kundenanschreiben" }, #Kapitalerhöhung gegen Bar
-      { event_type: "INSTRUCTION_CORPORATE_ACTION", event_subtitle: "Weisung zur Aktiendividende", section_title: "Dokumente", document_title: "Kundenanschreiben \\d" }, #Kapitalerhöhung gegen Bar
+      # Capital increase in exchange for cash / Kapitalerhöhung gegen Bar
+      { event_type: "INSTRUCTION_CORPORATE_ACTION", event_subtitle: "Weisung zur Aktiendividende", section_title: "Dokumente", document_title: "Kundenanschreiben" },
+      { event_type: "INSTRUCTION_CORPORATE_ACTION", event_subtitle: "Weisung zur Aktiendividende", section_title: "Dokumente", document_title: "Kundenanschreiben \\d" },
     ]
-    path: "Wertpapiere/Anzeigen/{iso_date_year}/"
+    path: "Stocks/Notice/{iso_date_year}/"
     filename: "{iso_date}.{iso_time} {event_subtitle} {event_title}"
 
 # split for better readability
-  info_anzeigen4:
+  stock_notice4:
     pattern: [
-      { event_type: "ssp_corporate_action_invoice_shares",            event_subtitle: "Spin-off",      section_title: "Dokumente", document_title: "Dokumente" },
-      { event_type: "ssp_corporate_action_invoice_shares",            event_subtitle: "Reverse Split", section_title: "Dokumente", document_title: "Dokumente" },
-      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Wechsel",       section_title: "Dokumente", document_title: "Information" },
-      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Information",   section_title: "Dokumente", document_title: "Information" },
+      { event_type: "ssp_corporate_action_invoice_shares",            event_subtitle: "Spin-off",                           section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "ssp_corporate_action_invoice_shares",            event_subtitle: "Reverse Split",                      section_title: "Dokumente", document_title: "Dokumente" },
+      # Recognition of subscription rights / Einbuchung Bezugsrechte
+      { event_type: "ssp_corporate_action_invoice_shares",            event_subtitle: "Zwischenvertrieb von Wertpapieren",  section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Wechsel",                            section_title: "Dokumente", document_title: "Information" },
+      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Information",                        section_title: "Dokumente", document_title: "Information" },
+      # Repurchase of interim securities / Rückkauf von Zwischentiteln
+      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Aufruf von Zwischenpapieren",        section_title: "Dokumente", document_title: "Kapitalmaßnahmen" },
     ]
-    path: "Wertpapiere/Anzeigen/{iso_date_year}/"
+    path: "Stocks/Notice/{iso_date_year}/"
     filename: "{iso_date}.{iso_time} {event_subtitle} {event_title}"
 
 
-  portfolio_abschluess:
+  stock_report:
     pattern: [
-      { event_type: "QUARTERLY_REPORT", event_subtitle: , event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Kontoauszug" },
-      { event_type: "QUARTERLY_REPORT", event_subtitle: , event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Depotauszug" },
-      { event_type: "QUARTERLY_REPORT", event_subtitle: , event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Cryptoauszug" },
+      { event_type: "QUARTERLY_REPORT", event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Kontoauszug" },
+      { event_type: "QUARTERLY_REPORT", event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Depotauszug" },
+      { event_type: "QUARTERLY_REPORT", event_title: "Q\\d/\\d+ Abschluss", section_title: "Dokumente", document_title: "Cryptoauszug" },
     ]
-    path: "Wertpapiere/Abschluss/{iso_date_year}/"
+    path: "Stocks/Report/{iso_date_year}/"
     filename: "{iso_date} {document_title} {event_title}"
 
 
-# Dividenden
-  dividende_erhalten:
+# General Meetings
+  stock_general_meetings:
     pattern: [
-      { event_type: "CREDIT",                             event_subtitle: "Dividende",    section_title: "Dokumente", document_title: "Abrechnung" },
-      { event_type: "CREDIT",                             event_subtitle: "Ausschüttung", section_title: "Dokumente", document_title: "Abrechnung" },
-      { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Bardividende", section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "GENERAL_MEETING",                                event_subtitle: "Hauptversammlung",                                 section_title: "Dokumente", document_title: "Hauptversammlung" },
+      { event_type: "GENERAL_MEETING",                                event_subtitle: "Hauptversammlung",                                 section_title: "Dokumente", document_title: "Hauptversammlung \\d" },
+      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Jährliche Hauptversammlung",                       section_title: "Dokumente", document_title: "Information" },
+      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Außerordentliche oder spezielle Hauptversammlung", section_title: "Dokumente", document_title: "Information" },
     ]
-    path: "Dividenden/{iso_date_year}/"
+    path: "Stocks/General Meetings/{iso_date_year}/"
 
 
-# Dividenden Kapitalmaßnahme wahl
-  dividende_wahl:
+# Savings plan
+  savings_plan:
+    pattern: [
+      { event_type: "SAVINGS_PLAN_INVOICE_CREATED", event_subtitle: "Sparplan ausgeführt", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
+      { event_type: "SAVINGS_PLAN_EXECUTED",        event_subtitle: "Sparplan ausgeführt", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
+    ]
+    path: "Stocks/Savings plan/{iso_date_year}/"
+
+
+# pre-determined tax base earning
+  stock_pre_earning_tax:
+    pattern: [
+      { event_type: "PRE_DETERMINED_TAX_BASE_EARNING", event_subtitle: "Vorabpauschale", section_title: "Dokumente", document_title: "Vorabpauschale" },
+    ]
+    path: "Stocks/PreEarningTax/{iso_date_year}/"
+
+
+# Dividends
+  dividends_received:
+    pattern: [
+      { event_type: "CREDIT",                             event_subtitle: "Dividende",                   section_title: "Dokumente", document_title: "Abrechnung" },
+      { event_type: "CREDIT",                             event_subtitle: "Ausschüttung",                section_title: "Dokumente", document_title: "Abrechnung" },
+      { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Bardividende",                section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Dividende Wahlweise",         section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Bardividende korrigiert",     section_title: "Dokumente", document_title: "Dokumente" },
+      { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Reinvestition der Dividende", section_title: "Dokumente", document_title: "Dokumente" },
+    ]
+    path: "Dividends/{iso_date_year}/"
+
+
+# Dividends Corporate action election
+  dividends_election:
     pattern: [
       { event_type: "INSTRUCTION_CORPORATE_ACTION",                   event_subtitle: "Weisung zur Aktiendividende",  section_title: "Dokumente", document_title: "Dividende Wahlweise" },
       { event_type: "ssp_dividend_option_customer_instruction",       event_subtitle: "Cash oder Aktie",              section_title: "Dokumente", document_title: "Dividende Wahlweise" },
       { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Dividende Wahlweise",          section_title: "Dokumente", document_title: "Kapitalmaßnahmen" },
     ]
-    path: "Dividendenwahl/{iso_date_year}/"
+    path: "Dividendelection/{iso_date_year}/"
 
 
-# Hauptversammlungen
-  hauptversammlungen:
-    pattern: [
-      { event_type: "GENERAL_MEETING",                                event_subtitle: "Hauptversammlung",           section_title: "Dokumente", document_title: "Hauptversammlung" },
-      { event_type: "GENERAL_MEETING",                                event_subtitle: "Hauptversammlung",           section_title: "Dokumente", document_title: "Hauptversammlung \\d" },
-      { event_type: "ssp_corporate_action_informative_notification",  event_subtitle: "Jährliche Hauptversammlung", section_title: "Dokumente", document_title: "Information" },
-    ]
-    path: "Wertpapiere/Hauptversammlungen/{iso_date_year}/"
-
-
-# Sparplan
-  sparplan:
-    pattern: [
-      { event_type: "SAVINGS_PLAN_INVOICE_CREATED", event_subtitle: "Sparplan ausgeführt", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
-      { event_type: "SAVINGS_PLAN_EXECUTED",        event_subtitle: "Sparplan ausgeführt", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
-    ]
-    path: "Wertpapiere/Sparplan/{iso_date_year}/"
-
-
-# Vorabpauschale
-  vorabpauschale:
-    pattern: [
-      { event_type: "PRE_DETERMINED_TAX_BASE_EARNING", event_subtitle: "Vorabpauschale", section_title: "Dokumente", document_title: "Vorabpauschale" },
-    ]
-    path: "Wertpapiere/Vorabpauschale/{iso_date_year}/"
-
-
-# Anleihen
-  anleihe_tilgung:
+# bonds
+  bond_repayment:
     pattern: [
       { event_type: "REPAYMENT", event_subtitle: "Tilgung", section_title: "Dokumente", document_title: "Abrechnung" },
     ]
-    path: "Anleihen/Tilgungen/{iso_date_year}/"
+    path: "Bonds/{iso_date_year}/"
+    filename: "{iso_date}.{iso_time} Repayment {event_title}"
 
-  anleihe_zinsen:
+  bond_interest:
     pattern: [
       { event_type: "COUPON_PAYMENT", event_subtitle: "Coupon Zahlung", section_title: "Dokumente", document_title: "Abrechnung" },
     ]
-    path: "Anleihen/Zinsen/{iso_date_year}/"
+    path: "Bonds/{iso_date_year}/"
+    filename: "{iso_date}.{iso_time} Interest {event_title}"
 
 
 # Saveback
-  saveback_aktiviert:
+  saveback_enabled:
     pattern: [
       { event_type: "benefits_saveback_execution", event_subtitle: "Saveback", section_title: "Dokumente", document_title: "Aktivierung" },
     ]
-    path: "Saveback/aktiviert/"
+    path: "Saveback/Enabled/"
 
 
-  saveback_abrechnung:
+  saveback_executed:
     pattern: [
       { event_type: "benefits_saveback_execution", event_subtitle: "Saveback", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
     ]
-    path: "Saveback/Abrechnung/"
+    path: "Saveback/Report/"
 
 
-  saveback_kosteninfo:
+  saveback_cost_report:
     pattern: [
       { event_type: "benefits_saveback_execution", event_subtitle: "Saveback", section_title: "Dokumente", document_title: "Kosteninformation" },
     ]
-    path: "Saveback/Kosteninfo/"
+    path: "Saveback/Cost report/"
 
 
 # Round up
-  roundup_aktiviert:
+  roundup_enabled:
     pattern: [
-      { event_type: "benefits_spare_change_execution", event_subtitle: "Round up", section_title: "Dokumente", document_title: "Aktivierung" }, # same files - multiple times at once
+      # same files - multiple times at once
+      { event_type: "benefits_spare_change_execution", event_subtitle: "Round up", section_title: "Dokumente", document_title: "Aktivierung" },
     ]
-    path: "Roundup/aktiviert/{iso_date_year}/"
+    path: "Roundup/Enabled/"
 
-  roundup_ausgefuert:
+  roundup_executed:
     pattern: [
       { event_type: "benefits_spare_change_execution", event_subtitle: "Round up", section_title: "Dokumente", document_title: "Abrechnung Ausführung" },
     ]
-    path: "Roundup/Abrechnung/{iso_date_year}/"
+    path: "Roundup/Report/{iso_date_year}/"
 
-  roundup_kosteninfo:
+  roundup_cost_report:
     pattern: [
       { event_type: "benefits_spare_change_execution", event_subtitle: "Round up", section_title: "Dokumente", document_title: "Kosteninformation" },
     ]
-    path: "Roundup/Kosteninfo/{iso_date_year}/"
+    path: "Roundup/Cost report/{iso_date_year}/"
 
 
-# Konto
-  zinsen:
+# account
+  cash_interest:
     pattern: [
-      { event_type: "INTEREST_PAYOUT",          event_subtitle: , event_title: "Zinsen", section_title: "Dokument", document_title: "Abrechnung" },
-      { event_type: "INTEREST_PAYOUT_CREATED",  event_subtitle: , event_title: "Zinsen", section_title: "Dokument", document_title: "Abrechnung" },
+      { event_type: "INTEREST_PAYOUT",          event_title: "Zinsen", section_title: "Dokumente", document_title: "Abrechnung" },
+      { event_type: "INTEREST_PAYOUT_CREATED",  event_title: "Zinsen", section_title: "Dokumente", document_title: "Abrechnung" },
     ]
-    path: "Zinsen/"
+    path: "Cash Interest/"
     filename: "{iso_date} Zinsabrechnung"
 
 
-  uberweisung_ankommend:
+  cash_transfer_report:
     pattern: [
       { event_type: "INCOMING_TRANSFER", event_subtitle: "Erhalten", section_title: "Dokument", document_title: "Transaktionsbestätigung" },
     ]
-    path: "Konto/"
+    path: "Cash Report/"
     filename: "{iso_date}.{iso_time} {document_title}" # {event_title} = Personal name
 
 
-# Tax
-  steuer_report:
+# annual tax report for account
+  account_tax_report:
     pattern: [
-      { event_type: "TAX_REFUND",          event_subtitle: "Steuerbuchung", event_title: "Steuerabrechnung",        section_title: "Dokument", document_title: "Steuerabrechnung" },
-      { event_type: "YEAR_END_TAX_REPORT", event_subtitle: "Jahr \\d+",     event_title: "Jährlicher Steuerreport", section_title: "Dokument", document_title: "Steuerreport \\d+" },
+      { event_type: "TAX_REFUND",          event_subtitle: "Steuerbuchung",   event_title: "Steuerabrechnung",        section_title: "Dokumente", document_title: "Steuerabrechnung" },
+      { event_type: "YEAR_END_TAX_REPORT", event_subtitle: "Jahr \\d+", event_title: "Jährlicher Steuerreport", section_title: "Dokument",  document_title: "Steuerreport \\d+" },
     ]
-    path: "Steuern/"
+    path: "Tax/"
     filename: "{iso_date} {document_title}"
 
 
-  steuer_korrektur:
+  account_tax_adjustment:
     pattern: [
-      { event_type: "ssp_tax_correction_invoice", event_subtitle: , event_title: "Steuerkorrektur", section_title: "Dokument", document_title: "Steuerabrechnung" },
+      { event_type: "ssp_tax_correction_invoice", event_title: "Steuerkorrektur", section_title: "Dokumente", document_title: "Steuerabrechnung" },
     ]
-    path: "Steuern/"
+    path: "Tax/"
     filename: "{iso_date} {event_title}"
 
 
-# Allgemeine Infos
-  infos1_wertpapiere:
+# common informations
+  notice_stocks:
     pattern: [
       { event_type: "CUSTOMER_CREATED",  event_subtitle: "Erhalten", section_title: "Dokumente",               document_title: "Basisinformationen über Wertpapiere" },
-      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Hinweise zu den Handelsplätzen" }, # same file as below
-      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Hinweise zu den Handelsplätzen" }, # same file as above
-      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Kundenvereinbarung" },
-      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Kundenvereinbarung" },
+      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Kundenvereinbarung" }, # same file as below
+      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Kundenvereinbarung" }, # same file as above
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Datenschutzinformationen" },
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Datenschutzinformationen" },
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Info zur Einlagensicherung" },
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Info zur Einlagensicherung" },
+      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Hinweise zu den Handelsplätzen" },
+      { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Hinweise zu den Handelsplätzen" },
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Dokumente",               document_title: "Preis- und Leistungsverzeichnis" },
       { event_type: "DOCUMENTS_CHANGED", event_subtitle: "Geändert", section_title: "Aktualisierte Dokumente", document_title: "Preis- und Leistungsverzeichnis" },
     ]
-    path: "Infos/"
+    path: "Notice/"
     filename: "{iso_date} {document_title}"
 
 
-  infos2_crypto:
+  notice_crypto:
     pattern: [
       { event_type: "DOCUMENTS_ACCEPTED", event_subtitle: "Angenommen", section_title: "Dokumente", document_title: "Kundenvereinbarung" },
       { event_type: "DOCUMENTS_ACCEPTED", event_subtitle: "Angenommen", section_title: "Dokumente", document_title: "Customer Agreement" },
@@ -299,89 +317,91 @@ destination:
       { event_type: "DOCUMENTS_ACCEPTED", event_subtitle: "Angenommen", section_title: "Dokumente", document_title: "Widerrufsbelehrung Cryptoverwahrer" },
       { event_type: "DOCUMENTS_ACCEPTED", event_subtitle: "Angenommen", section_title: "Dokumente", document_title: "Datenschutzinformationen Cryptoverwahrer" },
     ]
-    path: "Infos/"
+    path: "Notice/"
     filename: "{iso_date} {document_title}"
 
 
-  infos3_optionen_etfs:
+  notice_warrant_and_etfs:
     pattern: [
-      { event_type: "ORDER_EXECUTED",                           event_subtitle: "Kauforder",            section_title: "Dokumente", document_title: "Basisinformationsblatt" }, # ohne limit gekauft
+      # when you buy a product for the first time, you will receive information documents about this product
+      { event_type: "ORDER_EXECUTED",                           event_subtitle: "Kauforder",            section_title: "Dokumente", document_title: "Basisinformationsblatt" },
       { event_type: "GESH_CORPORATE_ACTION",                    event_subtitle: "Unternehmensmeldung",  section_title: "Dokumente", document_title: "Kundenanschreiben" },
       { event_type: "GESH_CORPORATE_ACTION_MULTIPLE_POSITIONS", event_subtitle: "Gesellschaftshinweis", section_title: "Dokumente", document_title: "Kundenanschreiben \\d" },
     ]
-    path: "Infos/"
+    path: "Notice/"
     filename: "{iso_date} {document_title} - {event_title}"
 
-  karte_bestellt:
+
+  card_ordered:
     pattern: [
-      { event_type: "card_order_billed", event_subtitle: , event_title: "Trade Republic Card",  section_title: "Dokumente", document_title: "Bestellung Trade Republic Karte" },
+      { event_type: "card_order_billed", event_title: "Trade Republic Card",  section_title: "Dokumente", document_title: "Bestellung Trade Republic Karte" },
     ]
-    path: "Infos/"
+    path: "Notice/"
     filename: "{iso_date} {document_title}"
 
 
-# enthalten keine Dokumente, werden übersprungen:
+# The following events do not contain any documents, these nodes are skipped.
 #
-#  uberweisung_ankommend:
+#  payment_inbound:
 #    pattern: [
 #      { event_type: "PAYMENT_INBOUND", event_subtitle: , section_title: , document_title: },
 #      { event_type: "INCOMING_TRANSFER", event_subtitle: "Erhalten", section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  uberweisung_ausgehend:
+#  payment_outbout:
 #    pattern: [
 #      { event_type: "PAYMENT_OUTBOUND", event_subtitle: , section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  karte_geld_erhalten:
+#  card_refund:
 #    pattern: [
 #      { event_type: "card_refund", event_subtitle: , section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  karte_bezahlt:
+#  card_successful_transaction:
 #    pattern: [
 #      { event_type: "card_successful_transaction", event_subtitle: , section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  karte_geld_abheben:
+#  card_successful_atm_withdrawal:
 #    pattern: [
 #      { event_type: "card_successful_atm_withdrawal", event_subtitle: , event_title: "Abhebung", section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
 #
-#  karte_transaktions_fehler:
+#  card_failed_transaction:
 #    pattern: [
 #      { event_type: "card_failed_transaction", event_subtitle: "Abgebrochen", section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  karte_verifikation_erfolgreich:
+#  card_successful_verification:
 #    pattern: [
 #      { event_type: "card_successful_verification", event_subtitle: , section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  neue_iban:
+#  new_account_iban:
 #    pattern: [
 #      { event_type: "new_tr_iban", event_subtitle: , section_title: , document_title: },
 #    ]
-#    path: "Girokonto/"
+#    path: "Cash Report/"
 #
-#  order_abgelehnt:
+#  stock_order_rejected:
 #    pattern: [
 #      { event_type: "ORDER_REJECTED", event_subtitle: "Kauforder abgelehnt", section_title: , document_title: },
 #    ]
-#    path: "Wertpapiere/Order storno/{iso_date_year}/"
+#    path: "Stocks/Order canceled/{iso_date_year}/"
 #
 #
-#  order_abgelehnt:
+#  stock_order_expired:
 #    pattern: [
 #      { event_type: "ORDER_EXPIRED", event_subtitle: "Kauforder abgelaufen", section_title: , document_title: },
 #    ]
-#    path: "Wertpapiere/Order storno/{iso_date_year}/"
+#    path: "Stocks/Order canceled/{iso_date_year}/"
 #

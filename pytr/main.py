@@ -17,7 +17,6 @@ from pytr.account import login
 from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
-from pytr.file_destination_provider import FileDestinationProvider
 
 
 def get_main_parser():
@@ -71,6 +70,9 @@ def get_main_parser():
         'Download all pdf documents from the timeline and sort them into folders.'
         + ' Also export account transactions (account_transactions.csv)'
         + ' and JSON files with all events (events_with_documents.json and other_events.json'
+        + ' The file and folder where the structure is saved is defined in a config file located in your home'
+        + ' directory "<home>/.pytr/file_destination_config.yaml". This is created during the first dl_docs run.'
+        + ' Its also possible to provide the config upfront by creating the file manually (copy from git repo).'
     )
     parser_dl_docs = parser_cmd.add_parser(
         'dl_docs',
@@ -200,7 +202,6 @@ def main():
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
-            FileDestinationProvider(),
             since_timestamp=since_timestamp,
             max_workers=args.workers,
             universal_filepath=args.universal,

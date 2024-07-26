@@ -18,7 +18,6 @@ class DL:
         self,
         tr,
         output_path,
-        file_destination_provider:FileDestinationProvider,
         since_timestamp=0,
         history_file='pytr_history',
         max_workers=8,
@@ -27,13 +26,12 @@ class DL:
         '''
         tr: api object
         output_path: name of the directory where the downloaded files are saved
-        file_destination_provider: The destination provider for the file path and file names based on the event type and other parameters.
         since_timestamp: downloaded files since this date (unix timestamp)
         '''
         self.tr = tr
         self.output_path = Path(output_path)
         self.history_file = self.output_path / history_file
-        self.file_destination_provider = file_destination_provider
+        self.file_destination_provider = self.__get_file_destination_provider()
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
 
@@ -90,31 +88,46 @@ class DL:
         send asynchronous request, append future with filepath to self.futures
         '''
         doc_url = doc['action']['payload']
-        document_title =  doc.get('title', '')
+        document_title = doc.get('title', '')
+        doc_id = doc['id']
 
-        
         variables = {}
         variables['iso_date'] = timestamp.strftime('%Y-%m-%d')
         variables['iso_date_year'] = timestamp.strftime('%Y')
         variables['iso_date_month'] = timestamp.strftime('%m')
         variables['iso_date_day'] = timestamp.strftime('%d')
         variables['iso_time'] = timestamp.strftime('%H-%M')
-        
-        filepath = self.file_destination_provider.get_file_path(event_type, event_title, event_subtitle, section_title, document_title, variables)
-        if filepath.endswith('.pdf') is False:
-            filepath = f'{filepath}.pdf'
 
-        filepath = Path(os.path.join( self.output_path , filepath))
+        filepath = self.file_destination_provider.get_file_path(
+            event_type, event_title, event_subtitle, section_title, document_title, variables)
+        # Just in case someone defines file names with extension
+        if filepath.endswith('.pdf') is True:
+            filepath = filepath[:-4]
+
+        filepath_with_doc_id = f'{filepath} ({doc_id})'
+
+        filepath = f'{filepath}.pdf'
+        filepath_with_doc_id = f'{filepath_with_doc_id}.pdf'
+
+        filepath = Path(os.path.join(self.output_path, filepath))
+        filepath_with_doc_id = Path(os.path.join(self.output_path, filepath_with_doc_id))
 
         if self.universal_filepath:
             filepath = sanitize_filepath(filepath, '_', 'universal')
+            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'universal')
         else:
             filepath = sanitize_filepath(filepath, '_', 'auto')
-
+            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, '_', 'auto')
 
         if filepath in self.filepaths:
-            self.log.debug(f'File {filepath} already in queue. Skipping...')
-            return
+            self.log.debug(
+                f'File {filepath} already in queue. Append document id {doc_id}...')
+            if filepath_with_doc_id in self.filepaths:
+                self.log.debug(
+                    f'File {filepath_with_doc_id} already in queue. Skipping...')
+                return
+            else:
+                filepath = filepath_with_doc_id
         
         doc['local filepath'] = str(filepath)
         self.filepaths.append(filepath)
@@ -168,3 +181,6 @@ class DL:
                 if self.done == len(self.doc_urls):
                     self.log.info('Done.')
                     exit(0)
+                    
+    def __get_file_destination_provider(self):
+        return FileDestinationProvider()

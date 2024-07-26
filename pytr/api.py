@@ -38,7 +38,7 @@ from ecdsa.util import sigencode_der
 from http.cookiejar import MozillaCookieJar
 
 from pytr.utils import get_logger
-from pytr.app_path import *
+from pytr.app_path import CREDENTIALS_FILE, COOKIES_FILE, KEY_FILE
 
 
 

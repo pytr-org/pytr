@@ -6,20 +6,28 @@ import pytr.config
 from importlib_resources import files
 from yaml import safe_load
 from pathlib import Path
-from pytr.app_path import *
+from pytr.app_path import DESTINATION_CONFIG_FILE
 from pytr.utils import  get_logger
 
-# ToDo Question if we want to use LibYAML which is faster than pure Python version but another dependency
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
 
-
-ALL_CONFIG = "all"
+DEFAULT_CONFIG = "default"
 UNKNOWN_CONFIG = "unknown"
+MULTIPLE_MATCH_CONFIG = "multiple_match"
 
 TEMPLATE_FILE_NAME ="file_destination_config__template.yaml"
+
+# Invalid characters translation table, for cleaning up the variables before using them.
+# This was done to avoid issues with for example 'event_subtitle: “Umtausch/Bezug”' which caused a directory which was unintentional.
+INVALID_CHARS_TRANSLATION_TABLE = str.maketrans({
+    '"': '',
+    '?': '',
+    '<': '',
+    '>': '',
+    '*': '',
+    '|': '-',
+    '/': '-',
+    '\\': '-'
+})
 
 
 class DefaultFormateValue(dict):
@@ -66,12 +74,15 @@ class FileDestinationProvider:
         self._destination_configs: list[DestinationConfig] = []
 
         for config_name in destinations:
-            if config_name == ALL_CONFIG:
-                self._all_file_config = DestinationConfig(
-                    ALL_CONFIG, destinations[ALL_CONFIG]["filename"])
+            if config_name == DEFAULT_CONFIG:
+                self._default_file_config = DestinationConfig(
+                    DEFAULT_CONFIG, destinations[DEFAULT_CONFIG]["filename"])
             elif config_name == UNKNOWN_CONFIG:
                 self._unknown_file_config = DestinationConfig(
                     UNKNOWN_CONFIG, destinations[UNKNOWN_CONFIG]["filename"], destinations[UNKNOWN_CONFIG]["path"])
+            elif config_name == MULTIPLE_MATCH_CONFIG:
+                self._multiple_match_file_config  = DestinationConfig(
+                    MULTIPLE_MATCH_CONFIG, destinations[MULTIPLE_MATCH_CONFIG]["filename"], destinations[MULTIPLE_MATCH_CONFIG]["path"])
             else:
                 patterns = self.__extract_pattern(
                     destinations[config_name].get("pattern", None))
@@ -98,27 +109,27 @@ class FileDestinationProvider:
         if event_type is not None:
             matching_configs = list(filter(lambda config: self.__is_matching_config(
                 config, "event_type", event_type), matching_configs))
-            variables["event_type"] = event_type
+            variables["event_type"] = event_type.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if event_title is not None:
             matching_configs = list(filter(lambda config: self.__is_matching_config(
                 config, "event_title", event_title), matching_configs))
-            variables["event_title"] = event_title
+            variables["event_title"] = event_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if event_subtitle is not None:
             matching_configs = list(filter(lambda config: self.__is_matching_config(
                 config, "event_subtitle", event_subtitle), matching_configs))
-            variables["event_subtitle"] = event_subtitle
+            variables["event_subtitle"] = event_subtitle.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if section_title is not None:
             matching_configs = list(filter(lambda config: self.__is_matching_config(
                 config, "section_title", section_title), matching_configs))
-            variables["section_title"] = section_title
+            variables["section_title"] = section_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if document_title is not None:
             matching_configs = list(filter(lambda config: self.__is_matching_config(
                 config, "document_title", document_title), matching_configs))
-            variables["document_title"] = document_title
+            variables["document_title"] = document_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if len(matching_configs) == 0:
             self._log.debug(
@@ -126,15 +137,15 @@ class FileDestinationProvider:
             return self.__create_file_path(self._unknown_file_config, variables)
 
         if len(matching_configs) > 1:
-            self._log.debug(f"Multiple Destination Patterns where found. Using 'unknown' config! Parameter: event_type:{event_type}, event_title:{event_title},event_subtitle:{event_subtitle},section_title:{section_title},document_title:{document_title}")
-            return self.__create_file_path(self._unknown_file_config, variables)
+            self._log.debug(f"Multiple Destination Patterns where found. Using 'multiple_match' config! Parameter: event_type:{event_type}, event_title:{event_title},event_subtitle:{event_subtitle},section_title:{section_title},document_title:{document_title}")
+            return self.__create_file_path(self._multiple_match_file_config, variables)
 
         return self.__create_file_path(matching_configs[0], variables)
 
     def __is_matching_config(self, config: DestinationConfig, key: str, value: str):
         for pattern in config.pattern:
             attribute = getattr(pattern, key)
-            if attribute is None or re.match(attribute, value):
+            if attribute is None or re.fullmatch(attribute, value):
                 return True
 
         return False
@@ -145,7 +156,7 @@ class FileDestinationProvider:
         path = config.path
         filename = config.filename
         if filename is None:
-            filename = self._all_file_config.filename
+            filename = self._default_file_config.filename
 
         return os.path.join(path, filename).format_map(formate_variables)
 
@@ -167,16 +178,20 @@ class FileDestinationProvider:
         destinations = destination_config["destination"]
 
         # Check if default config is present
-        if ALL_CONFIG not in destinations or "filename" not in destinations[ALL_CONFIG]:
+        if DEFAULT_CONFIG not in destinations or "filename" not in destinations[DEFAULT_CONFIG]:
             raise ValueError(
-                "'all' config not found or filename not not present in default config")
+                "'default' config not found or filename is not present in 'default' config")
 
         if UNKNOWN_CONFIG not in destinations or "filename" not in destinations[UNKNOWN_CONFIG] or "path" not in destinations[UNKNOWN_CONFIG]:
             raise ValueError(
-                "'unknown' config not found or filename/path not not present in unknown config")
+                "'unknown' config not found or filename/path is not present in 'unknown' config")
+
+        if MULTIPLE_MATCH_CONFIG not in destinations or "filename" not in destinations[MULTIPLE_MATCH_CONFIG] or "path" not in destinations[MULTIPLE_MATCH_CONFIG]:
+            raise ValueError(
+                "'multiple_match' config not found or filename/path is not present in 'multiple_match' config")
 
         for config_name in destinations:
-            if config_name != ALL_CONFIG and "path" not in destinations[config_name]:
+            if config_name != DEFAULT_CONFIG and "path" not in destinations[config_name]:
                 raise ValueError(
                     f"'{config_name}' has no path defined in destination config")
 
