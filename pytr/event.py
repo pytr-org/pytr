@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 
 tr_eventType_to_pp_type = {
@@ -64,9 +65,9 @@ class Event:
             sections = self.event.get("details", {}).get("sections", [{}])
             for section in sections:
                 if section.get("title") == "Transaktion":
-                    self.shares = section.get("data", [{}])[0]["detail"][
-                        "text"
-                    ].replace(",", ".")
+                    amount = section.get("data", [{}])[0]["detail"]["text"]
+                    amount = re.sub("[^\,\d-]", "", amount)
+                    self.shares = amount.replace(",", ".")
 
     def determine_isin(self):
         if self.pp_type in ("DIVIDENDS", "TRADE_INVOICE"):
@@ -79,6 +80,7 @@ class Event:
                 action = section.get("action", None)
                 if action and action.get("type", {}) == "instrumentDetail":
                     isin2 = section.get("action", {}).get("payload")
+                    break
             if self.isin != isin2:
                 self.isin = isin2
 
