@@ -101,35 +101,31 @@ class FileDestinationProvider:
         document_title (str): The document title
         variables (dict): The variables->value dict to be used in the file path and file name format.
         '''
-
-        matching_configs = self._destination_configs.copy()
-
-        # Maybe this can be improved looks like a lot of code duplication ... on the other hand using a
-        # dict for the parameters for example and iterate over it would make it harder to understand
+        
+        parameters_to_match = {}
+        
         if event_type is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_type", event_type), matching_configs))
+            parameters_to_match["event_type"] = event_type
             variables["event_type"] = event_type.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if event_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_title", event_title), matching_configs))
+            parameters_to_match["event_title"] = event_title
             variables["event_title"] = event_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if event_subtitle is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_subtitle", event_subtitle), matching_configs))
+            parameters_to_match["event_subtitle"] = event_subtitle
             variables["event_subtitle"] = event_subtitle.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if section_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "section_title", section_title), matching_configs))
+            parameters_to_match["section_title"] = section_title
             variables["section_title"] = section_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if document_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "document_title", document_title), matching_configs))
+            parameters_to_match["document_title"] = document_title
             variables["document_title"] = document_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
+
+        matching_configs = list(filter(lambda config: self.__is_matching_config(
+                        config, parameters_to_match), self._destination_configs))
 
         if len(matching_configs) == 0:
             self._log.debug(
@@ -142,12 +138,23 @@ class FileDestinationProvider:
 
         return self.__create_file_path(matching_configs[0], variables)
 
-    def __is_matching_config(self, config: DestinationConfig, key: str, value: str):
+    def __is_matching_config(self, config: DestinationConfig, parameters_to_match: dict[str, str]):
+        # See: https://github.com/pytr-org/pytr/issues/98#issuecomment-2254675770
+        # We need to perform a full match on all parameters for each pattern to avoid partial wrong matches
         for pattern in config.pattern:
-            attribute = getattr(pattern, key)
-            if attribute is None or re.fullmatch(attribute, value):
+            is_full_match = True
+            # Check if all the parameters match
+            for key, value in parameters_to_match.items():
+                attribute = getattr(pattern, key)
+                if attribute is None or re.fullmatch(attribute, value):
+                    continue #still matching
+                else:
+                    is_full_match = False
+                    break
+                
+            if is_full_match:
                 return True
-
+        
         return False
 
     def __create_file_path(self, config: DestinationConfig, variables: dict):
