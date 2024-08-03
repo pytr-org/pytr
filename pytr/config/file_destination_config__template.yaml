@@ -19,10 +19,11 @@ destination:
 # stocks
   stock_order_settlement:
     pattern: [
-      { event_type: "ORDER_EXECUTED",       event_subtitle: "Kauforder",        section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit gekauft
+      { event_type: "ORDER_EXECUTED",       event_subtitle: "Kauforder",        section_title: "Dokumente", document_title: "Abrechnung(.\\d)?" }, # mit limit gekauft
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Limit-Buy-Order",  section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit gekauft
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Stop-Sell-Order",  section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit verkauft
       { event_type: "TRADE_INVOICE",        event_subtitle: "Limit-Buy-Order",  section_title: "Dokumente", document_title: "Abrechnung" }, # mit limit gekauft
+      { event_type: "TRADE_INVOICE",        event_subtitle: "Verkaufsorder",    section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Verkaufsorder",    section_title: "Dokumente", document_title: "Abrechnung" }, # verkauft
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",        section_title: "Dokumente", document_title: "Abrechnung" }, # Aktiengeschenk
       { event_type: "SHAREBOOKING",         event_subtitle: "Verkauf",          section_title: "Dokumente", document_title: "Abrechnung \\d" }, # Kapitalmassnahme
@@ -35,9 +36,10 @@ destination:
       { event_type: "ORDER_CREATED",        event_subtitle: "Limit-Buy-Order erstellt", section_title: "Dokumente", document_title: "Kosteninformation" }, # limit erstellt
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Kosteninformation" },
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Stop-Sell-Order",          section_title: "Dokumente", document_title: "Kosteninformation" },
-      { event_type: "ORDER_EXECUTED",       event_subtitle: "Kauforder",                section_title: "Dokumente", document_title: "Kosteninformation" }, # ohne limit gekauft
+      { event_type: "ORDER_EXECUTED",       event_subtitle: "Kauforder",                section_title: "Dokumente", document_title: "Kosteninformation(.\\d)?" }, # ohne limit gekauft
       { event_type: "ORDER_EXECUTED",       event_subtitle: "Verkaufsorder",            section_title: "Dokumente", document_title: "Kosteninformation" }, # verkauft
       { event_type: "TRADE_INVOICE",        event_subtitle: "Limit-Buy-Order",          section_title: "Dokumente", document_title: "Kosteninformation" },
+      { event_type: "TRADE_INVOICE",        event_subtitle: "Verkaufsorder",          section_title: "Dokumente", document_title: "Kosteninformation" },
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",                section_title: "Dokumente", document_title: "Kosteninformation" }, # Aktiengeschenk
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",                section_title: "Dokumente", document_title: "Kosteninformation \\d" }, # Aktiengeschenk
       { event_type: "EX_POST_COST_REPORT",  event_title: "Ex-Post Kosteninformation",   section_title: "Dokumente", document_title: "Ex-Post Kosteninformation \\d+" },
@@ -58,6 +60,7 @@ destination:
   stock_order_canceled:
     pattern: [
       { event_type: "ORDER_CANCELED",         event_subtitle: "Limit-Buy-Order storniert",    section_title: "Dokumente", document_title: "Löschbestätigung" },
+      { event_type: "ORDER_CANCELED",         event_subtitle: "Stop-Sell-Order storniert",    section_title: "Dokumente", document_title: "Löschbestätigung" },
       { event_type: "TRADE_CANCELED",         event_subtitle: "Verkauf-Abrechnung storniert", section_title: "Dokumente", document_title: "Abrechnung \\d" },
       { event_type: "SAVINGS_PLAN_CANCELED",  event_subtitle: "Sparplan storniert",           section_title: "Dokumente", document_title: "Stornierungsbestätigung" },
     ]
@@ -174,6 +177,7 @@ destination:
     pattern: [
       { event_type: "CREDIT",                             event_subtitle: "Dividende",                   section_title: "Dokumente", document_title: "Abrechnung" },
       { event_type: "CREDIT",                             event_subtitle: "Ausschüttung",                section_title: "Dokumente", document_title: "Abrechnung" },
+      { event_type: "CREDIT_CANCELED",                    event_subtitle: "Dividende",                   section_title: "Dokumente", document_title: "Abrechnung \\d" },
       { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Bardividende",                section_title: "Dokumente", document_title: "Dokumente" },
       { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Dividende Wahlweise",         section_title: "Dokumente", document_title: "Dokumente" },
       { event_type: "ssp_corporate_action_invoice_cash",  event_subtitle: "Bardividende korrigiert",     section_title: "Dokumente", document_title: "Dokumente" },
@@ -273,7 +277,8 @@ destination:
   account_tax_report:
     pattern: [
       { event_type: "TAX_REFUND",          event_subtitle: "Steuerbuchung",   event_title: "Steuerabrechnung",        section_title: "Dokumente", document_title: "Steuerabrechnung" },
-      { event_type: "YEAR_END_TAX_REPORT", event_subtitle: "Jahr \\d+", event_title: "Jährlicher Steuerreport", section_title: "Dokument",  document_title: "Steuerreport \\d+" },
+      { event_type: "TAX_CORRECTION",      event_subtitle: "Steuerbuchung",   event_title: "Steuerabrechnung",        section_title: "Dokumente", document_title: "Abrechnung" },
+      { event_type: "YEAR_END_TAX_REPORT", event_subtitle: "Jahr \\d+", event_title: "Jährlicher Steuerreport", section_title: "Dokumente",  document_title: "Steuerreport \\d+" },
     ]
     path: "Tax/"
     filename: "{iso_date} {document_title}"
@@ -324,7 +329,8 @@ destination:
   notice_warrant_and_etfs:
     pattern: [
       # when you buy a product for the first time, you will receive information documents about this product
-      { event_type: "ORDER_EXECUTED",                           event_subtitle: "Kauforder",            section_title: "Dokumente", document_title: "Basisinformationsblatt" },
+      { event_type: "ORDER_EXECUTED",                           event_subtitle: "Kauforder",            section_title: "Dokumente", document_title: "Basisinformationsblatt(.\\d)?" },
+      { event_type: "ORDER_EXECUTED",                           event_subtitle: "Limit-Buy-Order",      section_title: "Dokumente", document_title: "Basisinformationsblatt" },
       { event_type: "GESH_CORPORATE_ACTION",                    event_subtitle: "Unternehmensmeldung",  section_title: "Dokumente", document_title: "Kundenanschreiben" },
       { event_type: "GESH_CORPORATE_ACTION_MULTIPLE_POSITIONS", event_subtitle: "Gesellschaftshinweis", section_title: "Dokumente", document_title: "Kundenanschreiben \\d" },
     ]
