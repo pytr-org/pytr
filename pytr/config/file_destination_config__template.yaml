@@ -19,7 +19,7 @@ destination:
 # stocks
   stock_order_settlement:
     pattern: [
-      { event_type: "ORDER_EXECUTED",       document_title: "Abrechnung" }, # mit limit verkauft
+      { event_type: "ORDER_EXECUTED",       document_title: "Abrechnung(.\\d)?" }, # mit limit verkauft
       { event_type: "TRADE_INVOICE",        document_title: "Abrechnung" }, # mit limit gekauft
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",        document_title: "Abrechnung" }, # Aktiengeschenk
       { event_type: "SHAREBOOKING",         event_subtitle: "Verkauf",          document_title: "Abrechnung \\d" }, # Kapitalmassnahme
@@ -30,7 +30,7 @@ destination:
   stock_order_cost_report:
     pattern: [
       { event_type: "ORDER_CREATED",        event_subtitle: "Limit-Buy-Order erstellt", document_title: "Kosteninformation" }, # limit erstellt
-      { event_type: "ORDER_EXECUTED",       document_title: "Kosteninformation" },
+      { event_type: "ORDER_EXECUTED",       document_title: "Kosteninformation(.\\d)?" },
       { event_type: "TRADE_INVOICE",        document_title: "Kosteninformation" },
       { event_type: "STOCK_PERK_REFUNDED",  event_subtitle: "Eingelöst",                document_title: "Kosteninformation" }, # Aktiengeschenk
       { event_type: "EX_POST_COST_REPORT",  event_subtitle: , event_title: "Ex-Post Kosteninformation", document_title: "Ex-Post Kosteninformation \\d+" },
@@ -139,6 +139,7 @@ destination:
     pattern: [
       { event_type: "CREDIT",                             event_subtitle: "Dividende",    document_title: "Abrechnung" },
       { event_type: "CREDIT",                             event_subtitle: "Ausschüttung", document_title: "Abrechnung" },
+      { event_type: "CREDIT_CANCELED",                   event_subtitle: "Dividende",    document_title: "Abrechnung \\d" },
       { event_type: "ssp_corporate_action_invoice_cash"},
     ]
     path: "Dividends/{iso_date_year}/"
@@ -215,7 +216,8 @@ destination:
 # account
   cash_interest:
     pattern: [
-      { event_type: "INTEREST_PAYOUT",          event_title: "Zinsen", document_title: "Abrechnung" }
+      { event_type: "INTEREST_PAYOUT",          event_title: "Zinsen", document_title: "Abrechnung" },
+      { event_type: "INTEREST_PAYOUT_CREATED",  event_title: "Zinsen",  document_title: "Abrechnung" }
     ]
     path: "Cash Interest/"
     filename: "{iso_date} Zinsabrechnung"
@@ -263,7 +265,7 @@ destination:
   notice_crypto:
     pattern: [
       { event_type: "TRADE_INVOICE",                           document_title: "Basisinformationsblatt" }, 
-      { event_type: "ORDER_EXECUTED",                          document_title: "Basisinformationsblatt" }, 
+      { event_type: "ORDER_EXECUTED",                          document_title: "Basisinformationsblatt(.\\d)?" }, 
       { event_type: "GESH_CORPORATE_ACTION",                   event_subtitle: "Unternehmensmeldung",  document_title: "Kundenanschreiben" },
       { event_type: "GESH_CORPORATE_ACTION_MULTIPLE_POSITIONS", event_subtitle: "Gesellschaftshinweis", document_title: "Kundenanschreiben \\d" },
     ]
