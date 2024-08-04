@@ -52,8 +52,9 @@ destination:
       { event_type: "TRADE_CANCELED",         document_title: "Abrechnung \\d" },
       { event_type: "ORDER_CANCELED",         document_title: "Löschbestätigung" },
       { event_type: "SAVINGS_PLAN_CANCELED",         section_title: "Dokumente", document_title: "Stornierungsbestätigung" },
-        ]
-    path: "Wertpapiere/Order storno"
+    ]
+    path: "Stocks/Order canceled/{iso_date_year}/"
+
 
 
 # Kapitalmaßnahmen

@@ -106,18 +106,21 @@ class FileDestinationProvider:
         document_title (str): The document title
         variables (dict): The variables->value dict to be used in the file path and file name format.
         '''
+        
         doc = Pattern(event_type, event_title, event_subtitle, section_title, document_title)
 
         matching_configs = self._destination_configs.copy()
         # create a dictionary that maps the field names to their values in the pattern instance
         pattern_dict = {field.name: getattr(doc, field.name) for field in fields(Pattern)}
-        # variables = doc.get_variables()
 
         # iterate over the dictionary to filter the matching_configs list and update the variables dictionary
         for field_name, search_pattern in pattern_dict.items():
             if search_pattern is not None:
                 matching_configs = list(filter(lambda config: self.__is_matching_config(config, field_name, search_pattern), matching_configs))
-                variables[field_name] = search_pattern
+                variables[field_name] = search_pattern.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
+
+        matching_configs = list(filter(lambda config: self.__is_matching_config(
+                        config, parameters_to_match), self._destination_configs))
 
         if len(matching_configs) == 0:
             self._log.debug(
