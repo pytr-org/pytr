@@ -244,6 +244,7 @@ destination:
   account_tax_adjustment:
     pattern: [
       { event_type: "ssp_tax_correction_invoice", event_title: "Steuerkorrektur", section_title: "Dokumente", document_title: "Steuerabrechnung" },
+      { event_type: "TAX_CORRECTION",      event_subtitle: "Steuerbuchung",   event_title: "Steuerabrechnung",        section_title: "Dokumente", document_title: "Abrechnung" },
     ]
     path: "Tax/"
     filename: "{iso_date} {event_title}"

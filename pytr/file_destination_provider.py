@@ -53,7 +53,6 @@ class Pattern:
     event_subtitle: Optional[str] = None
     section_title: Optional[str] = None
     document_title: Optional[str] = None
-    timestamp: Optional[float] = None
 
 
 class FileDestinationProvider:
@@ -119,8 +118,6 @@ class FileDestinationProvider:
                 matching_configs = list(filter(lambda config: self.__is_matching_config(config, field_name, search_pattern), matching_configs))
                 variables[field_name] = search_pattern.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
-        matching_configs = list(filter(lambda config: self.__is_matching_config(
-                        config, parameters_to_match), self._destination_configs))
 
         if len(matching_configs) == 0:
             self._log.debug(
@@ -138,7 +135,7 @@ class FileDestinationProvider:
         pattern = config.pattern
         return (
             getattr(pattern, field_name, None) is None
-            or re.match(getattr(pattern, field_name, None), search_pattern)
+            or re.fullmatch(getattr(pattern, field_name, None), search_pattern)
         )
 
     def __create_file_path(self, config: DestinationConfig, variables: dict):
