@@ -4,6 +4,9 @@ import shutil
 import pytr.config
 
 from importlib_resources import files
+
+from dataclasses import dataclass, fields
+from typing import Optional
 from yaml import safe_load
 from pathlib import Path
 from pytr.app_path import DESTINATION_CONFIG_FILE
@@ -35,21 +38,22 @@ class DefaultFormateValue(dict):
         return key.join("{}")
 
 
+@dataclass
 class DestinationConfig:
-    def __init__(self, config_name: str, filename: str, path: str = None,  pattern: list = None):
-        self.config_name = config_name
-        self.filename = filename
-        self.path = path
-        self.pattern = pattern
+    config_name: str
+    filename: str
+    path: Optional[str] = None
+    pattern: Optional[list] = None
 
 
+@dataclass
 class Pattern:
-    def __init__(self, event_type: str, event_subtitle: str, event_title: str,  section_title: str, document_title: str):
-        self.event_type = event_type
-        self.event_subtitle = event_subtitle
-        self.event_title = event_title
-        self.section_title = section_title
-        self.document_title = document_title
+    event_type: Optional[str] = None
+    event_title: Optional[str] = None
+    event_subtitle: Optional[str] = None
+    section_title: Optional[str] = None
+    document_title: Optional[str] = None
+    timestamp: Optional[float] = None
 
 
 class FileDestinationProvider:
@@ -86,8 +90,9 @@ class FileDestinationProvider:
             else:
                 patterns = self.__extract_pattern(
                     destinations[config_name].get("pattern", None))
-                self._destination_configs.append(DestinationConfig(
-                    config_name, destinations[config_name].get("filename", None), destinations[config_name].get("path", None), patterns))
+                for pattern in patterns:
+                    self._destination_configs.append(DestinationConfig(
+                        config_name, destinations[config_name].get("filename", None), destinations[config_name].get("path", None), pattern))
 
     def get_file_path(self, event_type: str, event_title: str, event_subtitle: str, section_title: str, document_title: str, variables: dict) -> str:
         '''
@@ -101,35 +106,18 @@ class FileDestinationProvider:
         document_title (str): The document title
         variables (dict): The variables->value dict to be used in the file path and file name format.
         '''
+        doc = Pattern(event_type, event_title, event_subtitle, section_title, document_title)
 
         matching_configs = self._destination_configs.copy()
+        # create a dictionary that maps the field names to their values in the pattern instance
+        pattern_dict = {field.name: getattr(doc, field.name) for field in fields(Pattern)}
+        # variables = doc.get_variables()
 
-        # Maybe this can be improved looks like a lot of code duplication ... on the other hand using a
-        # dict for the parameters for example and iterate over it would make it harder to understand
-        if event_type is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_type", event_type), matching_configs))
-            variables["event_type"] = event_type.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
-
-        if event_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_title", event_title), matching_configs))
-            variables["event_title"] = event_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
-
-        if event_subtitle is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "event_subtitle", event_subtitle), matching_configs))
-            variables["event_subtitle"] = event_subtitle.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
-
-        if section_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "section_title", section_title), matching_configs))
-            variables["section_title"] = section_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
-
-        if document_title is not None:
-            matching_configs = list(filter(lambda config: self.__is_matching_config(
-                config, "document_title", document_title), matching_configs))
-            variables["document_title"] = document_title.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
+        # iterate over the dictionary to filter the matching_configs list and update the variables dictionary
+        for field_name, search_pattern in pattern_dict.items():
+            if search_pattern is not None:
+                matching_configs = list(filter(lambda config: self.__is_matching_config(config, field_name, search_pattern), matching_configs))
+                variables[field_name] = search_pattern
 
         if len(matching_configs) == 0:
             self._log.debug(
@@ -142,13 +130,13 @@ class FileDestinationProvider:
 
         return self.__create_file_path(matching_configs[0], variables)
 
-    def __is_matching_config(self, config: DestinationConfig, key: str, value: str):
-        for pattern in config.pattern:
-            attribute = getattr(pattern, key)
-            if attribute is None or re.fullmatch(attribute, value):
-                return True
-
-        return False
+    @staticmethod
+    def __is_matching_config(config: DestinationConfig, field_name: str, search_pattern: str) -> bool:
+        pattern = config.pattern
+        return (
+            getattr(pattern, field_name, None) is None
+            or re.match(getattr(pattern, field_name, None), search_pattern)
+        )
 
     def __create_file_path(self, config: DestinationConfig, variables: dict):
         formate_variables = DefaultFormateValue(variables)
@@ -164,8 +152,8 @@ class FileDestinationProvider:
         patterns = []
         for pattern in pattern_config:
             patterns.append(Pattern(pattern.get("event_type", None),
-                                    pattern.get("event_subtitle", None),
                                     pattern.get("event_title", None),
+                                    pattern.get("event_subtitle", None),
                                     pattern.get("section_title", None),
                                     pattern.get("document_title", None)))
 
