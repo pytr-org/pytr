@@ -218,15 +218,11 @@ def main():
         login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
 
     elif args.command == 'dl_docs':
-        if args.last_days == 0:
-            since_timestamp = 0
-        else:
-            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
             args.format,
-            since_timestamp=since_timestamp,
+            not_before=not_before,
             max_workers=args.workers,
             universal_filepath=args.universal,
         )
