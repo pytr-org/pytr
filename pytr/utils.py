@@ -312,8 +312,11 @@ def export_banking4(input_path, output_path, lang='auto'):
             #dividends
             elif event["eventType"] in ["ssp_corporate_action_invoice_cash","CREDIT"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
-            #Saveback
-            elif event["eventType"] in ["SAVINGS_PLAN_EXECUTED","SAVINGS_PLAN_INVOICE_CREATED","benefits_saveback_execution"]:
+            #Saveback (creates a zero entry just for informational purposes)
+            elif event["eventType"] in ["benefits_saveback_execution"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]+": "+str(-1*event["amount"]["value"])), value="0.00"))
+            # Savingsplan
+            elif event["eventType"] in ["SAVINGS_PLAN_EXECUTED","SAVINGS_PLAN_INVOICE_CREATED"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
             #Tax payments
             elif event["eventType"] in ["PRE_DETERMINED_TAX_BASE"]:
