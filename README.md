@@ -1,5 +1,5 @@
-[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/marzzzello/pytr?style=for-the-badge&link=https%3A%2F%2Fgithub.com%2Fmarzzzello%2Fpytr%2Ftags)](https://github.com/marzzzello/pytr/tags)
-[![PyPI build and publish](https://img.shields.io/github/actions/workflow/status/marzzzello/pytr/publish-pypi.yml?link=https%3A%2F%2Fgithub.com%2Fmarzzzello%2Fpytr%2Factions%2Fworkflows%2Fpublish-pypi.yml&style=for-the-badge)](https://github.com/marzzzello/pytr/actions/workflows/publish-pypi.yml)
+[![GitHub tag (with filter)](https://img.shields.io/github/v/tag/pytr-org/pytr?style=for-the-badge&link=https%3A%2F%2Fgithub.com%2Fmarzzzello%2Fpytr%2Ftags)](https://github.com/pytr-org/pytr/tags)
+[![PyPI build and publish](https://img.shields.io/github/actions/workflow/status/pytr-org/pytr/publish-pypi.yml?link=https%3A%2F%2Fgithub.com%2Fmarzzzello%2Fpytr%2Factions%2Fworkflows%2Fpublish-pypi.yml&style=for-the-badge)](https://github.com/pytr-org/pytr/actions/workflows/publish-pypi.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/pytr?link=https%3A%2F%2Fpypi.org%2Fproject%2Fpytr%2F&style=for-the-badge)](https://pypi.org/project/pytr/)
 
 # pytr: Use TradeRepublic in terminal
@@ -15,7 +15,7 @@ Install release from PyPI with `pipx install pytr`
 Or install from git repo like so:
 
 ```sh
-pipx install git+https://github.com/marzzzello/pytr
+pipx install git+https://github.com/pytr-org/pytr.git
 ```
 
 ### Update

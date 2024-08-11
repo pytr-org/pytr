@@ -116,7 +116,7 @@ class Portfolio:
             totalNetValue += float(pos['netValue'])
 
             print(
-                f"{pos['name']:<25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
+                f"{pos['name']:<25.25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
                 + f" = {float(buyCost):>10.2f} -> {float(pos['netValue']):>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
             )
 

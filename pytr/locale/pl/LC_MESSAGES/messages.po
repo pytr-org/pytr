@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Kupno"
+
+msgid "DEPOSIT"
+msgstr "Depozyt"
+
+msgid "DIVIDENDS"
+msgstr "Dywidenda"
+
+msgid "FEES"
+msgstr "Opłaty"
+
+msgid "FEES_REFUND"
+msgstr "Zwrot opłat"
+
+msgid "INTEREST"
+msgstr "Odsetki"
+
+msgid "INTEREST_CHARGE"
+msgstr "Opłata odsetkowa"
+
+msgid "REMOVAL"
+msgstr "Wypłata"
+
+msgid "SELL"
+msgstr "Sprzedaż"
+
+msgid "TAXES"
+msgstr "Podatki"
+
+msgid "TAX_REFUND"
+msgstr "Zwrot podatku"
+
+msgid "TRANSFER_IN"
+msgstr "Transfer (Przychodzący)"
+
+msgid "TRANSFER_OUT"
+msgstr "Transfer (Wychodzący)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Konto pieniężne"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Konto przeciwstawne"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Skumulowany wynik w %"
+
+msgid "CSVColumn_Currency"
+msgstr "Waluta"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Kwota waluty brutto"
+
+msgid "CSVColumn_Date"
+msgstr "Data"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Data notowania"
+
+msgid "CSVColumn_DateValue"
+msgstr "Data wartości"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Różnica w %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Kurs wymiany"
+
+msgid "CSVColumn_Fees"
+msgstr "Opłaty"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Kwota brutto"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Przelewy przychodzące"
+
+msgid "CSVColumn_Name"
+msgstr "Nazwa"
+
+msgid "CSVColumn_Note"
+msgstr "Uwaga"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Przelewy wychodzące"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Konto walorów"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Konto przeciwstawne walorów"
+
+msgid "CSVColumn_Quote"
+msgstr "Kurs"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Nazwa waloru"
+
+msgid "CSVColumn_Shares"
+msgstr "Akcje"
+
+msgid "CSVColumn_Taxes"
+msgstr "Podatki"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Symbol giełdowy waloru"
+
+msgid "CSVColumn_Time"
+msgstr "Czas"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Waluta transakcji"
+
+msgid "CSVColumn_Type"
+msgstr "Typ"
+
+msgid "CSVColumn_Value"
+msgstr "Wartość"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Kaarttransactie"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Geldopname"
+
+msgid "card_order_billed"
+msgstr "Kosten kaart"
+
+msgid "card_refund"
+msgstr "Terugbetaling op kaart"

@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: de\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Kauf"
+
+msgid "DEPOSIT"
+msgstr "Einlage"
+
+msgid "DIVIDENDS"
+msgstr "Dividende"
+
+msgid "FEES"
+msgstr "Gebühren"
+
+msgid "FEES_REFUND"
+msgstr "Gebührenerstattung"
+
+msgid "INTEREST"
+msgstr "Zinsen"
+
+msgid "INTEREST_CHARGE"
+msgstr "Zinsbelastung"
+
+msgid "REMOVAL"
+msgstr "Entnahme"
+
+msgid "SELL"
+msgstr "Verkauf"
+
+msgid "TAXES"
+msgstr "Steuern"
+
+msgid "TAX_REFUND"
+msgstr "Steuerrückerstattung"
+
+msgid "TRANSFER_IN"
+msgstr "Umbuchung (Eingang)"
+
+msgid "TRANSFER_OUT"
+msgstr "Umbuchung (Ausgang)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Konto"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Gegenkonto"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Kumulierte Performance in %"
+
+msgid "CSVColumn_Currency"
+msgstr "Währung"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Währung Bruttobetrag"
+
+msgid "CSVColumn_Date"
+msgstr "Datum"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Kursdatum"
+
+msgid "CSVColumn_DateValue"
+msgstr "Datum Wert"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta in %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Wechselkurs"
+
+msgid "CSVColumn_Fees"
+msgstr "Gebühren"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Bruttobetrag"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Zugänge"
+
+msgid "CSVColumn_Name"
+msgstr "Name"
+
+msgid "CSVColumn_Note"
+msgstr "Notiz"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Abgänge"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Depot"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Gegendepot"
+
+msgid "CSVColumn_Quote"
+msgstr "Kurs"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Wertpapiername"
+
+msgid "CSVColumn_Shares"
+msgstr "Stück"
+
+msgid "CSVColumn_Taxes"
+msgstr "Steuern"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Ticker-Symbol"
+
+msgid "CSVColumn_Time"
+msgstr "Uhrzeit"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Buchungswährung"
+
+msgid "CSVColumn_Type"
+msgstr "Typ"
+
+msgid "CSVColumn_Value"
+msgstr "Wert"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Kartentransaktion"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Barabhebung"
+
+msgid "card_order_billed"
+msgstr "Kartengebühr"
+
+msgid "card_refund"
+msgstr "Kartenerstattung"

@@ -4,10 +4,14 @@ import coloredlogs
 import json
 import logging
 import requests
+<<<<<<< HEAD
 import re
 import os
 from datetime import datetime
 from locale import getdefaultlocale
+=======
+
+>>>>>>> 2f62b098e8e339f8bcfe65177adeb46a6b05efdd
 from packaging import version
 
 log_level = None
@@ -81,7 +85,7 @@ def preview(response, num_lines=5):
 def check_version(installed_version):
     log = get_logger(__name__)
     try:
-        r = requests.get('https://api.github.com/repos/marzzzello/pytr/tags', timeout=1)
+        r = requests.get('https://api.github.com/repos/pytr-org/pytr/tags', timeout=1)
     except Exception as e:
         log.error('Could not check for a newer version')
         log.debug(str(e))
@@ -92,6 +96,7 @@ def check_version(installed_version):
         log.warning(f'Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}')
     else:
         log.info('pytr is up to date')
+<<<<<<< HEAD
 
 def export_transactions(input_path, output_path, lang='auto'):
     '''
@@ -535,3 +540,5 @@ class Timeline:
             export_transactions(dl.output_path / 'events_with_documents.json', dl.output_path / 'account_transactions.csv')
 
             dl.work_responses()
+=======
+>>>>>>> 2f62b098e8e339f8bcfe65177adeb46a6b05efdd

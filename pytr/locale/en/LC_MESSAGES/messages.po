@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Buy"
+
+msgid "DEPOSIT"
+msgstr "Deposit"
+
+msgid "DIVIDENDS"
+msgstr "Dividend"
+
+msgid "FEES"
+msgstr "Fees"
+
+msgid "FEES_REFUND"
+msgstr "Fees Refund"
+
+msgid "INTEREST"
+msgstr "Interest"
+
+msgid "INTEREST_CHARGE"
+msgstr "Interest Charge"
+
+msgid "REMOVAL"
+msgstr "Removal"
+
+msgid "SELL"
+msgstr "Sell"
+
+msgid "TAXES"
+msgstr "Taxes"
+
+msgid "TAX_REFUND"
+msgstr "Tax Refund"
+
+msgid "TRANSFER_IN"
+msgstr "Transfer (Inbound)"
+
+msgid "TRANSFER_OUT"
+msgstr "Transfer (Outbound)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Cash Account"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Offset Account"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Cumulated Performance in %"
+
+msgid "CSVColumn_Currency"
+msgstr "Currency"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Currency Gross Amount"
+
+msgid "CSVColumn_Date"
+msgstr "Date"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Date of Quote"
+
+msgid "CSVColumn_DateValue"
+msgstr "Date of Value"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta in %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Exchange Rate"
+
+msgid "CSVColumn_Fees"
+msgstr "Fees"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Gross Amount"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Inbound Transferals"
+
+msgid "CSVColumn_Name"
+msgstr "Name"
+
+msgid "CSVColumn_Note"
+msgstr "Note"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Outbound Transferals"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Securities Account"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Offset securities account"
+
+msgid "CSVColumn_Quote"
+msgstr "Quote"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Security Name"
+
+msgid "CSVColumn_Shares"
+msgstr "Shares"
+
+msgid "CSVColumn_Taxes"
+msgstr "Taxes"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Ticker Symbol"
+
+msgid "CSVColumn_Time"
+msgstr "Time"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Transaction Currency"
+
+msgid "CSVColumn_Type"
+msgstr "Type"
+
+msgid "CSVColumn_Value"
+msgstr "Value"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Card Payment"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "ATM Withdrawal"
+
+msgid "card_order_billed"
+msgstr "Card Fee"
+
+msgid "card_refund"
+msgstr "Card Refund"

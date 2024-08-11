@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "Achat"
+
+msgid "DEPOSIT"
+msgstr "Dépôt"
+
+msgid "DIVIDENDS"
+msgstr "Dividendes"
+
+msgid "FEES"
+msgstr "Frais"
+
+msgid "FEES_REFUND"
+msgstr "Remboursement de Frais"
+
+msgid "INTEREST"
+msgstr "Intérêts"
+
+msgid "INTEREST_CHARGE"
+msgstr "Frais d'Intérêts"
+
+msgid "REMOVAL"
+msgstr "Retrait"
+
+msgid "SELL"
+msgstr "Vente"
+
+msgid "TAXES"
+msgstr "Impôts / Taxes"
+
+msgid "TAX_REFUND"
+msgstr "Remboursement Impôts / Taxes"
+
+msgid "TRANSFER_IN"
+msgstr "Transfert (Entrant)"
+
+msgid "TRANSFER_OUT"
+msgstr "Transfert (Sortant)"
+
+msgid "CSVColumn_AccountName"
+msgstr "Compte espèces"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "Compte de compensation"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "Performance cumulée en %"
+
+msgid "CSVColumn_Currency"
+msgstr "Devise"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "Montant brut en devise"
+
+msgid "CSVColumn_Date"
+msgstr "Date"
+
+msgid "CSVColumn_DateQuote"
+msgstr "Date de cotation"
+
+msgid "CSVColumn_DateValue"
+msgstr "Date de valeur"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "Delta en %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "Taux de change"
+
+msgid "CSVColumn_Fees"
+msgstr "Frais"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "Montant brut"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "Transferts entrants"
+
+msgid "CSVColumn_Name"
+msgstr "Nom"
+
+msgid "CSVColumn_Note"
+msgstr "Note"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "Transferts sortant"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "Compte-titres"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "Compte de compensation"
+
+msgid "CSVColumn_Quote"
+msgstr "Cotation"
+
+msgid "CSVColumn_SecurityName"
+msgstr "Nom du titre"
+
+msgid "CSVColumn_Shares"
+msgstr "Parts"
+
+msgid "CSVColumn_Taxes"
+msgstr "Impôts / Taxes"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "Symbole boursier"
+
+msgid "CSVColumn_Time"
+msgstr "Heure"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "Devise de l'opération"
+
+msgid "CSVColumn_Type"
+msgstr "Type"
+
+msgid "CSVColumn_Value"
+msgstr "Valeur"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Transaction par carte"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Retrait en espèces"
+
+msgid "card_order_billed"
+msgstr "Frais de carte"
+
+msgid "card_refund"
+msgstr "Remboursement par carte"

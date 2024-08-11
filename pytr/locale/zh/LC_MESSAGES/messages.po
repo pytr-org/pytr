@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BUY"
+msgstr "买入"
+
+msgid "DEPOSIT"
+msgstr "存款"
+
+msgid "DIVIDENDS"
+msgstr "股息"
+
+msgid "FEES"
+msgstr "费用"
+
+msgid "FEES_REFUND"
+msgstr "费用退款"
+
+msgid "INTEREST"
+msgstr "利息"
+
+msgid "INTEREST_CHARGE"
+msgstr "利息支出"
+
+msgid "REMOVAL"
+msgstr "取款"
+
+msgid "SELL"
+msgstr "卖出"
+
+msgid "TAXES"
+msgstr "税款"
+
+msgid "TAX_REFUND"
+msgstr "退税"
+
+msgid "TRANSFER_IN"
+msgstr "转入"
+
+msgid "TRANSFER_OUT"
+msgstr "转出"
+
+msgid "CSVColumn_AccountName"
+msgstr "现金账户"
+
+msgid "CSVColumn_AccountName2nd"
+msgstr "目标账户"
+
+msgid "CSVColumn_CumulatedPerformanceInPercent"
+msgstr "累计收益率 %"
+
+msgid "CSVColumn_Currency"
+msgstr "货币"
+
+msgid "CSVColumn_CurrencyGrossAmount"
+msgstr "总额货币"
+
+msgid "CSVColumn_Date"
+msgstr "日期"
+
+msgid "CSVColumn_DateQuote"
+msgstr "报价日期"
+
+msgid "CSVColumn_DateValue"
+msgstr "账目日期"
+
+msgid "CSVColumn_DeltaInPercent"
+msgstr "变化 %"
+
+msgid "CSVColumn_ExchangeRate"
+msgstr "汇率"
+
+msgid "CSVColumn_Fees"
+msgstr "费用"
+
+msgid "CSVColumn_GrossAmount"
+msgstr "总额"
+
+msgid "CSVColumn_ISIN"
+msgstr "ISIN"
+
+msgid "CSVColumn_InboundTransferals"
+msgstr "总转入"
+
+msgid "CSVColumn_Name"
+msgstr "名称"
+
+msgid "CSVColumn_Note"
+msgstr "备注"
+
+msgid "CSVColumn_OutboundTransferals"
+msgstr "总转出"
+
+msgid "CSVColumn_PortfolioName"
+msgstr "证券账户"
+
+msgid "CSVColumn_PortfolioName2nd"
+msgstr "目标证券账户"
+
+msgid "CSVColumn_Quote"
+msgstr "报价"
+
+msgid "CSVColumn_SecurityName"
+msgstr "证券名称"
+
+msgid "CSVColumn_Shares"
+msgstr "份额"
+
+msgid "CSVColumn_Taxes"
+msgstr "税款"
+
+msgid "CSVColumn_TickerSymbol"
+msgstr "证券代码"
+
+msgid "CSVColumn_Time"
+msgstr "时间"
+
+msgid "CSVColumn_TransactionCurrency"
+msgstr "账目货币"
+
+msgid "CSVColumn_Type"
+msgstr "类型"
+
+msgid "CSVColumn_Value"
+msgstr "净额"
+
+msgid "CSVColumn_WKN"
+msgstr "WKN"
+
+msgid "card_successful_transaction"
+msgstr "Операция по карте"
+
+msgid "card_successful_atm_withdrawal"
+msgstr "Выдача наличных"
+
+msgid "card_order_billed"
+msgstr "Плата за обслуживание карты"
+
+msgid "card_refund"
+msgstr "Возврат на карту"

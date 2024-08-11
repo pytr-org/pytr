@@ -7,9 +7,9 @@ from requests import session
 
 from pathvalidate import sanitize_filepath
 
-from pytr.utils import preview, Timeline, get_logger
+from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
-
+from pytr.timeline import Timeline
 
 class DL:
     def __init__(
@@ -48,7 +48,7 @@ class DL:
         self.filepaths = []
         self.doc_urls = []
         self.doc_urls_history = []
-        self.tl = Timeline(self.tr)
+        self.tl = Timeline(self.tr, self.since_timestamp)
         self.log = get_logger(__name__)
         self.load_history()
 
@@ -66,7 +66,7 @@ class DL:
             self.log.info('Created history file')
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline_transactions(max_age_timestamp=self.since_timestamp)
+        await self.tl.get_next_timeline_transactions()
 
         while True:
             try:
@@ -75,11 +75,11 @@ class DL:
                 self.log.fatal(str(e))
 
             if subscription['type'] == 'timelineTransactions':
-                await self.tl.get_next_timeline_transactions(response, max_age_timestamp=self.since_timestamp)
+                await self.tl.get_next_timeline_transactions(response)
             elif subscription['type'] == 'timelineActivityLog':
-                await self.tl.get_next_timeline_activity_log(response, max_age_timestamp=self.since_timestamp)
+                await self.tl.get_next_timeline_activity_log(response)
             elif subscription['type'] == 'timelineDetailV2':
-                await self.tl.timelineDetail(response, self, max_age_timestamp=self.since_timestamp)
+                await self.tl.process_timelineDetail(response, self)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
