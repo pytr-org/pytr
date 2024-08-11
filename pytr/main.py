@@ -3,14 +3,15 @@
 import argparse
 import asyncio
 import signal
-import time
 
 import shtab
 
 from importlib.metadata import version
 from pathlib import Path
+from datetime import datetime, timedelta
 
-from pytr.utils import get_logger, check_version, export_transactions
+from pytr.utils import get_logger, check_version
+from pytr.transactions import export_transactions
 from pytr.dl import DL
 from pytr.account import login
 from pytr.portfolio import Portfolio
@@ -198,8 +199,7 @@ def main():
         if args.last_days == 0:
             since_timestamp = 0
         else:
-            since_timestamp = (time.time() - (24 * 3600 * args.last_days)) * 1000
-
+            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,

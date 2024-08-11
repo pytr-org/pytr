@@ -2,6 +2,7 @@ import json
 import sys
 from pygments import highlight, lexers, formatters
 import time
+from getpass import getpass
 
 from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
 from pytr.utils import get_logger
@@ -45,7 +46,7 @@ def login(phone_no=None, pin=None, web=True):
 
         if pin is None:
             print('Please enter your TradeRepublic pin:')
-            pin = input()
+            pin = getpass(prompt='Pin (Input is hidden):')
 
         print('Save credentials? Type "y" to save credentials:')
         save = input()
