@@ -295,10 +295,10 @@ def export_banking4(input_path, output_path, lang='auto'):
                 continue
 
             # inflows
-            if event["eventType"] in ["PAYMENT_INBOUND"]:
+            if event["eventType"] in ["PAYMENT_INBOUND","INCOMING_TRANSFER"]:
                  f.write(csv_fmt.format(date=date, type=clean_strings(event['eventType']), value=event['amount']["value"]))
-            # Card refund, Buys, atm withdrawal
-            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND"]:
+            # Card refund, Buys, atm withdrawal, iterest payouts
+            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND","INTEREST_PAYOUT"]:
                 title = event['title']
                 subtitle = event["subtitle"]
                 if title is None:
@@ -313,16 +313,23 @@ def export_banking4(input_path, output_path, lang='auto'):
             elif event["eventType"] in ["ssp_corporate_action_invoice_cash","CREDIT"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
             #Saveback
-            elif event["eventType"] in ["SAVINGS_PLAN_EXECUTED"]:
+            elif event["eventType"] in ["SAVINGS_PLAN_EXECUTED","SAVINGS_PLAN_INVOICE_CREATED","benefits_saveback_execution"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
-            
             #Tax payments
             elif event["eventType"] in ["PRE_DETERMINED_TAX_BASE"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
-    
             #Card order
             elif event["eventType"] in ["card_order_billed"]:
-                f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]), value=event['amount']["value"]))          
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]), value=event['amount']["value"]))
+            #Referral
+            elif event["eventType"] in ["REFERRAL_FIRST_TRADE_EXECUTED_INVITER"]:
+                f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]+": "+event["subtitle"]),value=event['amount']["value"]))
+            #Capital events (e.g. return of capital)
+            elif event["eventType"] in ["SHAREBOOKING_TRANSACTIONAL"]:
+                if (event["subtitle"]=="Reinvestierung"):
+                    pass
+                else:
+                    f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]+": "+event["subtitle"]),value=event['amount']["value"]))
 
     log.info('transaction creation finished!')
 
