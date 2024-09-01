@@ -179,7 +179,7 @@ destination:
     filename: "{iso_date} Report"
 
   cash_transfer_report:
-    pattern: [{event_type: "INCOMING_TRANSFER"}]
+    pattern: [{event_type: "INCOMING_TRANSFER"}, {event_type: "PAYMENT_INBOUND_GOOGLE_PAY"}, {event_type: "PAYMENT_INBOUND_CREDIT_CARD"}]
     path: "Cash Report/"
     filename: "{iso_date}.{iso_time} {document_title}" # {event_title} = Personal name
 
