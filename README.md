@@ -10,7 +10,7 @@ This is a library for the private API of the Trade Republic online brokerage. I 
 
 Make sure Python and a Python package manager like pip or [pipx](https://pipx.pypa.io/) (recommended) is installed.
 
-Install release from PyPI with 
+Install release from PyPI with: 
 ```sh
 pipx install pytr
 ```
