@@ -70,6 +70,9 @@ def get_main_parser():
         'Download all pdf documents from the timeline and sort them into folders.'
         + ' Also export account transactions (account_transactions.csv)'
         + ' and JSON files with all events (events_with_documents.json and other_events.json'
+        + ' The file and folder where the structure is saved is defined in a config file located in your home'
+        + ' directory "<home>/.pytr/file_destination_config.yaml". This is created during the first dl_docs run.'
+        + ' Its also possible to provide the config upfront by creating the file manually (copy from git repo).'
     )
     parser_dl_docs = parser_cmd.add_parser(
         'dl_docs',
@@ -80,12 +83,7 @@ def get_main_parser():
     )
 
     parser_dl_docs.add_argument('output', help='Output directory', metavar='PATH', type=Path)
-    parser_dl_docs.add_argument(
-        '--format',
-        help='available variables:\tiso_date, time, title, doc_num, subtitle, id',
-        metavar='FORMAT_STRING',
-        default='{iso_date}{time} {title}{doc_num}',
-    )
+
     parser_dl_docs.add_argument(
         '--last_days', help='Number of last days to include (use 0 get all days)', metavar='DAYS', default=0, type=int
     )
@@ -200,10 +198,10 @@ def main():
             since_timestamp = 0
         else:
             since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
+        
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
-            args.format,
             since_timestamp=since_timestamp,
             max_workers=args.workers,
             universal_filepath=args.universal,
