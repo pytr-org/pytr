@@ -19,6 +19,7 @@ tr_eventType_to_pp_type = {
     "card_successful_atm_withdrawal": "REMOVAL",
     "card_order_billed": "REMOVAL",
     "card_refund": "DEPOSIT",
+    "card_failed_transaction": "REMOVAL",
 }
 
 
@@ -39,6 +40,9 @@ class Event:
 
     @property
     def is_pp_relevant(self):
+        if self.event["eventType"] == "card_failed_transaction":
+            if self.event["status"] == "CANCELED":
+                return False
         return self.pp_type != ""
 
     @property

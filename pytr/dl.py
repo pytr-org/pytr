@@ -3,7 +3,6 @@ import re
 from concurrent.futures import as_completed
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
-from requests import session
 
 from pathvalidate import sanitize_filepath
 
@@ -35,12 +34,7 @@ class DL:
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
 
-        requests_session = session()
-        if self.tr._weblogin:
-            requests_session.headers = self.tr._default_headers_web
-        else:
-            requests_session.headers = self.tr._default_headers
-        self.session = FuturesSession(max_workers=max_workers, session=requests_session)
+        self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
         self.futures = []
 
         self.docs_request = 0
