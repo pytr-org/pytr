@@ -10,7 +10,10 @@ This is a library for the private API of the Trade Republic online brokerage. I 
 
 Make sure Python and a Python package manager like pip or [pipx](https://pipx.pypa.io/) (recommended) is installed.
 
-Install release from PyPI with `pipx install pytr`
+Install release from PyPI with: 
+```sh
+pipx install pytr
+```
 
 Or install from git repo like so:
 
@@ -48,7 +51,8 @@ Commands:
                          them into folders. Also export account transactions
                          (account_transactions.csv) and JSON files with all
                          events (events_with_documents.json and
-                         other_events.json
+                         other_events.json). A folder path must be provided
+                         as second argument.
     portfolio            Show current portfolio
     details              Get details for an ISIN
     get_price_alarms     Get overview of current price alarms
