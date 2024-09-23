@@ -60,9 +60,9 @@ def export_transactions(input_path, output_path, lang="auto"):
             if not event.is_pp_relevant:
                 continue
 
-            amount = format_decimal(event.amount, locale=lang) if event.amount else ""
+            amount = format_decimal(event.amount, locale=lang, decimal_quantization=False) if event.amount else ""
             note = (_(event.note) + " - " + event.title) if event.note else event.title
-            shares = format_decimal(event.shares, locale=lang) if event.shares else ""
+            shares = format_decimal(event.shares, locale=lang, decimal_quantization=False) if event.shares else ""
 
             f.write(
                 csv_fmt.format(
