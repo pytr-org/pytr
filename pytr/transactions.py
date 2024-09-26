@@ -3,6 +3,7 @@ from babel.numbers import format_decimal
 import json
 
 from .event import Event
+from .event_formatter import EventCsvFormatter
 from .utils import get_logger
 from .translation import setup_translation
 
@@ -36,7 +37,6 @@ def export_transactions(input_path, output_path, lang="auto"):
     ]:
         log.info(f"Language not yet supported {lang}")
         lang = "en"
-    _ = setup_translation(language=lang)
 
     # Read relevant deposit timeline entries
     with open(input_path, encoding="utf-8") as f:
@@ -44,35 +44,16 @@ def export_transactions(input_path, output_path, lang="auto"):
 
     log.info("Write deposit entries")
     with open(output_path, "w", encoding="utf-8") as f:
-        csv_fmt = "{date};{type};{value};{note};{isin};{shares}\n"
-        header = csv_fmt.format(
-            date=_("CSVColumn_Date"),
-            type=_("CSVColumn_Type"),
-            value=_("CSVColumn_Value"),
-            note=_("CSVColumn_Note"),
-            isin=_("CSVColumn_ISIN"),
-            shares=_("CSVColumn_Shares"),
-        )
-        f.write(header)
 
+        formatter = EventCsvFormatter(lang=lang)
+        f.write(formatter.format_header())
+        
         for event_json in timeline:
-            event = Event(event_json)
-            if not event.is_pp_relevant:
-                continue
 
-            amount = format_decimal(event.amount, locale=lang, decimal_quantization=False) if event.amount else ""
-            note = (_(event.note) + " - " + event.title) if event.note else event.title
-            shares = format_decimal(event.shares, locale=lang, decimal_quantization=False) if event.shares else ""
-
-            f.write(
-                csv_fmt.format(
-                    date=event.date,
-                    type=_(event.pp_type),
-                    value=amount,
-                    note=note,
-                    isin=event.isin,
-                    shares=shares,
-                )
-            )
+            event = Event.from_json(event_json)
+            generator = formatter.format(event)
+        
+            for line in generator:
+                f.write(line)
 
     log.info("Deposit creation finished!")
