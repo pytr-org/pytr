@@ -204,8 +204,6 @@ class Event:
         Returns:
             Tuple[Optional[float]]: [Tax]
         """
-        tax = None
-        return_values = {}
         # tax keywords
         tax_keys = {"Steuer", "Steuern"}
         # Gather all section dicts
@@ -219,19 +217,15 @@ class Event:
             data = transaction_dict.get("data", [{}])
             tax_dicts = filter(
                 lambda x: x["title"] in tax_keys, data
-            )  # + detailed_dicts)
+            )
             # Iterate over dicts containing tax information and parse each one
             for tax_dict in tax_dicts:
-                # print(tax_dict)
                 unparsed_tax_val = tax_dict.get("detail", {}).get("text", "")
                 parsed_tax_val = re.sub("[^\,\.\d-]", "", unparsed_tax_val).replace(
                     ",", "."
                 )
                 if parsed_tax_val != "" and float(parsed_tax_val) != 0.0:
-                    return_values[tax_dict.get("title", "")] = float(parsed_tax_val)
-        # Parse return_values dict to tax
-        tax = next(filter(lambda x: isinstance(x, float), return_values.values()), None)
-        return tax
+                    return float(parsed_tax_val)
 
     @staticmethod
     def _parse_card_note(event_json: Dict[Any, Any]) -> Optional[str]:
