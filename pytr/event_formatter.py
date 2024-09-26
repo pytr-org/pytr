@@ -34,7 +34,7 @@ class EventCsvFormatter:
             event (Event): _description_
 
         Yields:
-            Generator[str, None, None]: _description_
+            Generator[str, None, None]: csv line generator
         """
         # If the event_type is not captured by the mappings in event.py
         # it is not a relevant event
@@ -47,29 +47,43 @@ class EventCsvFormatter:
                 ["" for _ in range(6)],
             )
         )
-        
+
         # Apply special formatting to value, note, shares and type attributes
-        kwargs["value"] = [event.value] if event.value is not None else [""]
+        kwargs["value"] = [event.value]
         kwargs["shares"] = [event.shares] if event.shares is not None else [""]
-        kwargs["note"] = [self.translate(event.note) + " - " + event.title] if event.note is not None else [event.title]
+        kwargs["note"] = (
+            [self.translate(event.note) + " - " + event.title]
+            if event.note is not None
+            else [event.title]
+        )
         kwargs["isin"] = [event.isin] if event.isin is not None else [""]
-        kwargs["type"] = [self.translate(event.event_type.value) if isinstance(event.event_type, PPEventType) else None]
+        kwargs["type"] = [
+            (
+                self.translate(event.event_type.value)
+                if isinstance(event.event_type, PPEventType)
+                else None
+            )
+        ]
         kwargs["date"] = [event.date.strftime("%Y-%m-%d")]
 
         # Handle TRADE_INVOICE
         if event.event_type == UnprocessedEventType.TRADE_INVOICE:
+            if event.value is None:
+                breakpoint()
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
             kwargs["type"] = [self.translate(event.event_type.value)]
 
         # The following three event types generate two or three csv lines per event
         # (buy+deposit or dividend/interest/sell+tax or buy/sell+fee or sell+tax+fee)
-        additional_events = []
         # Handle SAVEBACK
         if event.event_type == UnprocessedEventType.SAVEBACK:
             kwargs["type"] = [
                 self.translate(PPEventType.BUY.value),
                 self.translate(PPEventType.DEPOSIT.value),
             ]
+            kwargs["value"] += [-kwargs["value"][0]]
+            kwargs["isin"] += [""]
+            kwargs["shares"] += [""]
         # Handle Tax
         if (
             event.event_type
@@ -84,21 +98,25 @@ class EventCsvFormatter:
             event.event_type in [PPEventType.BUY, PPEventType.SELL]
             and event.fee is not None
         ):
-            if isinstance(kwargs["value"][0], str): breakpoint()
-            kwargs["value"][0] -= event.fee
+            kwargs["value"][0] += event.fee
             kwargs["type"] += [self.translate(PPEventType.FEES.value)]
-            kwargs["value"] += [event.fee]
-        
+            kwargs["value"] += [-event.fee]
 
         # Handle float to string conversion after tax and fee effects on the value field
         if event.value is not None:
-            kwargs["value"] = [format_decimal(
-                value, locale=self.lang, decimal_quantization=True
-            ) for value in kwargs["value"]]
+            kwargs["value"] = [
+                format_decimal(value, locale=self.lang, decimal_quantization=True)
+                for value in kwargs["value"]
+            ]
         if event.shares is not None:
-            kwargs["shares"] = [format_decimal(
-                kwargs["shares"][0], locale=self.lang, decimal_quantization=False
-            )]
+            kwargs["shares"] = [
+                (
+                    format_decimal(share, locale=self.lang, decimal_quantization=False)
+                    if share != ""
+                    else ""
+                )
+                for share in kwargs["shares"]
+            ]
 
         # Build the csv line formatting arguments when one event generates more than one line
         single_element_dict = {
@@ -107,13 +125,17 @@ class EventCsvFormatter:
         multi_element_dict = {
             key: value for key, value in kwargs.items() if len(value) > 1
         }
-        list_kwargs = [dict(zip(multi_element_dict.keys(), v)) for v in zip(*multi_element_dict.values())]
+        list_kwargs = [
+            dict(zip(multi_element_dict.keys(), v))
+            for v in zip(*multi_element_dict.values())
+        ]
         for line in list_kwargs:
             line.update(single_element_dict)
-        # Assert that if one kwargs value has a greater 1 length, 
+        if len(list_kwargs) == 0:
+            list_kwargs += [single_element_dict]
+        # Assert that if one kwargs value has a greater 1 length,
         # all greater 1 length lists must have same length
         assert len(set(map(len, multi_element_dict.values()))) <= 1
         # Yields csv lines
         for kwargs in list_kwargs:
-            if "isin" not in kwargs.keys(): breakpoint()
             yield self.csv_fmt.format(**kwargs)
