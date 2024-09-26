@@ -7,24 +7,28 @@ import re
 
 
 class UnprocessedEventType(Enum):
+    """Events that potentially encompass multiple PPEventType events"""
+
     SAVEBACK = auto()
     TRADE_INVOICE = auto()
 
 
 class PPEventType(Enum):
+    """PP Event Types"""
+
     BUY = "Buy"
     DEPOSIT = "Deposit"
     DIVIDEND = "Dividend"
     FEES = "Fees"
-    FEES_REFUND = "Fees Refund"  # Currently Unmapped
+    FEES_REFUND = "Fees Refund"  # Currently not mapped to
     INTEREST = "Interest"
-    INTEREST_CHARGE = "Interest Charge"  # Currently Unmapped
+    INTEREST_CHARGE = "Interest Charge"  # Currently not mapped to
     REMOVAL = "Removal"
     SELL = "Sell"
     TAX_REFUND = "Tax Refund"
     TAXES = "Taxes"
-    TRANSFER_IN = "Transfer (Inbound)"  # Currently Unmapped
-    TRANSFER_OUT = "Transfer (Outbound)"  # Currently Unmapped
+    TRANSFER_IN = "Transfer (Inbound)"  # Currently not mapped to
+    TRANSFER_OUT = "Transfer (Outbound)"  # Currently not mapped to
 
 
 class EventType(Enum):
@@ -94,7 +98,9 @@ class Event:
             else None
         )
         date: datetime = datetime.fromisoformat(event_json["timestamp"][:19])
-        event_type: Optional[EventType] = tr_eventType_mapping.get(event_json["eventType"], None)
+        event_type: Optional[EventType] = tr_eventType_mapping.get(
+            event_json["eventType"], None
+        )
         title: str = event_json["title"]
         isin, shares, tax, note, fee = cls._parse_type_dependent_params(
             event_type, event_json
@@ -113,20 +119,20 @@ class Event:
 
         Returns:
             Tuple[Optional[Union[str, float]]]]: isin, shares, tax, note, fee
-        """        
+        """
         isin, shares, tax, note, fee = (None,) * 5
         # Parse isin
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_json)
-            tax, note = cls._parse_tax_and_note(event_json)
+            tax = cls._parse_tax(event_json)
         # Parse shares
         elif isinstance(event_type, UnprocessedEventType):
             isin = cls._parse_isin(event_json)
             shares, fee = cls._parse_shares_and_fee(event_json)
-            tax, note = cls._parse_tax_and_note(event_json)
+            tax = cls._parse_tax(event_json)
         # Parse taxes
         elif event_type is PPEventType.INTEREST:
-            tax, note = cls._parse_tax_and_note(event_json)
+            tax = cls._parse_tax(event_json)
         # Parse card notes
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
             note = cls._parse_card_note(event_json)
@@ -189,64 +195,43 @@ class Event:
         return return_vals["shares"], return_vals["fee"]
 
     @staticmethod
-    def _parse_tax_and_note(
-        event_json: Dict[Any, Any]
-    ) -> Tuple[Optional[float], Optional[str]]:
+    def _parse_tax(event_json: Dict[Any, Any]) -> Tuple[Optional[float]]:
         """Hacky parse of the levied tax. @TODO Improve with better logs
 
         Args:
             event_json (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float], Optional[str]]: [Tax, tax info note]
+            Tuple[Optional[float]]: [Tax]
         """
-        tax, info = (None,) * 2
+        tax = None
         return_values = {}
         # tax keywords
-        tax_kws = ["Steuer", "Steuern", "Kapitalertragsteuer", "Solidaritätszuschlag"]
+        tax_keys = {"Steuer", "Steuern"}
         # Gather all section dicts
         sections = event_json.get("details", {}).get("sections", [{}])
         # Gather all dicts pertaining to transactions
-        transaction_dicts = list(
-            filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections)
+        transaction_dicts = filter(
+            lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections
         )
         for transaction_dict in transaction_dicts:
-            # Check for "Steuer" and "infoPage" dicts
+            # Filter for tax dicts
             data = transaction_dict.get("data", [{}])
-            # Check for "infoPage" section
-            action_dict = transaction_dict.get("action", {})
-            action_sections = []
-            if action_dict is not None and action_dict.get("type", "") == "infoPage":
-                action_sections = action_dict.get("payload", {}).get("sections", [])
-            detailed_dicts = []
-            if len(action_sections) == 3:
-                detailed_dicts = action_sections[1].get("data", [])
-            if len(action_sections) == 4:
-                detailed_dicts = action_sections[2].get("data", [])
-            # Concatenate all found tax dicts
-            tax_dicts = list(
-                filter(lambda x: x["title"] in tax_kws, data + detailed_dicts)
-            )
+            tax_dicts = filter(
+                lambda x: x["title"] in tax_keys, data
+            )  # + detailed_dicts)
             # Iterate over dicts containing tax information and parse each one
             for tax_dict in tax_dicts:
+                # print(tax_dict)
                 unparsed_tax_val = tax_dict.get("detail", {}).get("text", "")
                 parsed_tax_val = re.sub("[^\,\.\d-]", "", unparsed_tax_val).replace(
                     ",", "."
                 )
                 if parsed_tax_val != "" and float(parsed_tax_val) != 0.0:
                     return_values[tax_dict.get("title", "")] = float(parsed_tax_val)
-        # Parse return_values dict to tax and info variables
-        tax = (
-            return_values.get("Steuer", None)
-            if "Steuer" in return_values.keys()
-            else return_values.get("Steuern", None)
-        )
-        if "Steuern" in return_values.keys():
-            info = (
-                f"KapESt {return_values['Kapitalertragsteuer']}€ - "
-                f"Soli {return_values['Solidaritätszuschlag']}€"
-            )
-        return tax, info
+        # Parse return_values dict to tax
+        tax = next(filter(lambda x: isinstance(x, float), return_values.values()), None)
+        return tax
 
     @staticmethod
     def _parse_card_note(event_json: Dict[Any, Any]) -> Optional[str]:
