@@ -20,6 +20,7 @@ class DL:
         history_file='pytr_history',
         max_workers=8,
         universal_filepath=False,
+        sort_export=False
     ):
         '''
         tr: api object
@@ -33,6 +34,7 @@ class DL:
         self.filename_fmt = filename_fmt
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
+        self.sort_export = sort_export
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
         self.futures = []

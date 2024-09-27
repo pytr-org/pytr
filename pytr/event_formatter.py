@@ -1,5 +1,4 @@
 from babel.numbers import format_decimal
-from typing import Generator
 
 from .event import Event, PPEventType, UnprocessedEventType
 from .translation import setup_translation
@@ -10,7 +9,14 @@ class EventCsvFormatter:
         self.lang = lang
         self.translate = setup_translation(language=self.lang)
         self.csv_fmt = "{date};{type};{value};{note};{isin};{shares}\n"
-        self.header = self.csv_fmt.format(
+
+    def format_header(self) -> str:
+        """Outputs header line
+
+        Returns:
+            str: header line
+        """
+        return self.csv_fmt.format(
             date=self.translate("CSVColumn_Date"),
             type=self.translate("CSVColumn_Type"),
             value=self.translate("CSVColumn_Value"),
@@ -19,62 +25,48 @@ class EventCsvFormatter:
             shares=self.translate("CSVColumn_Shares"),
         )
 
-    def format_header(self) -> str:
-        """Outputs header line
-
-        Returns:
-            str: header line
-        """
-        return self.header
-
-    def format(self, event: Event) -> Generator[str, None, None]:
-        """Outputs a generator that yields one or multiple csv lines per event
+    def format(self, event: Event) -> str:
+        """Outputs one or multiple csv lines per event
 
         Args:
             event (Event): _description_
 
         Yields:
-            Generator[str, None, None]: csv line generator
+            str: csv line(s)
         """
-        # If the event_type is not captured by the mappings in event.py
-        # it is not a relevant event
+        # Empty csv line for non-transaction events
         if event.event_type is None:
-            return
+            return ""
+
         # Initialize the csv line arguments
         kwargs = dict(
             zip(
                 ("date", "type", "value", "note", "isin", "shares"),
-                ["" for _ in range(6)],
+                [[""] for _ in range(6)],
             )
         )
 
-        # Apply special formatting to value, note, shares and type attributes
+        # Handle TRADE_INVOICE
+        if event.event_type == UnprocessedEventType.TRADE_INVOICE:
+            event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
+
+        # Apply special formatting to date, type, value, note, isin and shares attributes
+        kwargs["date"] = [event.date.strftime("%Y-%m-%d")]
+        if isinstance(event.event_type, PPEventType):
+            kwargs["type"] = [self.translate(event.event_type.value)]
         kwargs["value"] = [event.value]
-        kwargs["shares"] = [event.shares] if event.shares is not None else [""]
         kwargs["note"] = (
             [self.translate(event.note) + " - " + event.title]
             if event.note is not None
             else [event.title]
         )
-        kwargs["isin"] = [event.isin] if event.isin is not None else [""]
-        kwargs["type"] = [
-            (
-                self.translate(event.event_type.value)
-                if isinstance(event.event_type, PPEventType)
-                else None
-            )
-        ]
-        kwargs["date"] = [event.date.strftime("%Y-%m-%d")]
-
-        # Handle TRADE_INVOICE
-        if event.event_type == UnprocessedEventType.TRADE_INVOICE:
-            if event.value is None:
-                breakpoint()
-            event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
-            kwargs["type"] = [self.translate(event.event_type.value)]
-
-        # The following three event types generate two or three csv lines per event
-        # (buy+deposit or dividend/interest/sell+tax or buy/sell+fee or sell+tax+fee)
+        if event.isin is not None:
+            kwargs["isin"] = [event.isin]
+        if event.shares is not None:
+            kwargs["shares"] = [event.shares]
+        
+        # The following three event types potentially generate two or three csv lines per
+        # event (buy+deposit or dividend/interest/sell+tax or buy/sell+fee or sell+tax+fee)
         # Handle SAVEBACK
         if event.event_type == UnprocessedEventType.SAVEBACK:
             kwargs["type"] = [
@@ -100,7 +92,7 @@ class EventCsvFormatter:
         ):
             kwargs["value"][0] += event.fee
             kwargs["type"] += [self.translate(PPEventType.FEES.value)]
-            kwargs["value"] += [-event.fee]
+            kwargs["value"] += [event.fee]
 
         # Handle float to string conversion after tax and fee effects on the value field
         if event.value is not None:
@@ -111,31 +103,28 @@ class EventCsvFormatter:
         if event.shares is not None:
             kwargs["shares"] = [
                 (
-                    format_decimal(share, locale=self.lang, decimal_quantization=False)
-                    if share != ""
+                    format_decimal(shares, locale=self.lang, decimal_quantization=False)
+                    if shares != ""
                     else ""
                 )
-                for share in kwargs["shares"]
+                for shares in kwargs["shares"]
             ]
 
         # Build the csv line formatting arguments when one event generates more than one line
-        single_element_dict = {
+        single_line_generating_args = {
             key: value[0] for key, value in kwargs.items() if len(value) == 1
         }
-        multi_element_dict = {
+        multi_line_generating_args = {
             key: value for key, value in kwargs.items() if len(value) > 1
         }
         list_kwargs = [
-            dict(zip(multi_element_dict.keys(), v))
-            for v in zip(*multi_element_dict.values())
+            dict(zip(multi_line_generating_args.keys(), v))
+            for v in zip(*multi_line_generating_args.values())
         ]
         for line in list_kwargs:
-            line.update(single_element_dict)
+            line.update(single_line_generating_args)
         if len(list_kwargs) == 0:
-            list_kwargs += [single_element_dict]
-        # Assert that if one kwargs value has a greater 1 length,
-        # all greater 1 length lists must have same length
-        assert len(set(map(len, multi_element_dict.values()))) <= 1
-        # Yields csv lines
-        for kwargs in list_kwargs:
-            yield self.csv_fmt.format(**kwargs)
+            list_kwargs += [single_line_generating_args]
+        # Build csv line(s) from kwargs
+        lines = "".join(map(lambda x: self.csv_fmt.format(**x), list_kwargs))
+        return lines

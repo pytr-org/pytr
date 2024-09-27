@@ -1,14 +1,12 @@
-from locale import getdefaultlocale
-from babel.numbers import format_decimal
 import json
+from locale import getdefaultlocale
 
 from .event import Event
 from .event_formatter import EventCsvFormatter
 from .utils import get_logger
-from .translation import setup_translation
 
 
-def export_transactions(input_path, output_path, lang="auto"):
+def export_transactions(input_path, output_path, lang="auto", sort=False):
     """
     Create a CSV with the deposits and removals ready for importing into Portfolio Performance
     The CSV headers for PP are language dependend
@@ -43,17 +41,17 @@ def export_transactions(input_path, output_path, lang="auto"):
         timeline = json.load(f)
 
     log.info("Write deposit entries")
+
+    formatter = EventCsvFormatter(lang=lang)
+
+    events = map(lambda x: Event.from_dict(x), timeline)
+    if sort:
+        events = sorted(events, key=lambda x: x.date)
+    lines = map(lambda x: formatter.format(x), events)
+    lines = formatter.format_header() + "".join(lines)
+
+    # Write transactions into csv file
     with open(output_path, "w", encoding="utf-8") as f:
-
-        formatter = EventCsvFormatter(lang=lang)
-        f.write(formatter.format_header())
-        
-        for event_json in timeline:
-
-            event = Event.from_json(event_json)
-            generator = formatter.format(event)
-        
-            for line in generator:
-                f.write(line)
+        f.write(lines)
 
     log.info("Deposit creation finished!")

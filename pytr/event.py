@@ -1,9 +1,8 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum, auto
-import json
-from typing import Any, Dict, List, Optional, Tuple, Union
+from enum import auto, Enum
 import re
+from typing import Any, Dict, Optional, Tuple, Union
 
 
 class UnprocessedEventType(Enum):
@@ -16,19 +15,19 @@ class UnprocessedEventType(Enum):
 class PPEventType(Enum):
     """PP Event Types"""
 
-    BUY = "Buy"
-    DEPOSIT = "Deposit"
-    DIVIDEND = "Dividend"
-    FEES = "Fees"
-    FEES_REFUND = "Fees Refund"  # Currently not mapped to
-    INTEREST = "Interest"
-    INTEREST_CHARGE = "Interest Charge"  # Currently not mapped to
-    REMOVAL = "Removal"
-    SELL = "Sell"
-    TAX_REFUND = "Tax Refund"
-    TAXES = "Taxes"
-    TRANSFER_IN = "Transfer (Inbound)"  # Currently not mapped to
-    TRANSFER_OUT = "Transfer (Outbound)"  # Currently not mapped to
+    BUY = "BUY"
+    DEPOSIT = "DEPOSIT"
+    DIVIDEND = "DIVIDEND"
+    FEES = "FEES"
+    FEES_REFUND = "FEES_REFUND"  # Currently not mapped to
+    INTEREST = "INTEREST"
+    INTEREST_CHARGE = "INTEREST_CHARGE"  # Currently not mapped to
+    REMOVAL = "REMOVAL"
+    SELL = "SELL"
+    TAXES = "TAXES"
+    TAX_REFUND = "TAX_REFUND"
+    TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
+    TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
 
 
 class EventType(Enum):
@@ -59,97 +58,97 @@ tr_eventType_mapping = {
     "card_successful_transaction": PPEventType.REMOVAL,
     # Saveback
     "benefits_saveback_execution": UnprocessedEventType.SAVEBACK,
+    # Tax refunds
+    "TAX_REFUND": PPEventType.TAX_REFUND,
     # Trade invoices
     "ORDER_EXECUTED": UnprocessedEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": UnprocessedEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": UnprocessedEventType.TRADE_INVOICE,
     "TRADE_INVOICE": UnprocessedEventType.TRADE_INVOICE,
-    # Tax refunds
-    "TAX_REFUND": PPEventType.TAX_REFUND,
 }
 
 
 @dataclass
 class Event:
-    value: Optional[float]
     date: datetime
-    event_type: Optional[EventType]
     title: str
-    isin: Optional[str] = field(default=None)
-    note: Optional[str] = field(default=None)
-    shares: Optional[float] = field(default=None)
-    tax: Optional[float] = field(default=None)
-    fee: Optional[float] = field(default=None)
+    event_type: Optional[EventType]
+    fee: Optional[float]
+    isin: Optional[str]
+    note: Optional[str]
+    shares: Optional[float]
+    tax: Optional[float]
+    value: Optional[float]
 
     @classmethod
-    def from_json(cls, event_json: Dict[Any, Any]):
-        """Deserializes the json file into an Event object
+    def from_dict(cls, event_dict: Dict[Any, Any]):
+        """Deserializes the event dictionary into an Event object
 
         Args:
-            event_json (json): _description_
+            event_dict (json): _description_
 
         Returns:
             Event: Event object
         """
-        value: float = (
+        date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
+        event_type: Optional[EventType] = tr_eventType_mapping.get(
+            event_dict["eventType"], None
+        )
+        title: str = event_dict["title"]
+        value: Optional[float] = (
             v
-            if (v := event_json.get("amount", {}).get("value", None)) is not None
+            if (v := event_dict.get("amount", {}).get("value", None)) is not None
             and v != 0.0
             else None
         )
-        date: datetime = datetime.fromisoformat(event_json["timestamp"][:19])
-        event_type: Optional[EventType] = tr_eventType_mapping.get(
-            event_json["eventType"], None
+        fee, isin, note, shares, tax = cls._parse_type_dependent_params(
+            event_type, event_dict
         )
-        title: str = event_json["title"]
-        isin, shares, tax, note, fee = cls._parse_type_dependent_params(
-            event_type, event_json
-        )
-        return cls(value, date, event_type, title, isin, note, shares, tax, fee)
+        return cls(date, title, event_type, fee, isin, note, shares, tax, value)
 
     @classmethod
     def _parse_type_dependent_params(
-        cls, event_type: EventType, event_json: Dict[Any, Any]
+        cls, event_type: EventType, event_dict: Dict[Any, Any]
     ) -> Tuple[Optional[Union[str, float]]]:
-        """Parses isin, shares, tax, note and fee fields
+        """Parses the fee, isin, note, shares and tax fields
 
         Args:
             event_type (EventType): _description_
-            event_json (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[Union[str, float]]]]: isin, shares, tax, note, fee
+            Tuple[Optional[Union[str, float]]]]: fee, isin, note, shares, tax  
         """
         isin, shares, tax, note, fee = (None,) * 5
         # Parse isin
         if event_type is PPEventType.DIVIDEND:
-            isin = cls._parse_isin(event_json)
-            tax = cls._parse_tax(event_json)
+            isin = cls._parse_isin(event_dict)
+            tax = cls._parse_tax(event_dict)
         # Parse shares
         elif isinstance(event_type, UnprocessedEventType):
-            isin = cls._parse_isin(event_json)
-            shares, fee = cls._parse_shares_and_fee(event_json)
-            tax = cls._parse_tax(event_json)
+            isin = cls._parse_isin(event_dict)
+            shares, fee = cls._parse_shares_and_fee(event_dict)
+            tax = cls._parse_tax(event_dict)
         # Parse taxes
         elif event_type is PPEventType.INTEREST:
-            tax = cls._parse_tax(event_json)
+            tax = cls._parse_tax(event_dict)
         # Parse card notes
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
-            note = cls._parse_card_note(event_json)
-        return isin, shares, tax, note, fee
+            note = cls._parse_card_note(event_dict)
+        return fee, isin, note, shares, tax
 
     @staticmethod
-    def _parse_isin(event_json: Dict[Any, Any]) -> str:
+    def _parse_isin(event_dict: Dict[Any, Any]) -> str:
         """Parses the isin
 
         Args:
-            event_json (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): _description_
 
         Returns:
             str: isin
         """
-        sections = event_json.get("details", {}).get("sections", [{}])
-        isin = event_json.get("icon", "")
+        sections = event_dict.get("details", {}).get("sections", [{}])
+        isin = event_dict.get("icon", "")
         isin = isin[isin.find("/") + 1 :]
         isin = isin[: isin.find("/")]
         isin2 = isin
@@ -163,17 +162,17 @@ class Event:
         return isin
 
     @staticmethod
-    def _parse_shares_and_fee(event_json: Dict[Any, Any]) -> Tuple[Optional[float]]:
+    def _parse_shares_and_fee(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
         """Parses the amount of shares and the applicable fee
 
         Args:
-            event_json (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): _description_
 
         Returns:
             Tuple[Optional[float]]: [shares, fee]
         """
         return_vals = {}
-        sections = event_json.get("details", {}).get("sections", [{}])
+        sections = event_dict.get("details", {}).get("sections", [{}])
         for section in sections:
             if section.get("title") == "Transaktion":
                 data = section["data"]
@@ -195,11 +194,11 @@ class Event:
         return return_vals["shares"], return_vals["fee"]
 
     @staticmethod
-    def _parse_tax(event_json: Dict[Any, Any]) -> Tuple[Optional[float]]:
-        """Hacky parse of the levied tax. @TODO Improve with better logs
+    def _parse_tax(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+        """Parses the levied tax
 
         Args:
-            event_json (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): _description_
 
         Returns:
             Tuple[Optional[float]]: [Tax]
@@ -207,7 +206,7 @@ class Event:
         # tax keywords
         tax_keys = {"Steuer", "Steuern"}
         # Gather all section dicts
-        sections = event_json.get("details", {}).get("sections", [{}])
+        sections = event_dict.get("details", {}).get("sections", [{}])
         # Gather all dicts pertaining to transactions
         transaction_dicts = filter(
             lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections
@@ -215,9 +214,7 @@ class Event:
         for transaction_dict in transaction_dicts:
             # Filter for tax dicts
             data = transaction_dict.get("data", [{}])
-            tax_dicts = filter(
-                lambda x: x["title"] in tax_keys, data
-            )
+            tax_dicts = filter(lambda x: x["title"] in tax_keys, data)
             # Iterate over dicts containing tax information and parse each one
             for tax_dict in tax_dicts:
                 unparsed_tax_val = tax_dict.get("detail", {}).get("text", "")
@@ -228,14 +225,14 @@ class Event:
                     return float(parsed_tax_val)
 
     @staticmethod
-    def _parse_card_note(event_json: Dict[Any, Any]) -> Optional[str]:
+    def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
         """Parses the note associated with card transactions
 
         Args:
-            event_json (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): _description_
 
         Returns:
             Optional[str]: note
         """
-        if event_json.get("eventType", "").startswith("card_"):
-            return event_json["eventType"]
+        if event_dict.get("eventType", "").startswith("card_"):
+            return event_dict["eventType"]

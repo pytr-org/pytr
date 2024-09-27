@@ -172,6 +172,6 @@ class Timeline:
             with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs + self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            export_transactions(dl.output_path / 'all_events.json', dl.output_path / 'account_transactions.csv')
+            export_transactions(dl.output_path / 'all_events.json', dl.output_path / 'account_transactions.csv', sort = dl.sort_export)
 
             dl.work_responses()
