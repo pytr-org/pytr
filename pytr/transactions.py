@@ -124,11 +124,11 @@ def export_banking4(input_path, output_path, lang='auto'):
             if 'storniert' in body:
                 continue
 
-            # inflows
-            if event["eventType"] in ["PAYMENT_INBOUND","INCOMING_TRANSFER"]:
+            # SEPA inflows and outflows 
+            if event["eventType"] in ["PAYMENT_INBOUND","INCOMING_TRANSFER","OUTGOING_TRANSFER","OUTGOING_TRANSFER_DELEGATION"]:
                  f.write(csv_fmt.format(date=date, type=clean_strings(event['eventType']), value=event['amount']["value"]))
             # Card refund, Buys, atm withdrawal, iterest payouts
-            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND","INTEREST_PAYOUT"]:
+            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND","INTEREST_PAYOUT","TRADE_CORRECTED"]:
                 title = event['title']
                 subtitle = event["subtitle"]
                 if title is None:
@@ -163,6 +163,17 @@ def export_banking4(input_path, output_path, lang='auto'):
                     pass
                 else:
                     f.write(csv_fmt.format(date=date, type=clean_strings(event["title"]+": "+event["subtitle"]),value=event['amount']["value"]))
+            # Events that are not transactions tracked by this function
+            elif event["eventType"] in ["EXEMPTION_ORDER_CHANGED","EXEMPTION_ORDER_CHANGE_REQUESTED","AML_SOURCE_OF_WEALTH_RESPONSE_EXECUTED","DEVICE_RESET",
+                                        "REFERENCE_ACCOUNT_CHANGED","EXEMPTION_ORDER_CHANGE_REQUESTED_AUTOMATICALLY","CASH_ACCOUNT_CHANGED","ACCOUNT_TRANSFER_INCOMING",
+                                        "card_failed_transaction","EMAIL_VALIDATED","PUK_CREATED","SECURITIES_ACCOUNT_CREATED","card_successful_verification",
+                                        "ssp_dividend_option_customer_instruction","new_tr_iban","DOCUMENTS_ACCEPTED","EX_POST_COST_REPORT","INSTRUCTION_CORPORATE_ACTION",
+                                        "SHAREBOOKING","GESH_CORPORATE_ACTION","GENERAL_MEETING","QUARTERLY_REPORT","DOCUMENTS_ACCEPTED","GENERAL_MEETING","INSTRUCTION_CORPORATE_ACTION",
+                                        "DOCUMENTS_CHANGED","MATURITY","YEAR_END_TAX_REPORT","STOCK_PERK_REFUNDED","ORDER_CANCELED","ORDER_EXPIRED","DOCUMENTS_CREATED","CUSTOMER_CREATED",
+                                        ]:
+                pass
+            else:
+                print("ERROR: "+"Type: "+event["eventType"]+"  Title: "+event["title"])
 
     log.info('transaction creation finished!')
 
