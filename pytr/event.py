@@ -1,23 +1,30 @@
 from datetime import datetime
 import re
 
-
 tr_eventType_to_pp_type = {
-    "CREDIT": "DIVIDENDS",
-    "ssp_corporate_action_invoice_cash": "DIVIDENDS",
-    "TRADE_INVOICE": "TRADE_INVOICE",
-    "SAVINGS_PLAN_EXECUTED": "TRADE_INVOICE",
-    "ORDER_EXECUTED": "TRADE_INVOICE",
-    "PAYMENT_INBOUND": "DEPOSIT",
-    "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": "DEPOSIT",
-    "PAYMENT_OUTBOUND": "REMOVAL",
-    "INTEREST_PAYOUT_CREATED": "INTEREST",
-    "card_successful_transaction": "REMOVAL",
-    "card_successful_atm_withdrawal": "REMOVAL",
-    "card_order_billed": "REMOVAL",
-    "card_refund": "DEPOSIT",
-}
+    'INCOMING_TRANSFER': 'DEPOSIT',
+    'PAYMENT_INBOUND': 'DEPOSIT',
+    'PAYMENT_INBOUND_GOOGLE_PAY': 'DEPOSIT',
+    'PAYMENT_INBOUND_SEPA_DIRECT_DEBIT': 'DEPOSIT',
+    'card_refund': 'DEPOSIT',
 
+    'CREDIT': 'DIVIDENDS',
+    'ssp_corporate_action_invoice_cash': 'DIVIDENDS',
+
+    'INTEREST_PAYOUT_CREATED': 'INTEREST',
+
+    'OUTGOING_TRANSFER_DELEGATION': 'REMOVAL',
+    'PAYMENT_OUTBOUND': 'REMOVAL',
+    'card_failed_transaction': 'REMOVAL',
+    'card_order_billed': 'REMOVAL',
+    'card_successful_atm_withdrawal': 'REMOVAL',
+    'card_successful_transaction': 'REMOVAL',
+
+    'ORDER_EXECUTED': 'TRADE_INVOICE',
+    'SAVINGS_PLAN_EXECUTED': 'TRADE_INVOICE',
+    'SAVINGS_PLAN_INVOICE_CREATED': 'TRADE_INVOICE',
+    'TRADE_INVOICE': 'TRADE_INVOICE'
+}
 
 class Event:
     def __init__(self, event_json):
@@ -36,6 +43,9 @@ class Event:
 
     @property
     def is_pp_relevant(self):
+        if self.event["eventType"] == "card_failed_transaction":
+            if self.event["status"] == "CANCELED":
+                return False
         return self.pp_type != ""
 
     @property

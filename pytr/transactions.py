@@ -16,11 +16,6 @@ def export_transactions(input_path, output_path, lang="auto"):
     """
     Create a CSV with the deposits and removals ready for importing into Portfolio Performance
     The CSV headers for PP are language dependend
-
-    i18n source from Portfolio Performance:
-    https://github.com/buchen/portfolio/blob/93b73cf69a00b1b7feb136110a51504bede737aa/name.abuchen.portfolio/src/name/abuchen/portfolio/messages_de.properties
-    https://github.com/buchen/portfolio/blob/effa5b7baf9a918e1b5fe83942ddc480e0fd48b9/name.abuchen.portfolio/src/name/abuchen/portfolio/model/labels_de.properties
-
     """
     log = get_logger(__name__)
     if lang == "auto":
@@ -70,9 +65,9 @@ def export_transactions(input_path, output_path, lang="auto"):
             if not event.is_pp_relevant:
                 continue
 
-            amount = format_decimal(event.amount, locale=lang) if event.amount else ""
+            amount = format_decimal(event.amount, locale=lang, decimal_quantization=False) if event.amount else ""
             note = (_(event.note) + " - " + event.title) if event.note else event.title
-            shares = format_decimal(event.shares, locale=lang) if event.shares else ""
+            shares = format_decimal(event.shares, locale=lang, decimal_quantization=False) if event.shares else ""
 
             f.write(
                 csv_fmt.format(
