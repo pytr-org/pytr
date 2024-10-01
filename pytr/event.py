@@ -18,13 +18,13 @@ class PPEventType(Enum):
     BUY = "BUY"
     DEPOSIT = "DEPOSIT"
     DIVIDEND = "DIVIDEND"
-    FEES = "FEES"
+    FEES = "FEES"  # Currently not mapped to
     FEES_REFUND = "FEES_REFUND"  # Currently not mapped to
     INTEREST = "INTEREST"
     INTEREST_CHARGE = "INTEREST_CHARGE"  # Currently not mapped to
     REMOVAL = "REMOVAL"
     SELL = "SELL"
-    TAXES = "TAXES"
+    TAXES = "TAXES"  # Currently not mapped to
     TAX_REFUND = "TAX_REFUND"
     TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
     TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
@@ -73,11 +73,11 @@ class Event:
     date: datetime
     title: str
     event_type: Optional[EventType]
-    fee: Optional[float]
+    fees: Optional[float]
     isin: Optional[str]
     note: Optional[str]
     shares: Optional[float]
-    tax: Optional[float]
+    taxes: Optional[float]
     value: Optional[float]
 
     @classmethod
@@ -101,41 +101,41 @@ class Event:
             and v != 0.0
             else None
         )
-        fee, isin, note, shares, tax = cls._parse_type_dependent_params(
+        fees, isin, note, shares, taxes = cls._parse_type_dependent_params(
             event_type, event_dict
         )
-        return cls(date, title, event_type, fee, isin, note, shares, tax, value)
+        return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
 
     @classmethod
     def _parse_type_dependent_params(
         cls, event_type: EventType, event_dict: Dict[Any, Any]
     ) -> Tuple[Optional[Union[str, float]]]:
-        """Parses the fee, isin, note, shares and tax fields
+        """Parses the fees, isin, note, shares and taxes fields
 
         Args:
             event_type (EventType): _description_
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[Union[str, float]]]]: fee, isin, note, shares, tax  
+            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes  
         """
-        isin, shares, tax, note, fee = (None,) * 5
+        isin, shares, taxes, note, fees = (None,) * 5
         # Parse isin
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_dict)
-            tax = cls._parse_tax(event_dict)
+            taxes = cls._parse_taxes(event_dict)
         # Parse shares
         elif isinstance(event_type, UnprocessedEventType):
             isin = cls._parse_isin(event_dict)
-            shares, fee = cls._parse_shares_and_fee(event_dict)
-            tax = cls._parse_tax(event_dict)
+            shares, fees = cls._parse_shares_and_fees(event_dict)
+            taxes = cls._parse_taxes(event_dict)
         # Parse taxes
         elif event_type is PPEventType.INTEREST:
-            tax = cls._parse_tax(event_dict)
+            taxes = cls._parse_taxes(event_dict)
         # Parse card notes
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
             note = cls._parse_card_note(event_dict)
-        return fee, isin, note, shares, tax
+        return fees, isin, note, shares, taxes
 
     @staticmethod
     def _parse_isin(event_dict: Dict[Any, Any]) -> str:
@@ -162,14 +162,14 @@ class Event:
         return isin
 
     @staticmethod
-    def _parse_shares_and_fee(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
-        """Parses the amount of shares and the applicable fee
+    def _parse_shares_and_fees(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+        """Parses the amount of shares and the applicable fees
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [shares, fee]
+            Tuple[Optional[float]]: [shares, fees]
         """
         return_vals = {}
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -179,9 +179,9 @@ class Event:
                 shares_dicts = list(
                     filter(lambda x: x["title"] in ["Aktien", "Anteile"], data)
                 )
-                fee_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
-                titles = ["shares"] * len(shares_dicts) + ["fee"] * len(fee_dicts)
-                for key, elem_dict in zip(titles, shares_dicts + fee_dicts):
+                fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
+                titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
+                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
                     elem_unparsed = elem_dict.get("detail", {}).get("text", "")
                     elem_parsed = re.sub("[^\,\.\d-]", "", elem_unparsed).replace(
                         ",", "."
@@ -191,20 +191,20 @@ class Event:
                         if elem_parsed == "" or float(elem_parsed) == 0.0
                         else float(elem_parsed)
                     )
-        return return_vals["shares"], return_vals["fee"]
+        return return_vals["shares"], return_vals["fees"]
 
     @staticmethod
-    def _parse_tax(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
-        """Parses the levied tax
+    def _parse_taxes(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+        """Parses the levied taxes
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [Tax]
+            Tuple[Optional[float]]: [taxes]
         """
-        # tax keywords
-        tax_keys = {"Steuer", "Steuern"}
+        # taxes keywords
+        taxes_keys = {"Steuer", "Steuern"}
         # Gather all section dicts
         sections = event_dict.get("details", {}).get("sections", [{}])
         # Gather all dicts pertaining to transactions
@@ -212,17 +212,17 @@ class Event:
             lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections
         )
         for transaction_dict in transaction_dicts:
-            # Filter for tax dicts
+            # Filter for taxes dicts
             data = transaction_dict.get("data", [{}])
-            tax_dicts = filter(lambda x: x["title"] in tax_keys, data)
+            taxes_dicts = filter(lambda x: x["title"] in taxes_keys, data)
             # Iterate over dicts containing tax information and parse each one
-            for tax_dict in tax_dicts:
-                unparsed_tax_val = tax_dict.get("detail", {}).get("text", "")
-                parsed_tax_val = re.sub("[^\,\.\d-]", "", unparsed_tax_val).replace(
+            for taxes_dict in taxes_dicts:
+                unparsed_taxes_val = taxes_dict.get("detail", {}).get("text", "")
+                parsed_taxes_val = re.sub("[^\,\.\d-]", "", unparsed_taxes_val).replace(
                     ",", "."
                 )
-                if parsed_tax_val != "" and float(parsed_tax_val) != 0.0:
-                    return float(parsed_tax_val)
+                if parsed_taxes_val != "" and float(parsed_taxes_val) != 0.0:
+                    return float(parsed_taxes_val)
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
