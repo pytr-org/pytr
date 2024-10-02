@@ -1,7 +1,7 @@
 from babel.numbers import format_decimal
 from copy import deepcopy
 
-from .event import Event, PPEventType, UnprocessedEventType
+from .event import Event, PPEventType, ConditionalEventType
 from .translation import setup_translation
 
 
@@ -50,7 +50,7 @@ class EventCsvFormatter:
         )
 
         # Handle TRADE_INVOICE
-        if event.event_type == UnprocessedEventType.TRADE_INVOICE:
+        if event.event_type == ConditionalEventType.TRADE_INVOICE:
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
@@ -73,16 +73,16 @@ class EventCsvFormatter:
             )
         if event.fees is not None:
             kwargs["fees"] = format_decimal(
-                event.fees, locale=self.lang, decimal_quantization=True
+                -event.fees, locale=self.lang, decimal_quantization=True
             )
         if event.taxes is not None:
             kwargs["taxes"] = format_decimal(
-                event.taxes, locale=self.lang, decimal_quantization=True
+                -event.taxes, locale=self.lang, decimal_quantization=True
             )
         lines = self.csv_fmt.format(**kwargs)
 
         # Generate BUY and DEPOSIT events from SAVEBACK event
-        if event.event_type == UnprocessedEventType.SAVEBACK:
+        if event.event_type == ConditionalEventType.SAVEBACK:
             kwargs["type"] = self.translate(PPEventType.BUY.value)
             lines = self.csv_fmt.format(**kwargs)
             kwargs["type"] = self.translate(PPEventType.DEPOSIT.value)

@@ -5,9 +5,10 @@ import re
 from typing import Any, Dict, Optional, Tuple, Union
 
 
-class UnprocessedEventType(Enum):
-    """Events that potentially encompass multiple PPEventType events"""
+class ConditionalEventType(Enum):
+    """Events that conditionally map to None or one/multiple PPEventType events"""
 
+    FAILED_CARD_TRANSACTION = auto()
     SAVEBACK = auto()
     TRADE_INVOICE = auto()
 
@@ -32,10 +33,10 @@ class PPEventType(Enum):
 
 class EventType(Enum):
     PP_EVENT_TYPE = PPEventType
-    UNPROCESSED_EVENT_TYPE = UnprocessedEventType
+    CONDITIONAL_EVENT_TYPE = ConditionalEventType
 
 
-tr_eventType_mapping = {
+tr_event_type_mapping = {
     # Deposits
     "INCOMING_TRANSFER": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER_DELEGATION": PPEventType.DEPOSIT,
@@ -47,6 +48,8 @@ tr_eventType_mapping = {
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
+    # Failed card transactions
+    "card_failed_transaction": ConditionalEventType.FAILED_CARD_TRANSACTION,
     # Interests
     "INTEREST_PAYOUT": PPEventType.INTEREST,
     "INTEREST_PAYOUT_CREATED": PPEventType.INTEREST,
@@ -57,14 +60,14 @@ tr_eventType_mapping = {
     "card_successful_atm_withdrawal": PPEventType.REMOVAL,
     "card_successful_transaction": PPEventType.REMOVAL,
     # Saveback
-    "benefits_saveback_execution": UnprocessedEventType.SAVEBACK,
+    "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
     # Tax refunds
     "TAX_REFUND": PPEventType.TAX_REFUND,
     # Trade invoices
-    "ORDER_EXECUTED": UnprocessedEventType.TRADE_INVOICE,
-    "SAVINGS_PLAN_EXECUTED": UnprocessedEventType.TRADE_INVOICE,
-    "SAVINGS_PLAN_INVOICE_CREATED": UnprocessedEventType.TRADE_INVOICE,
-    "TRADE_INVOICE": UnprocessedEventType.TRADE_INVOICE,
+    "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
+    "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
+    "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
+    "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
 }
 
 
@@ -91,9 +94,7 @@ class Event:
             Event: Event object
         """
         date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
-        event_type: Optional[EventType] = tr_eventType_mapping.get(
-            event_dict["eventType"], None
-        )
+        event_type: Optional[EventType] = cls._parse_type(event_dict)
         title: str = event_dict["title"]
         value: Optional[float] = (
             v
@@ -106,6 +107,19 @@ class Event:
         )
         return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
 
+    @staticmethod
+    def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
+        event_type: Optional[EventType] = tr_event_type_mapping.get(
+            event_dict.get("eventType", ""), None
+        )
+        if event_type == ConditionalEventType.FAILED_CARD_TRANSACTION:
+            event_type = (
+                PPEventType.REMOVAL
+                if event_dict.get("status", "").lower() == "executed"
+                else None
+            )
+        return event_type
+
     @classmethod
     def _parse_type_dependent_params(
         cls, event_type: EventType, event_dict: Dict[Any, Any]
@@ -117,24 +131,25 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes  
+            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes
         """
         isin, shares, taxes, note, fees = (None,) * 5
-        # Parse isin
+
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_dict)
             taxes = cls._parse_taxes(event_dict)
-        # Parse shares
-        elif isinstance(event_type, UnprocessedEventType):
+        
+        elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
             shares, fees = cls._parse_shares_and_fees(event_dict)
             taxes = cls._parse_taxes(event_dict)
-        # Parse taxes
+        
         elif event_type is PPEventType.INTEREST:
             taxes = cls._parse_taxes(event_dict)
-        # Parse card notes
+
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
             note = cls._parse_card_note(event_dict)
+
         return fees, isin, note, shares, taxes
 
     @staticmethod
