@@ -10,7 +10,7 @@ msgstr "买入"
 msgid "DEPOSIT"
 msgstr "存款"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "股息"
 
 msgid "FEES"

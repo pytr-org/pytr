@@ -23,5 +23,4 @@ def setup_translation(language="en"):
         "messages", localedir=locale_dir, languages=[language], fallback=True
     )
     lang.install()
-
     return lambda x: lang.gettext(x) if len(x) > 0 else ""
