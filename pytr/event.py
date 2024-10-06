@@ -187,7 +187,7 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [shares, fees]
+            Tuple[Optional[float]]: shares, fees
         """
         return_vals = {}
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -210,14 +210,14 @@ class Event:
         return return_vals["shares"], return_vals["fees"]
 
     @classmethod
-    def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+    def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
         """Parses the levied taxes
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [taxes]
+            Optional[float]: taxes
         """
         # taxes keywords
         taxes_keys = {"Steuer", "Steuern"}
