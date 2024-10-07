@@ -1,5 +1,4 @@
 from babel.numbers import format_decimal
-from copy import deepcopy
 
 from .event import Event, PPEventType, ConditionalEventType
 from .translation import setup_translation
@@ -57,9 +56,10 @@ class EventCsvFormatter:
         kwargs["date"] = event.date.strftime("%Y-%m-%d")
         if isinstance(event.event_type, PPEventType):
             kwargs["type"] = self.translate(event.event_type.value)
-        kwargs["value"] = format_decimal(
-            event.value, locale=self.lang, decimal_quantization=True
-        )
+        if event.value is not None:
+            kwargs["value"] = format_decimal(
+                event.value, locale=self.lang, decimal_quantization=True
+            )
         kwargs["note"] = (
             self.translate(event.note) + " - " + event.title
             if event.note is not None

@@ -1,3 +1,4 @@
+from babel.numbers import parse_decimal, NumberFormatError
 from dataclasses import dataclass
 from datetime import datetime
 from enum import auto, Enum
@@ -138,12 +139,12 @@ class Event:
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_dict)
             taxes = cls._parse_taxes(event_dict)
-        
+
         elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
             shares, fees = cls._parse_shares_and_fees(event_dict)
             taxes = cls._parse_taxes(event_dict)
-        
+
         elif event_type is PPEventType.INTEREST:
             taxes = cls._parse_taxes(event_dict)
 
@@ -176,15 +177,17 @@ class Event:
             isin = isin2
         return isin
 
-    @staticmethod
-    def _parse_shares_and_fees(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+    @classmethod
+    def _parse_shares_and_fees(
+        cls, event_dict: Dict[Any, Any]
+    ) -> Tuple[Optional[float]]:
         """Parses the amount of shares and the applicable fees
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [shares, fees]
+            Tuple[Optional[float]]: shares, fees
         """
         return_vals = {}
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -196,27 +199,25 @@ class Event:
                 )
                 fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
                 titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
-                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
-                    elem_unparsed = elem_dict.get("detail", {}).get("text", "")
-                    elem_parsed = re.sub("[^\,\.\d-]", "", elem_unparsed).replace(
-                        ",", "."
-                    )
-                    return_vals[key] = (
-                        None
-                        if elem_parsed == "" or float(elem_parsed) == 0.0
-                        else float(elem_parsed)
-                    )
+                locales = [
+                    "en" if e["title"] == "Aktien" else "de"
+                    for e in shares_dicts + fees_dicts
+                ]
+                for key, elem_dict, locale in zip(
+                    titles, shares_dicts + fees_dicts, locales
+                ):
+                    return_vals[key] = cls._parse_float_from_detail(elem_dict, locale)
         return return_vals["shares"], return_vals["fees"]
 
-    @staticmethod
-    def _parse_taxes(event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+    @classmethod
+    def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
         """Parses the levied taxes
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: [taxes]
+            Optional[float]: taxes
         """
         # taxes keywords
         taxes_keys = {"Steuer", "Steuern"}
@@ -232,12 +233,9 @@ class Event:
             taxes_dicts = filter(lambda x: x["title"] in taxes_keys, data)
             # Iterate over dicts containing tax information and parse each one
             for taxes_dict in taxes_dicts:
-                unparsed_taxes_val = taxes_dict.get("detail", {}).get("text", "")
-                parsed_taxes_val = re.sub("[^\,\.\d-]", "", unparsed_taxes_val).replace(
-                    ",", "."
-                )
-                if parsed_taxes_val != "" and float(parsed_taxes_val) != 0.0:
-                    return float(parsed_taxes_val)
+                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, "de")
+                if parsed_taxes_val is not None:
+                    return parsed_taxes_val
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
@@ -251,3 +249,24 @@ class Event:
         """
         if event_dict.get("eventType", "").startswith("card_"):
             return event_dict["eventType"]
+
+    @staticmethod
+    def _parse_float_from_detail(
+        elem_dict: Dict[str, Any], locale: str
+    ) -> Optional[float]:
+        """Parses a "detail" dictionary potentially containing a float in a certain locale format
+
+        Args:
+            str (Dict[str, Any]): _description_
+            locale (str): _description_
+
+        Returns:
+            Optional[float]: parsed float value or None
+        """
+        unparsed_val = elem_dict.get("detail", {}).get("text", "")
+        parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
+        try:
+            parsed_val = float(parse_decimal(parsed_val, locale))
+        except NumberFormatError as e:
+            return None
+        return None if parsed_val == 0.0 else parsed_val
