@@ -66,15 +66,16 @@ class Timeline:
             await self.tr.timeline_activity_log()
         else:
             self.num_timelines += 1
-            added_last_event = True
+            added_last_event = False
             for event in response['items']:
                 if self.max_age_timestamp == 0 or datetime.fromisoformat(event['timestamp'][:19]).timestamp() >= self.max_age_timestamp:
                     if event['id'] in self.timeline_events:
                         self.log.warning(f"Received duplicate event {event['id'] }")
+                    else:
+                        added_last_event = True
                     event['source'] = "timelineActivity"
                     self.timeline_events[event['id']] = event
                 else:
-                    added_last_event = False
                     break
 
             self.log.info(f'Received #{self.num_timelines:<2} timeline activity log')
@@ -161,6 +162,6 @@ class Timeline:
             with open(dl.output_path / 'all_events.json', 'w', encoding='utf-8') as f:
                 json.dump(self.events_without_docs + self.events_with_docs, f, ensure_ascii=False, indent=2)
 
-            export_transactions(dl.output_path / 'all_events.json', dl.output_path / 'account_transactions.csv')
+            export_transactions(dl.output_path / 'all_events.json', dl.output_path / 'account_transactions.csv', sort = dl.sort_export)
 
             dl.work_responses()
