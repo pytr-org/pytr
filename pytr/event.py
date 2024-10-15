@@ -207,7 +207,7 @@ class Event:
                     titles, shares_dicts + fees_dicts, locales
                 ):
                     return_vals[key] = cls._parse_float_from_detail(elem_dict, locale)
-        return return_vals["shares"], return_vals.get("fees", 0.0)
+        return return_vals["shares"], return_vals.get("fees", None)
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
