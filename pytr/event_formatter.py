@@ -93,4 +93,9 @@ class EventCsvFormatter:
             kwargs["shares"] = ""
             lines += self.csv_fmt.format(**kwargs)
 
+        # Generate BUY event from SPARECHANGE event
+        if event.event_type == ConditionalEventType.SPARECHANGE:
+            kwargs["type"] = self.translate(PPEventType.BUY.value)
+            lines = self.csv_fmt.format(**kwargs)
+
         return lines
