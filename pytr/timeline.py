@@ -3,6 +3,7 @@ import json
 
 from .utils import get_logger
 from .transactions import export_transactions
+from .event import Event
 
 
 class Timeline:
@@ -149,7 +150,7 @@ class Timeline:
                 if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
                     dl.dl_doc(
                         doc,
-                        event,
+                        Event.from_dict(event),
                         section["title"],
                         datetime.fromisoformat(event["timestamp"][:19]),
                     )

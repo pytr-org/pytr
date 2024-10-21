@@ -79,6 +79,8 @@ tr_event_type_mapping = {
 class Event:
     date: datetime
     title: str
+    subtitle: str
+    event_type_raw: str
     event_type: Optional[EventType]
     fees: Optional[float]
     isin: Optional[str]
@@ -86,6 +88,7 @@ class Event:
     shares: Optional[float]
     taxes: Optional[float]
     value: Optional[float]
+
 
     @classmethod
     def from_dict(cls, event_dict: Dict[Any, Any]):
@@ -100,6 +103,9 @@ class Event:
         date: datetime = datetime.fromisoformat(event_dict.get("timestamp", '')[:19])
         event_type: Optional[EventType] = cls._parse_type(event_dict)
         title: str = event_dict["title"]
+        subtitle: str = event_dict['subtitle']
+        event_type_raw: str = event_dict['eventType']
+
         value: Optional[float] = (
             v
             if (v := event_dict.get("amount", {}).get("value", None)) is not None
@@ -109,7 +115,7 @@ class Event:
         fees, isin, note, shares, taxes = cls._parse_type_dependent_params(
             event_type, event_dict
         )
-        return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
+        return cls(date, title, subtitle, event_type_raw, event_type, fees, isin, note, shares, taxes, value)
 
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:

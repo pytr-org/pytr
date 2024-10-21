@@ -11,6 +11,7 @@ from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline
 from pytr.file_destination_provider import FileDestinationProvider
+from pytr.event import Event
 
 
 class DL:
@@ -84,7 +85,7 @@ class DL:
                     f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
                 )
 
-    def dl_doc(self, doc, event, section_title: str, timestamp: datetime):
+    def dl_doc(self, doc, event: Event, section_title: str, timestamp: datetime):
         '''
         send asynchronous request, append future with filepath to self.futures
         '''
@@ -93,7 +94,7 @@ class DL:
         doc_id = doc['id']
 
         filepath = self.file_destination_provider.get_file_path(
-            event['eventType'], event['title'], event['subtitle'], section_title, document_title, timestamp)
+            event, section_title, document_title, timestamp)
         
         # Just in case someone defines file names with extension
         if filepath.endswith('.pdf') is True:

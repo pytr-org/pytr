@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import pytr.config
+from pytr.event import Event
 
 from importlib_resources import files
 
@@ -93,19 +94,16 @@ class FileDestinationProvider:
                     self._destination_configs.append(DestinationConfig(
                         config_name, destinations[config_name].get("filename", None), destinations[config_name].get("path", None), pattern))
 
-    def get_file_path(self, event_type: str, event_title: str, event_subtitle: str, section_title: str, document_title: str, timestamp) -> str:
+    def get_file_path(self, event: Event, section_title: str, document_title: str, timestamp) -> str:
         '''
         Get the file path based on the event type and other parameters.
 
         Parameters:
-        event_type (str): The event type
-        event_title (str): The event title
-        event_subtitle (str): The event subtitle
+        event (Event)
         section_title (str): The section title
         document_title (str): The document title
         timestamp
         '''
-        
         variables = {}
         variables['iso_date'] = timestamp.strftime('%Y-%m-%d')
         variables['iso_date_year'] = timestamp.strftime('%Y')
@@ -113,7 +111,7 @@ class FileDestinationProvider:
         variables['iso_date_day'] = timestamp.strftime('%d')
         variables['iso_time'] = timestamp.strftime('%H-%M')
 
-        doc = Pattern(event_type, event_title, event_subtitle, section_title, document_title)
+        doc = Pattern(event.event_type_raw, event.title, event.subtitle, section_title, document_title)
 
         matching_configs = self._destination_configs.copy()
         # create a dictionary that maps the field names to their values in the pattern instance
@@ -128,7 +126,7 @@ class FileDestinationProvider:
 
         if len(matching_configs) == 0:
             self._log.debug(
-                f"No destination config found for the given parameters: event_type:{event_type}, event_title:{event_title},event_subtitle:{event_subtitle},section_title:{section_title},document_title:{document_title}")
+                f"No destination config found for the given parameters: event: {event},section_title:{section_title},document_title:{document_title}")
             return self.__create_file_path(self._unknown_file_config, variables)
 
         if len(matching_configs) > 1:
