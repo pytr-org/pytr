@@ -11,7 +11,6 @@ class ConditionalEventType(Enum):
 
     FAILED_CARD_TRANSACTION = auto()
     SAVEBACK = auto()
-    SPARECHANGE = auto()
     TRADE_INVOICE = auto()
 
 
@@ -64,8 +63,6 @@ tr_event_type_mapping = {
     "card_successful_transaction": PPEventType.REMOVAL,
     # Saveback
     "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
-    # Sparechange
-    "benefits_spare_change_execution": ConditionalEventType.SPARECHANGE,
     # Tax refunds
     "TAX_REFUND": PPEventType.TAX_REFUND,
     "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
@@ -73,6 +70,7 @@ tr_event_type_mapping = {
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
+    "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
 }
 
