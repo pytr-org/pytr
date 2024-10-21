@@ -55,6 +55,7 @@ tr_event_type_mapping = {
     "INTEREST_PAYOUT": PPEventType.INTEREST,
     "INTEREST_PAYOUT_CREATED": PPEventType.INTEREST,
     # Removals
+    "OUTGOING_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER_DELEGATION": PPEventType.REMOVAL,
     "PAYMENT_OUTBOUND": PPEventType.REMOVAL,
     "card_order_billed": PPEventType.REMOVAL,
@@ -64,10 +65,12 @@ tr_event_type_mapping = {
     "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
     # Tax refunds
     "TAX_REFUND": PPEventType.TAX_REFUND,
+    "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
     # Trade invoices
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
+    "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
 }
 
