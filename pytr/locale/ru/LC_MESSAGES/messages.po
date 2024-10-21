@@ -10,7 +10,7 @@ msgstr "Покупка"
 msgid "DEPOSIT"
 msgstr "Пополнение"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Дивиденд"
 
 msgid "FEES"

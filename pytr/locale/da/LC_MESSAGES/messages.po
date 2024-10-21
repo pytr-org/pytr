@@ -10,7 +10,7 @@ msgstr "Køb"
 msgid "DEPOSIT"
 msgstr "Indsæt"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Udbytte"
 
 msgid "FEES"

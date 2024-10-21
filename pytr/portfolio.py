@@ -84,11 +84,11 @@ class Portfolio:
         csv_lines = []
         for pos in sorted(positions, key=lambda x: x['netSize'], reverse=True):
             csv_lines.append(
-                f"{pos['name']};{pos['instrumentId']};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
+                f"{pos['name']};{pos['instrumentId']};{float(pos['netSize']):>10.3f};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
             )
         
         with open(output_path, 'w', encoding='utf-8') as f:
-            f.write('Name;ISIN;avgCost;netValue\n')
+            f.write('Name;ISIN;quantity;avgCost;netValue\n')
             f.write('\n'.join(csv_lines))
         
         print(f'Wrote {len(csv_lines) + 1} lines to {output_path}')
@@ -116,7 +116,7 @@ class Portfolio:
             totalNetValue += float(pos['netValue'])
 
             print(
-                f"{pos['name']:<25.25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.2f}"
+                f"{pos['name']:<25.25} {pos['instrumentId']} {float(pos['averageBuyIn']):>10.2f} * {float(pos['netSize']):>10.3f}"
                 + f" = {float(buyCost):>10.2f} -> {float(pos['netValue']):>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
             )
 

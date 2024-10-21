@@ -10,7 +10,7 @@ msgstr "Buy"
 msgid "DEPOSIT"
 msgstr "Deposit"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Dividend"
 
 msgid "FEES"

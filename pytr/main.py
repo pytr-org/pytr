@@ -52,6 +52,12 @@ def get_main_parser():
     parser_login_args.add_argument('-n', '--phone_no', help='TradeRepublic phone number (international format)')
     parser_login_args.add_argument('-p', '--pin', help='TradeRepublic pin')
 
+    # sort
+    parser_sort_export = argparse.ArgumentParser(add_help=False)
+    parser_sort_export.add_argument(
+        '-s', '--sort', help='Chronologically sort exported csv transactions', action="store_true"
+    )
+
     # login
     info = (
         'Check if credentials file exists. If not create it and ask for input. Try to login.'
@@ -77,7 +83,7 @@ def get_main_parser():
     parser_dl_docs = parser_cmd.add_parser(
         'dl_docs',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        parents=[parser_login_args],
+        parents=[parser_login_args, parser_sort_export],
         help=info,
         description=info,
     )
@@ -139,6 +145,7 @@ def get_main_parser():
     parser_export_transactions = parser_cmd.add_parser(
         'export_transactions',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_sort_export],
         help=info,
         description=info,
     )
@@ -205,6 +212,7 @@ def main():
             since_timestamp=since_timestamp,
             max_workers=args.workers,
             universal_filepath=args.universal,
+            sort_export=args.sort
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == 'set_price_alarms':
@@ -220,7 +228,7 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == 'export_transactions':
-        export_transactions(args.input, args.output, args.lang)
+        export_transactions(args.input, args.output, args.lang, args.sort)
     elif args.version:
         installed_version = version('pytr')
         print(installed_version)

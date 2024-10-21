@@ -10,7 +10,7 @@ msgstr "Kúpiť"
 msgid "DEPOSIT"
 msgstr "Vklad"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Dividenda"
 
 msgid "FEES"

@@ -10,7 +10,7 @@ msgstr "Kupno"
 msgid "DEPOSIT"
 msgstr "Depozyt"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Dywidenda"
 
 msgid "FEES"
