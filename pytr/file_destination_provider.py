@@ -93,7 +93,7 @@ class FileDestinationProvider:
                     self._destination_configs.append(DestinationConfig(
                         config_name, destinations[config_name].get("filename", None), destinations[config_name].get("path", None), pattern))
 
-    def get_file_path(self, event_type: str, event_title: str, event_subtitle: str, section_title: str, document_title: str, variables: dict) -> str:
+    def get_file_path(self, event_type: str, event_title: str, event_subtitle: str, section_title: str, document_title: str, timestamp) -> str:
         '''
         Get the file path based on the event type and other parameters.
 
@@ -103,9 +103,16 @@ class FileDestinationProvider:
         event_subtitle (str): The event subtitle
         section_title (str): The section title
         document_title (str): The document title
-        variables (dict): The variables->value dict to be used in the file path and file name format.
+        timestamp
         '''
         
+        variables = {}
+        variables['iso_date'] = timestamp.strftime('%Y-%m-%d')
+        variables['iso_date_year'] = timestamp.strftime('%Y')
+        variables['iso_date_month'] = timestamp.strftime('%m')
+        variables['iso_date_day'] = timestamp.strftime('%d')
+        variables['iso_time'] = timestamp.strftime('%H-%M')
+
         doc = Pattern(event_type, event_title, event_subtitle, section_title, document_title)
 
         matching_configs = self._destination_configs.copy()

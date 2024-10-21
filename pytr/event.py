@@ -97,7 +97,7 @@ class Event:
         Returns:
             Event: Event object
         """
-        date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
+        date: datetime = datetime.fromisoformat(event_dict.get("timestamp", '')[:19])
         event_type: Optional[EventType] = cls._parse_type(event_dict)
         title: str = event_dict["title"]
         value: Optional[float] = (
@@ -268,6 +268,8 @@ class Event:
         """
         unparsed_val = elem_dict.get("detail", {}).get("text", "")
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
+        if parsed_val == '':
+            return None
         try:
             parsed_val = float(parse_decimal(parsed_val, locale))
         except NumberFormatError as e:
