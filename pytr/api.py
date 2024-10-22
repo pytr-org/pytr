@@ -235,7 +235,12 @@ class TradeRepublicApi:
         # Only attempt to load if the cookie file exists.
         if self._cookies_file.exists():
             # Loads session cookies too (expirydate=0).
-            self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
+            try:
+                self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
+            except:
+                # cookie file invalid. Delete it.
+                COOKIES_FILE.unlink()
+                return False
             self._weblogin = True
             try:
                 self.settings()
