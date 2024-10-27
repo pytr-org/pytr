@@ -122,6 +122,8 @@ class Event:
                 if event_dict.get("status", "").lower() == "executed"
                 else None
             )
+        elif event_type == PPEventType.DEPOSIT and event_dict.get("status", "").lower() == "canceled":
+            event_type = None
         return event_type
 
     @classmethod
