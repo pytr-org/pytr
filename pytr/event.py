@@ -9,7 +9,6 @@ from typing import Any, Dict, Optional, Tuple, Union
 class ConditionalEventType(Enum):
     """Events that conditionally map to None or one/multiple PPEventType events"""
 
-    FAILED_CARD_TRANSACTION = auto()
     SAVEBACK = auto()
     TRADE_INVOICE = auto()
 
@@ -50,7 +49,7 @@ tr_event_type_mapping = {
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
     # Failed card transactions
-    "card_failed_transaction": ConditionalEventType.FAILED_CARD_TRANSACTION,
+    "card_failed_transaction": PPEventType.REMOVAL,
     # Interests
     "INTEREST_PAYOUT": PPEventType.INTEREST,
     "INTEREST_PAYOUT_CREATED": PPEventType.INTEREST,
@@ -116,12 +115,8 @@ class Event:
         event_type: Optional[EventType] = tr_event_type_mapping.get(
             event_dict.get("eventType", ""), None
         )
-        if event_type == ConditionalEventType.FAILED_CARD_TRANSACTION:
-            event_type = (
-                PPEventType.REMOVAL
-                if event_dict.get("status", "").lower() == "executed"
-                else None
-            )
+        if event_dict.get("status", "").lower() == "canceled":
+            event_type = None
         return event_type
 
     @classmethod
@@ -210,7 +205,7 @@ class Event:
                     titles, shares_dicts + fees_dicts, locales
                 ):
                     return_vals[key] = cls._parse_float_from_detail(elem_dict, locale)
-        return return_vals["shares"], return_vals.get("fees", None)
+        return return_vals.get("shares"), return_vals.get("fees")
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
