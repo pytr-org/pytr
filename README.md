@@ -119,10 +119,6 @@ black ./pytr
    pytest
    ```
 
-## Help and Support
-
-For help or feedback, please reach out via email at [kyle@spotlight.dev](mailto:kyle@spotlight.dev).
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
