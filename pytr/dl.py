@@ -71,7 +71,9 @@ class DL:
             try:
                 _, subscription, response = await self.tr.recv()
             except TradeRepublicError as e:
-                self.log.fatal(str(e))
+                self.log.error(f"Error response for subscription \"{e.subscription}\". Re-subscribing...")
+                await self.tr.subscribe(e.subscription)
+                continue
 
             if subscription.get("type", "") == "timelineTransactions":
                 await self.tl.get_next_timeline_transactions(response)
