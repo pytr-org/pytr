@@ -17,6 +17,7 @@ from pytr.account import login
 from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
+from pytr.transactions import Transactions
 
 
 def get_main_parser():
@@ -208,6 +209,26 @@ def get_main_parser():
         help=info,
         description=info,
     )
+
+    # transactions
+    info = "Export all transactions directly from the API to a file (JSON)"
+    transactions = parser_cmd.add_parser(
+        "transactions",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    transactions.add_argument(
+        "output", help="Output path of JSON file", metavar="OUTPUT", type=Path
+    )
+    transactions.add_argument(
+        "--last_days",
+        help="Number of last days to include (use 0 get all days, defaults to 14)",
+        metavar="DAYS",
+        default=14,
+        type=int,
+    )
     shtab.add_argument_to(parser_completion, "shell", parent=parser)
     return parser
 
@@ -244,21 +265,21 @@ def main():
     log.setLevel(args.verbosity.upper())
     log.debug("logging is set to debug")
 
+    # Compute the latest timestamp to get data for if last_days is specified
+    if args.last_days:
+        not_before = datetime.now().astimezone() - timedelta(days=args.last_days)
+    else:
+        not_before = datetime.now().astimezone()
+
     if args.command == "login":
         login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
 
     elif args.command == "dl_docs":
-        if args.last_days == 0:
-            since_timestamp = 0
-        else:
-            since_timestamp = (
-                datetime.now().astimezone() - timedelta(days=args.last_days)
-            ).timestamp()
         dl = DL(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             args.output,
             args.format,
-            since_timestamp=since_timestamp,
+            not_before=not_before,
             max_workers=args.workers,
             universal_filepath=args.universal,
             sort_export=args.sort,
@@ -281,6 +302,12 @@ def main():
         p.get()
         if args.output is not None:
             p.portfolio_to_csv(args.output)
+    elif args.command == "transactions":
+        Transactions(
+            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+            output_path=args.output,
+            not_before=not_before,
+        ).get()
     elif args.command == "export_transactions":
         export_transactions(args.input, args.output, args.lang, args.sort)
     elif args.version:
