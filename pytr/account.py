@@ -19,14 +19,13 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True):
+def login(phone_no=None, pin=None, web=True, store_credentials=True):
     """
-    If web is true, use web login method as else simulate app login.
-    Check if credentials file exists else create it.
+    If web is true, use web login method, else simulate app login.
+    Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
     """
     log = get_logger(__name__)
-    save_cookies = True
 
     if phone_no is None and CREDENTIALS_FILE.is_file():
         log.info("Found credentials file")
@@ -52,19 +51,13 @@ def login(phone_no=None, pin=None, web=True):
             print("Please enter your TradeRepublic pin:")
             pin = getpass(prompt="Pin (Input is hidden):")
 
-        print('Save credentials? Type "y" to save credentials:')
-        save = input()
-        if save == "y":
+        if store_credentials:
             with open(CREDENTIALS_FILE, "w") as f:
                 f.writelines([phone_no + "\n", pin + "\n"])
 
             log.info(f"Saved credentials in {CREDENTIALS_FILE}")
 
-        else:
-            save_cookies = False
-            log.info("Credentials not saved")
-
-    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=True)
 
     if web:
         # Use same login as app.traderepublic.com

@@ -99,9 +99,6 @@ class TradeRepublicApi:
         self._credentials_file = (
             pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
         )
-        self._cookies_file = (
-            pathlib.Path(cookies_file) if cookies_file else COOKIES_FILE
-        )
 
         if not (phone_no and pin):
             try:
@@ -116,6 +113,10 @@ class TradeRepublicApi:
         else:
             self.phone_no = phone_no
             self.pin = pin
+
+        self._cookies_file = (
+            pathlib.Path(cookies_file) if cookies_file else BASE_DIR / f"cookies.{self.phone_no}.txt"
+        )
 
         self.keyfile = keyfile if keyfile else KEY_FILE
         try:
