@@ -272,7 +272,7 @@ class TradeRepublicApi:
         )
 
     async def _get_ws(self):
-        if self._ws and self._ws.open:
+        if self._ws and self._ws.close_code == None:
             return self._ws
 
         self.log.info("Connecting to websocket ...")
@@ -299,7 +299,7 @@ class TradeRepublicApi:
             connect_id = 31
 
         self._ws = await websockets.connect(
-            "wss://api.traderepublic.com", ssl=ssl_context, extra_headers=extra_headers
+            "wss://api.traderepublic.com", ssl=ssl_context, additional_headers=extra_headers
         )
         await self._ws.send(f"connect {connect_id} {json.dumps(connection_message)}")
         response = await self._ws.recv()
