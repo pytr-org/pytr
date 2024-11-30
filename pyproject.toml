@@ -32,6 +32,8 @@ dependencies = [
     "shtab",
     "websockets>=10.1",
     "babel",
+    "PyYAML",
+    "importlib_resources"
 ]
 
 [project.scripts]
