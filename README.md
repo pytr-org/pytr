@@ -101,3 +101,36 @@ There are three mandatory patterns defined at the top:
 The other pattern can be as you like but keep in mind that patterns `path` and `filenames` should result in unique document names. If you see something like this `<filename> (some strange string)` the document path + name was not unique.
 
 > Its also possible to copy the configuration file from `~/pytr/config/file_destination_config__template.yaml` to `<home>/.pytr/file_destination_config.yaml` and modify it before the first download to avoid that the download need to be performed a second time.
+
+## Linting and Code Formatting
+
+This project uses [black](https://github.com/psf/black) for code linting and auto-formatting. You can auto-format the code by running:
+
+```bash
+# Install black if not already installed
+pip install black
+
+# Auto-format code
+black ./pytr
+```
+
+## Setting Up a Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/pytr-org/pytr.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install .
+   ```
+
+3. Run the tests to ensure everything is set up correctly:
+   ```bash
+   pytest
+   ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

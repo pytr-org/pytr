@@ -1,0 +1,122 @@
+{
+    "id": "d8a5aa3d-12a4-465a-90ad-3fca36eff19a",
+    "timestamp": "2024-09-10T13:18:31.478+0000",
+    "title": "Vorname Nachname",
+    "icon": "logos/contacts-M-Magenta/v2",
+    "badge": null,
+    "subtitle": "Fertig",
+    "amount": {
+      "currency": "EUR",
+      "value": 3000.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "d8a5aa3d-12a4-465a-90ad-3fca36eff19a"
+    },
+    "eventType": "INCOMING_TRANSFER_DELEGATION",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "d8a5aa3d-12a4-465a-90ad-3fca36eff19a",
+      "sections": [
+        {
+          "title": "Du hast €3000.00 von Vorname Nachname erhalten",
+          "data": {
+            "icon": "logos/contacts-M-Magenta/v2",
+            "timestamp": "2024-09-10T13:18:31.475+0000",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "style": "plain",
+              "detail": {
+                "text": "Abgeschlossen",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              }
+            },
+            {
+              "title": "Referenz",
+              "style": "plain",
+              "detail": {
+                "text": "Received by TradeRepublic",
+                "type": "text"
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Absender",
+          "data": [
+            {
+              "title": "Name",
+              "style": "plain",
+              "detail": {
+                "text": "Vorname Nachname",
+                "type": "text"
+              }
+            },
+            {
+              "title": "IBAN",
+              "style": "plain",
+              "detail": {
+                "text": "DEXX XXXX XXXX XXXX XXXX XX",
+                "type": "text"
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokument",
+          "data": [
+            {
+              "title": "Transaktionsbestätigung",
+              "action": {
+                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2024/9/10/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf?X-Amz-Security-Token=xxxx&X-Amz-Algorithm=xxxx&X-Amz-Date=xxxx&X-Amz-SignedHeaders=host&X-Amz-Expires=xxxx&X-Amz-Credential=xxxx&X-Amz-Signature=XXXX",
+                "type": "browserModal"
+              },
+              "id": "4254e648-e0da-4e0a-94be-c95499b35d9a",
+              "postboxType": "INCOMING_TRANSFER",
+              "local filepath": "/tmp/pytr-output/Transaktionsbestätigung/ Transaktionsbestätigung - Vorname Nachname.pdf"
+            }
+          ],
+          "type": "documents"
+        },
+        {
+          "title": "Hilfe",
+          "data": [
+            {
+              "title": "Ein Problem melden",
+              "style": "plain",
+              "detail": {
+                "icon": "logos/timeline_communication/v2",
+                "style": "highlighted",
+                "action": {
+                  "payload": {
+                    "contextParams": {
+                      "timelineEventId": "d8a5aa3d-12a4-465a-90ad-3fca36eff19a",
+                      "chat_flow_key": "NHC_0024_deposit_report_an_issue"
+                    },
+                    "contextCategory": "NHC"
+                  },
+                  "type": "customerSupportChat"
+                },
+                "type": "listItemAvatarDefault"
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ]
+    },
+    "has_docs": true
+  }
