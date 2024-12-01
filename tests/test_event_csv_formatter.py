@@ -18,7 +18,7 @@ def test_event_csv_formatter():
     csv_output = formatter.format(event)
 
     # Assert that the output is not an empty string
-    assert csv_output == "2024-09-10;Einlage;3.000;Vorname Nachname;;;;\n"
+    assert csv_output == "2024-09-10T13:18:31;Einlage;3.000;Vorname Nachname;;;;\n"
 
 
 def test_buy():
@@ -38,5 +38,5 @@ def test_buy():
     # Assert that the output is not an empty string
     assert (
         csv_output
-        == "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
+        == "2024-02-20T16:32:07;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
     )
