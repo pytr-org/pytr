@@ -53,7 +53,7 @@ class EventCsvFormatter:
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
-        kwargs["date"] = event.date.strftime("%Y-%m-%d")
+        kwargs["date"] = event.date.strftime("%Y-%m-%dT%H:%M:%S")
         if isinstance(event.event_type, PPEventType):
             kwargs["type"] = self.translate(event.event_type.value)
         if event.value is not None:
