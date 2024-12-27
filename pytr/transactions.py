@@ -128,7 +128,7 @@ def export_banking4(input_path, output_path, lang='auto'):
             if event["eventType"] in ["PAYMENT_INBOUND","INCOMING_TRANSFER","OUTGOING_TRANSFER","OUTGOING_TRANSFER_DELEGATION"]:
                  f.write(csv_fmt.format(date=date, type=clean_strings(event['eventType']), value=event['amount']["value"]))
             # Card refund, Buys, atm withdrawal, iterest payouts
-            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND","INTEREST_PAYOUT","TRADE_CORRECTED"]:
+            elif event["eventType"] in ["card_refund","TRADE_INVOICE","ORDER_EXECUTED","card_successful_atm_withdrawal","INTEREST_PAYOUT_CREATED","TAX_REFUND","INTEREST_PAYOUT","TRADE_CORRECTED","ssp_tax_correction_invoice"]:
                 title = event['title']
                 subtitle = event["subtitle"]
                 if title is None:
@@ -140,7 +140,7 @@ def export_banking4(input_path, output_path, lang='auto'):
             elif event["eventType"] in ["card_successful_transaction"]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["eventType"]+": "+event['title'] ), value=event['amount']["value"]))
             #dividends
-            elif event["eventType"] in ["ssp_corporate_action_invoice_cash","CREDIT"]:
+            elif event["eventType"] in ["ssp_corporate_action_invoice_cash","CREDIT",]:
                 f.write(csv_fmt.format(date=date, type=clean_strings(event["subtitle"]+": "+event["title"]), value=event['amount']["value"]))
             #Saveback (creates a zero entry just for informational purposes)
             elif event["eventType"] in ["benefits_saveback_execution"]:
@@ -169,7 +169,7 @@ def export_banking4(input_path, output_path, lang='auto'):
                                         "card_failed_transaction","EMAIL_VALIDATED","PUK_CREATED","SECURITIES_ACCOUNT_CREATED","card_successful_verification",
                                         "ssp_dividend_option_customer_instruction","new_tr_iban","DOCUMENTS_ACCEPTED","EX_POST_COST_REPORT","INSTRUCTION_CORPORATE_ACTION",
                                         "SHAREBOOKING","GESH_CORPORATE_ACTION","GENERAL_MEETING","QUARTERLY_REPORT","DOCUMENTS_ACCEPTED","GENERAL_MEETING","INSTRUCTION_CORPORATE_ACTION",
-                                        "DOCUMENTS_CHANGED","MATURITY","YEAR_END_TAX_REPORT","STOCK_PERK_REFUNDED","ORDER_CANCELED","ORDER_EXPIRED","DOCUMENTS_CREATED","CUSTOMER_CREATED",
+                                        "DOCUMENTS_CHANGED","MATURITY","YEAR_END_TAX_REPORT","STOCK_PERK_REFUNDED","ORDER_CANCELED","ORDER_EXPIRED","DOCUMENTS_CREATED","CUSTOMER_CREATED","card_failed_verification",
                                         ]:
                 pass
             else:
