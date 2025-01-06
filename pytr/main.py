@@ -67,9 +67,9 @@ def get_main_parser():
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
     parser_login_args.add_argument(
         "--store_credentials",
-        help="Store credentials (Phone number and pin) for next usage",
+        help="Store credentials (Phone number, pin, cookies) for next usage",
         action="store_true",
-        default=True
+        default=False
     )
 
     # sort
