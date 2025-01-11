@@ -1,14 +1,17 @@
 import re
+import os
 
 from concurrent.futures import as_completed
 from pathlib import Path
 from requests_futures.sessions import FuturesSession
+from datetime import datetime
 
 from pathvalidate import sanitize_filepath
 
 from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline
+from pytr.file_destination_provider import FileDestinationProvider
 
 
 class DL:
@@ -22,6 +25,7 @@ class DL:
         max_workers=8,
         universal_filepath=False,
         sort_export=False,
+        use_destination_config=False,
     ):
         """
         tr: api object
@@ -36,6 +40,8 @@ class DL:
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
         self.sort_export = sort_export
+        self.file_destination_provider = self.__get_file_destination_provider()
+        self.use_destination_config = use_destination_config
 
         self.session = FuturesSession(
             max_workers=max_workers, session=self.tr._websession
@@ -150,6 +156,98 @@ class DL:
             filepath = directory / doc_type / f"{filename}.pdf"
             filepath_with_doc_id = directory / doc_type / f"{filename_with_doc_id}.pdf"
 
+        self.__dl_doc(doc, doc_url, doc_id, filepath, filepath_with_doc_id)
+
+    def dl_custom_doc(
+        self,
+        doc,
+        event_type: str,
+        event_title: str,
+        event_subtitle: str,
+        section_title: str,
+        timestamp: datetime,
+    ):
+        """
+        send asynchronous request, append future with filepath to self.futures
+
+        This function will use the file_destination_provider.py to get the file path
+        """
+        doc_url = doc["action"]["payload"]
+        document_title = doc.get("title", "")
+        doc_id = doc["id"]
+
+        variables = {}
+        variables["iso_date"] = timestamp.strftime("%Y-%m-%d")
+        variables["iso_date_year"] = timestamp.strftime("%Y")
+        variables["iso_date_month"] = timestamp.strftime("%m")
+        variables["iso_date_day"] = timestamp.strftime("%d")
+        variables["iso_time"] = timestamp.strftime("%H-%M")
+
+        filepath = self.file_destination_provider.get_file_path(
+            event_type,
+            event_title,
+            event_subtitle,
+            section_title,
+            document_title,
+            variables,
+        )
+        # Just in case someone defines file names with extension
+        if filepath.endswith(".pdf") is True:
+            filepath = filepath[:-4]
+
+        filepath_with_doc_id = f"{filepath} ({doc_id})"
+
+        filepath = f"{filepath}.pdf"
+        filepath_with_doc_id = f"{filepath_with_doc_id}.pdf"
+
+        filepath = Path(os.path.join(self.output_path, filepath))
+        filepath_with_doc_id = Path(
+            os.path.join(self.output_path, filepath_with_doc_id)
+        )
+
+        self.__dl_doc(doc, doc_url, doc_id, filepath, filepath_with_doc_id)
+
+    def work_responses(self):
+        """
+        process responses of async requests
+        """
+        if len(self.doc_urls) == 0:
+            self.log.info("Nothing to download")
+            exit(0)
+
+        with self.history_file.open("a") as history_file:
+            self.log.info("Waiting for downloads to complete..")
+            for future in as_completed(self.futures):
+                if future.filepath.is_file() is True:
+                    self.log.debug(f"file {future.filepath} was already downloaded.")
+
+                try:
+                    r = future.result()
+                except Exception as e:
+                    self.log.fatal(str(e))
+
+                future.filepath.parent.mkdir(parents=True, exist_ok=True)
+                with open(future.filepath, "wb") as f:
+                    f.write(r.content)
+                    self.done += 1
+                    history_file.write(f"{future.doc_url_base}\n")
+
+                    self.log.debug(
+                        f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}"
+                    )
+
+                if self.done == len(self.doc_urls):
+                    self.log.info("Done.")
+                    exit(0)
+
+    def __dl_doc(
+        self,
+        doc: dict,
+        doc_url: str,
+        doc_id: str,
+        filepath: Path,
+        filepath_with_doc_id: Path,
+    ):
         if self.universal_filepath:
             filepath = sanitize_filepath(filepath, "_", "universal")
             filepath_with_doc_id = sanitize_filepath(
@@ -192,35 +290,5 @@ class DL:
         else:
             self.log.debug(f"file {filepath} already exists. Skipping...")
 
-    def work_responses(self):
-        """
-        process responses of async requests
-        """
-        if len(self.doc_urls) == 0:
-            self.log.info("Nothing to download")
-            exit(0)
-
-        with self.history_file.open("a") as history_file:
-            self.log.info("Waiting for downloads to complete..")
-            for future in as_completed(self.futures):
-                if future.filepath.is_file() is True:
-                    self.log.debug(f"file {future.filepath} was already downloaded.")
-
-                try:
-                    r = future.result()
-                except Exception as e:
-                    self.log.fatal(str(e))
-
-                future.filepath.parent.mkdir(parents=True, exist_ok=True)
-                with open(future.filepath, "wb") as f:
-                    f.write(r.content)
-                    self.done += 1
-                    history_file.write(f"{future.doc_url_base}\n")
-
-                    self.log.debug(
-                        f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}"
-                    )
-
-                if self.done == len(self.doc_urls):
-                    self.log.info("Done.")
-                    exit(0)
+    def __get_file_destination_provider(self):
+        return FileDestinationProvider()

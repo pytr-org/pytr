@@ -112,6 +112,12 @@ def get_main_parser():
         default="{iso_date}{time} {title}{doc_num}",
     )
     parser_dl_docs.add_argument(
+        "--use_destination_config",
+        help="Use a yaml file to configure the destination of the downloaded files",
+        default=False,
+        type=bool,
+    )
+    parser_dl_docs.add_argument(
         "--last_days",
         help="Number of last days to include (use 0 get all days)",
         metavar="DAYS",
@@ -262,6 +268,7 @@ def main():
             max_workers=args.workers,
             universal_filepath=args.universal,
             sort_export=args.sort,
+            use_destination_config=args.use_destination_config,
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == "set_price_alarms":
