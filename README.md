@@ -89,6 +89,20 @@ $ pytr login --phone_no +49123456789 --pin 1234
 
 If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain the phone number, the second line the pin). If the file doesn't exist pytr will ask for for the phone number and pin.
 
+## Location and File names of the downloaded Documents
+It is possible to use a custom configuration to setup the file path and file name. If the parameter `--use_destination_config True` is used during the first run of the 'dl_docs' command a config file is created in the user home directory `<home>/.pytr/file_destination_config.yaml`.
+The file contains destination patterns which describe where the file should be located and how the file name should look like. If a event/document matches the defined pattern it will be located in that specific `path` with the specified `filename`.
+
+There are three mandatory patterns defined at the top:
+* `default` - Defines only `filename` and is used for all other patterns if no "filename" is provided
+* `unknown` - Defines `filename` and `path`, this is used when no match can be found for the event and the given document.
+* `multiple_match` - If there are multiple matching patterns and the destination would be ambiguous, the document will be stored in the given `path` with the given `filename`
+
+The other pattern can be as you like but keep in mind that patterns `path` and `filenames` should result in unique document names. If you see something like this `<filename> (some strange string)` the document path + name was not unique. Which means there were multiple documents to be downloaded which have locally the same name and to avoid conflicts and not to override each other a string is appended to keep both files.
+
+> Its also possible to copy the configuration file from `~/pytr/config/file_destination_config__template.yaml` to `<home>/.pytr/file_destination_config.yaml` and modify it before the first download to avoid that the download need to be performed a second time.
+> It is also possible to delete the download folder and run the download again when you have changed the config file.
+
 
 ## Linting and Code Formatting
 

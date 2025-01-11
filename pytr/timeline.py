@@ -163,7 +163,17 @@ class Timeline:
                         "CREDIT",
                     ]:
                         title += f" - {event['subtitle']}"
-                    dl.dl_doc(doc, title, doc.get("detail"), subfolder)
+                    if dl.use_destination_config:
+                        dl.dl_custom_doc(
+                            doc,
+                            event["eventType"],
+                            event["title"],
+                            event["subtitle"],
+                            section["title"],
+                            datetime.fromisoformat(event["timestamp"][:19]),
+                        )
+                    else:
+                        dl.dl_doc(doc, title, doc.get("detail"), subfolder)
 
         if event["has_docs"]:
             self.events_with_docs.append(event)
