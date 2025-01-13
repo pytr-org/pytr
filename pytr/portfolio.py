@@ -94,7 +94,7 @@ class Portfolio:
         csv_lines = []
         for pos in sorted(positions, key=lambda x: x["netSize"], reverse=True):
             csv_lines.append(
-                f"{pos['name']};{pos['instrumentId']};{float(pos['netSize']):>10.3f};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
+                f"{pos['name']};{pos['instrumentId']};{float(pos['netSize']):>10.6f};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
             )
 
         with open(output_path, "w", encoding="utf-8") as f:
