@@ -262,6 +262,13 @@ class TradeRepublicApi:
                 return True
         return False
 
+    def get_account_details(self):
+        r = self._websession.get(
+            f"{self._host}/api/v2/auth/account",
+        )
+        j = r.json()
+        return j
+
     def _web_request(self, url_path, payload=None, method="GET"):
         if self._web_session_token_expires_at < time.time():
             r = self._websession.get(f"{self._host}/api/v1/auth/web/session")

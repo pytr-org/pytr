@@ -17,6 +17,7 @@ from pytr.account import login
 from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
+from pytr.accountdetails import Accountdetails
 
 
 def get_main_parser():
@@ -200,6 +201,18 @@ def get_main_parser():
         help='Two letter language code or "auto" for system language',
         default="auto",
     )
+    # account details
+    info = "Show account details"
+    parser_accountdetails = parser_cmd.add_parser(
+        "accountdetails",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    parser_accountdetails.add_argument(
+        "-j", "--jsonoutput", help="Output path of JSON file", metavar="OUTPUT", type=Path
+    )
 
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
@@ -287,6 +300,13 @@ def main():
         installed_version = version("pytr")
         print(installed_version)
         check_version(installed_version)
+    elif args.command == "accountdetails":
+        ad = Accountdetails(
+            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+        )
+        ad.get()
+        if args.jsonoutput is not None:
+            ad.data_to_file(args.jsonoutput)
     else:
         parser.print_help()
 
