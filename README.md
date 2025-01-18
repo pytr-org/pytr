@@ -88,3 +88,37 @@ $ pytr login --phone_no +49123456789 --pin 1234
 ```
 
 If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain the phone number, the second line the pin). If the file doesn't exist pytr will ask for for the phone number and pin.
+
+
+## Linting and Code Formatting
+
+This project uses [black](https://github.com/psf/black) for code linting and auto-formatting. You can auto-format the code by running:
+
+```bash
+# Install black if not already installed
+pip install black
+
+# Auto-format code
+black ./pytr
+```
+
+## Setting Up a Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/pytr-org/pytr.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install .
+   ```
+
+3. Run the tests to ensure everything is set up correctly:
+   ```bash
+   pytest
+   ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
