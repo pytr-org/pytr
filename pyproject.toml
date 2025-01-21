@@ -30,7 +30,7 @@ dependencies = [
     "pygments",
     "requests_futures",
     "shtab",
-    "websockets>=10.1",
+    "websockets>=10.1,<14",
     "babel",
 ]
 
