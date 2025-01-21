@@ -5,6 +5,10 @@ from .utils import get_logger
 from .transactions import export_transactions
 
 
+class UnsupportedEventError(Exception):
+    pass
+
+
 class Timeline:
     def __init__(self, tr, max_age_timestamp):
         self.tr = tr
@@ -119,15 +123,18 @@ class Timeline:
         self.log.info("All timeline details requested")
         return False
 
-    async def process_timelineDetail(self, response, dl):
+    def process_timelineDetail(self, response, dl):
         """
         process timeline details response
         download any associated docs
         create other_events.json, events_with_documents.json and account_transactions.csv
         """
 
+        event = self.timeline_events.get(response["id"], None)
+        if event is None:
+            raise UnsupportedEventError(response["id"])
+
         self.received_detail += 1
-        event = self.timeline_events[response["id"]]
         event["details"] = response
 
         max_details_digits = len(str(self.requested_detail))
