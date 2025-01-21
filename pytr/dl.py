@@ -8,7 +8,7 @@ from pathvalidate import sanitize_filepath
 
 from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline
+from pytr.timeline import Timeline, UnsupportedEventError
 
 
 class DL:
@@ -82,7 +82,10 @@ class DL:
             elif subscription.get("type", "") == "timelineActivityLog":
                 await self.tl.get_next_timeline_activity_log(response)
             elif subscription.get("type", "") == "timelineDetailV2":
-                await self.tl.process_timelineDetail(response, self)
+                try:
+                    self.tl.process_timelineDetail(response, self)
+                except UnsupportedEventError:
+                    self.log.warning("Ignoring unsupported event %s", response)
             else:
                 self.log.warning(
                     f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
