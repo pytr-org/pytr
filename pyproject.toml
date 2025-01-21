@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "babel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-babel"]
+build-backend = "hatchling.build"
 
 [project]
 name = "pytr"
@@ -37,9 +37,5 @@ dependencies = [
 [project.scripts]
 pytr = "pytr.main:main"
 
-[tool.setuptools]
-include-package-data = true
-packages = ["pytr"]
-
-[tool.setuptools.package-data]
-pytr = ["pytr/locale/*/*/*.mo", "pytr/locale/*/*/*.po"]
+[tool.hatch.build.hooks.babel]
+locale_dir = "pytr/locale"
