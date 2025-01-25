@@ -127,6 +127,12 @@ class Timeline:
         """
 
         self.received_detail += 1
+
+        if response["id"] not in self.timeline_events:
+            self.log.warning("Event ID %s not found in timeline events", response["id"])
+            self.log.warning("Response: %s", response)
+            return
+        
         event = self.timeline_events[response["id"]]
         event["details"] = response
 
