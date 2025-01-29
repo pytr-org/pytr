@@ -115,7 +115,9 @@ class TradeRepublicApi:
             self.pin = pin
 
         self._cookies_file = (
-            pathlib.Path(cookies_file) if cookies_file else BASE_DIR / f"cookies.{self.phone_no}.txt"
+            pathlib.Path(cookies_file)
+            if cookies_file
+            else BASE_DIR / f"cookies.{self.phone_no}.txt"
         )
 
         self.keyfile = keyfile if keyfile else KEY_FILE

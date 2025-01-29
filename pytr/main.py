@@ -69,7 +69,7 @@ def get_main_parser():
         "--store_credentials",
         help="Store credentials (Phone number, pin, cookies) for next usage",
         action="store_true",
-        default=False
+        default=False,
     )
 
     # sort
@@ -251,7 +251,12 @@ def main():
     log.debug("logging is set to debug")
 
     if args.command == "login":
-        login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, store_credentials = args.store_credentials)
+        login(
+            phone_no=args.phone_no,
+            pin=args.pin,
+            web=not args.applogin,
+            store_credentials=args.store_credentials,
+        )
 
     elif args.command == "dl_docs":
         if args.last_days == 0:
@@ -261,7 +266,12 @@ def main():
                 datetime.now().astimezone() - timedelta(days=args.last_days)
             ).timestamp()
         dl = DL(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, store_credentials = args.store_credentials),
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
             args.output,
             args.format,
             since_timestamp=since_timestamp,
@@ -274,15 +284,32 @@ def main():
         # TODO
         print("Not implemented yet")
     elif args.command == "get_price_alarms":
-        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, store_credentials = args.store_credentials)).get()
+        Alarms(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            )
+        ).get()
     elif args.command == "details":
         Details(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, store_credentials = args.store_credentials),
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
             args.isin,
         ).get()
     elif args.command == "portfolio":
         p = Portfolio(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin, store_credentials = args.store_credentials)
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            )
         )
         p.get()
         if args.output is not None:
