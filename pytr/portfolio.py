@@ -97,9 +97,10 @@ class Portfolio:
                 f"{pos['name']};{pos['instrumentId']};{float(pos['netSize']):>10.3f};{float(pos['averageBuyIn']):.2f};{float(pos['netValue']):.2f}"
             )
 
+
         with open(output_path, "w", encoding="utf-8") as f:
             f.write("Name;ISIN;quantity;avgCost;netValue\n")
-            f.write("\n".join(csv_lines))
+            f.write("\n".join(csv_lines) + ('\n' if csv_lines else ''))
 
         print(f"Wrote {len(csv_lines) + 1} lines to {output_path}")
 
