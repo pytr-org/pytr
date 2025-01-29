@@ -86,6 +86,8 @@ class DL:
                     self.tl.process_timelineDetail(response, self)
                 except UnsupportedEventError:
                     self.log.warning("Ignoring unsupported event %s", response)
+                    self.tl.skipped_detail += 1
+                    self.tl.check_if_done(self)
             else:
                 self.log.warning(
                     f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
