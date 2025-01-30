@@ -15,6 +15,7 @@ class Timeline:
         self.log = get_logger(__name__)
         self.received_detail = 0
         self.requested_detail = 0
+        self.skipped_detail = 0
         self.events_without_docs = []
         self.events_with_docs = []
         self.num_timelines = 0
@@ -177,29 +178,38 @@ class Timeline:
         else:
             self.events_without_docs.append(event)
 
-        if self.received_detail == self.requested_detail:
-            self.log.info("Received all details")
-            dl.output_path.mkdir(parents=True, exist_ok=True)
-            with open(dl.output_path / "other_events.json", "w", encoding="utf-8") as f:
-                json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+        self.check_if_done(dl)
 
-            with open(
-                dl.output_path / "events_with_documents.json", "w", encoding="utf-8"
-            ) as f:
-                json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+    def check_if_done(self, dl):
+        if (self.received_detail + self.skipped_detail) == self.requested_detail:
+            self.finish_timeline_details(dl)
 
-            with open(dl.output_path / "all_events.json", "w", encoding="utf-8") as f:
-                json.dump(
-                    self.events_without_docs + self.events_with_docs,
-                    f,
-                    ensure_ascii=False,
-                    indent=2,
-                )
+    def finish_timeline_details(self, dl):
+        self.log.info("Received all details")
+        if self.skipped_detail > 0:
+            self.log.warning(f"Skipped {self.skipped_detail} unsupported events")
 
-            export_transactions(
-                dl.output_path / "all_events.json",
-                dl.output_path / "account_transactions.csv",
-                sort=dl.sort_export,
+        dl.output_path.mkdir(parents=True, exist_ok=True)
+        with open(dl.output_path / "other_events.json", "w", encoding="utf-8") as f:
+            json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+
+        with open(
+            dl.output_path / "events_with_documents.json", "w", encoding="utf-8"
+        ) as f:
+            json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+
+        with open(dl.output_path / "all_events.json", "w", encoding="utf-8") as f:
+            json.dump(
+                self.events_without_docs + self.events_with_docs,
+                f,
+                ensure_ascii=False,
+                indent=2,
             )
 
-            dl.work_responses()
+        export_transactions(
+            dl.output_path / "all_events.json",
+            dl.output_path / "account_transactions.csv",
+            sort=dl.sort_export,
+        )
+
+        dl.work_responses()
