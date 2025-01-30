@@ -11,9 +11,7 @@ from pytr.utils import get_logger
 def get_settings(tr):
     formatted_json = json.dumps(tr.settings(), indent=2)
     if sys.stdout.isatty():
-        colorful_json = highlight(
-            formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter()
-        )
+        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
         return colorful_json
     else:
         return formatted_json
@@ -41,9 +39,7 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info("Credentials file not found")
-            print(
-                "Please enter your TradeRepublic phone number in the format +4912345678:"
-            )
+            print("Please enter your TradeRepublic phone number in the format +4912345678:")
             phone_no = input()
         else:
             log.info("Phone number provided as argument")
@@ -74,15 +70,13 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
                 exit(1)
             request_time = time.time()
             print("Enter the code you received to your mobile app as a notification.")
-            print(
-                f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})"
-            )
+            print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
             code = input("Code: ")
             if code == "":
                 countdown = countdown - (time.time() - request_time)
                 for remaining in range(int(countdown)):
                     print(
-                        f"Need to wait {int(countdown-remaining)} seconds before requesting SMS...",
+                        f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
                         end="\r",
                     )
                     time.sleep(1)

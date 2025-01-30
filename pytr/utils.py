@@ -93,8 +93,6 @@ def check_version(installed_version):
     latest_version = r.json()[0]["name"]
 
     if version.parse(installed_version) < version.parse(latest_version):
-        log.warning(
-            f"Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}"
-        )
+        log.warning(f"Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}")
     else:
         log.info("pytr is up to date")

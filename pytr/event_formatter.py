@@ -57,28 +57,16 @@ class EventCsvFormatter:
         if isinstance(event.event_type, PPEventType):
             kwargs["type"] = self.translate(event.event_type.value)
         if event.value is not None:
-            kwargs["value"] = format_decimal(
-                event.value, locale=self.lang, decimal_quantization=True
-            )
-        kwargs["note"] = (
-            self.translate(event.note) + " - " + event.title
-            if event.note is not None
-            else event.title
-        )
+            kwargs["value"] = format_decimal(event.value, locale=self.lang, decimal_quantization=True)
+        kwargs["note"] = self.translate(event.note) + " - " + event.title if event.note is not None else event.title
         if event.isin is not None:
             kwargs["isin"] = event.isin
         if event.shares is not None:
-            kwargs["shares"] = format_decimal(
-                event.shares, locale=self.lang, decimal_quantization=False
-            )
+            kwargs["shares"] = format_decimal(event.shares, locale=self.lang, decimal_quantization=False)
         if event.fees is not None:
-            kwargs["fees"] = format_decimal(
-                -event.fees, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["fees"] = format_decimal(-event.fees, locale=self.lang, decimal_quantization=True)
         if event.taxes is not None:
-            kwargs["taxes"] = format_decimal(
-                -event.taxes, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["taxes"] = format_decimal(-event.taxes, locale=self.lang, decimal_quantization=True)
         lines = self.csv_fmt.format(**kwargs)
 
         # Generate BUY and DEPOSIT events from SAVEBACK event
@@ -86,9 +74,7 @@ class EventCsvFormatter:
             kwargs["type"] = self.translate(PPEventType.BUY.value)
             lines = self.csv_fmt.format(**kwargs)
             kwargs["type"] = self.translate(PPEventType.DEPOSIT.value)
-            kwargs["value"] = format_decimal(
-                -event.value, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["value"] = format_decimal(-event.value, locale=self.lang, decimal_quantization=True)
             kwargs["isin"] = ""
             kwargs["shares"] = ""
             lines += self.csv_fmt.format(**kwargs)
