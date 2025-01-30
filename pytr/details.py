@@ -1,6 +1,7 @@
 import asyncio
-from pytr.utils import preview
 from datetime import datetime, timedelta
+
+from pytr.utils import preview
 
 
 class Details:

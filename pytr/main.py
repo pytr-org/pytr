@@ -3,20 +3,19 @@
 import argparse
 import asyncio
 import signal
+from datetime import datetime, timedelta
+from importlib.metadata import version
+from pathlib import Path
 
 import shtab
 
-from importlib.metadata import version
-from pathlib import Path
-from datetime import datetime, timedelta
-
-from pytr.utils import get_logger, check_version
-from pytr.transactions import export_transactions
-from pytr.dl import DL
 from pytr.account import login
-from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
+from pytr.dl import DL
+from pytr.portfolio import Portfolio
+from pytr.transactions import export_transactions
+from pytr.utils import check_version, get_logger
 
 
 def get_main_parser():

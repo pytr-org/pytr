@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 
-from pytr.utils import preview, get_logger
+from pytr.utils import get_logger, preview
 
 
 class Alarms:

@@ -1,6 +1,6 @@
 from babel.numbers import format_decimal
 
-from .event import Event, PPEventType, ConditionalEventType
+from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation
 
 

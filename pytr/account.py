@@ -1,10 +1,11 @@
 import json
 import sys
-from pygments import highlight, lexers, formatters
 import time
 from getpass import getpass
 
-from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
+from pygments import formatters, highlight, lexers
+
+from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
 from pytr.utils import get_logger
 
 

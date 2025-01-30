@@ -1,9 +1,10 @@
-from babel.numbers import parse_decimal, NumberFormatError
+import re
 from dataclasses import dataclass
 from datetime import datetime
-from enum import auto, Enum
-import re
+from enum import Enum, auto
 from typing import Any, Dict, Optional, Tuple, Union
+
+from babel.numbers import NumberFormatError, parse_decimal
 
 
 class ConditionalEventType(Enum):

@@ -25,19 +25,19 @@ import base64
 import hashlib
 import json
 import pathlib
+import ssl
 import time
 import urllib.parse
 import uuid
+from http.cookiejar import MozillaCookieJar
+
 import certifi
-import ssl
 import requests
 import websockets
 from ecdsa import NIST256p, SigningKey
 from ecdsa.util import sigencode_der
-from http.cookiejar import MozillaCookieJar
 
 from pytr.utils import get_logger
-
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"

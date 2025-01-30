@@ -1,14 +1,13 @@
 import re
-
 from concurrent.futures import as_completed
 from pathlib import Path
-from requests_futures.sessions import FuturesSession
 
 from pathvalidate import sanitize_filepath
+from requests_futures.sessions import FuturesSession
 
-from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline, UnsupportedEventError
+from pytr.utils import get_logger, preview
 
 
 class DL:

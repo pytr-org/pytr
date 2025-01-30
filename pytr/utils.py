@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import coloredlogs
 import json
 import logging
-import requests
 
+import coloredlogs
+import requests
 from packaging import version
 
 log_level = None
