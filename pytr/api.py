@@ -437,9 +437,6 @@ class TradeRepublicApi:
     async def available_cash_for_payout(self):
         return await self.subscribe({"type": "availableCashForPayout"})
 
-    async def portfolio_status(self):
-        return await self.subscribe({"type": "portfolioStatus"})
-
     async def portfolio_history(self, timeframe):
         return await self.subscribe(
             {"type": "portfolioAggregateHistory", "range": timeframe}

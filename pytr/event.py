@@ -265,6 +265,6 @@ class Event:
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
         try:
             parsed_val = float(parse_decimal(parsed_val, locale))
-        except NumberFormatError as e:
+        except NumberFormatError:
             return None
         return None if parsed_val == 0.0 else parsed_val
