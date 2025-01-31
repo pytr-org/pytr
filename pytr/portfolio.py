@@ -1,13 +1,17 @@
 import asyncio
+from typing import Any, Dict, List
 
+from pytr.api import TradeRepublicApi
 from pytr.utils import preview
 
 
 class Portfolio:
-    def __init__(self, tr):
+    def __init__(self, tr: TradeRepublicApi) -> None:
         self.tr = tr
+        self.portfolio = {}
+        self.cash = []
 
-    async def portfolio_loop(self):
+    async def portfolio_loop(self) -> None:
         recv = 0
         # await self.tr.portfolio()
         # recv += 1
@@ -29,6 +33,7 @@ class Portfolio:
                 self.portfolio = response
             elif subscription["type"] == "cash":
                 recv -= 1
+                breakpoint()
                 self.cash = response
             # elif subscription['type'] == 'availableCashForPayout':
             #     recv -= 1
@@ -89,7 +94,7 @@ class Portfolio:
                     f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
                 )
 
-    def portfolio_to_csv(self, output_path):
+    def portfolio_to_csv(self, output_path: str) -> None:
         positions = self.portfolio["positions"]
         csv_lines = []
         for pos in sorted(positions, key=lambda x: x["netSize"], reverse=True):
@@ -103,7 +108,7 @@ class Portfolio:
 
         print(f"Wrote {len(csv_lines) + 1} lines to {output_path}")
 
-    def overview(self):
+    def overview(self) -> None:
         # for x in ['netValue', 'unrealisedProfit', 'unrealisedProfitPercent', 'unrealisedCost']:
         #     print(f'{x:24}: {self.portfolio[x]:>10.2f}')
         # print()
@@ -149,7 +154,7 @@ class Portfolio:
         print(f"Cash {currency} {cash:>40.2f} -> {cash:>10.2f}")
         print(f"Total {cash+totalBuyCost:>43.2f} -> {cash+totalNetValue:>10.2f}")
 
-    def get(self):
+    def get(self) -> None:
         asyncio.get_event_loop().run_until_complete(self.portfolio_loop())
 
         self.overview()

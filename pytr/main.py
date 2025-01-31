@@ -2,25 +2,27 @@
 
 import argparse
 import asyncio
+import logging
 import signal
+from datetime import datetime, timedelta
+from importlib.metadata import version
+from pathlib import Path
+from types import FrameType
+from typing import Any, NoReturn, Optional
 
 import shtab
 
-from importlib.metadata import version
-from pathlib import Path
-from datetime import datetime, timedelta
-
-from pytr.utils import get_logger, check_version
-from pytr.transactions import export_transactions
-from pytr.dl import DL
 from pytr.account import login
-from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
+from pytr.dl import DL
+from pytr.portfolio import Portfolio
+from pytr.transactions import export_transactions
+from pytr.utils import check_version, get_logger
 
 
-def get_main_parser():
-    def formatter(prog):
+def get_main_parser() -> argparse.ArgumentParser:
+    def formatter(prog: str) -> argparse.HelpFormatter:
         return argparse.HelpFormatter(prog, max_help_position=25)
 
     parser = argparse.ArgumentParser(
@@ -218,7 +220,10 @@ def get_main_parser():
     return parser
 
 
-def exit_gracefully(signum, frame):
+# Global variable for storing the original SIGINT handler
+original_sigint: Any = None
+
+def exit_gracefully(signum: int, frame: Optional[FrameType]) -> NoReturn:
     # restore the original signal handler as otherwise evil things will happen
     # in input when CTRL+C is pressed, and our signal handler is not re-entrant
     global original_sigint
@@ -234,9 +239,11 @@ def exit_gracefully(signum, frame):
 
     # restore the exit gracefully handler here
     signal.signal(signal.SIGINT, exit_gracefully)
+    # This is technically unreachable but needed for NoReturn type
+    exit(1)
 
 
-def main():
+def main() -> None:
     # store the original SIGINT handler
     global original_sigint
     original_sigint = signal.getsignal(signal.SIGINT)
@@ -259,12 +266,9 @@ def main():
         )
 
     elif args.command == "dl_docs":
-        if args.last_days == 0:
-            since_timestamp = 0
-        else:
-            since_timestamp = (
-                datetime.now().astimezone() - timedelta(days=args.last_days)
-            ).timestamp()
+        since_timestamp = 0.0 if args.last_days == 0 else (
+            datetime.now().astimezone() - timedelta(days=args.last_days)
+        ).timestamp()
         dl = DL(
             login(
                 phone_no=args.phone_no,
@@ -279,7 +283,8 @@ def main():
             universal_filepath=args.universal,
             sort_export=args.sort,
         )
-        asyncio.get_event_loop().run_until_complete(dl.dl_loop())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(dl.dl_loop())
     elif args.command == "set_price_alarms":
         # TODO
         print("Not implemented yet")

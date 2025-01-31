@@ -1,11 +1,13 @@
+from typing import Callable, Dict
+
 from babel.numbers import format_decimal
 
-from .event import Event, PPEventType, ConditionalEventType
+from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation
 
 
 class EventCsvFormatter:
-    def __init__(self, lang):
+    def __init__(self, lang: str) -> None:
         self.lang = lang
         self.translate = setup_translation(language=self.lang)
         self.csv_fmt = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
@@ -49,7 +51,7 @@ class EventCsvFormatter:
         )
 
         # Handle TRADE_INVOICE
-        if event.event_type == ConditionalEventType.TRADE_INVOICE:
+        if event.event_type is ConditionalEventType.TRADE_INVOICE and event.value is not None:
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
@@ -72,22 +74,25 @@ class EventCsvFormatter:
                 event.shares, locale=self.lang, decimal_quantization=False
             )
         if event.fees is not None:
+            fees_val = -event.fees
             kwargs["fees"] = format_decimal(
-                -event.fees, locale=self.lang, decimal_quantization=True
+                fees_val, locale=self.lang, decimal_quantization=True
             )
         if event.taxes is not None:
+            taxes_val = -event.taxes
             kwargs["taxes"] = format_decimal(
-                -event.taxes, locale=self.lang, decimal_quantization=True
+                taxes_val, locale=self.lang, decimal_quantization=True
             )
         lines = self.csv_fmt.format(**kwargs)
 
         # Generate BUY and DEPOSIT events from SAVEBACK event
-        if event.event_type == ConditionalEventType.SAVEBACK:
+        if event.event_type is ConditionalEventType.SAVEBACK and event.value is not None:
             kwargs["type"] = self.translate(PPEventType.BUY.value)
             lines = self.csv_fmt.format(**kwargs)
             kwargs["type"] = self.translate(PPEventType.DEPOSIT.value)
+            value_val = -event.value
             kwargs["value"] = format_decimal(
-                -event.value, locale=self.lang, decimal_quantization=True
+                value_val, locale=self.lang, decimal_quantization=True
             )
             kwargs["isin"] = ""
             kwargs["shares"] = ""

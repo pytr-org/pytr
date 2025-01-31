@@ -1,14 +1,17 @@
 import json
 import sys
-from pygments import highlight, lexers, formatters
 import time
 from getpass import getpass
+from logging import Logger
+from typing import Optional
 
-from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
+from pygments import formatters, highlight, lexers
+
+from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
 from pytr.utils import get_logger
 
 
-def get_settings(tr):
+def get_settings(tr: TradeRepublicApi) -> str:
     formatted_json = json.dumps(tr.settings(), indent=2)
     if sys.stdout.isatty():
         colorful_json = highlight(
@@ -19,7 +22,12 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True, store_credentials=False):
+def login(
+    phone_no: Optional[str] = None,
+    pin: Optional[str] = None,
+    web: bool = True,
+    store_credentials: bool = False
+) -> TradeRepublicApi:
     """
     If web is true, use web login method, else simulate app login.
     Handle credentials parameters and store to credentials file if requested.
@@ -79,10 +87,10 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
             )
             code = input("Code: ")
             if code == "":
-                countdown = countdown - (time.time() - request_time)
-                for remaining in range(int(countdown)):
+                remaining_time = countdown - (time.time() - request_time)
+                for remaining in range(int(remaining_time)):
                     print(
-                        f"Need to wait {int(countdown-remaining)} seconds before requesting SMS...",
+                        f"Need to wait {int(remaining_time-remaining)} seconds before requesting SMS...",
                         end="\r",
                     )
                     time.sleep(1)

@@ -6,7 +6,10 @@ from .utils import get_logger
 log = get_logger(__name__)
 
 
-def setup_translation(language="en"):
+from typing import Callable
+
+
+def setup_translation(language: str = "en") -> Callable[[str], str]:
     """Set up translations for the specified language.
 
     i18n source from Portfolio Performance:

@@ -1,9 +1,10 @@
-from babel.numbers import parse_decimal, NumberFormatError
+import re
 from dataclasses import dataclass
 from datetime import datetime
-from enum import auto, Enum
-import re
+from enum import Enum, auto
 from typing import Any, Dict, Optional, Tuple, Union
+
+from babel.numbers import NumberFormatError, parse_decimal
 
 
 class ConditionalEventType(Enum):
@@ -31,12 +32,10 @@ class PPEventType(Enum):
     TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
 
 
-class EventType(Enum):
-    PP_EVENT_TYPE = PPEventType
-    CONDITIONAL_EVENT_TYPE = ConditionalEventType
+EventType = Union[PPEventType, ConditionalEventType]
 
 
-tr_event_type_mapping = {
+tr_event_type_mapping: Dict[str, EventType] = {
     # Deposits
     "INCOMING_TRANSFER": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER_DELEGATION": PPEventType.DEPOSIT,
@@ -87,19 +86,19 @@ class Event:
     value: Optional[float]
 
     @classmethod
-    def from_dict(cls, event_dict: Dict[Any, Any]):
+    def from_dict(cls, event_dict: Dict[Any, Any]) -> "Event":
         """Deserializes the event dictionary into an Event object
 
         Args:
-            event_dict (json): _description_
+            event_dict (Dict[Any, Any]): Event dictionary from API
 
         Returns:
             Event: Event object
         """
-        date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
-        event_type: Optional[EventType] = cls._parse_type(event_dict)
-        title: str = event_dict["title"]
-        value: Optional[float] = (
+        date = datetime.fromisoformat(event_dict["timestamp"][:19])
+        event_type = cls._parse_type(event_dict)
+        title = event_dict["title"]
+        value = (
             v
             if (v := event_dict.get("amount", {}).get("value", None)) is not None
             and v != 0.0
@@ -111,8 +110,8 @@ class Event:
         return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
 
     @staticmethod
-    def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
-        event_type: Optional[EventType] = tr_event_type_mapping.get(
+    def _parse_type(event_dict: Dict[Any, Any]) -> Optional[Union[PPEventType, ConditionalEventType]]:
+        event_type = tr_event_type_mapping.get(
             event_dict.get("eventType", ""), None
         )
         if event_dict.get("status", "").lower() == "canceled":
@@ -121,8 +120,10 @@ class Event:
 
     @classmethod
     def _parse_type_dependent_params(
-        cls, event_type: EventType, event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[Union[str, float]]]:
+        cls,
+        event_type: Optional[Union[PPEventType, ConditionalEventType]],
+        event_dict: Dict[Any, Any]
+    ) -> Tuple[Optional[float], Optional[str], Optional[str], Optional[float], Optional[float]]:
         """Parses the fees, isin, note, shares and taxes fields
 
         Args:
@@ -152,40 +153,45 @@ class Event:
         return fees, isin, note, shares, taxes
 
     @staticmethod
-    def _parse_isin(event_dict: Dict[Any, Any]) -> str:
-        """Parses the isin
+    def _parse_isin(event_dict: Dict[str, Any]) -> Optional[str]:
+        """Parses the ISIN (International Securities Identification Number)
 
         Args:
-            event_dict (Dict[Any, Any]): _description_
+            event_dict (Dict[str, Any]): Event dictionary from API
 
         Returns:
-            str: isin
+            Optional[str]: ISIN if found, None otherwise
         """
         sections = event_dict.get("details", {}).get("sections", [{}])
         isin = event_dict.get("icon", "")
+        if not isin:
+            return None
+
         isin = isin[isin.find("/") + 1 :]
         isin = isin[: isin.find("/")]
         isin2 = isin
+
         for section in sections:
             action = section.get("action", None)
             if action and action.get("type", {}) == "instrumentDetail":
                 isin2 = section.get("action", {}).get("payload")
                 break
-        if isin != isin2:
+
+        if isin != isin2 and isin2:
             isin = isin2
-        return isin
+        return isin if isin else None
 
     @classmethod
     def _parse_shares_and_fees(
         cls, event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[float]]:
+    ) -> Tuple[Optional[float], Optional[float]]:
         """Parses the amount of shares and the applicable fees
 
         Args:
-            event_dict (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): Event dictionary from API
 
         Returns:
-            Tuple[Optional[float]]: shares, fees
+            Tuple[Optional[float], Optional[float]]: shares, fees
         """
         return_vals = {}
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -212,7 +218,7 @@ class Event:
         """Parses the levied taxes
 
         Args:
-            event_dict (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): Event dictionary from API
 
         Returns:
             Optional[float]: taxes
@@ -234,19 +240,22 @@ class Event:
                 parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, "de")
                 if parsed_taxes_val is not None:
                     return parsed_taxes_val
+        return None
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
         """Parses the note associated with card transactions
 
         Args:
-            event_dict (Dict[Any, Any]): _description_
+            event_dict (Dict[Any, Any]): Event dictionary from API
 
         Returns:
             Optional[str]: note
         """
-        if event_dict.get("eventType", "").startswith("card_"):
-            return event_dict["eventType"]
+        event_type = event_dict.get("eventType")
+        if isinstance(event_type, str) and event_type.startswith("card_"):
+            return event_type
+        return None
 
     @staticmethod
     def _parse_float_from_detail(
@@ -255,16 +264,16 @@ class Event:
         """Parses a "detail" dictionary potentially containing a float in a certain locale format
 
         Args:
-            str (Dict[str, Any]): _description_
-            locale (str): _description_
+            elem_dict (Dict[str, Any]): Dictionary containing the detail
+            locale (str): Locale for number parsing
 
         Returns:
             Optional[float]: parsed float value or None
         """
         unparsed_val = elem_dict.get("detail", {}).get("text", "")
-        parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
+        parsed_str = re.sub(r"[^\,\.\d-]", "", unparsed_val)
         try:
-            parsed_val = float(parse_decimal(parsed_val, locale))
-        except NumberFormatError as e:
+            parsed_val = float(parse_decimal(parsed_str, locale))
+            return None if parsed_val == 0.0 else parsed_val
+        except NumberFormatError:
             return None
-        return None if parsed_val == 0.0 else parsed_val

@@ -1,8 +1,9 @@
 import json
+
 from pytr.event import Event, PPEventType
 
 
-def test_event_from_dict():
+def test_event_from_dict() -> None:
     # Load the sample JSON file
     with open("tests/sample_event.json", "r") as file:
         sample_data = json.load(file)

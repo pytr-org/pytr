@@ -1,16 +1,20 @@
-from datetime import datetime
 import json
+from datetime import datetime
 
-from .utils import get_logger
 from .transactions import export_transactions
+from .utils import get_logger
 
 
 class UnsupportedEventError(Exception):
     pass
 
 
+from logging import Logger
+from typing import Any, Dict, List, Optional
+
+
 class Timeline:
-    def __init__(self, tr, max_age_timestamp):
+    def __init__(self, tr: Any, max_age_timestamp: float) -> None:
         self.tr = tr
         self.log = get_logger(__name__)
         self.received_detail = 0
@@ -22,7 +26,7 @@ class Timeline:
         self.timeline_events = {}
         self.max_age_timestamp = max_age_timestamp
 
-    async def get_next_timeline_transactions(self, response=None):
+    async def get_next_timeline_transactions(self, response: Optional[Dict[str, Any]] = None) -> None:
         """
         Get timelines transactions and save time in list timelines.
         Extract timeline transactions events and save them in list timeline_events
@@ -60,10 +64,10 @@ class Timeline:
                 self.log.info("Received last relevant timeline transaction")
                 await self.get_next_timeline_activity_log()
 
-    async def get_next_timeline_activity_log(self, response=None):
+    async def get_next_timeline_activity_log(self, response: Optional[Dict[str, Any]] = None) -> None:
         """
-        Get timelines acvtivity log and save time in list timelines.
-        Extract timeline acvtivity log events and save them in list timeline_events
+        Get timelines activity log and save time in list timelines.
+        Extract timeline activity log events and save them in list timeline_events
 
         """
         if response is None:
@@ -100,7 +104,7 @@ class Timeline:
                 self.log.info("Received last relevant timeline activity log")
                 await self._get_timeline_details()
 
-    async def _get_timeline_details(self):
+    async def _get_timeline_details(self) -> bool:
         """
         request timeline details
         """
@@ -124,7 +128,7 @@ class Timeline:
         self.log.info("All timeline details requested")
         return False
 
-    def process_timelineDetail(self, response, dl):
+    def process_timelineDetail(self, response: Dict[str, Any], dl: Any) -> None:
         """
         process timeline details response
         download any associated docs
@@ -180,11 +184,11 @@ class Timeline:
 
         self.check_if_done(dl)
 
-    def check_if_done(self, dl):
+    def check_if_done(self, dl: Any) -> None:
         if (self.received_detail + self.skipped_detail) == self.requested_detail:
             self.finish_timeline_details(dl)
 
-    def finish_timeline_details(self, dl):
+    def finish_timeline_details(self, dl: Any) -> None:
         self.log.info("Received all details")
         if self.skipped_detail > 0:
             self.log.warning(f"Skipped {self.skipped_detail} unsupported events")

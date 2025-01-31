@@ -1,9 +1,10 @@
 import json
+
 from pytr.event import Event
 from pytr.event_formatter import EventCsvFormatter
 
 
-def test_event_csv_formatter():
+def test_event_csv_formatter() -> None:
     # Load the sample JSON file
     with open("tests/sample_event.json", "r") as file:
         sample_data = json.load(file)
@@ -21,7 +22,7 @@ def test_event_csv_formatter():
     assert csv_output == "2024-09-10;Einlage;3.000;Vorname Nachname;;;;\n"
 
 
-def test_buy():
+def test_buy() -> None:
     # Load the sample JSON file
     with open("tests/sample_buy.json", "r") as file:
         sample_data = json.load(file)

@@ -1,14 +1,22 @@
 import asyncio
-from pytr.utils import preview
 from datetime import datetime, timedelta
+from typing import Any, Dict
+
+from pytr.utils import preview
 
 
 class Details:
-    def __init__(self, tr, isin):
+    def __init__(self, tr: Any, isin: str) -> None:
         self.tr = tr
         self.isin = isin
+        self.stockDetails = {}
+        self.neonNews = []
+        self.ticker = {}
+        self.performance = {}
+        self.instrument = {}
+        self.instrumentSuitability = {}
 
-    async def details_loop(self):
+    async def details_loop(self) -> None:
         recv = 0
         await self.tr.stock_details(self.isin)
         await self.tr.news(self.isin)
@@ -53,7 +61,7 @@ class Details:
             if recv == 6:
                 return
 
-    def print_instrument(self):
+    def print_instrument(self) -> None:
         print("Name:", self.instrument["name"])
         print("ShortName:", self.instrument["shortName"])
         print("Type:", self.instrument["typeId"])
@@ -63,7 +71,7 @@ class Details:
         for tag in self.instrument["tags"]:
             print(f"{tag['type']}: {tag['name']}")
 
-    def stock_details(self):
+    def stock_details(self) -> None:
         company = self.stockDetails["company"]
         for company_detail in company:
             if company[company_detail] is not None:
@@ -76,7 +84,7 @@ class Details:
             ):
                 print(f"{detail:15}: {self.stockDetails[detail]}")
 
-    def news(self, relevant_days=30):
+    def news(self, relevant_days: int = 30) -> None:
         since = datetime.now() - timedelta(days=relevant_days)
         if not hasattr(self, "neonNews"):
             return
@@ -86,12 +94,12 @@ class Details:
                 dateiso = newsdate.isoformat(sep=" ", timespec="minutes")
                 print(f"{dateiso}: {news['headline']}")
 
-    def overview(self):
+    def overview(self) -> None:
         self.print_instrument()
         self.news()
         self.stock_details()
 
-    def get(self):
+    def get(self) -> None:
         asyncio.get_event_loop().run_until_complete(self.details_loop())
 
         self.overview()

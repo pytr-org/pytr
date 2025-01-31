@@ -7,7 +7,7 @@ name = "pytr"
 version = "0.3.1"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
     { name = "marzzzello", email = "853485-marzzzello@users.noreply.gitlab.com" }
@@ -32,10 +32,41 @@ dependencies = [
     "shtab",
     "websockets>=10.1,<14",
     "babel",
+    "typing-extensions>=4.7.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "types-requests",
+    "types-pygments",
+    # Don't exist:
+    # "types-coloredlogs",
+    # "types-ecdsa"
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
 
 [project.scripts]
 pytr = "pytr.main:main"
 
 [tool.hatch.build.hooks.babel]
 locale_dir = "pytr/locale"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14.1",
+    "types-pygments>=2.19.0.20250107",
+    "types-requests>=2.32.0.20241016",
+]

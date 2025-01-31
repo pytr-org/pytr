@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import coloredlogs
 import json
 import logging
-import requests
+from typing import Any, Optional
 
+import coloredlogs  # type: ignore[import-untyped]
+import requests
 from packaging import version
 
 log_level = None
 
 
-def get_logger(name=__name__, verbosity=None):
+def get_logger(name: str = __name__, verbosity: Optional[str] = None) -> logging.Logger:
     """
     Colored logging
 
@@ -71,7 +72,7 @@ def get_logger(name=__name__, verbosity=None):
     return logger
 
 
-def preview(response, num_lines=5):
+def preview(response: Any, num_lines: int = 5) -> str:
     lines = json.dumps(response, indent=2).splitlines()
     head = "\n".join(lines[:num_lines])
     tail = len(lines) - num_lines
@@ -82,7 +83,7 @@ def preview(response, num_lines=5):
         return f"{head}\n{tail} more lines hidden"
 
 
-def check_version(installed_version):
+def check_version(installed_version: str) -> None:
     log = get_logger(__name__)
     try:
         r = requests.get("https://api.github.com/repos/pytr-org/pytr/tags", timeout=1)
