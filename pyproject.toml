@@ -39,3 +39,8 @@ pytr = "pytr.main:main"
 
 [tool.hatch.build.hooks.babel]
 locale_dir = "pytr/locale"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
