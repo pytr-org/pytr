@@ -14,6 +14,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: "0.5.21"
+      - name: Pytest
+        run: uv run pytest
       - name: Ruff check
         run: uv run ruff check
       - name: Ruff format
