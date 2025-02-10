@@ -189,6 +189,12 @@ destination:
     path: "Cash Report/"
     filename: "{iso_date}.{iso_time} {document_title}" # {event_title} = Personal name
 
+  # German Vorabpauschale
+  vorabpauschale:
+    pattern: [{event_type: "ssp_corporate_action_invoice_shares", event_subtitle: "Vorabpauschale"}]
+    path: "Vorabpauschale/"
+    filename: "{iso_date} {document_title} - {event_title}"
+    
   # annual tax report for account
   account_tax_report:
     pattern: [{event_type: "TAX_REFUND"}, {event_type: "TAX_ENGINE_ANNUAL_REPORT"}, {event_type: "YEAR_END_TAX_REPORT"}]
