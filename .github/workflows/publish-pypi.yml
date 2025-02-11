@@ -2,6 +2,7 @@ name: Build and publish Python distributions to PyPI
 
 on:
   - push
+  - pull_request
   - workflow_dispatch
 
 jobs:
