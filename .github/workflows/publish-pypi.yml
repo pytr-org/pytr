@@ -1,7 +1,8 @@
 name: Build and publish Python distributions to PyPI
 
 on:
-  - push
+  - push:
+      branches: ["master"]
   - pull_request
   - workflow_dispatch
 
