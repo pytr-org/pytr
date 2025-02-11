@@ -263,7 +263,7 @@ class TradeRepublicApi:
         return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
 
     async def _get_ws(self):
-        if self._ws and self._ws.close_code == None:
+        if self._ws and self._ws.close_code is None:
             return self._ws
 
         self.log.info("Connecting to websocket ...")
