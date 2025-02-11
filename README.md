@@ -31,7 +31,7 @@ of code before, or are new to Python, these steps will make it the easiest for y
 We strongly recommend that you use [`uv`](https://docs.astral.sh/uv/#installation) to run pytr. Since pytr is written
 in the Python programming language, you usually need to make sure you have an installation of Python on your computer
 before you can run any Python program. However, uv will take care of installing an appropriate Python version for
-you.
+you if you don't already have one.
 
 To install uv on OSX/Linux, run:
 
