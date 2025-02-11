@@ -7,7 +7,7 @@ name = "pytr"
 version = "0.3.1"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
     { name = "marzzzello", email = "853485-marzzzello@users.noreply.gitlab.com" }
@@ -30,7 +30,7 @@ dependencies = [
     "pygments",
     "requests_futures",
     "shtab",
-    "websockets>=10.1,<14",
+    "websockets>=14",
     "babel",
 ]
 
