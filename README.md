@@ -92,15 +92,14 @@ If no arguments are supplied pytr will look for them in the file `~/.pytr/creden
 
 ## Linting and Code Formatting
 
-This project uses [black](https://github.com/psf/black) for code linting and auto-formatting. You can auto-format the code by running:
+This project uses [Ruff](https://astral.sh/ruff) for code linting and auto-formatting. You can auto-format the code by running:
 
 ```bash
-# Install black if not already installed
-pip install black
-
-# Auto-format code
-black ./pytr
+uv run ruff format            # Format code
+uv run ruff check --fix-only  # Remove unneeded imports, order imports, etc.
 ```
+
+Ruff runs as part of CI and your Pull Request cannot be merged unless it satisfies the linting and formatting checks.
 
 ## Setting Up a Development Environment
 
