@@ -1,9 +1,10 @@
-from babel.numbers import parse_decimal, NumberFormatError
+import re
 from dataclasses import dataclass
 from datetime import datetime
-from enum import auto, Enum
-import re
+from enum import Enum, auto
 from typing import Any, Dict, Optional, Tuple, Union
+
+from babel.numbers import NumberFormatError, parse_decimal
 
 
 class ConditionalEventType(Enum):
@@ -100,21 +101,14 @@ class Event:
         event_type: Optional[EventType] = cls._parse_type(event_dict)
         title: str = event_dict["title"]
         value: Optional[float] = (
-            v
-            if (v := event_dict.get("amount", {}).get("value", None)) is not None
-            and v != 0.0
-            else None
+            v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
         )
-        fees, isin, note, shares, taxes = cls._parse_type_dependent_params(
-            event_type, event_dict
-        )
+        fees, isin, note, shares, taxes = cls._parse_type_dependent_params(event_type, event_dict)
         return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
 
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
-        event_type: Optional[EventType] = tr_event_type_mapping.get(
-            event_dict.get("eventType", ""), None
-        )
+        event_type: Optional[EventType] = tr_event_type_mapping.get(event_dict.get("eventType", ""), None)
         if event_dict.get("status", "").lower() == "canceled":
             event_type = None
         return event_type
@@ -176,9 +170,7 @@ class Event:
         return isin
 
     @classmethod
-    def _parse_shares_and_fees(
-        cls, event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[float]]:
+    def _parse_shares_and_fees(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
         """Parses the amount of shares and the applicable fees
 
         Args:
@@ -192,14 +184,10 @@ class Event:
         for section in sections:
             if section.get("title") == "Transaktion":
                 data = section["data"]
-                shares_dicts = list(
-                    filter(lambda x: x["title"] in ["Aktien", "Anteile"], data)
-                )
+                shares_dicts = list(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data))
                 fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
                 titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
-                for key, elem_dict in zip(
-                    titles, shares_dicts + fees_dicts
-                ):
+                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
                     return_vals[key] = cls._parse_float_from_detail(elem_dict)
         return return_vals.get("shares"), return_vals.get("fees")
 
@@ -218,9 +206,7 @@ class Event:
         # Gather all section dicts
         sections = event_dict.get("details", {}).get("sections", [{}])
         # Gather all dicts pertaining to transactions
-        transaction_dicts = filter(
-            lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections
-        )
+        transaction_dicts = filter(lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections)
         for transaction_dict in transaction_dicts:
             # Filter for taxes dicts
             data = transaction_dict.get("data", [{}])
@@ -270,5 +256,4 @@ class Event:
                 parsed_val = float(parse_decimal(parsed_val, locales[1], strict=True))
             except NumberFormatError:
                 return None
-
         return None if parsed_val == 0.0 else parsed_val
