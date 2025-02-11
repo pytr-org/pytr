@@ -47,9 +47,7 @@ class Alarms:
         print("ISIN         status created  target  diff% createdAt        triggeredAT")
         self.log.debug(f"Processing {len(self.alarms)} alarms")
 
-        for (
-            a
-        ) in (
+        for a in (
             self.alarms
         ):  # sorted(positions, key=lambda x: x['netValue'], reverse=True):
             self.log.debug(f"  Processing {a} alarm")

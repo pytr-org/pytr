@@ -86,7 +86,7 @@ def login(phone_no=None, pin=None, web=True):
                 countdown = countdown - (time.time() - request_time)
                 for remaining in range(int(countdown)):
                     print(
-                        f"Need to wait {int(countdown-remaining)} seconds before requesting SMS...",
+                        f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
                         end="\r",
                     )
                     time.sleep(1)

@@ -49,7 +49,6 @@ class Pattern:
 
 
 class FileDestinationProvider:
-
     def __init__(self):
         """
         A provider for file path and file names based on the event type and other parameters.
@@ -57,7 +56,7 @@ class FileDestinationProvider:
         self._log = get_logger(__name__)
 
         config_file_path = Path(DESTINATION_CONFIG_FILE)
-        if config_file_path.is_file() == False:
+        if not config_file_path.is_file():
             self.__create_default_config(config_file_path)
 
         config_file = open(config_file_path, "r", encoding="utf8")

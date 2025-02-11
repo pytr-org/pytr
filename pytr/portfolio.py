@@ -147,7 +147,7 @@ class Portfolio:
         cash = float(self.cash[0]["amount"])
         currency = self.cash[0]["currencyId"]
         print(f"Cash {currency} {cash:>40.2f} -> {cash:>10.2f}")
-        print(f"Total {cash+totalBuyCost:>43.2f} -> {cash+totalNetValue:>10.2f}")
+        print(f"Total {cash + totalBuyCost:>43.2f} -> {cash + totalNetValue:>10.2f}")
 
     def get(self):
         asyncio.get_event_loop().run_until_complete(self.portfolio_loop())

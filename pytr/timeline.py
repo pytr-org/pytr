@@ -47,7 +47,7 @@ class Timeline:
             after = response["cursors"].get("after")
             if (after is not None) and added_last_event:
                 self.log.info(
-                    f"Subscribing #{self.num_timelines+1:<2} timeline transactions"
+                    f"Subscribing #{self.num_timelines + 1:<2} timeline transactions"
                 )
                 await self.tr.timeline_transactions(after)
             else:
@@ -76,7 +76,7 @@ class Timeline:
                     >= self.max_age_timestamp
                 ):
                     if event["id"] in self.timeline_events:
-                        self.log.warning(f"Received duplicate event {event['id'] }")
+                        self.log.warning(f"Received duplicate event {event['id']}")
                     else:
                         added_last_event = True
                     event["source"] = "timelineActivity"
@@ -88,7 +88,7 @@ class Timeline:
             after = response["cursors"].get("after")
             if (after is not None) and added_last_event:
                 self.log.info(
-                    f"Subscribing #{self.num_timelines+1:<2} timeline activity log"
+                    f"Subscribing #{self.num_timelines + 1:<2} timeline activity log"
                 )
                 await self.tr.timeline_activity_log(after)
             else:
