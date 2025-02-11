@@ -22,7 +22,7 @@ jobs:
       - name: Ruff check
         run: uv run ruff check
       - name: Ruff format
-        run: uv run ruff format --check
+        run: uv run ruff format --check --diff
 
   build-n-publish:
     name: Build and publish Python distributions to PyPI
@@ -38,6 +38,6 @@ jobs:
         run: uv build
       - name: Publish distribution to PyPI
         if: startsWith(github.event.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@release/v1.9
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.pypi_token }}
