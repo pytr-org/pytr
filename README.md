@@ -59,7 +59,7 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 
 ## Usage
 
-<!-- runcmd code:console COLUMNS=120 uv run pytr -->
+<!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
 ```console
 usage: pytr [-h] [-v {warning,info,debug}] [-V]
             {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
