@@ -5,19 +5,34 @@ on:
   - workflow_dispatch
 
 jobs:
-  build-n-publish:
-    name: Build and publish Python distributions to PyPI
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: 3.11
+          version: "0.5.21"
+      - name: Pytest
+        run: uv run pytest
+      - name: Ruff check
+        run: uv run ruff check
+      - name: Ruff format
+        run: uv run ruff format --check
+
+  build-n-publish:
+    name: Build and publish Python distributions to PyPI
+    runs-on: ubuntu-latest
+    needs: checks
+    steps:
+      - uses: actions/checkout@master
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.21"
       - name: Build wheel
-        run: |
-          python3 -m pip install wheel
-          python3 setup.py sdist bdist_wheel
+        run: uv build
       - name: Publish distribution to PyPI
         if: startsWith(github.event.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1.9
