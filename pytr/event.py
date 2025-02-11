@@ -188,9 +188,8 @@ class Event:
                 shares_dicts = list(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data))
                 fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
                 titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
-                locales = ["en" if e["title"] == "Aktien" else "de" for e in shares_dicts + fees_dicts]
-                for key, elem_dict, locale in zip(titles, shares_dicts + fees_dicts, locales):
-                    return_vals[key] = cls._parse_float_from_detail(elem_dict, locale)
+                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
+                    return_vals[key] = cls._parse_float_from_detail(elem_dict)
         return return_vals.get("shares"), return_vals.get("fees")
 
     @classmethod
@@ -215,7 +214,7 @@ class Event:
             taxes_dicts = filter(lambda x: x["title"] in taxes_keys, data)
             # Iterate over dicts containing tax information and parse each one
             for taxes_dict in taxes_dicts:
-                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, "de")
+                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict)
                 if parsed_taxes_val is not None:
                     return parsed_taxes_val
 
@@ -233,20 +232,29 @@ class Event:
             return event_dict["eventType"]
 
     @staticmethod
-    def _parse_float_from_detail(elem_dict: Dict[str, Any], locale: str) -> Optional[float]:
+    def _parse_float_from_detail(elem_dict: Dict[str, Any]) -> Optional[float]:
         """Parses a "detail" dictionary potentially containing a float in a certain locale format
 
         Args:
             str (Dict[str, Any]): _description_
-            locale (str): _description_
 
         Returns:
             Optional[float]: parsed float value or None
         """
         unparsed_val = elem_dict.get("detail", {}).get("text", "")
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
+
+        # Try the locale that will fail more likely first.
+        if "." not in parsed_val:
+            locales = ("en", "de")
+        else:
+            locales = ("de", "en")
+
         try:
-            parsed_val = float(parse_decimal(parsed_val, locale))
+            parsed_val = float(parse_decimal(parsed_val, locales[0], strict=True))
         except NumberFormatError:
-            return None
+            try:
+                parsed_val = float(parse_decimal(parsed_val, locales[1], strict=True))
+            except NumberFormatError:
+                return None
         return None if parsed_val == 0.0 else parsed_val
