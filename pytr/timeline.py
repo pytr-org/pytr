@@ -139,6 +139,8 @@ class Timeline:
             timeline_event_id = response["id"]
 
         event = self.timeline_events.get(timeline_event_id, None)
+        if event is None:
+            raise UnsupportedEventError(response["id"])
 
         self.received_detail += 1
         event["details"] = response
