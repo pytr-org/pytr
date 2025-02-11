@@ -6,7 +6,7 @@ from pathvalidate import sanitize_filepath
 from requests_futures.sessions import FuturesSession
 
 from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline, UnsupportedEventError
+from pytr.timeline import Timeline
 from pytr.utils import get_logger, preview
 
 
@@ -77,12 +77,7 @@ class DL:
             elif subscription.get("type", "") == "timelineActivityLog":
                 await self.tl.get_next_timeline_activity_log(response)
             elif subscription.get("type", "") == "timelineDetailV2":
-                try:
-                    self.tl.process_timelineDetail(response, self)
-                except UnsupportedEventError:
-                    self.log.warning("Ignoring unsupported event %s", response)
-                    self.tl.skipped_detail += 1
-                    self.tl.check_if_done(self)
+                self.tl.process_timelineDetail(response, self)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 

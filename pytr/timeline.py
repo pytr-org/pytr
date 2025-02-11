@@ -10,10 +10,6 @@ from .transactions import export_transactions
 from .utils import get_logger
 
 
-class UnsupportedEventError(Exception):
-    pass
-
-
 class Timeline:
     def __init__(self, tr, max_age_timestamp):
         self.tr = tr
@@ -140,7 +136,9 @@ class Timeline:
 
         event = self.timeline_events.get(timeline_event_id, None)
         if event is None:
-            raise UnsupportedEventError(response["id"])
+            self.log.warning("Missing timeline event %r for detail: %s", timeline_event_id, json.dumps(response))
+            self.skipped_detail += 1
+            return
 
         self.received_detail += 1
         event["details"] = response
