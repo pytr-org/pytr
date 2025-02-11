@@ -1,14 +1,20 @@
+from dataclasses import dataclass
+from typing import Literal
+
 from babel.numbers import format_decimal
 
 from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation
 
 
+@dataclass
 class EventCsvFormatter:
-    def __init__(self, lang):
-        self.lang = lang
+    lang: str
+    csv_fmt: str = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
+    date_fmt: str | Literal["ISO8601"] = "%Y-%m-%d"
+
+    def __post_init__(self):
         self.translate = setup_translation(language=self.lang)
-        self.csv_fmt = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
 
     def format_header(self) -> str:
         """Outputs header line
@@ -53,7 +59,10 @@ class EventCsvFormatter:
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
-        kwargs["date"] = event.date.strftime("%Y-%m-%d")
+        if self.date_fmt == "ISO8601":
+            kwargs["date"] = event.date.isoformat()
+        else:
+            kwargs["date"] = event.date.strftime(self.date_fmt)
         if isinstance(event.event_type, PPEventType):
             kwargs["type"] = self.translate(event.event_type.value)
         if event.value is not None:
