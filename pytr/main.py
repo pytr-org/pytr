@@ -3,21 +3,20 @@
 import argparse
 import asyncio
 import signal
+from datetime import datetime, timedelta
+from importlib.metadata import version
+from pathlib import Path
 
 import shtab
 
-from importlib.metadata import version
-from pathlib import Path
-from datetime import datetime, timedelta
-
-from pytr.utils import get_logger, check_version
-from pytr.transactions import export_transactions
-from pytr.dl import DL
 from pytr.account import login
-from pytr.portfolio import Portfolio
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.accountdetails import Accountdetails
+from pytr.dl import DL
+from pytr.portfolio import Portfolio
+from pytr.transactions import export_transactions
+from pytr.utils import check_version, get_logger
 
 
 def get_main_parser():
@@ -59,13 +58,15 @@ def get_main_parser():
 
     # Create parent subparser with common login arguments
     parser_login_args = argparse.ArgumentParser(add_help=False)
-    parser_login_args.add_argument(
-        "--applogin", help="Use app login instead of  web login", action="store_true"
-    )
-    parser_login_args.add_argument(
-        "-n", "--phone_no", help="TradeRepublic phone number (international format)"
-    )
+    parser_login_args.add_argument("--applogin", help="Use app login instead of  web login", action="store_true")
+    parser_login_args.add_argument("-n", "--phone_no", help="TradeRepublic phone number (international format)")
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
+    parser_login_args.add_argument(
+        "--store_credentials",
+        help="Store credentials (Phone number, pin, cookies) for next usage",
+        action="store_true",
+        default=False,
+    )
 
     # sort
     parser_sort_export = argparse.ArgumentParser(add_help=False)
@@ -103,9 +104,7 @@ def get_main_parser():
         description=info,
     )
 
-    parser_dl_docs.add_argument(
-        "output", help="Output directory", metavar="PATH", type=Path
-    )
+    parser_dl_docs.add_argument("output", help="Output directory", metavar="PATH", type=Path)
     parser_dl_docs.add_argument(
         "--format",
         help="available variables:\tiso_date, time, title, doc_num, subtitle, id",
@@ -126,9 +125,7 @@ def get_main_parser():
         default=8,
         type=int,
     )
-    parser_dl_docs.add_argument(
-        "--universal", help="Platform independent file names", action="store_true"
-    )
+    parser_dl_docs.add_argument("--universal", help="Platform independent file names", action="store_true")
     # portfolio
     info = "Show current portfolio"
     parser_portfolio = parser_cmd.add_parser(
@@ -138,9 +135,7 @@ def get_main_parser():
         help=info,
         description=info,
     )
-    parser_portfolio.add_argument(
-        "-o", "--output", help="Output path of CSV file", metavar="OUTPUT", type=Path
-    )
+    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
     # details
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
@@ -192,9 +187,7 @@ def get_main_parser():
         metavar="INPUT",
         type=Path,
     )
-    parser_export_transactions.add_argument(
-        "output", help="Output path of CSV file", metavar="OUTPUT", type=Path
-    )
+    parser_export_transactions.add_argument("output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
@@ -258,17 +251,25 @@ def main():
     log.debug("logging is set to debug")
 
     if args.command == "login":
-        login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
+        login(
+            phone_no=args.phone_no,
+            pin=args.pin,
+            web=not args.applogin,
+            store_credentials=args.store_credentials,
+        )
 
     elif args.command == "dl_docs":
         if args.last_days == 0:
             since_timestamp = 0
         else:
-            since_timestamp = (
-                datetime.now().astimezone() - timedelta(days=args.last_days)
-            ).timestamp()
+            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
             args.output,
             args.format,
             since_timestamp=since_timestamp,
@@ -281,15 +282,32 @@ def main():
         # TODO
         print("Not implemented yet")
     elif args.command == "get_price_alarms":
-        Alarms(login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)).get()
+        Alarms(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            )
+        ).get()
     elif args.command == "details":
         Details(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
             args.isin,
         ).get()
     elif args.command == "portfolio":
         p = Portfolio(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            )
         )
         p.get()
         if args.output is not None:

@@ -1,28 +1,27 @@
 import json
 import sys
-from pygments import highlight, lexers, formatters
 import time
 from getpass import getpass
 
-from pytr.api import TradeRepublicApi, CREDENTIALS_FILE
+from pygments import formatters, highlight, lexers
+
+from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
 from pytr.utils import get_logger
 
 
 def get_settings(tr):
     formatted_json = json.dumps(tr.settings(), indent=2)
     if sys.stdout.isatty():
-        colorful_json = highlight(
-            formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter()
-        )
+        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
         return colorful_json
     else:
         return formatted_json
 
 
-def login(phone_no=None, pin=None, web=True):
+def login(phone_no=None, pin=None, web=True, store_credentials=False):
     """
-    If web is true, use web login method as else simulate app login.
-    Check if credentials file exists else create it.
+    If web is true, use web login method, else simulate app login.
+    Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
     """
     log = get_logger(__name__)
@@ -41,9 +40,7 @@ def login(phone_no=None, pin=None, web=True):
         CREDENTIALS_FILE.parent.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             log.info("Credentials file not found")
-            print(
-                "Please enter your TradeRepublic phone number in the format +4912345678:"
-            )
+            print("Please enter your TradeRepublic phone number in the format +4912345678:")
             phone_no = input()
         else:
             log.info("Phone number provided as argument")
@@ -52,17 +49,13 @@ def login(phone_no=None, pin=None, web=True):
             print("Please enter your TradeRepublic pin:")
             pin = getpass(prompt="Pin (Input is hidden):")
 
-        print('Save credentials? Type "y" to save credentials:')
-        save = input()
-        if save == "y":
+        if store_credentials:
             with open(CREDENTIALS_FILE, "w") as f:
                 f.writelines([phone_no + "\n", pin + "\n"])
 
             log.info(f"Saved credentials in {CREDENTIALS_FILE}")
-
         else:
             save_cookies = False
-            log.info("Credentials not saved")
 
     tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies)
 
@@ -78,15 +71,13 @@ def login(phone_no=None, pin=None, web=True):
                 exit(1)
             request_time = time.time()
             print("Enter the code you received to your mobile app as a notification.")
-            print(
-                f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})"
-            )
+            print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
             code = input("Code: ")
             if code == "":
                 countdown = countdown - (time.time() - request_time)
                 for remaining in range(int(countdown)):
                     print(
-                        f"Need to wait {int(countdown-remaining)} seconds before requesting SMS...",
+                        f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
                         end="\r",
                     )
                     time.sleep(1)
