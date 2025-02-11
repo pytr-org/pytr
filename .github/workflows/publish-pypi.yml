@@ -23,6 +23,8 @@ jobs:
         run: uv run ruff check
       - name: Ruff format
         run: uv run ruff format --check --diff
+      - name: Check if README.md automatically generated content is up to date
+        run: diff -u -Z README.md <(uvx mksync@0.1.4 README.md)
 
   build-n-publish:
     name: Build and publish Python distributions to PyPI
