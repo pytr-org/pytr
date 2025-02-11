@@ -6,7 +6,7 @@ from .event_formatter import EventCsvFormatter
 from .utils import get_logger
 
 
-def export_transactions(input_path, output_path, lang="auto", sort=False):
+def export_transactions(input_path, output_path, lang="auto", sort=False, date_isoformat: bool = False):
     """
     Create a CSV with the deposits and removals ready for importing into Portfolio Performance
     The CSV headers for PP are language dependend
@@ -43,6 +43,8 @@ def export_transactions(input_path, output_path, lang="auto", sort=False):
     log.info("Write deposit entries")
 
     formatter = EventCsvFormatter(lang=lang)
+    if date_isoformat:
+        formatter.date_fmt = "ISO8601"
 
     events = map(lambda x: Event.from_dict(x), timeline)
     if sort:
