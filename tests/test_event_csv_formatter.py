@@ -36,7 +36,4 @@ def test_buy():
     csv_output = formatter.format(event)
 
     # Assert that the output is not an empty string
-    assert (
-        csv_output
-        == "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
-    )
+    assert csv_output == "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"

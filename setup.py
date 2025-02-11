@@ -8,9 +8,7 @@ class BuildWithCompile(build_py):
     def run(self):
         locale_dir = os.path.abspath("pytr/locale")
         if not os.path.exists(locale_dir):
-            raise FileNotFoundError(
-                f"The locale directory '{locale_dir}' does not exist."
-            )
+            raise FileNotFoundError(f"The locale directory '{locale_dir}' does not exist.")
         try:
             subprocess.check_call(["pybabel", "compile", "-d", locale_dir])
         except subprocess.CalledProcessError as e:

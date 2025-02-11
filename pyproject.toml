@@ -45,3 +45,15 @@ packages = ["pytr"]
 
 [tool.setuptools.package-data]
 pytr = ["pytr/locale/*/*/*.mo", "pytr/locale/*/*/*.po"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.4",
+    "pytest>=8.3.4",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"]

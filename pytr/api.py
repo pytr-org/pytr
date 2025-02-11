@@ -90,12 +90,8 @@ class TradeRepublicApi:
         self._locale = locale
         self._save_cookies = save_cookies
 
-        self._credentials_file = (
-            pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
-        )
-        self._cookies_file = (
-            pathlib.Path(cookies_file) if cookies_file else COOKIES_FILE
-        )
+        self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
+        self._cookies_file = pathlib.Path(cookies_file) if cookies_file else COOKIES_FILE
 
         if not (phone_no and pin):
             try:
@@ -104,9 +100,7 @@ class TradeRepublicApi:
                 self.phone_no = lines[0].strip()
                 self.pin = lines[1].strip()
             except FileNotFoundError:
-                raise ValueError(
-                    f"phone_no and pin must be specified explicitly or via {self._credentials_file}"
-                )
+                raise ValueError(f"phone_no and pin must be specified explicitly or via {self._credentials_file}")
         else:
             self.phone_no = phone_no
             self.pin = pin
@@ -222,9 +216,7 @@ class TradeRepublicApi:
         if not self._process_id and not self._websession:
             raise ValueError("Initiate web login first.")
 
-        r = self._websession.post(
-            f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}"
-        )
+        r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
         r.raise_for_status()
         self.save_websession()
         self._weblogin = True
@@ -261,9 +253,7 @@ class TradeRepublicApi:
             r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
             r.raise_for_status()
             self._web_session_token_expires_at = time.time() + 290
-        return self._websession.request(
-            method=method, url=f"{self._host}{url_path}", data=payload
-        )
+        return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
 
     async def _get_ws(self):
         if self._ws and self._ws.open:
@@ -292,9 +282,7 @@ class TradeRepublicApi:
             }
             connect_id = 31
 
-        self._ws = await websockets.connect(
-            "wss://api.traderepublic.com", ssl=ssl_context, extra_headers=extra_headers
-        )
+        self._ws = await websockets.connect("wss://api.traderepublic.com", ssl=ssl_context, extra_headers=extra_headers)
         await self._ws.send(f"connect {connect_id} {json.dumps(connection_message)}")
         response = await self._ws.recv()
 
@@ -345,9 +333,7 @@ class TradeRepublicApi:
 
             if subscription_id not in self.subscriptions:
                 if code != "C":
-                    self.log.debug(
-                        f"No active subscription for id {subscription_id}, dropping message"
-                    )
+                    self.log.debug(f"No active subscription for id {subscription_id}, dropping message")
                 continue
             subscription = self.subscriptions[subscription_id]
 
@@ -399,16 +385,12 @@ class TradeRepublicApi:
         subscription_id = await fut
 
         try:
-            return await asyncio.wait_for(
-                self._recv_subscription(subscription_id), timeout
-            )
+            return await asyncio.wait_for(self._recv_subscription(subscription_id), timeout)
         finally:
             await self.unsubscribe(subscription_id)
 
     def run_blocking(self, fut, timeout=5.0):
-        return asyncio.get_event_loop().run_until_complete(
-            self._receive_one(fut, timeout=timeout)
-        )
+        return asyncio.get_event_loop().run_until_complete(self._receive_one(fut, timeout=timeout))
 
     async def portfolio(self):
         return await self.subscribe({"type": "portfolio"})
@@ -432,17 +414,13 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "portfolioStatus"})
 
     async def portfolio_history(self, timeframe):
-        return await self.subscribe(
-            {"type": "portfolioAggregateHistory", "range": timeframe}
-        )
+        return await self.subscribe({"type": "portfolioAggregateHistory", "range": timeframe})
 
     async def instrument_details(self, isin):
         return await self.subscribe({"type": "instrument", "id": isin})
 
     async def instrument_suitability(self, isin):
-        return await self.subscribe(
-            {"type": "instrumentSuitability", "instrumentId": isin}
-        )
+        return await self.subscribe({"type": "instrumentSuitability", "instrumentId": isin})
 
     async def stock_details(self, isin):
         return await self.subscribe({"type": "stockDetails", "id": isin})
@@ -451,9 +429,7 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "addToWatchlist", "instrumentId": isin})
 
     async def remove_watchlist(self, isin):
-        return await self.subscribe(
-            {"type": "removeFromWatchlist", "instrumentId": isin}
-        )
+        return await self.subscribe({"type": "removeFromWatchlist", "instrumentId": isin})
 
     async def ticker(self, isin, exchange="LSX"):
         return await self.subscribe({"type": "ticker", "id": f"{isin}.{exchange}"})
@@ -461,9 +437,7 @@ class TradeRepublicApi:
     async def performance(self, isin, exchange="LSX"):
         return await self.subscribe({"type": "performance", "id": f"{isin}.{exchange}"})
 
-    async def performance_history(
-        self, isin, timeframe, exchange="LSX", resolution=None
-    ):
+    async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):
         parameters = {
             "type": "aggregateHistory",
             "id": f"{isin}.{exchange}",
@@ -492,9 +466,7 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "timelineDetail", "orderId": order_id})
 
     async def timeline_detail_savings_plan(self, savings_plan_id):
-        return await self.subscribe(
-            {"type": "timelineDetail", "savingsPlanId": savings_plan_id}
-        )
+        return await self.subscribe({"type": "timelineDetail", "savingsPlanId": savings_plan_id})
 
     async def timeline_transactions(self, after=None):
         return await self.subscribe({"type": "timelineTransactions", "after": after})
@@ -509,9 +481,7 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "neonSearchTags"})
 
     async def search_suggested_tags(self, query):
-        return await self.subscribe(
-            {"type": "neonSearchSuggestedTags", "data": {"q": query}}
-        )
+        return await self.subscribe({"type": "neonSearchSuggestedTags", "data": {"q": query}})
 
     async def search(
         self,
@@ -537,17 +507,11 @@ class TradeRepublicApi:
         if filter_index:
             search_parameters["filter"].append({"key": "index", "value": filter_index})
         if filter_country:
-            search_parameters["filter"].append(
-                {"key": "country", "value": filter_country}
-            )
+            search_parameters["filter"].append({"key": "country", "value": filter_country})
         if filter_region:
-            search_parameters["filter"].append(
-                {"key": "region", "value": filter_region}
-            )
+            search_parameters["filter"].append({"key": "region", "value": filter_region})
         if filter_sector:
-            search_parameters["filter"].append(
-                {"key": "sector", "value": filter_sector}
-            )
+            search_parameters["filter"].append({"key": "sector", "value": filter_sector})
 
         search_type = "neonSearch" if not aggregate else "neonSearchAggregations"
         return await self.subscribe({"type": search_type, "data": search_parameters})
@@ -741,17 +705,13 @@ class TradeRepublicApi:
         return await self.subscribe(parameters)
 
     async def cancel_savings_plan(self, savings_plan_id):
-        return await self.subscribe(
-            {"type": "cancelSavingsPlan", "id": savings_plan_id}
-        )
+        return await self.subscribe({"type": "cancelSavingsPlan", "id": savings_plan_id})
 
     async def price_alarm_overview(self):
         return await self.subscribe({"type": "priceAlarms"})
 
     async def create_price_alarm(self, isin, price):
-        return await self.subscribe(
-            {"type": "createPriceAlarm", "instrumentId": isin, "targetPrice": price}
-        )
+        return await self.subscribe({"type": "createPriceAlarm", "instrumentId": isin, "targetPrice": price})
 
     async def cancel_price_alarm(self, price_alarm_id):
         return await self.subscribe({"type": "cancelPriceAlarm", "id": price_alarm_id})
