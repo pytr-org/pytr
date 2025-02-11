@@ -86,7 +86,7 @@ class DL:
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def dl_doc(self, doc, titleText, subtitleText, subfolder=None):
+    def dl_doc(self, doc, titleText, subtitleText, subfolder=None, timestamp=None):
         """
         send asynchronous request, append future with filepath to self.futures
         """
@@ -98,8 +98,12 @@ class DL:
             date = doc["detail"]
             iso_date = "-".join(date.split(".")[::-1])
         except KeyError:
-            date = ""
-            iso_date = ""
+            if timestamp:
+                date = timestamp.strftime("%d.%m.%Y")
+                iso_date = timestamp.strftime("%Y-%m-%d")
+            else:
+                date = ""
+                iso_date = ""
         doc_id = doc["id"]
 
         # extract time from subtitleText

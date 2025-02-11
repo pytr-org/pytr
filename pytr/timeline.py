@@ -165,7 +165,8 @@ class Timeline:
                         "CREDIT",
                     ]:
                         title += f" - {event['subtitle']}"
-                    dl.dl_doc(doc, title, doc.get("detail"), subfolder)
+                    dl.dl_doc(doc, title, doc.get("detail"), subfolder,
+                              datetime.fromisoformat(event['timestamp']))
 
         if event["has_docs"]:
             self.events_with_docs.append(event)
