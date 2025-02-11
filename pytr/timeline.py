@@ -1,5 +1,10 @@
 import json
 from datetime import datetime
+from typing import cast
+
+import jsonpath
+
+from pytr._types import TimelineDetailV2, TimelineDetailV2_CustomerSupportChatAction
 
 from .transactions import export_transactions
 from .utils import get_logger
@@ -125,9 +130,15 @@ class Timeline:
         create other_events.json, events_with_documents.json and account_transactions.csv
         """
 
-        event = self.timeline_events.get(response["id"], None)
-        if event is None:
-            raise UnsupportedEventError(response["id"])
+        # Find the ID of the corresponding timeline event. This is burried deep in the last section of the
+        # response that contains the customer support information.
+        support_action = get_customer_support_chat_action(response)
+        if support_action:
+            timeline_event_id = support_action["payload"]["contextParams"]["timelineEventId"]
+        else:
+            timeline_event_id = response["id"]
+
+        event = self.timeline_events.get(timeline_event_id, None)
 
         self.received_detail += 1
         event["details"] = response
@@ -205,3 +216,18 @@ class Timeline:
         )
 
         dl.work_responses()
+
+
+def get_customer_support_chat_action(
+    timeline_detail: TimelineDetailV2,
+) -> TimelineDetailV2_CustomerSupportChatAction | None:
+    """
+    From a `timelineDetailV2` object, find the `customerSupportChat` object.
+    """
+
+    JSONPATH = '$.sections[*].data[?(@.detail.action.type == "customerSupportChat")].detail.action'
+
+    for action in jsonpath.finditer(JSONPATH, timeline_detail):
+        return cast(TimelineDetailV2_CustomerSupportChatAction, action.obj)
+
+    return None

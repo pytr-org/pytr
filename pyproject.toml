@@ -32,6 +32,7 @@ dependencies = [
     "shtab",
     "websockets>=14",
     "babel",
+    "python-jsonpath>=1.3.0",
 ]
 
 [project.scripts]

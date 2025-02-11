@@ -73,6 +73,8 @@ tr_event_type_mapping = {
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
+    # Gifting
+    "GIFTER_TRANSACTION": PPEventType.TRANSFER_OUT,
 }
 
 
