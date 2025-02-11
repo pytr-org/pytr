@@ -19,9 +19,7 @@ class Alarms:
                 recv += 1
                 self.alarms = response
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
             if recv == 1:
                 return
@@ -36,9 +34,7 @@ class Alarms:
                 recv += 1
                 self.alarms = response
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
             if recv == 1:
                 return
@@ -47,9 +43,7 @@ class Alarms:
         print("ISIN         status created  target  diff% createdAt        triggeredAT")
         self.log.debug(f"Processing {len(self.alarms)} alarms")
 
-        for a in (
-            self.alarms
-        ):  # sorted(positions, key=lambda x: x['netValue'], reverse=True):
+        for a in self.alarms:  # sorted(positions, key=lambda x: x['netValue'], reverse=True):
             self.log.debug(f"  Processing {a} alarm")
             ts = int(a["createdAt"]) / 1000.0
             target_price = float(a["targetPrice"])
@@ -59,9 +53,7 @@ class Alarms:
                 triggered = "-"
             else:
                 ts = int(a["triggeredAt"]) / 1000.0
-                triggered = datetime.fromtimestamp(ts).isoformat(
-                    sep=" ", timespec="minutes"
-                )
+                triggered = datetime.fromtimestamp(ts).isoformat(sep=" ", timespec="minutes")
 
             if a["createdPrice"] == 0:
                 diffP = 0.0

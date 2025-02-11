@@ -70,9 +70,7 @@ class FileDestinationProvider:
 
         for config_name in destinations:
             if config_name == DEFAULT_CONFIG:
-                self._default_file_config = DestinationConfig(
-                    DEFAULT_CONFIG, destinations[DEFAULT_CONFIG]["filename"]
-                )
+                self._default_file_config = DestinationConfig(DEFAULT_CONFIG, destinations[DEFAULT_CONFIG]["filename"])
             elif config_name == UNKNOWN_CONFIG:
                 self._unknown_file_config = DestinationConfig(
                     UNKNOWN_CONFIG,
@@ -86,9 +84,7 @@ class FileDestinationProvider:
                     destinations[MULTIPLE_MATCH_CONFIG]["path"],
                 )
             else:
-                patterns = self.__extract_pattern(
-                    destinations[config_name].get("pattern", None)
-                )
+                patterns = self.__extract_pattern(destinations[config_name].get("pattern", None))
                 for pattern in patterns:
                     self._destination_configs.append(
                         DestinationConfig(
@@ -119,30 +115,22 @@ class FileDestinationProvider:
         variables (dict): The variables->value dict to be used in the file path and file name format.
         """
 
-        doc = Pattern(
-            event_type, event_title, event_subtitle, section_title, document_title
-        )
+        doc = Pattern(event_type, event_title, event_subtitle, section_title, document_title)
 
         matching_configs = self._destination_configs.copy()
         # create a dictionary that maps the field names to their values in the pattern instance
-        pattern_dict = {
-            field.name: getattr(doc, field.name) for field in fields(Pattern)
-        }
+        pattern_dict = {field.name: getattr(doc, field.name) for field in fields(Pattern)}
 
         # iterate over the dictionary to filter the matching_configs list and update the variables dictionary
         for field_name, search_pattern in pattern_dict.items():
             if search_pattern is not None:
                 matching_configs = list(
                     filter(
-                        lambda config: self.__is_matching_config(
-                            config, field_name, search_pattern
-                        ),
+                        lambda config: self.__is_matching_config(config, field_name, search_pattern),
                         matching_configs,
                     )
                 )
-                variables[field_name] = search_pattern.translate(
-                    INVALID_CHARS_TRANSLATION_TABLE
-                ).strip()
+                variables[field_name] = search_pattern.translate(INVALID_CHARS_TRANSLATION_TABLE).strip()
 
         if len(matching_configs) == 0:
             self._log.debug(
@@ -159,9 +147,7 @@ class FileDestinationProvider:
         return self.__create_file_path(matching_configs[0], variables)
 
     @staticmethod
-    def __is_matching_config(
-        config: DestinationConfig, field_name: str, search_pattern: str
-    ) -> bool:
+    def __is_matching_config(config: DestinationConfig, field_name: str, search_pattern: str) -> bool:
         pattern = config.pattern
         return getattr(pattern, field_name, None) is None or re.fullmatch(
             getattr(pattern, field_name, None), search_pattern
@@ -199,22 +185,15 @@ class FileDestinationProvider:
         destinations = destination_config["destination"]
 
         # Check if default config is present
-        if (
-            DEFAULT_CONFIG not in destinations
-            or "filename" not in destinations[DEFAULT_CONFIG]
-        ):
-            raise ValueError(
-                "'default' config not found or filename is not present in 'default' config"
-            )
+        if DEFAULT_CONFIG not in destinations or "filename" not in destinations[DEFAULT_CONFIG]:
+            raise ValueError("'default' config not found or filename is not present in 'default' config")
 
         if (
             UNKNOWN_CONFIG not in destinations
             or "filename" not in destinations[UNKNOWN_CONFIG]
             or "path" not in destinations[UNKNOWN_CONFIG]
         ):
-            raise ValueError(
-                "'unknown' config not found or filename/path is not present in 'unknown' config"
-            )
+            raise ValueError("'unknown' config not found or filename/path is not present in 'unknown' config")
 
         if (
             MULTIPLE_MATCH_CONFIG not in destinations
@@ -226,13 +205,8 @@ class FileDestinationProvider:
             )
 
         for config_name in destinations:
-            if (
-                config_name != DEFAULT_CONFIG
-                and "path" not in destinations[config_name]
-            ):
-                raise ValueError(
-                    f"'{config_name}' has no path defined in destination config"
-                )
+            if config_name != DEFAULT_CONFIG and "path" not in destinations[config_name]:
+                raise ValueError(f"'{config_name}' has no path defined in destination config")
 
     def __create_default_config(self, config_file_path: Path):
         path = files(pytr.config).joinpath(TEMPLATE_FILE_NAME)

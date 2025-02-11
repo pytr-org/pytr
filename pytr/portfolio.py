@@ -34,9 +34,7 @@ class Portfolio:
             #     recv -= 1
             #     self.payoutCash = response
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
             await self.tr.unsubscribe(subscription_id)
 
@@ -58,18 +56,14 @@ class Portfolio:
                 pos["name"] = response["shortName"]
                 pos["exchangeIds"] = response["exchangeIds"]
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
         # Populate netValue for each ISIN
         subscriptions = {}
         for pos in sorted(positions, key=lambda x: x["netSize"], reverse=True):
             isin = pos["instrumentId"]
             if len(pos["exchangeIds"]) > 0:
-                subscription_id = await self.tr.ticker(
-                    isin, exchange=pos["exchangeIds"][0]
-                )
+                subscription_id = await self.tr.ticker(isin, exchange=pos["exchangeIds"][0])
                 subscriptions[subscription_id] = pos
             else:
                 pos["netValue"] = float(pos["averageBuyIn"]) * float(pos["netSize"])
@@ -81,13 +75,9 @@ class Portfolio:
                 await self.tr.unsubscribe(subscription_id)
                 pos = subscriptions[subscription_id]
                 subscriptions.pop(subscription_id, None)
-                pos["netValue"] = float(response["last"]["price"]) * float(
-                    pos["netSize"]
-                )
+                pos["netValue"] = float(response["last"]["price"]) * float(pos["netSize"])
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
     def portfolio_to_csv(self, output_path):
         positions = self.portfolio["positions"]
@@ -140,9 +130,7 @@ class Portfolio:
             diffP = 0.0
         else:
             diffP = ((totalNetValue / totalBuyCost) - 1) * 100
-        print(
-            f"Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%"
-        )
+        print(f"Depot {totalBuyCost:>43.2f} -> {totalNetValue:>10.2f} {diff:>10.2f} {diffP:>7.1f}%")
 
         cash = float(self.cash[0]["amount"])
         currency = self.cash[0]["currencyId"]
