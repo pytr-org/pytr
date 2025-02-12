@@ -261,10 +261,10 @@ def main():
     log.debug("logging is set to debug")
 
     # Compute the latest timestamp to get data for if last_days is specified
-    if args.last_days:
+    if hasattr(args, "last_days"):
         not_before = datetime.now().astimezone() - timedelta(days=args.last_days)
     else:
-        not_before = datetime.now().astimezone()
+        not_before = datetime.fromtimestamp(0)
 
     if args.command == "login":
         login(
