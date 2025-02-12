@@ -14,7 +14,7 @@ from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
 from pytr.portfolio import Portfolio
-from pytr.transactions import Transactions, export_transactions
+from pytr.transactions import TransactionsJsonExporter, export_transactions
 from pytr.utils import check_version, get_logger
 
 
@@ -325,7 +325,7 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == "transactions":
-        Transactions(
+        TransactionsJsonExporter(
             login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
             output_path=args.output,
             not_before=not_before,

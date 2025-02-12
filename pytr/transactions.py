@@ -63,7 +63,7 @@ def export_transactions(input_path, output_path, lang="auto", sort=False, date_i
     log.info("Deposit creation finished!")
 
 
-class Transactions:
+class TransactionsJsonExporter:
     def __init__(self, tr, output_path, not_before):
         self.tr = tr
         self.output_path = output_path
