@@ -1,4 +1,5 @@
 import json
+
 from pytr.event import Event, PPEventType
 
 

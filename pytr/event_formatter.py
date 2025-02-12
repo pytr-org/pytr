@@ -1,14 +1,20 @@
+from dataclasses import dataclass
+from typing import Literal
+
 from babel.numbers import format_decimal
 
-from .event import Event, PPEventType, ConditionalEventType
+from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation
 
 
+@dataclass
 class EventCsvFormatter:
-    def __init__(self, lang):
-        self.lang = lang
+    lang: str
+    csv_fmt: str = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
+    date_fmt: str | Literal["ISO8601"] = "%Y-%m-%d"
+
+    def __post_init__(self):
         self.translate = setup_translation(language=self.lang)
-        self.csv_fmt = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
 
     def format_header(self) -> str:
         """Outputs header line
@@ -53,32 +59,23 @@ class EventCsvFormatter:
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
-        kwargs["date"] = event.date.strftime("%Y-%m-%d")
+        if self.date_fmt == "ISO8601":
+            kwargs["date"] = event.date.isoformat()
+        else:
+            kwargs["date"] = event.date.strftime(self.date_fmt)
         if isinstance(event.event_type, PPEventType):
             kwargs["type"] = self.translate(event.event_type.value)
         if event.value is not None:
-            kwargs["value"] = format_decimal(
-                event.value, locale=self.lang, decimal_quantization=True
-            )
-        kwargs["note"] = (
-            self.translate(event.note) + " - " + event.title
-            if event.note is not None
-            else event.title
-        )
+            kwargs["value"] = format_decimal(event.value, locale=self.lang, decimal_quantization=True)
+        kwargs["note"] = self.translate(event.note) + " - " + event.title if event.note is not None else event.title
         if event.isin is not None:
             kwargs["isin"] = event.isin
         if event.shares is not None:
-            kwargs["shares"] = format_decimal(
-                event.shares, locale=self.lang, decimal_quantization=False
-            )
+            kwargs["shares"] = format_decimal(event.shares, locale=self.lang, decimal_quantization=False)
         if event.fees is not None:
-            kwargs["fees"] = format_decimal(
-                -event.fees, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["fees"] = format_decimal(-event.fees, locale=self.lang, decimal_quantization=True)
         if event.taxes is not None:
-            kwargs["taxes"] = format_decimal(
-                -event.taxes, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["taxes"] = format_decimal(-event.taxes, locale=self.lang, decimal_quantization=True)
         lines = self.csv_fmt.format(**kwargs)
 
         # Generate BUY and DEPOSIT events from SAVEBACK event
@@ -86,9 +83,7 @@ class EventCsvFormatter:
             kwargs["type"] = self.translate(PPEventType.BUY.value)
             lines = self.csv_fmt.format(**kwargs)
             kwargs["type"] = self.translate(PPEventType.DEPOSIT.value)
-            kwargs["value"] = format_decimal(
-                -event.value, locale=self.lang, decimal_quantization=True
-            )
+            kwargs["value"] = format_decimal(-event.value, locale=self.lang, decimal_quantization=True)
             kwargs["isin"] = ""
             kwargs["shares"] = ""
             lines += self.csv_fmt.format(**kwargs)

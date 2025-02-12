@@ -1,14 +1,13 @@
 import re
-
 from concurrent.futures import as_completed
 from pathlib import Path
-from requests_futures.sessions import FuturesSession
 
 from pathvalidate import sanitize_filepath
+from requests_futures.sessions import FuturesSession
 
-from pytr.utils import preview, get_logger
 from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline
+from pytr.timeline import Timeline, UnsupportedEventError
+from pytr.utils import get_logger, preview
 
 
 class DL:
@@ -37,9 +36,7 @@ class DL:
         self.universal_filepath = universal_filepath
         self.sort_export = sort_export
 
-        self.session = FuturesSession(
-            max_workers=max_workers, session=self.tr._websession
-        )
+        self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
         self.futures = []
 
         self.docs_request = 0
@@ -71,9 +68,7 @@ class DL:
             try:
                 _, subscription, response = await self.tr.recv()
             except TradeRepublicError as e:
-                self.log.error(
-                    f'Error response for subscription "{e.subscription}". Re-subscribing...'
-                )
+                self.log.error(f'Error response for subscription "{e.subscription}". Re-subscribing...')
                 await self.tr.subscribe(e.subscription)
                 continue
 
@@ -82,13 +77,16 @@ class DL:
             elif subscription.get("type", "") == "timelineActivityLog":
                 await self.tl.get_next_timeline_activity_log(response)
             elif subscription.get("type", "") == "timelineDetailV2":
-                await self.tl.process_timelineDetail(response, self)
+                try:
+                    self.tl.process_timelineDetail(response, self)
+                except UnsupportedEventError:
+                    self.log.warning("Ignoring unsupported event %s", response)
+                    self.tl.skipped_detail += 1
+                    self.tl.check_if_done(self)
             else:
-                self.log.warning(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def dl_doc(self, doc, titleText, subtitleText, subfolder=None):
+    def dl_doc(self, doc, titleText, subtitleText, subfolder=None, timestamp=None):
         """
         send asynchronous request, append future with filepath to self.futures
         """
@@ -100,8 +98,12 @@ class DL:
             date = doc["detail"]
             iso_date = "-".join(date.split(".")[::-1])
         except KeyError:
-            date = ""
-            iso_date = ""
+            if timestamp:
+                date = timestamp.strftime("%d.%m.%Y")
+                iso_date = timestamp.strftime("%Y-%m-%d")
+            else:
+                date = ""
+                iso_date = ""
         doc_id = doc["id"]
 
         # extract time from subtitleText
@@ -143,30 +145,22 @@ class DL:
 
         if doc_type in ["Kontoauszug", "Depotauszug"]:
             filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"
-            filepath_with_doc_id = (
-                directory / "Abschlüsse" / f"{filename_with_doc_id}" / f"{doc_type}.pdf"
-            )
+            filepath_with_doc_id = directory / "Abschlüsse" / f"{filename_with_doc_id}" / f"{doc_type}.pdf"
         else:
             filepath = directory / doc_type / f"{filename}.pdf"
             filepath_with_doc_id = directory / doc_type / f"{filename_with_doc_id}.pdf"
 
         if self.universal_filepath:
             filepath = sanitize_filepath(filepath, "_", "universal")
-            filepath_with_doc_id = sanitize_filepath(
-                filepath_with_doc_id, "_", "universal"
-            )
+            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "universal")
         else:
             filepath = sanitize_filepath(filepath, "_", "auto")
             filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "auto")
 
         if filepath in self.filepaths:
-            self.log.debug(
-                f"File {filepath} already in queue. Append document id {doc_id}..."
-            )
+            self.log.debug(f"File {filepath} already in queue. Append document id {doc_id}...")
             if filepath_with_doc_id in self.filepaths:
-                self.log.debug(
-                    f"File {filepath_with_doc_id} already in queue. Skipping..."
-                )
+                self.log.debug(f"File {filepath_with_doc_id} already in queue. Skipping...")
                 return
             else:
                 filepath = filepath_with_doc_id
@@ -217,9 +211,7 @@ class DL:
                     self.done += 1
                     history_file.write(f"{future.doc_url_base}\n")
 
-                    self.log.debug(
-                        f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}"
-                    )
+                    self.log.debug(f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}")
 
                 if self.done == len(self.doc_urls):
                     self.log.info("Done.")
