@@ -1,7 +1,8 @@
-import json
-from locale import getdefaultlocale
 import asyncio
+import json
 from datetime import datetime
+from locale import getdefaultlocale
+
 from pytr.utils import preview
 
 from .event import Event
@@ -86,18 +87,12 @@ class Transactions:
                 await self.tr.timeline_transactions(response["cursors"]["after"])
 
             else:
-                print(
-                    f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}"
-                )
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
     def output(self):
         # Need to loop over all transactions here since the
         # event loop might return older transactions, too
-        transactions = [
-            t
-            for t in self.transactions
-            if datetime.fromisoformat(t["timestamp"]) > self.not_before
-        ]
+        transactions = [t for t in self.transactions if datetime.fromisoformat(t["timestamp"]) > self.not_before]
 
         with open(self.output_path, mode="w", encoding="utf-8") as output_file:
             json.dump(transactions, output_file)

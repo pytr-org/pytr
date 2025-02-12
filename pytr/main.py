@@ -14,7 +14,7 @@ from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
 from pytr.portfolio import Portfolio
-from pytr.transactions import export_transactions, Transactions
+from pytr.transactions import Transactions, export_transactions
 from pytr.utils import check_version, get_logger
 
 
@@ -216,9 +216,7 @@ def get_main_parser():
         help=info,
         description=info,
     )
-    transactions.add_argument(
-        "output", help="Output path of JSON file", metavar="OUTPUT", type=Path
-    )
+    transactions.add_argument("output", help="Output path of JSON file", metavar="OUTPUT", type=Path)
     transactions.add_argument(
         "--last_days",
         help="Number of last days to include (use 0 get all days, defaults to 14)",
@@ -277,10 +275,6 @@ def main():
         )
 
     elif args.command == "dl_docs":
-        if args.last_days == 0:
-            since_timestamp = 0
-        else:
-            since_timestamp = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
         dl = DL(
             login(
                 phone_no=args.phone_no,
