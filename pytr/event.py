@@ -21,7 +21,7 @@ class PPEventType(Enum):
     DEPOSIT = "DEPOSIT"
     DIVIDEND = "DIVIDEND"
     FEES = "FEES"  # Currently not mapped to
-    FEES_REFUND = "FEES_REFUND"  # Currently not mapped to
+    FEES_REFUND = "FEES_REFUND"
     INTEREST = "INTEREST"
     INTEREST_CHARGE = "INTEREST_CHARGE"  # Currently not mapped to
     REMOVAL = "REMOVAL"
@@ -73,6 +73,8 @@ tr_event_type_mapping = {
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
+    # Fees refund
+    "card_tr_refund": PPEventType.FEES_REFUND,
 }
 
 
