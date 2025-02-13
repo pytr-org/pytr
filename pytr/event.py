@@ -73,7 +73,7 @@ tr_event_type_mapping = {
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
     # Fees refund
-    "card_tr_refund": PPEventType.FEES_REFUND,
+    "card_tr_refund": PPEventType.DEPOSIT,
 }
 
 
