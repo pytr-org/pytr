@@ -3,7 +3,7 @@ from concurrent.futures import as_completed
 from pathlib import Path
 
 from pathvalidate import sanitize_filepath
-from requests_futures.sessions import FuturesSession
+from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline, UnsupportedEventError
