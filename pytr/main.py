@@ -194,7 +194,12 @@ def get_main_parser():
         help='Two letter language code or "auto" for system language',
         default="auto",
     )
-    # account details
+    parser_export_transactions.add_argument(
+        "--date-isoformat",
+        help="Format the date column in ISO8601 including the time.",
+        action="store_true",
+    )
+    # accountdetails
     info = "Show account details"
     parser_accountdetails = parser_cmd.add_parser(
         "accountdetails",
@@ -204,9 +209,9 @@ def get_main_parser():
         description=info,
     )
     parser_accountdetails.add_argument(
-        "-j", "--jsonoutput", help="Output path of JSON file", metavar="OUTPUT", type=Path
+        "-j", "--jsonoutput", help="Output path of JSON file", metavar="OUTPUT", type=Pathmaster
     )
-
+    # completion
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
         "completion",
@@ -313,7 +318,7 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == "export_transactions":
-        export_transactions(args.input, args.output, args.lang, args.sort)
+        export_transactions(args.input, args.output, args.lang, args.sort, args.date_isoformat)
     elif args.version:
         installed_version = version("pytr")
         print(installed_version)

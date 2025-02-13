@@ -3,7 +3,7 @@
 import json
 import logging
 
-import coloredlogs
+import coloredlogs  # type: ignore[import-untyped]
 import requests
 from packaging import version
 
