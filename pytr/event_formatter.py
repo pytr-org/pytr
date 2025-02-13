@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Union
 
 from babel.numbers import format_decimal
 
@@ -11,7 +11,7 @@ from .translation import setup_translation
 class EventCsvFormatter:
     lang: str
     csv_fmt: str = "{date};{type};{value};{note};{isin};{shares};{fees};{taxes}\n"
-    date_fmt: str | Literal["ISO8601"] = "%Y-%m-%d"
+    date_fmt: Union[str, Literal["ISO8601"]] = "%Y-%m-%d"
 
     def __post_init__(self):
         self.translate = setup_translation(language=self.lang)
@@ -56,6 +56,7 @@ class EventCsvFormatter:
 
         # Handle TRADE_INVOICE
         if event.event_type == ConditionalEventType.TRADE_INVOICE:
+            assert event.value is not None, event
             event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
 
         # Apply special formatting to the attributes
@@ -80,6 +81,7 @@ class EventCsvFormatter:
 
         # Generate BUY and DEPOSIT events from SAVEBACK event
         if event.event_type == ConditionalEventType.SAVEBACK:
+            assert event.value is not None, event
             kwargs["type"] = self.translate(PPEventType.BUY.value)
             lines = self.csv_fmt.format(**kwargs)
             kwargs["type"] = self.translate(PPEventType.DEPOSIT.value)

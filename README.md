@@ -139,14 +139,24 @@ $ uv run pytest
 
 ### Linting and Code Formatting
 
-This project uses [Ruff](https://astral.sh/ruff) for code linting and auto-formatting. You can auto-format the code by running:
+This project uses [Ruff](https://astral.sh/ruff) for code linting and auto-formatting, as well as
+[Mypy](https://www.mypy-lang.org/) for type checking.
+
+You can auto-format the code with Ruff by running:
 
 ```bash
 uv run ruff format            # Format code
 uv run ruff check --fix-only  # Remove unneeded imports, order imports, etc.
 ```
 
-Ruff runs as part of CI and your Pull Request cannot be merged unless it satisfies the linting and formatting checks.
+You can check the typing of the code with Mypy by running:
+
+```bash
+uv run mypy .
+```
+
+Ruff and Mypy run as part of CI and your Pull Request cannot be merged unless it satisfies the linting, formatting
+checks and type checks.
 
 ### Release process
 
