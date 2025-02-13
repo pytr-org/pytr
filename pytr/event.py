@@ -46,6 +46,7 @@ tr_event_type_mapping = {
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": PPEventType.DEPOSIT,
     "card_refund": PPEventType.DEPOSIT,
     "card_successful_oct": PPEventType.DEPOSIT,
+    "card_tr_refund": PPEventType.DEPOSIT,
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
@@ -72,8 +73,6 @@ tr_event_type_mapping = {
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
-    # Fees refund
-    "card_tr_refund": PPEventType.DEPOSIT,
 }
 
 
