@@ -1,5 +1,6 @@
 import json
 from locale import getdefaultlocale
+from typing import Iterable
 
 from .event import Event
 from .event_formatter import EventCsvFormatter
@@ -46,10 +47,10 @@ def export_transactions(input_path, output_path, lang="auto", sort=False, date_i
     if date_isoformat:
         formatter.date_fmt = "ISO8601"
 
-    events = map(lambda x: Event.from_dict(x), timeline)
+    events: Iterable[Event] = map(lambda x: Event.from_dict(x), timeline)
     if sort:
         events = sorted(events, key=lambda x: x.date)
-    lines = map(lambda x: formatter.format(x), events)
+    lines: Iterable[str] = map(lambda x: formatter.format(x), events)
     lines = formatter.format_header() + "".join(lines)
 
     # Write transactions into csv file
