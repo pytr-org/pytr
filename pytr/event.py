@@ -25,7 +25,7 @@ class PPEventType(EventType):
     DEPOSIT = "DEPOSIT"
     DIVIDEND = "DIVIDEND"
     FEES = "FEES"  # Currently not mapped to
-    FEES_REFUND = "FEES_REFUND"
+    FEES_REFUND = "FEES_REFUND"  # Currently not mapped to
     INTEREST = "INTEREST"
     INTEREST_CHARGE = "INTEREST_CHARGE"  # Currently not mapped to
     REMOVAL = "REMOVAL"
