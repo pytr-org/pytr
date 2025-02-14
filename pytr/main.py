@@ -214,9 +214,9 @@ def get_main_parser():
         help="The output file format. [default: csv]",
     )
     parser_export_transactions.add_argument(
-        "--no-decimal-format",
+        "--no-decimal-localization",
         action="store_true",
-        help="Disable formatting of decimal values in the selected language.",
+        help="Disable localization of decimal values in the selected language.",
     )
 
     info = "Print shell tab completion"
@@ -329,7 +329,7 @@ def main():
         TransactionExporter(
             lang=args.lang,
             date_with_time=args.date_isoformat,
-            localized_decimal=not args.no_decimal_format,
+            localized_decimal=not args.no_decimal_localization,
         ).export(
             args.output,
             events,

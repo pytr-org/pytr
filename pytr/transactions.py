@@ -126,7 +126,7 @@ class TransactionExporter:
             "note": self._translate(event.note) + " - " + event.title if event.note is not None else event.title,
             "isin": event.isin,
             "shares": self._decimal_format(event.shares, False),
-            "fees": self._decimal_format(event.fees),
+            "fees": self._decimal_format(-event.fees) if event.fees is not None else None,
             "taxes": self._decimal_format(event.taxes),
         }
 

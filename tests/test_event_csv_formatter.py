@@ -21,12 +21,16 @@ def test_event_csv_formatter():
     # Assert that the output is not an empty string
     assert transactions == [
         {
-            "Date": "2024-09-10",
-            "Type": "Einlage",
-            "Value": "3.000",
+            "Datum": "2024-09-10T13:18:31",
+            "Gebühren": None,
+            "ISIN": None,
+            "Notiz": "Vorname Nachname",
+            "Steuern": None,
+            "Stück": None,
+            "Typ": "Einlage",
+            "Wert": 3000.0,
         }
     ]
-    # "2024-09-10;Einlage;3.000;Vorname Nachname;;;;\n"
 
 
 def test_buy():
@@ -41,8 +45,18 @@ def test_buy():
     formatter = TransactionExporter(lang="de")
 
     # Format the event to CSV
-    transactions = formatter.format(event)
+    transactions = list(formatter.from_event(event))
 
     # Assert that the output is not an empty string
-    assert transactions == [{}]
-    # "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
+    assert transactions == [
+        {
+            "Datum": "2024-02-20T16:32:07",
+            "Gebühren": -1.0,
+            "ISIN": "IE00B4K6B022",
+            "Notiz": "Euro Stoxx 50 EUR (Dist)",
+            "Steuern": None,
+            "Stück": 60.0,
+            "Typ": "Kauf",
+            "Wert": -3002.8,
+        }
+    ]
