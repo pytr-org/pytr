@@ -65,7 +65,7 @@ class Portfolio:
 
             if subscription["type"] == "ticker":
                 await self.tr.unsubscribe(subscription_id)
-                pos = subscriptions.pop(subscription_id, None)
+                pos = subscriptions.pop(subscription_id)
                 pos["netValue"] = float(response["last"]["price"]) * float(pos["netSize"])
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
