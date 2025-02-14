@@ -44,7 +44,7 @@ class Portfolio:
 
             if subscription["type"] == "instrument":
                 await self.tr.unsubscribe(subscription_id)
-                pos = subscriptions.pop(subscription_id, None)
+                pos = subscriptions.pop(subscription_id)
                 pos["name"] = response["shortName"]
                 pos["exchangeIds"] = response["exchangeIds"]
             else:
