@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import cast
+from typing import Optional, cast
 
 import jsonpath
 
@@ -220,7 +220,7 @@ class Timeline:
 
 def get_customer_support_chat_action(
     timeline_detail: TimelineDetailV2,
-) -> TimelineDetailV2_CustomerSupportChatAction | None:
+) -> Optional[TimelineDetailV2_CustomerSupportChatAction]:
     """
     From a `timelineDetailV2` object, find the `customerSupportChat` object.
     """

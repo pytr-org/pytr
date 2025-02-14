@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Literal, NotRequired, TypedDict
+from typing import Any, Literal, TypedDict
+
+from typing_extensions import NotRequired
 
 
 class TimelineDetailV2(TypedDict):
@@ -22,7 +24,6 @@ class TimelineDetailV2_CustomerSupportChatAction(TypedDict):
     type: Literal["customerSupportChat"]
     payload: TimelineDetailV2_CustomerSupportChatAction_Payload
     style: str
-    type: str
 
 
 class TimelineDetailV2_CustomerSupportChatAction_Payload(TypedDict):
