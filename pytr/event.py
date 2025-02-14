@@ -2,19 +2,23 @@ import re
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum, auto
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple
 
 from babel.numbers import NumberFormatError, parse_decimal
 
 
-class ConditionalEventType(Enum):
+class EventType(Enum):
+    pass
+
+
+class ConditionalEventType(EventType):
     """Events that conditionally map to None or one/multiple PPEventType events"""
 
     SAVEBACK = auto()
     TRADE_INVOICE = auto()
 
 
-class PPEventType(Enum):
+class PPEventType(EventType):
     """PP Event Types"""
 
     BUY = "BUY"
@@ -32,11 +36,6 @@ class PPEventType(Enum):
     TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
 
 
-class EventType(Enum):
-    PP_EVENT_TYPE = PPEventType
-    CONDITIONAL_EVENT_TYPE = ConditionalEventType
-
-
 tr_event_type_mapping = {
     # Deposits
     "INCOMING_TRANSFER": PPEventType.DEPOSIT,
@@ -45,8 +44,10 @@ tr_event_type_mapping = {
     "PAYMENT_INBOUND_APPLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_GOOGLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": PPEventType.DEPOSIT,
+    "PAYMENT_INBOUND_CREDIT_CARD": PPEventType.DEPOSIT,
     "card_refund": PPEventType.DEPOSIT,
     "card_successful_oct": PPEventType.DEPOSIT,
+    "card_tr_refund": PPEventType.DEPOSIT,
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
@@ -118,8 +119,8 @@ class Event:
 
     @classmethod
     def _parse_type_dependent_params(
-        cls, event_type: EventType, event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[Union[str, float]]]:
+        cls, event_type: Optional[EventType], event_dict: Dict[Any, Any]
+    ) -> Tuple[Optional[float], Optional[str], Optional[str], Optional[float], Optional[float]]:
         """Parses the fees, isin, note, shares and taxes fields
 
         Args:
@@ -144,6 +145,7 @@ class Event:
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
+            shares, fees = cls._parse_shares_and_fees(event_dict)
             note = cls._parse_card_note(event_dict)
 
         return fees, isin, note, shares, taxes
@@ -173,7 +175,7 @@ class Event:
         return isin
 
     @classmethod
-    def _parse_shares_and_fees(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float]]:
+    def _parse_shares_and_fees(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float], Optional[float]]:
         """Parses the amount of shares and the applicable fees
 
         Args:
@@ -190,9 +192,8 @@ class Event:
                 shares_dicts = list(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data))
                 fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
                 titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
-                locales = ["en" if e["title"] == "Aktien" else "de" for e in shares_dicts + fees_dicts]
-                for key, elem_dict, locale in zip(titles, shares_dicts + fees_dicts, locales):
-                    return_vals[key] = cls._parse_float_from_detail(elem_dict, locale)
+                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
+                    return_vals[key] = cls._parse_float_from_detail(elem_dict)
         return return_vals.get("shares"), return_vals.get("fees")
 
     @classmethod
@@ -217,9 +218,11 @@ class Event:
             taxes_dicts = filter(lambda x: x["title"] in taxes_keys, data)
             # Iterate over dicts containing tax information and parse each one
             for taxes_dict in taxes_dicts:
-                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, "de")
+                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict)
                 if parsed_taxes_val is not None:
                     return parsed_taxes_val
+
+        return None
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
@@ -233,22 +236,32 @@ class Event:
         """
         if event_dict.get("eventType", "").startswith("card_"):
             return event_dict["eventType"]
+        return None
 
     @staticmethod
-    def _parse_float_from_detail(elem_dict: Dict[str, Any], locale: str) -> Optional[float]:
+    def _parse_float_from_detail(elem_dict: Dict[str, Any]) -> Optional[float]:
         """Parses a "detail" dictionary potentially containing a float in a certain locale format
 
         Args:
             str (Dict[str, Any]): _description_
-            locale (str): _description_
 
         Returns:
             Optional[float]: parsed float value or None
         """
         unparsed_val = elem_dict.get("detail", {}).get("text", "")
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
+
+        # Try the locale that will fail more likely first.
+        if "." not in parsed_val:
+            locales = ("en", "de")
+        else:
+            locales = ("de", "en")
+
         try:
-            parsed_val = float(parse_decimal(parsed_val, locale))
+            result = float(parse_decimal(parsed_val, locales[0], strict=True))
         except NumberFormatError:
-            return None
-        return None if parsed_val == 0.0 else parsed_val
+            try:
+                result = float(parse_decimal(parsed_val, locales[1], strict=True))
+            except NumberFormatError:
+                return None
+        return None if result == 0.0 else result

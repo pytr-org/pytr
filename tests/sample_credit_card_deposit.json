@@ -1,0 +1,141 @@
+{
+    "id": "5b04b073-c06f-4ab1-bd01-de51b56162dc",
+    "timestamp": "2022-08-27T05:06:30.471+0000",
+    "title": "Einzahlung",
+    "icon": "logos/bank_mastercard/v2",
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+        "currency": "EUR",
+        "value": 1000.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "5b04b073-c06f-4ab1-bd01-de51b56162dc"
+    },
+    "eventType": "PAYMENT_INBOUND_CREDIT_CARD",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "5b04b073-c06f-4ab1-bd01-de51b56162dc",
+        "sections": [
+            {
+                "title": "Du hast 1.000,00 € über Kreditkarte hinzugefügt",
+                "data": {
+                    "icon": "logos/bank_mastercard/v2",
+                    "subtitleText": null,
+                    "timestamp": "2022-08-27T05:06:30.471+0000",
+                    "status": "executed"
+                },
+                "action": null,
+                "type": "header"
+            },
+            {
+                "title": "Übersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "detail": {
+                            "text": "Completed",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Zahlung",
+                        "detail": {
+                            "text": "·· 7431",
+                            "icon": "logos/bank_mastercard/v2",
+                            "type": "iconWithText"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            },
+            {
+                "title": "Transaktion",
+                "data": [
+                    {
+                        "title": "Gebühr",
+                        "detail": {
+                            "text": "7,00 €",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Betrag",
+                        "detail": {
+                            "text": "1.000,00 €",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Abrechnung Einzahlung",
+                        "detail": "27.08.2022",
+                        "action": {
+                            "type": "browserModal",
+                            "payload": "https://traderepublic-data-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2022/8/27/51850145/pb16615767906502642694118463234.pdf?REDACTED"
+                        },
+                        "id": "4f6f159f-08f1-4573-9b69-2418d57ca37a",
+                        "postboxType": "PAYMENT_INBOUND_INVOICE",
+                        "local_filepath": "out/Abrechnung Einzahlung/2022-08-27 Abrechnung Einzahlung - Einzahlung.pdf"
+                    }
+                ],
+                "action": null,
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "type": "customerSupportChat",
+                                "payload": {
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0024_deposit_report_an_issue",
+                                        "timelineEventId": "5b04b073-c06f-4ab1-bd01-de51b56162dc",
+                                        "createdAt": "2022-08-27T05:06:30.505105Z",
+                                        "amount": "1000.000000"
+                                    },
+                                    "contextCategory": "NHC"
+                                }
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            }
+        ]
+    },
+    "has_docs": true
+}
