@@ -27,6 +27,15 @@ def test_event_float_from_detail():
 
     test(
         {
+            "title": "Anteile",
+            "detail": {"text": "1,875", "trend": None, "action": None, "type": "text"},
+            "style": "plain",
+        },
+        1.875,
+    )
+
+    test(
+        {
             "title": "Aktien",
             "detail": {
                 "text": "14.000000",
