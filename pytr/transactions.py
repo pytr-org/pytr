@@ -84,6 +84,8 @@ class TransactionsJsonExporter:
                 t = self.transactions[-1]
                 if datetime.fromisoformat(t["timestamp"]) < self.not_before:
                     return
+                if not response["cursors"]["after"]:
+                    break
 
                 await self.tr.timeline_transactions(response["cursors"]["after"])
 
