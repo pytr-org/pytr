@@ -44,8 +44,10 @@ tr_event_type_mapping = {
     "PAYMENT_INBOUND_APPLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_GOOGLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": PPEventType.DEPOSIT,
+    "PAYMENT_INBOUND_CREDIT_CARD": PPEventType.DEPOSIT,
     "card_refund": PPEventType.DEPOSIT,
     "card_successful_oct": PPEventType.DEPOSIT,
+    "card_tr_refund": PPEventType.DEPOSIT,
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
@@ -141,6 +143,7 @@ class Event:
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
+            shares, fees = cls._parse_shares_and_fees(event_dict)
             note = cls._parse_card_note(event_dict)
 
         return fees, isin, note, shares, taxes
