@@ -1,60 +1,172 @@
+import csv
 import json
+from dataclasses import dataclass
 from locale import getdefaultlocale
-from typing import Iterable
+from typing import Any, Iterable, Literal, Optional, TextIO, TypedDict, Union
 
-from .event import Event
-from .event_formatter import EventCsvFormatter
+from babel.numbers import format_decimal
+
+from .event import ConditionalEventType, Event, PPEventType
+from .translation import setup_translation
 from .utils import get_logger
 
+SUPPORTED_LANGUAGES = {
+    "cs",
+    "da",
+    "de",
+    "en",
+    "es",
+    "fr",
+    "it",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "zh",
+}
 
-def export_transactions(input_path, output_path, lang="auto", sort=False, date_isoformat: bool = False):
+CSVCOLUMN_TO_TRANSLATION_KEY = {
+    "date": "CSVColumn_Date",
+    "type": "CSVColumn_Type",
+    "value": "CSVColumn_Value",
+    "note": "CSVColumn_Note",
+    "isin": "CSVColumn_ISIN",
+    "shares": "CSVColumn_Shares",
+    "fees": "CSVColumn_Fees",
+    "taxes": "CSVColumn_Taxes",
+}
+
+
+class _SimpleTransaction(TypedDict):
+    date: str
+    type: Union[str, None]
+    value: Union[str, float, None]
+    note: Union[str, float, None]
+    isin: Union[str, float, None]
+    shares: Union[str, float, None]
+    fees: Union[str, float, None]
+    taxes: Union[str, float, None]
+
+
+@dataclass
+class TransactionExporter:
     """
-    Create a CSV with the deposits and removals ready for importing into Portfolio Performance
-    The CSV headers for PP are language dependend
+    A helper class to convert Trade Republic events each to one or more line items that are a simplified representation
+    useful for a importing for example into a portfolio manager.
     """
-    log = get_logger(__name__)
-    if lang == "auto":
-        locale = getdefaultlocale()[0]
-        if locale is None:
-            lang = "en"
+
+    lang: str = "en"
+    """ The language for the CSV header / JSON keys. """
+
+    date_with_time: bool = True
+    """ Include the timestamp in ISO8601 format in the date field. """
+
+    localized_decimal: bool = False
+    """ Whether to localize the decimal format. If enabled, decimal fields will be string values. """
+
+    def __post_init__(self):
+        self._log = get_logger(__name__)
+
+        if self.lang == "auto":
+            locale = getdefaultlocale()[0]
+            if locale is None:
+                self.lang = "en"
+            else:
+                self.lang = locale.split("_")[0]
+
+        if self.lang not in SUPPORTED_LANGUAGES:
+            self._log.info(f'Language not yet supported "{self.lang}", defaulting to "en"')
+            self.lang = "en"
+
+        self._translate = setup_translation(language=self.lang)
+
+    def _decimal_format(self, value: Optional[float], quantization: bool = True) -> Union[str, float, None]:
+        if value is None:
+            return None
+        return (
+            format_decimal(value, locale=self.lang, decimal_quantization=quantization)
+            if self.localized_decimal
+            else value
+        )
+
+    def _localize_keys(self, txn: _SimpleTransaction) -> dict[str, Any]:
+        if self.lang is None:
+            return
+        return {self._translate(value): txn[key] for key, value in CSVCOLUMN_TO_TRANSLATION_KEY.items()}  # type: ignore[literal-required]
+
+    def fields(self) -> list[str]:
+        return [self._translate(value) for key, value in CSVCOLUMN_TO_TRANSLATION_KEY.items()]
+
+    def from_event(self, event: Event) -> Iterable[dict[str, Any]]:
+        """
+        Given an event, produces one or more JSON objects representing a transaction. The returned object contains
+        the given fields, localized in the selected language.
+
+        - `date`
+        - `type`
+        - `value`
+        - `note`
+        - `isin`
+        - `shares`
+        - `fees`
+        - `taxes`
+        """
+
+        if event.event_type is None:
+            return
+
+        if event.event_type == ConditionalEventType.TRADE_INVOICE:
+            assert event.value is not None, event
+            event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
+
+        kwargs: _SimpleTransaction = {
+            "date": event.date.isoformat() if self.date_with_time else event.date.date().isoformat(),
+            "type": self._translate(event.event_type.value) if isinstance(event.event_type, PPEventType) else None,
+            "value": self._decimal_format(event.value),
+            "note": self._translate(event.note) + " - " + event.title if event.note is not None else event.title,
+            "isin": event.isin,
+            "shares": self._decimal_format(event.shares, False),
+            "fees": self._decimal_format(event.fees),
+            "taxes": self._decimal_format(event.taxes),
+        }
+
+        # Special case for saveback events. Example payload: https://github.com/pytr-org/pytr/issues/116#issuecomment-2377491990
+        # With saveback, a small amount already invested into a savings plans is invested again, effectively representing
+        # a deposit (you get money from Trade Republic) and then a buy of the related asset.
+        if event.event_type == ConditionalEventType.SAVEBACK:
+            assert event.value is not None, event
+            kwargs["type"] = self._translate(PPEventType.BUY.value)
+            yield self._localize_keys(kwargs)
+
+            kwargs = kwargs.copy()
+            kwargs["type"] = self._translate(PPEventType.DEPOSIT.value)
+            kwargs["value"] = self._decimal_format(-event.value)
+            kwargs["isin"] = None
+            kwargs["shares"] = None
+            yield self._localize_keys(kwargs)
         else:
-            lang = locale.split("_")[0]
+            yield self._localize_keys(kwargs)
 
-    if lang not in [
-        "cs",
-        "da",
-        "de",
-        "en",
-        "es",
-        "fr",
-        "it",
-        "nl",
-        "pl",
-        "pt",
-        "ru",
-        "zh",
-    ]:
-        log.info(f"Language not yet supported {lang}")
-        lang = "en"
+    def export(
+        self,
+        fp: TextIO,
+        events: Iterable[Event],
+        sort: bool = False,
+        format: Literal["json", "csv"] = "csv",
+    ) -> None:
+        self._log.info("Exporting transactions ...")
+        if sort:
+            events = sorted(events, key=lambda ev: ev.date)
 
-    # Read relevant deposit timeline entries
-    with open(input_path, encoding="utf-8") as f:
-        timeline = json.load(f)
+        transactions = (txn for event in events for txn in self.from_event(event))
 
-    log.info("Write deposit entries")
+        if format == "csv":
+            writer = csv.DictWriter(fp, fieldnames=self.fields())
+            writer.writeheader()
+            writer.writerows(transactions)
+        elif format == "json":
+            for txn in transactions:
+                fp.write(json.dumps(txn))
+                fp.write("\n")
 
-    formatter = EventCsvFormatter(lang=lang)
-    if date_isoformat:
-        formatter.date_fmt = "ISO8601"
-
-    events: Iterable[Event] = map(lambda x: Event.from_dict(x), timeline)
-    if sort:
-        events = sorted(events, key=lambda x: x.date)
-    lines: Iterable[str] = map(lambda x: formatter.format(x), events)
-    lines = formatter.format_header() + "".join(lines)
-
-    # Write transactions into csv file
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(lines)
-
-    log.info("Deposit creation finished!")
+        self._log.info("Transactions exported.")

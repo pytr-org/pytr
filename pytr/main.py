@@ -2,6 +2,7 @@
 
 import argparse
 import asyncio
+import json
 import signal
 from datetime import datetime, timedelta
 from importlib.metadata import version
@@ -13,8 +14,9 @@ from pytr.account import login
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
+from pytr.event import Event
 from pytr.portfolio import Portfolio
-from pytr.transactions import export_transactions
+from pytr.transactions import TransactionExporter
 from pytr.utils import check_version, get_logger
 
 
@@ -184,9 +186,16 @@ def get_main_parser():
         "input",
         help="Input path to JSON (use other_events.json from dl_docs)",
         metavar="INPUT",
-        type=Path,
+        type=argparse.FileType("r"),
     )
-    parser_export_transactions.add_argument("output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_export_transactions.add_argument(
+        "output",
+        help="Output path of CSV file",
+        metavar="OUTPUT",
+        type=argparse.FileType("w"),
+        default="-",
+        nargs="?",
+    )
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
@@ -197,6 +206,17 @@ def get_main_parser():
         "--date-isoformat",
         help="Format the date column in ISO8601 including the time.",
         action="store_true",
+    )
+    parser_export_transactions.add_argument(
+        "--format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format. [default: csv]",
+    )
+    parser_export_transactions.add_argument(
+        "--no-decimal-format",
+        action="store_true",
+        help="Disable formatting of decimal values in the selected language.",
     )
 
     info = "Print shell tab completion"
@@ -305,7 +325,16 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == "export_transactions":
-        export_transactions(args.input, args.output, args.lang, args.sort, args.date_isoformat)
+        events = [Event.from_dict(item) for item in json.load(args.input)]
+        TransactionExporter(
+            lang=args.lang,
+            date_with_time=args.date_isoformat,
+            localized_decimal=not args.no_decimal_format,
+        ).export(
+            args.output,
+            events,
+            sort=args.sort,
+        )
     elif args.version:
         installed_version = version("pytr")
         print(installed_version)
