@@ -64,6 +64,8 @@ class TransactionExporter:
     localized_decimal: bool = False
     """ Whether to localize the decimal format. If enabled, decimal fields will be string values. """
 
+    csv_delimiter: str = ";"
+
     def __post_init__(self):
         self._log = get_logger(__name__)
 
@@ -161,7 +163,7 @@ class TransactionExporter:
         transactions = (txn for event in events for txn in self.from_event(event))
 
         if format == "csv":
-            writer = csv.DictWriter(fp, fieldnames=self.fields())
+            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=";")
             writer.writeheader()
             writer.writerows(transactions)
         elif format == "json":
