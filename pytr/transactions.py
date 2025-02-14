@@ -1,6 +1,10 @@
+import asyncio
 import json
+from datetime import datetime
 from locale import getdefaultlocale
 from typing import Iterable
+
+from pytr.utils import preview
 
 from .event import Event
 from .event_formatter import EventCsvFormatter
@@ -58,3 +62,44 @@ def export_transactions(input_path, output_path, lang="auto", sort=False, date_i
         f.write(lines)
 
     log.info("Deposit creation finished!")
+
+
+class TransactionsJsonExporter:
+    def __init__(self, tr, output_path, not_before):
+        self.tr = tr
+        self.output_path = output_path
+        self.not_before = not_before
+        self.transactions = []
+
+    async def loop(self):
+        await self.tr.timeline_transactions()
+        while True:
+            _subscription_id, subscription, response = await self.tr.recv()
+
+            if subscription["type"] == "timelineTransactions":
+                self.transactions.extend(response["items"])
+
+                # Transactions in the response are ordered from newest to oldest
+                # If the oldest (= last) transaction is older than what we want, exit the loop
+                t = self.transactions[-1]
+                if datetime.fromisoformat(t["timestamp"]) < self.not_before:
+                    return
+                if not response["cursors"]["after"]:
+                    break
+
+                await self.tr.timeline_transactions(response["cursors"]["after"])
+
+            else:
+                print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+
+    def output(self):
+        # Need to loop over all transactions here since the
+        # event loop might return older transactions, too
+        transactions = [t for t in self.transactions if datetime.fromisoformat(t["timestamp"]) > self.not_before]
+
+        with open(self.output_path, mode="w", encoding="utf-8") as output_file:
+            json.dump(transactions, output_file)
+
+    def get(self):
+        asyncio.get_event_loop().run_until_complete(self.loop())
+        self.output()
