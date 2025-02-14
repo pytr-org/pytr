@@ -34,6 +34,7 @@ class PPEventType(EventType):
     TAX_REFUND = "TAX_REFUND"
     TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
     TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
+    OTHER = "OTHER"  # Events that have no impact on the account balance.
 
 
 tr_event_type_mapping = {
@@ -76,6 +77,8 @@ tr_event_type_mapping = {
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
     # Gifting
     "GIFTER_TRANSACTION": PPEventType.TRANSFER_OUT,
+    # Other
+    "card_successful_verification": PPEventType.OTHER,
 }
 
 

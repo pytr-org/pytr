@@ -132,11 +132,6 @@ class Timeline:
         if support_action and (timeline_event_id := support_action["payload"]["contextParams"].get("timelineEventId")):
             pass
         else:
-            if support_action:
-                # DEBUG
-                self.log.warning(
-                    "This event has no timelineEventId in the customerSupportChat action: %s", json.dumps(response)
-                )
             timeline_event_id = response["id"]
 
         event = self.timeline_events.get(timeline_event_id, None)
