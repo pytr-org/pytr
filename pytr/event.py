@@ -6,6 +6,8 @@ from typing import Any, Dict, Optional, Tuple
 
 from babel.numbers import NumberFormatError, parse_decimal
 
+from pytr.utils import get_logger
+
 
 class EventType(Enum):
     pass
@@ -51,8 +53,6 @@ tr_event_type_mapping = {
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     "ssp_corporate_action_invoice_cash": PPEventType.DIVIDEND,
-    # Failed card transactions
-    "card_failed_transaction": PPEventType.REMOVAL,
     # Interests
     "INTEREST_PAYOUT": PPEventType.INTEREST,
     "INTEREST_PAYOUT_CREATED": PPEventType.INTEREST,
@@ -60,6 +60,7 @@ tr_event_type_mapping = {
     "OUTGOING_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER_DELEGATION": PPEventType.REMOVAL,
     "PAYMENT_OUTBOUND": PPEventType.REMOVAL,
+    "card_failed_transaction": PPEventType.REMOVAL,
     "card_order_billed": PPEventType.REMOVAL,
     "card_successful_atm_withdrawal": PPEventType.REMOVAL,
     "card_successful_transaction": PPEventType.REMOVAL,
@@ -72,9 +73,36 @@ tr_event_type_mapping = {
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
+    "trading_savingsplan_executed": ConditionalEventType.TRADE_INVOICE,
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
+    "TRADE_CORRECTED": ConditionalEventType.TRADE_INVOICE,
 }
+
+log = get_logger(__name__)
+
+events_known_ignored = [
+    "CUSTOMER_CREATED",
+    "DEVICE_RESET",
+    "DOCUMENTS_ACCEPTED",
+    "DOCUMENTS_CREATED",
+    "EMAIL_VALIDATED",
+    "ORDER_CANCELED",
+    "ORDER_CREATED",
+    "ORDER_EXPIRED",
+    "ORDER_REJECTED",
+    "PUK_CREATED",
+    "REFERENCE_ACCOUNT_CHANGED",
+    "SECURITIES_ACCOUNT_CREATED",
+    "VERIFICATION_TRANSFER_ACCEPTED",
+    "card_failed_verification",
+    "card_successful_verification",
+    "current_account_activated",
+    "new_tr_iban",
+    "ssp_corporate_action_informative_notification",
+    "ssp_corporate_action_invoice_shares",
+    "ssp_dividend_option_customer_instruction",
+]
 
 
 @dataclass
@@ -110,9 +138,14 @@ class Event:
 
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
-        event_type: Optional[EventType] = tr_event_type_mapping.get(event_dict.get("eventType", ""), None)
-        if event_dict.get("status", "").lower() == "canceled":
-            event_type = None
+        eventTypeStr = event_dict.get("eventType", "")
+        event_type: Optional[EventType] = tr_event_type_mapping.get(eventTypeStr, None)
+        if event_type is not None:
+            if event_dict.get("status", "").lower() == "canceled":
+                event_type = None
+        else:
+            if eventTypeStr not in events_known_ignored:
+                log.warning(f"Ignoring event {eventTypeStr}")
         return event_type
 
     @classmethod
@@ -247,13 +280,12 @@ class Event:
             Optional[float]: parsed float value or None
         """
         unparsed_val = elem_dict.get("detail", {}).get("text", "")
+        if unparsed_val == "":
+            return None
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
 
-        # Try the locale that will fail more likely first.
-        if "." not in parsed_val:
-            locales = ("en", "de")
-        else:
-            locales = ("de", "en")
+        # Prefer german locale.
+        locales = ("de", "en")
 
         try:
             result = float(parse_decimal(parsed_val, locales[0], strict=True))
