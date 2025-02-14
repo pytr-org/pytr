@@ -201,24 +201,27 @@ def get_main_parser():
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
-        help='Two letter language code or "auto" for system language',
+        help='Two letter language code or "auto" for system language.',
+        choices=["auto", *sorted(SUPPORTED_LANGUAGES)],
         default="auto",
     )
     parser_export_transactions.add_argument(
-        "--date-isoformat",
-        help="Format the date column in ISO8601 including the time.",
-        action="store_true",
+        "--date-with-time",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Whether to include the timestamp in the date column.",
+    )
+    parser_export_transactions.add_argument(
+        "--decimal-localization",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Whether to localize decimal numbers.",
     )
     parser_export_transactions.add_argument(
         "--format",
         choices=("json", "csv"),
         default="csv",
-        help="The output file format. [default: csv]",
-    )
-    parser_export_transactions.add_argument(
-        "--no-decimal-localization",
-        action="store_true",
-        help="Disable localization of decimal values in the selected language.",
+        help="The output file format.",
     )
 
     info = "Print shell tab completion"
@@ -330,8 +333,8 @@ def main():
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(
             lang=args.lang,
-            date_with_time=args.date_isoformat,
-            localized_decimal=not args.no_decimal_localization,
+            date_with_time=args.date_with_time,
+            decimal_localization=args.decimal_localization,
         ).export(
             fp=args.output,
             events=events,

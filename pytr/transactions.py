@@ -61,7 +61,7 @@ class TransactionExporter:
     date_with_time: bool = True
     """ Include the timestamp in ISO8601 format in the date field. """
 
-    localized_decimal: bool = False
+    decimal_localization: bool = False
     """ Whether to localize the decimal format. If enabled, decimal fields will be string values. """
 
     csv_delimiter: str = ";"
@@ -87,7 +87,7 @@ class TransactionExporter:
             return None
         return (
             format_decimal(value, locale=self.lang, decimal_quantization=quantization)
-            if self.localized_decimal
+            if self.decimal_localization
             else value
         )
 
