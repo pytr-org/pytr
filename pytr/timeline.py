@@ -40,7 +40,7 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
+                    or datetime.fromisoformat(event["timestamp"]).timestamp() >= self.max_age_timestamp
                 ):
                     event["source"] = "timelineTransaction"
                     self.timeline_events[event["id"]] = event
@@ -129,9 +129,14 @@ class Timeline:
         # Find the ID of the corresponding timeline event. This is burried deep in the last section of the
         # response that contains the customer support information.
         support_action = get_customer_support_chat_action(response)
-        if support_action:
-            timeline_event_id = support_action["payload"]["contextParams"]["timelineEventId"]
+        if support_action and (timeline_event_id := support_action["payload"]["contextParams"].get("timelineEventId")):
+            pass
         else:
+            if support_action:
+                # DEBUG
+                self.log.warning(
+                    "This event has no timelineEventId in the customerSupportChat action: %s", json.dumps(response)
+                )
             timeline_event_id = response["id"]
 
         event = self.timeline_events.get(timeline_event_id, None)

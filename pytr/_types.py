@@ -33,7 +33,7 @@ class TimelineDetailV2_CustomerSupportChatAction_Payload(TypedDict):
 
 class TimelineDetailV2_CustomerSupportChatAction_ContextParamms(TypedDict):
     chat_flow_key: str
-    timelineEventId: str
+    timelineEventId: NotRequired[str]
     savingsPlanId: NotRequired[str]
     primId: NotRequired[str]
     groupId: NotRequired[str]
