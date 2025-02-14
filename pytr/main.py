@@ -331,9 +331,10 @@ def main():
             date_with_time=args.date_isoformat,
             localized_decimal=not args.no_decimal_localization,
         ).export(
-            args.output,
-            events,
+            fp=args.output,
+            events=events,
             sort=args.sort,
+            format=args.format,
         )
     elif args.version:
         installed_version = version("pytr")
