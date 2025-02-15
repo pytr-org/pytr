@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import signal
+import json 
 from datetime import datetime, timedelta
 from importlib.metadata import version
 from pathlib import Path
@@ -12,7 +13,6 @@ import shtab
 from pytr.account import login
 from pytr.alarms import Alarms
 from pytr.details import Details
-from pytr.accountdetails import Accountdetails
 from pytr.dl import DL
 from pytr.portfolio import Portfolio
 from pytr.transactions import export_transactions
@@ -209,7 +209,12 @@ def get_main_parser():
         description=info,
     )
     parser_accountdetails.add_argument(
-        "-j", "--jsonoutput", help="Output path of JSON file", metavar="OUTPUT", type=Pathmaster
+        "-o",
+        "--outfile",
+        help='Output path of JSON file. [default: "-" (stdout)]',
+        metavar="PATH",
+        type=argparse.FileType("w"),
+        default="-",
     )
     # completion
     info = "Print shell tab completion"
@@ -324,12 +329,9 @@ def main():
         print(installed_version)
         check_version(installed_version)
     elif args.command == "accountdetails":
-        ad = Accountdetails(
-            login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin),
-        )
-        ad.get()
-        if args.jsonoutput is not None:
-            ad.data_to_file(args.jsonoutput)
+        tr = login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
+        account_details = tr.get_account_details()
+        args.jsonoutput.write(json.dumps(account_details))
     else:
         parser.print_help()
 
