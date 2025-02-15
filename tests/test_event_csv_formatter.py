@@ -38,3 +38,14 @@ def test_buy():
 
     # Assert that the output is not an empty string
     assert csv_output == "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
+
+
+def test_credit_card_deposit() -> None:
+    with open("tests/sample_credit_card_deposit.json") as file:
+        sample_data = json.load(file)
+
+    event = Event.from_dict(sample_data)
+    formatter = EventCsvFormatter(lang="en")
+    csv_output = formatter.format(event)
+
+    assert csv_output == "2022-08-27;Deposit;1,000;Einzahlung;;;-7;\n"
