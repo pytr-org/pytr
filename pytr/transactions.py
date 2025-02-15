@@ -163,7 +163,7 @@ class TransactionExporter:
         transactions = (txn for event in events for txn in self.from_event(event))
 
         if format == "csv":
-            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=";")
+            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=self.csv_delimiter)
             writer.writeheader()
             writer.writerows(transactions)
         elif format == "json":
