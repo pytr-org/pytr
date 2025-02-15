@@ -1,12 +1,13 @@
 import json
 from datetime import datetime
+from typing import Optional, cast
+
+import jsonpath
+
+from pytr.types import TimelineDetailV2, TimelineDetailV2_CustomerSupportChatAction
 
 from .transactions import export_transactions
 from .utils import get_logger
-
-
-class UnsupportedEventError(Exception):
-    pass
 
 
 class Timeline:
@@ -39,7 +40,7 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
+                    or datetime.fromisoformat(event["timestamp"]).timestamp() >= self.max_age_timestamp
                 ):
                     event["source"] = "timelineTransaction"
                     self.timeline_events[event["id"]] = event
@@ -125,9 +126,19 @@ class Timeline:
         create other_events.json, events_with_documents.json and account_transactions.csv
         """
 
-        event = self.timeline_events.get(response["id"], None)
+        # Find the ID of the corresponding timeline event. This is burried deep in the last section of the
+        # response that contains the customer support information.
+        support_action = get_customer_support_chat_action(response)
+        if support_action and (timeline_event_id := support_action["payload"]["contextParams"].get("timelineEventId")):
+            pass
+        else:
+            timeline_event_id = response["id"]
+
+        event = self.timeline_events.get(timeline_event_id, None)
         if event is None:
-            raise UnsupportedEventError(response["id"])
+            self.log.warning("Missing timeline event %r for detail: %s", timeline_event_id, json.dumps(response))
+            self.skipped_detail += 1
+            return
 
         self.received_detail += 1
         event["details"] = response
@@ -205,3 +216,18 @@ class Timeline:
         )
 
         dl.work_responses()
+
+
+def get_customer_support_chat_action(
+    timeline_detail: TimelineDetailV2,
+) -> Optional[TimelineDetailV2_CustomerSupportChatAction]:
+    """
+    From a `timelineDetailV2` object, find the `customerSupportChat` object.
+    """
+
+    JSONPATH = '$.sections[*].data[?(@.detail.action.type == "customerSupportChat")].detail.action'
+
+    for action in jsonpath.finditer(JSONPATH, timeline_detail):
+        return cast(TimelineDetailV2_CustomerSupportChatAction, action.obj)
+
+    return None
