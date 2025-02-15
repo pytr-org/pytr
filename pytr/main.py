@@ -192,7 +192,7 @@ def get_main_parser():
     )
     parser_export_transactions.add_argument(
         "output",
-        help="Output path of CSV file",
+        help="Output file path",
         metavar="OUTPUT",
         type=argparse.FileType("w"),
         default="-",
