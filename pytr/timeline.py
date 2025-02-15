@@ -4,7 +4,7 @@ from typing import Optional, cast
 
 import jsonpath
 
-from pytr._types import TimelineDetailV2, TimelineDetailV2_CustomerSupportChatAction
+from pytr.types import TimelineDetailV2, TimelineDetailV2_CustomerSupportChatAction
 
 from .transactions import export_transactions
 from .utils import get_logger
