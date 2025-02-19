@@ -2,6 +2,8 @@
 
 import argparse
 import asyncio
+import json
+import shutil
 import signal
 from datetime import datetime, timedelta
 from importlib.metadata import version
@@ -13,14 +15,16 @@ from pytr.account import login
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
+from pytr.event import Event
 from pytr.portfolio import Portfolio
-from pytr.transactions import export_transactions
+from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
 from pytr.utils import check_version, get_logger
 
 
 def get_main_parser():
     def formatter(prog):
-        return argparse.HelpFormatter(prog, max_help_position=25)
+        width = min(shutil.get_terminal_size().columns // 3, 80)
+        return argparse.ArgumentDefaultsHelpFormatter(prog, max_help_position=width)
 
     parser = argparse.ArgumentParser(
         formatter_class=formatter,
@@ -83,7 +87,7 @@ def get_main_parser():
     )
     parser_cmd.add_parser(
         "login",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
         description=info,
@@ -97,7 +101,7 @@ def get_main_parser():
     )
     parser_dl_docs = parser_cmd.add_parser(
         "dl_docs",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args, parser_sort_export],
         help=info,
         description=info,
@@ -129,7 +133,7 @@ def get_main_parser():
     info = "Show current portfolio"
     parser_portfolio = parser_cmd.add_parser(
         "portfolio",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
         description=info,
@@ -139,7 +143,7 @@ def get_main_parser():
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
         "details",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
         description=info,
@@ -149,7 +153,7 @@ def get_main_parser():
     info = "Get overview of current price alarms"
     parser_cmd.add_parser(
         "get_price_alarms",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
         description=info,
@@ -158,7 +162,7 @@ def get_main_parser():
     info = "Set price alarms based on diff from current price"
     parser_set_price_alarms = parser_cmd.add_parser(
         "set_price_alarms",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
         description=info,
@@ -175,7 +179,7 @@ def get_main_parser():
     info = "Create a CSV with the deposits and removals ready for importing into Portfolio Performance"
     parser_export_transactions = parser_cmd.add_parser(
         "export_transactions",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         parents=[parser_sort_export],
         help=info,
         description=info,
@@ -184,25 +188,46 @@ def get_main_parser():
         "input",
         help="Input path to JSON (use other_events.json from dl_docs)",
         metavar="INPUT",
-        type=Path,
+        type=argparse.FileType("r"),
     )
-    parser_export_transactions.add_argument("output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_export_transactions.add_argument(
+        "output",
+        help="Output file path",
+        metavar="OUTPUT",
+        type=argparse.FileType("w"),
+        default="-",
+        nargs="?",
+    )
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
-        help='Two letter language code or "auto" for system language',
+        help='Two letter language code or "auto" for system language.',
+        choices=["auto", *sorted(SUPPORTED_LANGUAGES)],
         default="auto",
     )
     parser_export_transactions.add_argument(
-        "--date-isoformat",
-        help="Format the date column in ISO8601 including the time.",
-        action="store_true",
+        "--date-with-time",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Whether to include the timestamp in the date column.",
+    )
+    parser_export_transactions.add_argument(
+        "--decimal-localization",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Whether to localize decimal numbers.",
+    )
+    parser_export_transactions.add_argument(
+        "--format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format.",
     )
 
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
         "completion",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=formatter,
         help=info,
         description=info,
     )
@@ -305,7 +330,17 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == "export_transactions":
-        export_transactions(args.input, args.output, args.lang, args.sort, args.date_isoformat)
+        events = [Event.from_dict(item) for item in json.load(args.input)]
+        TransactionExporter(
+            lang=args.lang,
+            date_with_time=args.date_with_time,
+            decimal_localization=args.decimal_localization,
+        ).export(
+            fp=args.output,
+            events=events,
+            sort=args.sort,
+            format=args.format,
+        )
     elif args.version:
         installed_version = version("pytr")
         print(installed_version)

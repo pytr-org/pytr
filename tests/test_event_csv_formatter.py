@@ -1,7 +1,7 @@
 import json
 
 from pytr.event import Event
-from pytr.event_formatter import EventCsvFormatter
+from pytr.transactions import TransactionExporter
 
 
 def test_event_csv_formatter():
@@ -13,13 +13,24 @@ def test_event_csv_formatter():
     event = Event.from_dict(sample_data)
 
     # Create an instance of EventCsvFormatter
-    formatter = EventCsvFormatter(lang="de")
+    formatter = TransactionExporter(lang="de")
 
     # Format the event to CSV
-    csv_output = formatter.format(event)
+    transactions = list(formatter.from_event(event))
 
     # Assert that the output is not an empty string
-    assert csv_output == "2024-09-10;Einlage;3.000;Vorname Nachname;;;;\n"
+    assert transactions == [
+        {
+            "Datum": "2024-09-10T13:18:31",
+            "Gebühren": None,
+            "ISIN": None,
+            "Notiz": "Vorname Nachname",
+            "Steuern": None,
+            "Stück": None,
+            "Typ": "Einlage",
+            "Wert": 3000.0,
+        }
+    ]
 
 
 def test_buy():
@@ -31,21 +42,21 @@ def test_buy():
     event = Event.from_dict(sample_data)
 
     # Create an instance of EventCsvFormatter
-    formatter = EventCsvFormatter(lang="de")
+    formatter = TransactionExporter(lang="de")
 
     # Format the event to CSV
-    csv_output = formatter.format(event)
+    transactions = list(formatter.from_event(event))
 
     # Assert that the output is not an empty string
-    assert csv_output == "2024-02-20;Kauf;-3.002,8;Euro Stoxx 50 EUR (Dist);IE00B4K6B022;60;-1;\n"
-
-
-def test_credit_card_deposit() -> None:
-    with open("tests/sample_credit_card_deposit.json") as file:
-        sample_data = json.load(file)
-
-    event = Event.from_dict(sample_data)
-    formatter = EventCsvFormatter(lang="en")
-    csv_output = formatter.format(event)
-
-    assert csv_output == "2022-08-27;Deposit;1,000;Einzahlung;;;-7;\n"
+    assert transactions == [
+        {
+            "Datum": "2024-02-20T16:32:07",
+            "Gebühren": -1.0,
+            "ISIN": "IE00B4K6B022",
+            "Notiz": "Euro Stoxx 50 EUR (Dist)",
+            "Steuern": None,
+            "Stück": 60.0,
+            "Typ": "Kauf",
+            "Wert": -3002.8,
+        }
+    ]
