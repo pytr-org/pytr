@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 from pytr.utils import preview
 
@@ -67,6 +68,17 @@ class Portfolio:
                 await self.tr.unsubscribe(subscription_id)
                 pos = subscriptions.pop(subscription_id)
                 pos["netValue"] = float(response["last"]["price"]) * float(pos["netSize"])
+
+                # We need to calculate the netValue for bonds differently
+                # We need to identify if it is a bond name - bonds have "year like 2025" in their name:
+                bond_pattern = re.compile(
+                    r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\.?\s+20\d{2}',
+                    re.IGNORECASE)
+
+                if bond_pattern.search(pos["name"]):
+                    # Bond calculation - price is per $100 face value
+                    pos["netValue"] = float(response["last"]["price"]) * float(pos["netSize"]) / 100
+
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
