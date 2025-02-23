@@ -15,7 +15,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.portfolio import Portfolio
 from pytr.transactions import export_transactions
-from pytr.utils import check_version, get_logger
+from pytr.utils import check_version, enable_debug_dump, get_logger
 
 
 def get_main_parser():
@@ -45,6 +45,14 @@ def get_main_parser():
         help="Print version information and quit",
         action="store_true",
     )
+    parser.add_argument(
+        "--dump-debug-data-to-file",
+        help="Dump debug data to a given file",
+        metavar="DEBUG_DATA_FILE",
+        type=Path,
+        default=None,
+    )
+
     parser_cmd = parser.add_subparsers(help="Desired action to perform", dest="command")
 
     # help
@@ -238,6 +246,7 @@ def main():
     args = parser.parse_args()
     # print(vars(args))
 
+    enable_debug_dump(args.dump_debug_data_to_file)
     log = get_logger(__name__, args.verbosity)
     log.setLevel(args.verbosity.upper())
     log.debug("logging is set to debug")

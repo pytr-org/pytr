@@ -1,3 +1,4 @@
+import pprint
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -6,7 +7,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from babel.numbers import NumberFormatError, parse_decimal
 
-from pytr.utils import get_logger
+from pytr.utils import dump, dump_enabled, get_logger
 
 
 class EventType(Enum):
@@ -145,7 +146,9 @@ class Event:
                 event_type = None
         else:
             if eventTypeStr not in events_known_ignored:
-                log.warning(f"Ignoring event {eventTypeStr}")
+                log.warning(f"Ignoring unknown event {eventTypeStr}")
+                if dump_enabled():
+                    dump(f"Unknown event {eventTypeStr}: {pprint.pformat(event_dict, indent=4)}")
         return event_type
 
     @classmethod
@@ -215,17 +218,37 @@ class Event:
         Returns:
             Tuple[Optional[float]]: shares, fees
         """
-        return_vals = {}
+        shares, fees = None, None
+        dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
+
         sections = event_dict.get("details", {}).get("sections", [{}])
-        for section in sections:
-            if section.get("title") == "Transaktion":
-                data = section["data"]
-                shares_dicts = list(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data))
-                fees_dicts = list(filter(lambda x: x["title"] == "Gebühr", data))
-                titles = ["shares"] * len(shares_dicts) + ["fees"] * len(fees_dicts)
-                for key, elem_dict in zip(titles, shares_dicts + fees_dicts):
-                    return_vals[key] = cls._parse_float_from_detail(elem_dict)
-        return return_vals.get("shares"), return_vals.get("fees")
+        transaction_dicts = filter(lambda x: x["title"] in ["Transaktion"], sections)
+        for transaction_dict in transaction_dicts:
+            dump_dict["maintitle"] = transaction_dict["title"]
+            data = transaction_dict.get("data", [{}])
+            shares_dicts = filter(lambda x: x["title"] in ["Aktien", "Anteile"], data)
+            for shares_dict in shares_dicts:
+                dump_dict["subtitle"] = shares_dict["title"]
+                dump_dict["type"] = "shares"
+                pref_locale = (
+                    "en"
+                    if event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
+                    and shares_dict["title"] == "Aktien"
+                    else "de"
+                )
+                shares = cls._parse_float_from_detail(shares_dict, dump_dict, pref_locale)
+                break
+
+            fees_dicts = filter(lambda x: x["title"] == "Gebühr", data)
+            for fees_dict in fees_dicts:
+                dump_dict["subtitle"] = fees_dict["title"]
+                dump_dict["type"] = "fees"
+                fees = cls._parse_float_from_detail(fees_dict, dump_dict)
+                break
+
+            break
+
+        return shares, fees
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
@@ -237,23 +260,26 @@ class Event:
         Returns:
             Optional[float]: taxes
         """
-        # taxes keywords
-        taxes_keys = {"Steuer", "Steuern"}
-        # Gather all section dicts
+        parsed_taxes_val = None
+        dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
+        pref_locale = "en" if event_dict["eventType"] in ["INTEREST_PAYOUT", "trading_savingsplan_executed"] else "de"
+
         sections = event_dict.get("details", {}).get("sections", [{}])
-        # Gather all dicts pertaining to transactions
-        transaction_dicts = filter(lambda x: x["title"] in {"Transaktion", "Geschäft"}, sections)
+        transaction_dicts = filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections)
         for transaction_dict in transaction_dicts:
             # Filter for taxes dicts
+            dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
-            taxes_dicts = filter(lambda x: x["title"] in taxes_keys, data)
+            taxes_dicts = filter(lambda x: x["title"] in ["Steuer", "Steuern"], data)
             # Iterate over dicts containing tax information and parse each one
             for taxes_dict in taxes_dicts:
-                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict)
-                if parsed_taxes_val is not None:
-                    return parsed_taxes_val
+                dump_dict["subtitle"] = taxes_dict["title"]
+                dump_dict["type"] = "taxes"
+                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, dump_dict, pref_locale)
+                break
+            break
 
-        return None
+        return parsed_taxes_val
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
@@ -270,7 +296,11 @@ class Event:
         return None
 
     @staticmethod
-    def _parse_float_from_detail(elem_dict: Dict[str, Any]) -> Optional[float]:
+    def _parse_float_from_detail(
+        elem_dict: Dict[str, Any],
+        dump_dict={"eventType": "Unknown", "id": "Unknown", "type": "Unknown"},
+        pref_locale="de",
+    ) -> Optional[float]:
         """Parses a "detail" dictionary potentially containing a float in a certain locale format
 
         Args:
@@ -284,8 +314,11 @@ class Event:
             return None
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
 
-        # Prefer german locale.
-        locales = ("de", "en")
+        # Try the preferred locale first
+        if pref_locale == "de":
+            locales = ("de", "en")
+        else:
+            locales = ("en", "de")
 
         try:
             result = float(parse_decimal(parsed_val, locales[0], strict=True))
@@ -294,4 +327,32 @@ class Event:
                 result = float(parse_decimal(parsed_val, locales[1], strict=True))
             except NumberFormatError:
                 return None
+            log.warning(
+                f"Number {parsed_val} parsed as {locales[1]} although preference was {locales[0]}. ({dump_dict['eventType']}, {dump_dict['id']}, {dump_dict['type']})"
+            )
+            if dump_enabled():
+                dump(
+                    f"Number {parsed_val} parsed as as {locales[1]} although preference was {locales[0]}: {pprint.pformat(dump_dict, indent=4)}"
+                )
+            return None if result == 0.0 else result
+
+        alternative_result = None
+        if "," in parsed_val or "." in parsed_val:
+            try:
+                alternative_result = float(parse_decimal(parsed_val, locales[1], strict=True))
+            except NumberFormatError:
+                pass
+
+        if alternative_result is None:
+            if dump_enabled():
+                dump(f"Number {parsed_val} parsed as {locales[0]}: {pprint.pformat(dump_dict, indent=4)}")
+        else:
+            log.debug(
+                f"Number {parsed_val} as {locales[0]} but could also be parsed as {locales[1]}. ({dump_dict['eventType']}, {dump_dict['id']}, {dump_dict['type']})"
+            )
+            if dump_enabled():
+                dump(
+                    f"Number {parsed_val} as {locales[0]} but could also be parsed as {locales[1]}: {pprint.pformat(dump_dict, indent=4)}"
+                )
+
         return None if result == 0.0 else result
