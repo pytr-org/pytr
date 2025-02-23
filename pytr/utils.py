@@ -7,6 +7,28 @@ import coloredlogs  # type: ignore[import-untyped]
 import requests
 from packaging import version
 
+dump_file = None
+
+
+def enable_debug_dump(df):
+    global dump_file
+    dump_file = df
+    if df is not None:
+        with open(dump_file, "w"):
+            pass
+
+
+def dump_enabled():
+    return dump_file is not None
+
+
+def dump(str):
+    if dump_file is None:
+        return
+    with open(dump_file, "a") as file:
+        file.write(str + "\n")
+
+
 log_level = None
 
 
