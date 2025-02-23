@@ -10,7 +10,7 @@ msgstr "Aankoop"
 msgid "DEPOSIT"
 msgstr "Storting"
 
-msgid "DIVIDENDS"
+msgid "DIVIDEND"
 msgstr "Dividend"
 
 msgid "FEES"

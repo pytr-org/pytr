@@ -1,0 +1,191 @@
+{
+    "id": "12345678",
+    "timestamp": "2024-02-20T16:32:07.731+0000",
+    "title": "Euro Stoxx 50 EUR (Dist)",
+    "icon": "logos/IE00B4K6B022/v2",
+    "badge": null,
+    "subtitle": "Kauforder",
+    "amount": {
+      "currency": "EUR",
+      "value": -3002.8,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "12345678"
+    },
+    "eventType": "ORDER_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "12345678",
+      "sections": [
+        {
+          "title": "Du hast 3.002,80 €  investiert",
+          "data": {
+            "icon": "logos/IE00B4K6B022/v2",
+            "subtitleText": null,
+            "timestamp": "2024-02-20T16:32:07.731+0000",
+            "status": "executed"
+          },
+          "action": {
+            "type": "instrumentDetail",
+            "payload": "IE00B4K6B022"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Kauf",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Euro Stoxx 50 EUR (Dist)",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Transaktion",
+          "data": [
+            {
+              "title": "Anteile",
+              "detail": {
+                "text": "60",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktienkurs",
+              "detail": {
+                "text": "50,03 €",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "3.002,80 €",
+                "trend": null,
+                "action": null,
+                "type": "text"
+              },
+              "style": "highlighted"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "detail": "20.02.2024",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "",
+              "postboxType": "SECURITIES_SETTLEMENT",
+              "local filepath": "20241021/Abrechnung/2024-02-20 Abrechnung - Euro Stoxx 50 EUR (Dist).pdf"
+            },
+            {
+              "title": "Basisinformationsblatt",
+              "detail": "20.02.2024",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "62c2529e",
+              "postboxType": "INFO",
+              "local filepath": "20241021/Basisinformationsblatt/2024-02-20 Basisinformationsblatt - Euro Stoxx 50 EUR (Dist).pdf"
+            },
+            {
+              "title": "Kosteninformation",
+              "detail": "20.02.2024",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "668b8e97",
+              "postboxType": "COSTS_INFO_BUY_V2",
+              "local filepath": "20241021/Kosteninformation/2024-02-20 Kosteninformation - Euro Stoxx 50 EUR (Dist).pdf"
+            }
+          ],
+          "action": null,
+          "type": "documents"
+        },
+        {
+          "title": "Hilfe",
+          "data": [
+            {
+              "title": "Report a issue",
+              "detail": {
+                "icon": "logos/timeline_communication/v2",
+                "action": {
+                  "type": "customerSupportChat",
+                  "payload": {
+                    "contextParams": {
+                      "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
+                      "timelineEventId": "",
+                      "primId": ""
+                    },
+                    "contextCategory": "NHC"
+                  }
+                },
+                "style": "highlighted",
+                "type": "listItemAvatarDefault"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        }
+      ]
+    },
+    "has_docs": true
+  }

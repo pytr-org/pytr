@@ -1,18 +1,18 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "babel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-babel"]
+build-backend = "hatchling.build"
 
 [project]
 name = "pytr"
-version = "0.2.5"
+version = "0.4.1"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
     { name = "marzzzello", email = "853485-marzzzello@users.noreply.gitlab.com" }
 ]
-urls = { "Homepage" = "https://gitlab.com/pytr-org/pytr/" }
+urls = { "Homepage" = "https://github.com/pytr-org/pytr" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
@@ -30,16 +30,31 @@ dependencies = [
     "pygments",
     "requests_futures",
     "shtab",
-    "websockets>=10.1",
+    "websockets>=14",
     "babel",
 ]
 
 [project.scripts]
 pytr = "pytr.main:main"
 
-[tool.setuptools]
-include-package-data = true
-packages = ["pytr"]
+[tool.hatch.build.hooks.babel]
+locale_dir = "pytr/locale"
 
-[tool.setuptools.package-data]
-pytr = ["pytr/locale/*/*/*.mo", "pytr/locale/*/*/*.po"]
+[dependency-groups]
+dev = [
+    "ruff>=0.9.4",
+    "pytest>=8.3.4",
+    "mypy>=1.15.0",
+    "types-babel>=2.11.0.15",
+    "types-requests>=2.32.0.20241016",
+    "types-pygments>=2.19.0.20250107",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.mypy]
+python_version = "3.9"
