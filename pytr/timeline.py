@@ -200,7 +200,7 @@ class Timeline:
                 indent=2,
             )
 
-        with (dl.output_path / "account_transactions.csv").open("w") as f:
+        with (dl.output_path / "account_transactions.csv").open("w", encoding="utf8") as f:
             TransactionExporter().export(
                 f,
                 [Event.from_dict(ev) for ev in self.events_without_docs + self.events_with_docs],

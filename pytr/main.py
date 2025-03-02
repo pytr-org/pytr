@@ -194,7 +194,7 @@ def get_main_parser():
         "output",
         help="Output file path",
         metavar="OUTPUT",
-        type=argparse.FileType("w"),
+        type=argparse.FileType("w", encoding="utf8"),
         default="-",
         nargs="?",
     )
