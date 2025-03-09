@@ -1,13 +1,13 @@
-from locale import getdefaultlocale
-from babel.numbers import format_decimal
 import json
+from locale import getdefaultlocale
+from typing import Iterable
 
 from .event import Event
+from .event_formatter import EventCsvFormatter
 from .utils import get_logger
-from .translation import setup_translation
 
 
-def export_transactions(input_path, output_path, lang="auto"):
+def export_transactions(input_path, output_path, lang="auto", sort=False, date_isoformat: bool = False):
     """
     Create a CSV with the deposits and removals ready for importing into Portfolio Performance
     The CSV headers for PP are language dependend
@@ -36,43 +36,25 @@ def export_transactions(input_path, output_path, lang="auto"):
     ]:
         log.info(f"Language not yet supported {lang}")
         lang = "en"
-    _ = setup_translation(language=lang)
 
     # Read relevant deposit timeline entries
     with open(input_path, encoding="utf-8") as f:
         timeline = json.load(f)
 
     log.info("Write deposit entries")
+
+    formatter = EventCsvFormatter(lang=lang)
+    if date_isoformat:
+        formatter.date_fmt = "ISO8601"
+
+    events: Iterable[Event] = map(lambda x: Event.from_dict(x), timeline)
+    if sort:
+        events = sorted(events, key=lambda x: x.date)
+    lines: Iterable[str] = map(lambda x: formatter.format(x), events)
+    lines = formatter.format_header() + "".join(lines)
+
+    # Write transactions into csv file
     with open(output_path, "w", encoding="utf-8") as f:
-        csv_fmt = "{date};{type};{value};{note};{isin};{shares}\n"
-        header = csv_fmt.format(
-            date=_("CSVColumn_Date"),
-            type=_("CSVColumn_Type"),
-            value=_("CSVColumn_Value"),
-            note=_("CSVColumn_Note"),
-            isin=_("CSVColumn_ISIN"),
-            shares=_("CSVColumn_Shares"),
-        )
-        f.write(header)
-
-        for event_json in timeline:
-            event = Event(event_json)
-            if not event.is_pp_relevant:
-                continue
-
-            amount = format_decimal(event.amount, locale=lang) if event.amount else ""
-            note = (_(event.note) + " - " + event.title) if event.note else event.title
-            shares = format_decimal(event.shares, locale=lang) if event.shares else ""
-
-            f.write(
-                csv_fmt.format(
-                    date=event.date,
-                    type=_(event.pp_type),
-                    value=amount,
-                    note=note,
-                    isin=event.isin,
-                    shares=shares,
-                )
-            )
+        f.write(lines)
 
     log.info("Deposit creation finished!")

@@ -139,3 +139,9 @@ cython_debug/
 
 # JetBrains
 .idea/**
+
+# VSCode
+.vscode/**
+
+# uv
+uv.lock
