@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-babel"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pytr"
+name = "pytr-local"
 version = "0.4.3"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pytr = "pytr.main:main"
+pytr-local = "pytr.main:main"
 
 [tool.hatch.build.hooks.babel]
 locale_dir = "pytr/locale"
