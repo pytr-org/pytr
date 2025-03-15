@@ -48,7 +48,6 @@ def get_main_parser():
     parser.add_argument(
         "--debug-logfile",
         help="Dump debug logs to a file",
-        metavar="DEBUG_LOGFILE",
         type=Path,
         default=None,
     )
@@ -133,7 +132,6 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         "--workers",
         help="Number of workers for parallel downloading",
-        metavar="WORKERS",
         default=8,
         type=int,
     )
@@ -147,7 +145,7 @@ def get_main_parser():
         help=info,
         description=info,
     )
-    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
     # details
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
@@ -196,10 +194,9 @@ def get_main_parser():
     parser_export_transactions.add_argument(
         "input",
         help="Input path to JSON (use other_events.json from dl_docs)",
-        metavar="INPUT",
         type=Path,
     )
-    parser_export_transactions.add_argument("output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_export_transactions.add_argument("output", help="Output path of CSV file", type=Path)
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
