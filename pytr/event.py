@@ -82,11 +82,14 @@ tr_event_type_mapping = {
 }
 
 logger = None
+
+
 def get_event_logger():
     global logger
     if logger is None:
         logger = get_logger(__name__)
     return logger
+
 
 events_known_ignored = [
     "CUSTOMER_CREATED",
@@ -335,7 +338,13 @@ class Event:
                 result = float(parse_decimal(parsed_val, locales[1], strict=True))
             except NumberFormatError:
                 return None
-            get_event_logger().warning("Number %s parsed as %s although preference was %s: %s", parsed_val, locales[1], locales[0], json.dumps(dump_dict, indent=4))
+            get_event_logger().warning(
+                "Number %s parsed as %s although preference was %s: %s",
+                parsed_val,
+                locales[1],
+                locales[0],
+                json.dumps(dump_dict, indent=4),
+            )
             return None if result == 0.0 else result
 
         alternative_result = None
@@ -346,8 +355,16 @@ class Event:
                 pass
 
         if alternative_result is None:
-            get_event_logger().debug("Number %s parsed as %s: %s", parsed_val, locales[0], json.dumps(dump_dict, indent=4))
+            get_event_logger().debug(
+                "Number %s parsed as %s: %s", parsed_val, locales[0], json.dumps(dump_dict, indent=4)
+            )
         else:
-            get_event_logger().debug("Number %s parsed as %s but could also be parsed as %s: %s", parsed_val, locales[0], locales[1], json.dumps(dump_dict, indent=4))
+            get_event_logger().debug(
+                "Number %s parsed as %s but could also be parsed as %s: %s",
+                parsed_val,
+                locales[0],
+                locales[1],
+                json.dumps(dump_dict, indent=4),
+            )
 
         return None if result == 0.0 else result

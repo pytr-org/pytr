@@ -106,7 +106,7 @@ def get_main_parser():
     info = (
         "Download all pdf documents from the timeline and sort them into folders."
         + " Also export account transactions (account_transactions.csv)"
-        + " and JSON files with all events (events_with_documents.json and other_events.json"
+        + " and JSON files with all events (events_with_documents.json and other_events.json)"
     )
     parser_dl_docs = parser_cmd.add_parser(
         "dl_docs",

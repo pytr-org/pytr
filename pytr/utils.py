@@ -11,6 +11,7 @@ log_level = None
 debug_logfile_handler = None
 debug_log_filter = None
 
+
 def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None):
     """
     Colored logging
@@ -32,7 +33,9 @@ def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None
         if debug_logfile_handler is None:
             debug_logfile_handler = logging.FileHandler(debug_file)
             debug_logfile_handler.setLevel(logging.DEBUG)
-            debug_logfile_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+            debug_logfile_handler.setFormatter(
+                logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+            )
         else:
             raise RuntimeError("Debug logfile handler has already been initialized.")
 
