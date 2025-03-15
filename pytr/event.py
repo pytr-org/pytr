@@ -1,4 +1,4 @@
-import pprint
+import json
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from babel.numbers import NumberFormatError, parse_decimal
 
-from pytr.utils import dump, dump_enabled, get_logger
+from pytr.utils import get_logger
 
 
 class EventType(Enum):
@@ -81,7 +81,12 @@ tr_event_type_mapping = {
     "TRADE_CORRECTED": ConditionalEventType.TRADE_INVOICE,
 }
 
-log = get_logger(__name__)
+logger = None
+def get_event_logger():
+    global logger
+    if logger is None:
+        logger = get_logger(__name__)
+    return logger
 
 events_known_ignored = [
     "CUSTOMER_CREATED",
@@ -150,9 +155,8 @@ class Event:
                 event_type = None
         else:
             if eventTypeStr not in events_known_ignored:
-                log.warning(f"Ignoring unknown event {eventTypeStr}")
-                if dump_enabled():
-                    dump(f"Unknown event {eventTypeStr}: {pprint.pformat(event_dict, indent=4)}")
+                get_event_logger().warning(f"Ignoring unknown event {eventTypeStr}")
+                get_event_logger().debug("Unknown event %s: %s", eventTypeStr, json.dumps(event_dict, indent=4))
         return event_type
 
     @classmethod
@@ -266,7 +270,7 @@ class Event:
         """
         parsed_taxes_val = None
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
-        pref_locale = "en" if event_dict["eventType"] in ["INTEREST_PAYOUT", "trading_savingsplan_executed"] else "de"
+        pref_locale = "en" if event_dict["eventType"] in ["INTEREST_PAYOUT"] else "de"
 
         sections = event_dict.get("details", {}).get("sections", [{}])
         transaction_dicts = filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections)
@@ -331,13 +335,7 @@ class Event:
                 result = float(parse_decimal(parsed_val, locales[1], strict=True))
             except NumberFormatError:
                 return None
-            log.warning(
-                f"Number {parsed_val} parsed as {locales[1]} although preference was {locales[0]}. ({dump_dict['eventType']}, {dump_dict['id']}, {dump_dict['type']})"
-            )
-            if dump_enabled():
-                dump(
-                    f"Number {parsed_val} parsed as as {locales[1]} although preference was {locales[0]}: {pprint.pformat(dump_dict, indent=4)}"
-                )
+            get_event_logger().warning("Number %s parsed as %s although preference was %s: %s", parsed_val, locales[1], locales[0], json.dumps(dump_dict, indent=4))
             return None if result == 0.0 else result
 
         alternative_result = None
@@ -348,15 +346,8 @@ class Event:
                 pass
 
         if alternative_result is None:
-            if dump_enabled():
-                dump(f"Number {parsed_val} parsed as {locales[0]}: {pprint.pformat(dump_dict, indent=4)}")
+            get_event_logger().debug("Number %s parsed as %s: %s", parsed_val, locales[0], json.dumps(dump_dict, indent=4))
         else:
-            log.debug(
-                f"Number {parsed_val} as {locales[0]} but could also be parsed as {locales[1]}. ({dump_dict['eventType']}, {dump_dict['id']}, {dump_dict['type']})"
-            )
-            if dump_enabled():
-                dump(
-                    f"Number {parsed_val} as {locales[0]} but could also be parsed as {locales[1]}: {pprint.pformat(dump_dict, indent=4)}"
-                )
+            get_event_logger().debug("Number %s parsed as %s but could also be parsed as %s: %s", parsed_val, locales[0], locales[1], json.dumps(dump_dict, indent=4))
 
         return None if result == 0.0 else result

@@ -61,7 +61,7 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 
 <!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
 ```console
-usage: pytr [-h] [-v {warning,info,debug}] [-V] [--dump-debug-data-to-file DEBUG_DATA_FILE]
+usage: pytr [-h] [-v {warning,info,debug}] [-V] [--debug-logfile DEBUG_LOGFILE]
             {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
@@ -74,7 +74,7 @@ Commands:
                          device reset if needed
     dl_docs              Download all pdf documents from the timeline and sort them into folders. Also export account
                          transactions (account_transactions.csv) and JSON files with all events
-                         (events_with_documents.json and other_events.json
+                         (events_with_documents.json and other_events.json)
     portfolio            Show current portfolio
     details              Get details for an ISIN
     get_price_alarms     Get overview of current price alarms
@@ -87,8 +87,8 @@ Options:
   -v, --verbosity {warning,info,debug}
                          Set verbosity level (default: info)
   -V, --version          Print version information and quit
-  --dump-debug-data-to-file DEBUG_DATA_FILE
-                         Dump debug data to a given file
+  --debug-logfile DEBUG_LOGFILE
+                         Dump debug logs to a file
 ```
 <!-- end runcmd -->
 
