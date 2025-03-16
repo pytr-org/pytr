@@ -71,7 +71,7 @@ def get_main_parser():
         add_help=False,
     )
 
-    # Create parent subparser with common login arguments
+    # parent subparser with common login arguments
     parser_login_args = argparse.ArgumentParser(add_help=False)
     parser_login_args.add_argument("--applogin", help="Use app login instead of  web login", action="store_true")
     parser_login_args.add_argument("-n", "--phone_no", help="TradeRepublic phone number (international format)")
@@ -83,7 +83,35 @@ def get_main_parser():
         default=False,
     )
 
-    # sort
+    # parent subparser for lang option
+    parser_lang = argparse.ArgumentParser(add_help=False)
+    parser_lang.add_argument(
+        "-l",
+        "--lang",
+        help='Two letter language code or "auto" for system language.',
+        choices=["auto", *sorted(SUPPORTED_LANGUAGES)],
+        default="auto",
+    )
+
+    # parent subparser for date-with-time option
+    parser_date_with_time = argparse.ArgumentParser(add_help=False)
+    parser_date_with_time.add_argument(
+        "--date-with-time",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Whether to include the timestamp in the date column.",
+    )
+
+    # parent subparser for decimal-localization option
+    parser_decimal_localization = argparse.ArgumentParser(add_help=False)
+    parser_decimal_localization.add_argument(
+        "--decimal-localization",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Whether to localize decimal numbers.",
+    )
+
+    # parent subparser for sorting option
     parser_sort_export = argparse.ArgumentParser(add_help=False)
     parser_sort_export.add_argument(
         "-s",
@@ -114,7 +142,7 @@ def get_main_parser():
     parser_dl_docs = parser_cmd.add_parser(
         "dl_docs",
         formatter_class=formatter,
-        parents=[parser_login_args, parser_sort_export],
+        parents=[parser_login_args, parser_lang, parser_date_with_time, parser_decimal_localization, parser_sort_export],
         help=info,
         description=info,
     )
@@ -140,6 +168,13 @@ def get_main_parser():
         type=int,
     )
     parser_dl_docs.add_argument("--universal", help="Platform independent file names", action="store_true")
+    parser_dl_docs.add_argument(
+        "--export-format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format.",
+    )
+
     # portfolio
     info = "Show current portfolio"
     parser_portfolio = parser_cmd.add_parser(
@@ -150,6 +185,7 @@ def get_main_parser():
         description=info,
     )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
+
     # details
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
@@ -160,6 +196,7 @@ def get_main_parser():
         description=info,
     )
     parser_details.add_argument("isin", help="ISIN of intrument")
+
     # get_price_alarms
     info = "Get overview of current price alarms"
     parser_cmd.add_parser(
@@ -169,6 +206,7 @@ def get_main_parser():
         help=info,
         description=info,
     )
+
     # set_price_alarms
     info = "Set price alarms based on diff from current price"
     parser_set_price_alarms = parser_cmd.add_parser(
@@ -186,19 +224,20 @@ def get_main_parser():
         type=int,
         default=-10,
     )
+
     # export_transactions
     info = "Create a CSV with the deposits and removals ready for importing into Portfolio Performance"
     parser_export_transactions = parser_cmd.add_parser(
         "export_transactions",
         formatter_class=formatter,
-        parents=[parser_sort_export],
+        parents=[parser_lang, parser_date_with_time, parser_decimal_localization, parser_sort_export],
         help=info,
         description=info,
     )
     parser_export_transactions.add_argument(
         "input",
-        help="Input path to JSON (use other_events.json from dl_docs)",
-        type=argparse.FileType("r"),
+        help="Input path to JSON (use all_events.json from dl_docs)",
+        type=argparse.FileType("r", encoding="utf8"),
     )
     parser_export_transactions.add_argument(
         "output",
@@ -206,25 +245,6 @@ def get_main_parser():
         type=argparse.FileType("w", encoding="utf8"),
         default="-",
         nargs="?",
-    )
-    parser_export_transactions.add_argument(
-        "-l",
-        "--lang",
-        help='Two letter language code or "auto" for system language.',
-        choices=["auto", *sorted(SUPPORTED_LANGUAGES)],
-        default="auto",
-    )
-    parser_export_transactions.add_argument(
-        "--date-with-time",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="Whether to include the timestamp in the date column.",
-    )
-    parser_export_transactions.add_argument(
-        "--decimal-localization",
-        action=argparse.BooleanOptionalAction,
-        default=False,
-        help="Whether to localize decimal numbers.",
     )
     parser_export_transactions.add_argument(
         "--format",
@@ -301,7 +321,11 @@ def main():
             since_timestamp=since_timestamp,
             max_workers=args.workers,
             universal_filepath=args.universal,
+            lang=args.lang,
+            date_with_time=args.date_with_time,
+            decimal_localization=args.decimal_localization,
             sort_export=args.sort,
+            format_export=args.export_format,
         )
         asyncio.get_event_loop().run_until_complete(dl.dl_loop())
     elif args.command == "set_price_alarms":

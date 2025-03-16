@@ -202,12 +202,14 @@ class Timeline:
 
         with (dl.output_path / "account_transactions.csv").open("w", encoding="utf8") as f:
             TransactionExporter(
-                lang="auto"
+                lang=dl.lang,
+                date_with_time=dl.date_with_time,
+                decimal_localization=dl.decimal_localization,
             ).export(
                 f,
                 [Event.from_dict(ev) for ev in self.events_without_docs + self.events_with_docs],
                 sort=dl.sort_export,
-                format="csv",
+                format=dl.format_export,
             )
 
         dl.work_responses()
