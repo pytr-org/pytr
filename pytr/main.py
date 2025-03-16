@@ -33,6 +33,12 @@ def get_main_parser():
             grp.title = "Commands"
 
     parser.add_argument(
+        "-V",
+        "--version",
+        help="Print version information and quit",
+        action="store_true",
+    )
+    parser.add_argument(
         "-v",
         "--verbosity",
         help="Set verbosity level (default: info)",
@@ -40,11 +46,17 @@ def get_main_parser():
         default="info",
     )
     parser.add_argument(
-        "-V",
-        "--version",
-        help="Print version information and quit",
-        action="store_true",
+        "--debug-logfile",
+        help="Dump debug logs to a file",
+        type=Path,
+        default=None,
     )
+    parser.add_argument(
+        "--debug-log-filter",
+        help="Filter debug log types",
+        default=None,
+    )
+
     parser_cmd = parser.add_subparsers(help="Desired action to perform", dest="command")
 
     # help
@@ -93,7 +105,7 @@ def get_main_parser():
     info = (
         "Download all pdf documents from the timeline and sort them into folders."
         + " Also export account transactions (account_transactions.csv)"
-        + " and JSON files with all events (events_with_documents.json and other_events.json"
+        + " and JSON files with all events (events_with_documents.json and other_events.json)"
     )
     parser_dl_docs = parser_cmd.add_parser(
         "dl_docs",
@@ -120,7 +132,6 @@ def get_main_parser():
     parser_dl_docs.add_argument(
         "--workers",
         help="Number of workers for parallel downloading",
-        metavar="WORKERS",
         default=8,
         type=int,
     )
@@ -134,7 +145,7 @@ def get_main_parser():
         help=info,
         description=info,
     )
-    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
     # details
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
@@ -183,10 +194,9 @@ def get_main_parser():
     parser_export_transactions.add_argument(
         "input",
         help="Input path to JSON (use other_events.json from dl_docs)",
-        metavar="INPUT",
         type=Path,
     )
-    parser_export_transactions.add_argument("output", help="Output path of CSV file", metavar="OUTPUT", type=Path)
+    parser_export_transactions.add_argument("output", help="Output path of CSV file", type=Path)
     parser_export_transactions.add_argument(
         "-l",
         "--lang",
@@ -238,9 +248,9 @@ def main():
     args = parser.parse_args()
     # print(vars(args))
 
-    log = get_logger(__name__, args.verbosity)
-    log.setLevel(args.verbosity.upper())
-    log.debug("logging is set to debug")
+    log = get_logger(__name__, args.verbosity, args.debug_logfile, args.debug_log_filter)
+    if args.verbosity.upper() == "DEBUG":
+        log.debug("logging is set to debug")
 
     if args.command == "login":
         login(
