@@ -39,7 +39,7 @@ To install uv on OSX/Linux, run:
 $ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-On Window, run:
+On Windows, run:
 
 ```console
 > powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
