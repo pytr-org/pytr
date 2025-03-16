@@ -68,29 +68,27 @@ Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
   {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion}
-                         Desired action to perform
-    help                 Print this help message
-    login                Check if credentials file exists. If not create it and ask for input. Try to login. Ask for
-                         device reset if needed
-    dl_docs              Download all pdf documents from the timeline and sort them into folders. Also export account
-                         transactions (account_transactions.csv) and JSON files with all events
-                         (events_with_documents.json and other_events.json)
-    portfolio            Show current portfolio
-    details              Get details for an ISIN
-    get_price_alarms     Get overview of current price alarms
-    set_price_alarms     Set price alarms based on diff from current price
-    export_transactions  Create a CSV with the deposits and removals ready for importing into Portfolio Performance
-    completion           Print shell tab completion
+                                        Desired action to perform
+    help                                Print this help message
+    login                               Check if credentials file exists. If not create it and ask for input. Try to
+                                        login. Ask for device reset if needed
+    dl_docs                             Download all pdf documents from the timeline and sort them into folders. Also
+                                        export account transactions (account_transactions.csv) and JSON files with all
+                                        events (events_with_documents.json and other_events.json)
+    portfolio                           Show current portfolio
+    details                             Get details for an ISIN
+    get_price_alarms                    Get overview of current price alarms
+    set_price_alarms                    Set price alarms based on diff from current price
+    export_transactions                 Create a CSV with the deposits and removals ready for importing into Portfolio
+                                        Performance
+    completion                          Print shell tab completion
 
 Options:
-  -h, --help             show this help message and exit
-  -V, --version          Print version information and quit
-  -v, --verbosity {warning,info,debug}
-                         Set verbosity level (default: info)
-  --debug-logfile DEBUG_LOGFILE
-                         Dump debug logs to a file
-  --debug-log-filter DEBUG_LOG_FILTER
-                         Filter debug log types
+  -h, --help                            show this help message and exit
+  -V, --version                         Print version information and quit (default: False)
+  -v, --verbosity {warning,info,debug}  Set verbosity level (default: info) (default: info)
+  --debug-logfile DEBUG_LOGFILE         Dump debug logs to a file (default: None)
+  --debug-log-filter DEBUG_LOG_FILTER   Filter debug log types (default: None)
 ```
 <!-- end runcmd -->
 
