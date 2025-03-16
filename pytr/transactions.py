@@ -165,7 +165,9 @@ class TransactionExporter:
 
         if format == "csv":
             lineterminator = "\n" if platform.system() == "Windows" else "\r\n"
-            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=self.csv_delimiter, lineterminator=lineterminator)
+            writer = csv.DictWriter(
+                fp, fieldnames=self.fields(), delimiter=self.csv_delimiter, lineterminator=lineterminator
+            )
             writer.writeheader()
             writer.writerows(transactions)
         elif format == "json":

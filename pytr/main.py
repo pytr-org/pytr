@@ -142,7 +142,13 @@ def get_main_parser():
     parser_dl_docs = parser_cmd.add_parser(
         "dl_docs",
         formatter_class=formatter,
-        parents=[parser_login_args, parser_lang, parser_date_with_time, parser_decimal_localization, parser_sort_export],
+        parents=[
+            parser_login_args,
+            parser_lang,
+            parser_date_with_time,
+            parser_decimal_localization,
+            parser_sort_export,
+        ],
         help=info,
         description=info,
     )

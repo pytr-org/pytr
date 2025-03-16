@@ -39,8 +39,8 @@ class DL:
         self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
         self.lang = lang
-        self.date_with_time=date_with_time
-        self.decimal_localization=decimal_localization
+        self.date_with_time = date_with_time
+        self.decimal_localization = decimal_localization
         self.sort_export = sort_export
         self.format_export = format_export
 
