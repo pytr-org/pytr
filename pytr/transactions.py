@@ -1,5 +1,6 @@
 import csv
 import json
+import platform
 from dataclasses import dataclass
 from locale import getdefaultlocale
 from typing import Any, Iterable, Literal, Optional, TextIO, TypedDict, Union
@@ -163,7 +164,8 @@ class TransactionExporter:
         transactions = (txn for event in events for txn in self.from_event(event))
 
         if format == "csv":
-            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=self.csv_delimiter)
+            lineterminator = "\n" if platform.system() == "Windows" else "\r\n"
+            writer = csv.DictWriter(fp, fieldnames=self.fields(), delimiter=self.csv_delimiter, lineterminator=lineterminator)
             writer.writeheader()
             writer.writerows(transactions)
         elif format == "json":

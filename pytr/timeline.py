@@ -201,7 +201,9 @@ class Timeline:
             )
 
         with (dl.output_path / "account_transactions.csv").open("w", encoding="utf8") as f:
-            TransactionExporter().export(
+            TransactionExporter(
+                lang="auto"
+            ).export(
                 f,
                 [Event.from_dict(ev) for ev in self.events_without_docs + self.events_with_docs],
                 sort=dl.sort_export,
