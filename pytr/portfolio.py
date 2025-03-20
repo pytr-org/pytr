@@ -89,7 +89,7 @@ class Portfolio:
         # Combine the portfolio positions with the cash portfolio.
         data = {
             "positions": sorted(self.portfolio["positions"], key=lambda x: x["netSize"], reverse=True),
-            "cash": self.cash
+            "cash": self.cash,
         }
         if output_path is None or str(output_path) == "-":
             print(json.dumps(data, indent=2))
