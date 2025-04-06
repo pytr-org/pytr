@@ -102,6 +102,7 @@ events_known_ignored = [
     "ORDER_EXPIRED",
     "ORDER_REJECTED",
     "PUK_CREATED",
+    "RDD_FLOW",
     "REFERENCE_ACCOUNT_CHANGED",
     "SECURITIES_ACCOUNT_CREATED",
     "VERIFICATION_TRANSFER_ACCEPTED",
@@ -233,7 +234,7 @@ class Event:
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
-        transaction_dicts = filter(lambda x: x["title"] in ["Transaktion"], sections)
+        transaction_dicts = filter(lambda x: x.get("title") in ["Transaktion"], sections)
         for transaction_dict in transaction_dicts:
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
