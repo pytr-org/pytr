@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-import coloredlogs
 import json
 import logging
-import requests
 
+import coloredlogs  # type: ignore[import-untyped]
+import requests
 from packaging import version
 
 log_level = None
+debug_logfile_handler = None
+debug_log_filter = None
 
 
-def get_logger(name=__name__, verbosity=None):
+def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None):
     """
     Colored logging
 
@@ -25,8 +27,32 @@ def get_logger(name=__name__, verbosity=None):
         else:
             raise RuntimeError("Verbosity has already been set.")
 
+    global debug_logfile_handler
+    if debug_file is not None:
+        print(f"Setting up debug logfile {debug_file}")
+        if debug_logfile_handler is None:
+            debug_logfile_handler = logging.FileHandler(debug_file)
+            debug_logfile_handler.setLevel(logging.DEBUG)
+            debug_logfile_handler.setFormatter(
+                logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+            )
+        else:
+            raise RuntimeError("Debug logfile handler has already been initialized.")
+
+    global debug_log_filter
+    if debug_filter is not None:
+        if debug_log_filter is None:
+            debug_log_filter = debug_filter.split(",")
+        else:
+            raise RuntimeError("Debug log filter has already been set.")
+
     shortname = name.replace("pytr.", "")
     logger = logging.getLogger(shortname)
+    logger.setLevel(logging.DEBUG)
+
+    if debug_logfile_handler is not None and (debug_log_filter is None or shortname in debug_log_filter):
+        if debug_logfile_handler not in logger.handlers:
+            logger.addHandler(debug_logfile_handler)
 
     # no logging of libs
     logger.propagate = False
@@ -93,8 +119,6 @@ def check_version(installed_version):
     latest_version = r.json()[0]["name"]
 
     if version.parse(installed_version) < version.parse(latest_version):
-        log.warning(
-            f"Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}"
-        )
+        log.warning(f"Installed pytr version ({installed_version}) is outdated. Latest version is {latest_version}")
     else:
         log.info("pytr is up to date")

@@ -1,8 +1,14 @@
-from datetime import datetime
 import json
+from datetime import datetime
 
+from pytr.event import Event
+
+from .transactions import TransactionExporter
 from .utils import get_logger
-from .transactions import export_transactions
+
+
+class UnsupportedEventError(Exception):
+    pass
 
 
 class Timeline:
@@ -11,6 +17,7 @@ class Timeline:
         self.log = get_logger(__name__)
         self.received_detail = 0
         self.requested_detail = 0
+        self.skipped_detail = 0
         self.events_without_docs = []
         self.events_with_docs = []
         self.num_timelines = 0
@@ -34,8 +41,7 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                    >= self.max_age_timestamp
+                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
                 ):
                     event["source"] = "timelineTransaction"
                     self.timeline_events[event["id"]] = event
@@ -46,9 +52,7 @@ class Timeline:
             self.log.info(f"Received #{self.num_timelines:<2} timeline transactions")
             after = response["cursors"].get("after")
             if (after is not None) and added_last_event:
-                self.log.info(
-                    f"Subscribing #{self.num_timelines+1:<2} timeline transactions"
-                )
+                self.log.info(f"Subscribing #{self.num_timelines + 1:<2} timeline transactions")
                 await self.tr.timeline_transactions(after)
             else:
                 # last timeline is reached
@@ -72,11 +76,10 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                    >= self.max_age_timestamp
+                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
                 ):
                     if event["id"] in self.timeline_events:
-                        self.log.warning(f"Received duplicate event {event['id'] }")
+                        self.log.warning(f"Received duplicate event {event['id']}")
                     else:
                         added_last_event = True
                     event["source"] = "timelineActivity"
@@ -87,9 +90,7 @@ class Timeline:
             self.log.info(f"Received #{self.num_timelines:<2} timeline activity log")
             after = response["cursors"].get("after")
             if (after is not None) and added_last_event:
-                self.log.info(
-                    f"Subscribing #{self.num_timelines+1:<2} timeline activity log"
-                )
+                self.log.info(f"Subscribing #{self.num_timelines + 1:<2} timeline activity log")
                 await self.tr.timeline_activity_log(after)
             else:
                 self.log.info("Received last relevant timeline activity log")
@@ -119,15 +120,18 @@ class Timeline:
         self.log.info("All timeline details requested")
         return False
 
-    async def process_timelineDetail(self, response, dl):
+    def process_timelineDetail(self, response, dl):
         """
         process timeline details response
         download any associated docs
         create other_events.json, events_with_documents.json and account_transactions.csv
         """
 
+        event = self.timeline_events.get(response["id"], None)
+        if event is None:
+            raise UnsupportedEventError(response["id"])
+
         self.received_detail += 1
-        event = self.timeline_events[response["id"]]
         event["details"] = response
 
         max_details_digits = len(str(self.requested_detail))
@@ -163,36 +167,49 @@ class Timeline:
                         "CREDIT",
                     ]:
                         title += f" - {event['subtitle']}"
-                    dl.dl_doc(doc, title, doc.get("detail"), subfolder)
+                    dl.dl_doc(doc, title, doc.get("detail"), subfolder, datetime.fromisoformat(event["timestamp"]))
 
         if event["has_docs"]:
             self.events_with_docs.append(event)
         else:
             self.events_without_docs.append(event)
 
-        if self.received_detail == self.requested_detail:
-            self.log.info("Received all details")
-            dl.output_path.mkdir(parents=True, exist_ok=True)
-            with open(dl.output_path / "other_events.json", "w", encoding="utf-8") as f:
-                json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+        self.check_if_done(dl)
 
-            with open(
-                dl.output_path / "events_with_documents.json", "w", encoding="utf-8"
-            ) as f:
-                json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+    def check_if_done(self, dl):
+        if (self.received_detail + self.skipped_detail) == self.requested_detail:
+            self.finish_timeline_details(dl)
 
-            with open(dl.output_path / "all_events.json", "w", encoding="utf-8") as f:
-                json.dump(
-                    self.events_without_docs + self.events_with_docs,
-                    f,
-                    ensure_ascii=False,
-                    indent=2,
-                )
+    def finish_timeline_details(self, dl):
+        self.log.info("Received all details")
+        if self.skipped_detail > 0:
+            self.log.warning(f"Skipped {self.skipped_detail} unsupported events")
 
-            export_transactions(
-                dl.output_path / "all_events.json",
-                dl.output_path / "account_transactions.csv",
-                sort=dl.sort_export,
+        dl.output_path.mkdir(parents=True, exist_ok=True)
+        with open(dl.output_path / "other_events.json", "w", encoding="utf-8") as f:
+            json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+
+        with open(dl.output_path / "events_with_documents.json", "w", encoding="utf-8") as f:
+            json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+
+        with open(dl.output_path / "all_events.json", "w", encoding="utf-8") as f:
+            json.dump(
+                self.events_without_docs + self.events_with_docs,
+                f,
+                ensure_ascii=False,
+                indent=2,
             )
 
-            dl.work_responses()
+        with (dl.output_path / "account_transactions.csv").open("w", encoding="utf8") as f:
+            TransactionExporter(
+                lang=dl.lang,
+                date_with_time=dl.date_with_time,
+                decimal_localization=dl.decimal_localization,
+            ).export(
+                f,
+                [Event.from_dict(ev) for ev in self.events_without_docs + self.events_with_docs],
+                sort=dl.sort_export,
+                format=dl.format_export,
+            )
+
+        dl.work_responses()
