@@ -102,16 +102,21 @@ class DL:
         if subtitleText is None:
             subtitleText = ""
 
-        try:
-            date = doc["detail"]
-            iso_date = "-".join(date.split(".")[::-1])
-        except KeyError:
-            if timestamp:
-                date = timestamp.strftime("%d.%m.%Y")
-                iso_date = timestamp.strftime("%Y-%m-%d")
-            else:
-                date = ""
-                iso_date = ""
+        #empty date always works
+        date = ""
+        iso_date = ""
+        #if there is a timestamp, we use this
+        if timestamp is not None:
+            date = timestamp.strftime("%d.%m.%Y")
+            iso_date = timestamp.strftime("%Y-%m-%d")
+        #and finaly we use the even better infro from doc detail if available
+        #one coud do en if/elif instead but this is robust enough 
+        #change of try: except: style of programming:-)
+        if "detail" in doc:
+            if doc["detail"] is not None and "." in doc["detail"]:
+                date = doc["detail"]
+                iso_date = "-".join(date.split(".")[::-1])
+        
         doc_id = doc["id"]
 
         # extract time from subtitleText
