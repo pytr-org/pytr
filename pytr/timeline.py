@@ -157,7 +157,7 @@ class Timeline:
                 event["has_docs"] = True
                 try:
                     timestamp = datetime.strptime(doc["detail"], "%d.%m.%Y").timestamp()
-                except (ValueError, KeyError):
+                except (ValueError, KeyError, TypeError):
                     timestamp = datetime.now().timestamp()
                 if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
                     title = f"{doc['title']} - {event['title']}"
