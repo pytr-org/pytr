@@ -6,6 +6,8 @@ from pytr.event import Event
 from .transactions import TransactionExporter
 from .utils import get_logger
 
+import traceback
+
 
 class UnsupportedEventError(Exception):
     pass
@@ -155,10 +157,19 @@ class Timeline:
                 continue
             for doc in section["data"]:
                 event["has_docs"] = True
-                try:
-                    timestamp = datetime.strptime(doc["detail"], "%d.%m.%Y").timestamp()
-                except (ValueError, KeyError, TypeError):
-                    timestamp = datetime.now().timestamp()
+                
+                #force a timestamp, then see if it can be refined
+                timestamp = datetime.now().timestamp()
+                if "detail" in doc and doc["detail"] is not None:
+                    date = doc["detail"]
+                    try:
+                        timestamp = datetime.strptime(date, "%d.%m.%Y").timestamp()
+                    except Exception as exc:
+                        print traceback.format_exc()
+                        print exc
+                        pass
+
+                    
                 if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
                     title = f"{doc['title']} - {event['title']}"
                     if event["eventType"] in [
