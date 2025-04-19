@@ -6,6 +6,8 @@ from pytr.event import Event
 from .transactions import TransactionExporter
 from .utils import get_logger
 
+import traceback
+
 
 class UnsupportedEventError(Exception):
     pass
@@ -155,10 +157,22 @@ class Timeline:
                 continue
             for doc in section["data"]:
                 event["has_docs"] = True
-                try:
-                    timestamp = datetime.strptime(doc["detail"], "%d.%m.%Y").timestamp()
-                except (ValueError, KeyError):
-                    timestamp = datetime.now().timestamp()
+                
+                #force a timestamp, then see if it can be refined
+                #better even: if the main imports a logger, instead of the print can't there be a self.error()?
+                timestamp = datetime.now().timestamp()
+                if "detail" in doc and doc["detail"] is not None:
+                    date = doc["detail"]
+                    if date.count(".")>=2:
+                        try:
+                            timestamp = datetime.strptime(date, "%d.%m.%Y").timestamp()
+                        except Exception as exc:
+                            #Maybe the exception should not be logged ad all but just a message like "failed to get timestamp information for doc:", doc 
+                            print (traceback.format_exc())
+                            print (exc)
+                            pass
+
+                    
                 if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
                     title = f"{doc['title']} - {event['title']}"
                     if event["eventType"] in [
