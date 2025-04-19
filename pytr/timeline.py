@@ -163,12 +163,14 @@ class Timeline:
                 timestamp = datetime.now().timestamp()
                 if "detail" in doc and doc["detail"] is not None:
                     date = doc["detail"]
-                    try:
-                        timestamp = datetime.strptime(date, "%d.%m.%Y").timestamp()
-                    except Exception as exc:
-                        print (traceback.format_exc())
-                        print (exc)
-                        pass
+                    if date.count(".")>=2:
+                        try:
+                            timestamp = datetime.strptime(date, "%d.%m.%Y").timestamp()
+                        except Exception as exc:
+                            #Maybe the exception should not be logged ad all but just a message like "failed to get timestamp information for doc:", doc 
+                            print (traceback.format_exc())
+                            print (exc)
+                            pass
 
                     
                 if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
