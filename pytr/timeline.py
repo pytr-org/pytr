@@ -159,14 +159,15 @@ class Timeline:
                 event["has_docs"] = True
                 
                 #force a timestamp, then see if it can be refined
+                #better even: if the main imports a logger, instead of the print can't there be a self.error()?
                 timestamp = datetime.now().timestamp()
                 if "detail" in doc and doc["detail"] is not None:
                     date = doc["detail"]
                     try:
                         timestamp = datetime.strptime(date, "%d.%m.%Y").timestamp()
                     except Exception as exc:
-                        print traceback.format_exc()
-                        print exc
+                        print (traceback.format_exc())
+                        print (exc)
                         pass
 
                     
