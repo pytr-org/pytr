@@ -186,11 +186,11 @@ class Timeline:
 
             for doc in section["data"]:
                 timestamp_str = event["timestamp"]
-                if timestamp_str[-3] != ':':
-                    timestamp_str = timestamp_str[:-2] + ':' + timestamp_str[-2:]
+                if timestamp_str[-3] != ":":
+                    timestamp_str = timestamp_str[:-2] + ":" + timestamp_str[-2:]
                 try:
                     docdate = datetime.fromisoformat(timestamp_str)
-                except (ValueError):
+                except ValueError:
                     print(f"no timestamp parseable from {timestamp_str}")
                     docdate = datetime.now()
 

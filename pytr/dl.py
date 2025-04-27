@@ -1,4 +1,3 @@
-import re
 from concurrent.futures import as_completed
 from pathlib import Path
 
