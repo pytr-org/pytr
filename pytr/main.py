@@ -243,12 +243,12 @@ def get_main_parser():
     parser_export_transactions.add_argument(
         "input",
         help="Input path to JSON (use all_events.json from dl_docs)",
-        type=argparse.FileType("r", encoding="utf8"),
+        type=argparse.FileType("r", encoding="utf-8"),
     )
     parser_export_transactions.add_argument(
         "output",
         help="Output file path",
-        type=argparse.FileType("w", encoding="utf8"),
+        type=argparse.FileType("w", encoding="utf-8"),
         default="-",
         nargs="?",
     )
