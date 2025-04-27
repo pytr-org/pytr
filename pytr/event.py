@@ -109,6 +109,7 @@ events_known_ignored = [
     "VERIFICATION_TRANSFER_ACCEPTED",
     "card_failed_verification",
     "card_successful_verification",
+    "crypto_annual_statement",
     "current_account_activated",
     "new_tr_iban",
     "trading_order_cancelled",
