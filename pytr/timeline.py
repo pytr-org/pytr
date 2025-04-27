@@ -229,7 +229,7 @@ class Timeline:
                 indent=2,
             )
 
-        with (dl.output_path / "account_transactions.csv").open("w", encoding="utf8") as f:
+        with (dl.output_path / "account_transactions.csv").open("w", encoding="utf-8") as f:
             TransactionExporter(
                 lang=dl.lang,
                 date_with_time=dl.date_with_time,
