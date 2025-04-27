@@ -140,34 +140,63 @@ class Timeline:
             + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
         )
 
-        subfolder = {
-            "benefits_saveback_execution": "Saveback",
-            "benefits_spare_change_execution": "RoundUp",
-            "ssp_corporate_action_invoice_cash": "Dividende",
-            "CREDIT": "Dividende",
-            "INTEREST_PAYOUT_CREATED": "Zinsen",
-            "SAVINGS_PLAN_EXECUTED": "Sparplan",
-        }.get(event["eventType"])
-
         event["has_docs"] = False
         for section in response["sections"]:
             if section["type"] != "documents":
                 continue
+
+            event["has_docs"] = True
+            subfolder = {
+                "OUTGOING_TRANSFER_DELEGATION": "Auszahlungen",
+                "OUTGOING_TRANSFER": "Auszahlungen",
+                "CREDIT": "Dividende",
+                "ssp_corporate_action_invoice_cash": "Dividende",
+                "INCOMING_TRANSFER_DELEGATION": "Einzahlungen",
+                "INCOMING_TRANSFER": "Einzahlungen",
+                "CUSTOMER_CREATED": "Misc",
+                "DOCUMENTS_ACCEPTED": "Misc",
+                "DOCUMENTS_CREATED": "Misc",
+                "TAX_YEAR_END_REPORT": "Misc",
+                "crypto_annual_statement": "Misc",
+                "ssp_corporate_action_informative_notification": "Misc",
+                "ssp_corporate_action_invoice_shares": "Misc",
+                "ssp_dividend_option_customer_instruction": "Misc",
+                "benefits_spare_change_execution": "RoundUp",
+                "benefits_saveback_execution": "Saveback",
+                "SAVINGS_PLAN_EXECUTED": "Sparplan",
+                "SAVINGS_PLAN_INVOICE_CREATED": "Sparplan",
+                "trading_savingsplan_executed": "Sparplan",
+                "trading_savingsplan_execution_failed": "Sparplan",
+                "ssp_tax_correction_invoice": "Steuerkorrekturen",
+                "ORDER_CANCELED": "Trades",
+                "ORDER_EXECUTED": "Trades",
+                "ORDER_EXPIRED": "Trades",
+                "ORDER_REJECTED": "Trades",
+                "TRADE_CORRECTED": "Trades",
+                "TRADE_INVOICE": "Trades",
+                "trading_order_cancelled": "Trades",
+                "trading_order_created": "Trades",
+                "trading_order_rejected": "Trades",
+                "trading_trade_executed": "Trades",
+                "INTEREST_PAYOUT": "Zinsen",
+                "INTEREST_PAYOUT_CREATED": "Zinsen",
+            }.get(event["eventType"])
+            if subfolder is None:
+                print(f"no mapping for {event['eventType']}")
+
             for doc in section["data"]:
-                event["has_docs"] = True
+                timestamp_str = event["timestamp"]
+                if timestamp_str[-3] != ':':
+                    timestamp_str = timestamp_str[:-2] + ':' + timestamp_str[-2:]
                 try:
-                    timestamp = datetime.strptime(doc["detail"], "%d.%m.%Y").timestamp()
-                except (ValueError, KeyError):
-                    timestamp = datetime.now().timestamp()
-                if self.max_age_timestamp == 0 or self.max_age_timestamp < timestamp:
-                    title = f"{doc['title']} - {event['title']}"
-                    if event["eventType"] in [
-                        "ACCOUNT_TRANSFER_INCOMING",
-                        "ACCOUNT_TRANSFER_OUTGOING",
-                        "CREDIT",
-                    ]:
-                        title += f" - {event['subtitle']}"
-                    dl.dl_doc(doc, title, doc.get("detail"), subfolder, datetime.fromisoformat(event["timestamp"]))
+                    docdate = datetime.fromisoformat(timestamp_str)
+                except (ValueError):
+                    print(f"no timestamp parseable from {timestamp_str}")
+                    docdate = datetime.now()
+
+                if self.max_age_timestamp == 0 or self.max_age_timestamp < docdate.timestamp():
+                    title = f"{doc['title']} - {event['title']} - {event['subtitle']}"
+                    dl.dl_doc(doc, title, subfolder, docdate)
 
         if event["has_docs"]:
             self.events_with_docs.append(event)

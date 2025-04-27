@@ -94,35 +94,18 @@ class DL:
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def dl_doc(self, doc, titleText, subtitleText, subfolder=None, timestamp=None):
+    def dl_doc(self, doc, titleText, subfolder, doc_date):
         """
         send asynchronous request, append future with filepath to self.futures
         """
         doc_url = doc["action"]["payload"]
+        subtitleText = doc.get("detail")
         if subtitleText is None:
             subtitleText = ""
 
-        try:
-            date = doc["detail"]
-            iso_date = "-".join(date.split(".")[::-1])
-        except KeyError:
-            if timestamp:
-                date = timestamp.strftime("%d.%m.%Y")
-                iso_date = timestamp.strftime("%Y-%m-%d")
-            else:
-                date = ""
-                iso_date = ""
         doc_id = doc["id"]
-
-        # extract time from subtitleText
-        try:
-            time = re.findall("um (\\d+:\\d+) Uhr", subtitleText)
-            if time == []:
-                time = ""
-            else:
-                time = f" {time[0]}"
-        except TypeError:
-            time = ""
+        iso_date = doc_date.strftime("%Y-%m-%d")
+        time = doc_date.strftime("%H:%M")
 
         if subfolder is not None:
             directory = self.output_path / subfolder
@@ -132,11 +115,13 @@ class DL:
         # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
         doc_type = doc["title"].rsplit(" ")
         if doc_type[-1].isnumeric() is True:
-            doc_type_num = f" {doc_type.pop()}"
+            doc_type_num = doc_type.pop()
         else:
             doc_type_num = ""
 
         doc_type = " ".join(doc_type)
+        if doc_type == "Abrechnung Ausführung" or doc_type == "Abrechnungsausführung":
+            doc_type = "Abrechnung"
         titleText = titleText.replace("\n", "").replace("/", "-")
         subtitleText = subtitleText.replace("\n", "").replace("/", "-")
 

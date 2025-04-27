@@ -156,9 +156,9 @@ def get_main_parser():
     parser_dl_docs.add_argument("output", help="Output directory", metavar="PATH", type=Path)
     parser_dl_docs.add_argument(
         "--format",
-        help="available variables:\tiso_date, time, title, doc_num, subtitle, id",
+        help="available variables:\tiso_date, time, title, subtitle, doc_num, id",
         metavar="FORMAT_STRING",
-        default="{iso_date}{time} {title}{doc_num}",
+        default="{iso_date} {time} {title}",
     )
     parser_dl_docs.add_argument(
         "--last_days",
