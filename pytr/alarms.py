@@ -63,7 +63,6 @@ class Alarms:
                 current_alarms[a["instrumentId"]][Decimal(a["targetPrice"])] = a["id"]
 
         for isin in isins:
-
             for a in self.data[isin]:
                 if a in current_alarms[isin]:
                     alarms_to_keep[isin].append(a)
