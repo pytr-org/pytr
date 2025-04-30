@@ -46,6 +46,7 @@ class Alarms:
     async def set_alarms(self):
         current_alarms = {}
         new_alarms = {}
+        alarms_to_keep = {}
         isins = self.data.keys()
 
         if not isins:
@@ -55,26 +56,35 @@ class Alarms:
         for isin in isins:
             current_alarms.setdefault(isin, {})
             new_alarms.setdefault(isin, [])
+            alarms_to_keep.setdefault(isin, [])
 
         for a in self.alarms:
             if a["instrumentId"] in isins:
                 current_alarms[a["instrumentId"]][Decimal(a["targetPrice"])] = a["id"]
 
         for isin in isins:
-            print(f"{isin} Target: {sorted(self.data[isin])}")
-            print(f"{isin} Current: {sorted(current_alarms[isin].keys())}")
 
-        for isin in isins:
             for a in self.data[isin]:
                 if a in current_alarms[isin]:
+                    alarms_to_keep[isin].append(a)
                     del current_alarms[isin][a]
                 else:
                     new_alarms[isin].append(a)
 
-            if self.remove_current_alarms:
-                print(f"{isin}: Adding {new_alarms[isin]}; Removing {sorted(current_alarms[isin].keys())}")
-            else:
-                print(f"{isin}: Adding {new_alarms[isin]}")
+            if not self.remove_current_alarms:
+                current_alarms.clear()
+
+            messages = []
+            if alarms_to_keep[isin]:
+                messages.append(f"Keeping {', '.join(str(v) for v in alarms_to_keep[isin])}")
+            if new_alarms[isin]:
+                messages.append(f"Adding {', '.join(str(v) for v in new_alarms[isin])}")
+            if current_alarms[isin]:
+                messages.append(f"Removing {', '.join(str(v) for v in sorted(current_alarms[isin].keys()))}")
+            if not messages:
+                messages.append("Nothing to do.")
+
+            print(f"{isin}: {'; '.join(messages)}")
 
         action_count = 0
         for isin in isins:
@@ -82,10 +92,9 @@ class Alarms:
                 await self.tr.create_price_alarm(isin, float(a))
                 action_count += 1
 
-            if self.remove_current_alarms:
-                for a in current_alarms[isin]:
-                    await self.tr.cancel_price_alarm(current_alarms[isin].get(a))
-                    action_count += 1
+            for a in current_alarms[isin]:
+                await self.tr.cancel_price_alarm(current_alarms[isin].get(a))
+                action_count += 1
 
         while action_count > 0:
             await self.tr.recv()
