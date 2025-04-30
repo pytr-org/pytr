@@ -77,8 +77,8 @@ Commands:
                                         events (events_with_documents.json and other_events.json)
     portfolio                           Show current portfolio
     details                             Get details for an ISIN
-    get_price_alarms                    Get overview of current price alarms
-    set_price_alarms                    Set price alarms based on diff from current price
+    get_price_alarms                    Get current price alarms
+    set_price_alarms                    Set new price alarms
     export_transactions                 Create a CSV with the deposits and removals ready for importing into Portfolio
                                         Performance
     completion                          Print shell tab completion
