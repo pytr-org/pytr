@@ -190,8 +190,13 @@ def get_main_parser():
         help=info,
         description=info,
     )
-    parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
-
+    parser_portfolio.add_argument("-o", "--output", help="Output path of the file", type=Path)
+    parser_portfolio.add_argument(
+        "--export-format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format.",
+    )
     # details
     info = "Get details for an ISIN"
     parser_details = parser_cmd.add_parser(
@@ -404,7 +409,10 @@ def main():
         )
         p.get()
         if args.output is not None:
-            p.portfolio_to_csv(args.output)
+            if args.export_format == "csv":
+                p.portfolio_to_csv(args.output)
+            elif args.export_format == "json":
+                p.portfolio_to_json(args.output)
     elif args.command == "export_transactions":
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(
