@@ -112,6 +112,9 @@ msgstr "Shares"
 msgid "CSVColumn_Taxes"
 msgstr "Taxes"
 
+msgid "CSVColumn_Price"
+msgstr "Price"
+
 msgid "CSVColumn_TickerSymbol"
 msgstr "Ticker Symbol"
 

@@ -112,6 +112,9 @@ msgstr "Stück"
 msgid "CSVColumn_Taxes"
 msgstr "Steuern"
 
+msgid "CSVColumn_Price"
+msgstr "Preis"
+
 msgid "CSVColumn_TickerSymbol"
 msgstr "Ticker-Symbol"
 

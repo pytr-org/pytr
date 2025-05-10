@@ -29,6 +29,7 @@ def test_event_csv_formatter():
             "Stück": None,
             "Typ": "Einlage",
             "Wert": 3000.0,
+            "Preis": None,
         }
     ]
 
@@ -58,5 +59,6 @@ def test_buy():
             "Stück": 60.0,
             "Typ": "Kauf",
             "Wert": -3002.8,
+            "Preis": 50.03,
         }
     ]
