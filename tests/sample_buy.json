@@ -7,7 +7,7 @@
     "subtitle": "Kauforder",
     "amount": {
       "currency": "EUR",
-      "value": -3002.8,
+      "value": -3002.80005,
       "fractionDigits": 2
     },
     "subAmount": null,

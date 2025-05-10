@@ -35,6 +35,7 @@ CSVCOLUMN_TO_TRANSLATION_KEY = {
     "shares": "CSVColumn_Shares",
     "fees": "CSVColumn_Fees",
     "taxes": "CSVColumn_Taxes",
+    "price": "CSVColumn_Price",
 }
 
 
@@ -113,6 +114,7 @@ class TransactionExporter:
         - `shares`
         - `fees`
         - `taxes`
+        - `price`
         """
 
         if event.event_type is None:
@@ -131,6 +133,7 @@ class TransactionExporter:
             "shares": self._decimal_format(event.shares, False),
             "fees": self._decimal_format(-event.fees) if event.fees is not None else None,
             "taxes": self._decimal_format(-event.taxes) if event.taxes is not None else None,
+            "price": self._decimal_format(event.price) if event.price is not None else None,
         }
 
         # Special case for saveback events. Example payload: https://github.com/pytr-org/pytr/issues/116#issuecomment-2377491990

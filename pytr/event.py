@@ -132,6 +132,7 @@ class Event:
     note: Optional[str]
     shares: Optional[float]
     taxes: Optional[float]
+    price: Optional[float]
     value: Optional[float]
 
     @classmethod
@@ -150,8 +151,18 @@ class Event:
         value: Optional[float] = (
             v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
         )
-        fees, isin, note, shares, taxes = cls._parse_type_dependent_params(event_type, event_dict)
-        return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
+        fees, isin, note, shares, taxes, price, transaction_value = cls._parse_type_dependent_params(
+            event_type, event_dict
+        )
+        # Take over and fix up transaction_value based on sign of overall amount.
+        # The overall amount might contain floating point errors in the API output of TR
+        # when fractional shares are involved.
+        if transaction_value:
+            if value >= 0:
+                value = transaction_value
+            else:
+                value = -transaction_value
+        return cls(date, title, event_type, fees, isin, note, shares, taxes, price, value)
 
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
@@ -177,9 +188,17 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes
+            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes, price, value
         """
-        isin, shares, taxes, note, fees = (None,) * 5
+        (
+            isin,
+            shares,
+            taxes,
+            note,
+            fees,
+            price,
+            value,
+        ) = (None,) * 7
 
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_dict)
@@ -187,17 +206,17 @@ class Event:
 
         elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
-            shares, fees = cls._parse_shares_and_fees(event_dict)
+            shares, fees, price, value = cls._parse_shares_and_fees(event_dict)
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type is PPEventType.INTEREST:
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
-            shares, fees = cls._parse_shares_and_fees(event_dict)
+            shares, fees, price, value = cls._parse_shares_and_fees(event_dict)
             note = cls._parse_card_note(event_dict)
 
-        return fees, isin, note, shares, taxes
+        return fees, isin, note, shares, taxes, price, value
 
     @staticmethod
     def _parse_isin(event_dict: Dict[Any, Any]) -> str:
@@ -231,9 +250,9 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: shares, fees
+            Tuple[Optional[float]]: shares, fees, price, value
         """
-        shares, fees = None, None
+        shares, fees, price, value = (None,) * 4
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -254,6 +273,16 @@ class Event:
                 shares = cls._parse_float_from_detail(shares_dict, dump_dict, pref_locale)
                 break
 
+            price_dicts = filter(lambda x: x["title"] in ["Aktienkurs"], data)
+            for price_dict in price_dicts:
+                price = cls._parse_float_from_detail(price_dict, dump_dict)
+
+            # Share transactions involving fractional shares might have a floating point value reported in
+            # the amount::value field, fix up by using the specific information for the transaction.
+            value_dicts = filter(lambda x: x["title"] in ["Gesamt"], data)
+            for value_dict in value_dicts:
+                value = cls._parse_float_from_detail(value_dict, dump_dict)
+
             fees_dicts = filter(lambda x: x["title"] == "Gebühr", data)
             for fees_dict in fees_dicts:
                 dump_dict["subtitle"] = fees_dict["title"]
@@ -263,7 +292,7 @@ class Event:
 
             break
 
-        return shares, fees
+        return shares, fees, price, value
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
