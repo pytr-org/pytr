@@ -273,7 +273,7 @@ class Event:
                 shares = cls._parse_float_from_detail(shares_dict, dump_dict, pref_locale)
                 break
 
-            price_dicts = filter(lambda x: x["title"] in ["Aktienkurs"], data)
+            price_dicts = filter(lambda x: x["title"] in ["Aktienkurs", "Anteilspreis"], data)
             for price_dict in price_dicts:
                 price = cls._parse_float_from_detail(price_dict, dump_dict)
 
