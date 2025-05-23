@@ -237,11 +237,13 @@ class Event:
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
-        transaction_dicts = filter(lambda x: x.get("title") in ["Transaktion"], sections)
+        overview_data = next(iter(filter(lambda x: x.get("title") in ["Übersicht"], sections)), {}).get("data", [])
+        transaction_dicts = filter(lambda x: x.get("title") in ["Transaktion"], overview_data)
         for transaction_dict in transaction_dicts:
             dump_dict["maintitle"] = transaction_dict["title"]
-            data = transaction_dict.get("data", [{}])
-            shares_dicts = filter(lambda x: x["title"] in ["Aktien", "Anteile"], data)
+            sections2 = transaction_dict.get("detail", {}).get("action", {}).get("payload", {}).get("sections", [])
+            tablesection_data = next(iter(filter(lambda x: x.get("type") == "table", sections2))).get("data", [])
+            shares_dicts = filter(lambda x: x["title"] in ["Aktien", "Anteile"], tablesection_data)
             for shares_dict in shares_dicts:
                 dump_dict["subtitle"] = shares_dict["title"]
                 dump_dict["type"] = "shares"
@@ -254,13 +256,13 @@ class Event:
                 shares = cls._parse_float_from_detail(shares_dict, dump_dict, pref_locale)
                 break
 
-            fees_dicts = filter(lambda x: x["title"] == "Gebühr", data)
-            for fees_dict in fees_dicts:
-                dump_dict["subtitle"] = fees_dict["title"]
-                dump_dict["type"] = "fees"
-                fees = cls._parse_float_from_detail(fees_dict, dump_dict)
-                break
+            break
 
+        fees_dicts = filter(lambda x: x["title"] == "Gebühr", overview_data)
+        for fees_dict in fees_dicts:
+            dump_dict["subtitle"] = fees_dict["title"]
+            dump_dict["type"] = "fees"
+            fees = cls._parse_float_from_detail(fees_dict, dump_dict)
             break
 
         return shares, fees
