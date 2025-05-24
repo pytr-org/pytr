@@ -1,0 +1,172 @@
+{
+  "id": "32a408dd-5d8e-4991-a7c3-0b2fd1dc062c",
+  "timestamp": "2025-01-10T10:00:00.000+0000",
+  "title": "Long 1,2345 $",
+  "icon": "logos/GB00B6398765/v2",
+  "badge": null,
+  "subtitle": "Tilgung",
+  "amount": {
+    "currency": "EUR",
+    "value": 0.1,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "32a408dd-5d8e-4991-a7c3-0b2fd1dc062c"
+  },
+  "eventType": "ssp_corporate_action_invoice_cash",
+  "cashAccountNumber": "0123456789",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
+    "id": "32a408dd-5d8e-4991-a7c3-0b2fd1dc062c",
+    "sections": [
+      {
+        "title": "Du hast 0,10 € erhalten",
+        "data": {
+          "icon": "logos/DE000SX12345/v2",
+          "subtitleText": null,
+          "timestamp": "2025-01-10T10:00:00.000+0000",
+          "status": "executed"
+        },
+        "action": null,
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Event",
+            "detail": {
+              "text": "Tilgung",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Long @1,2345",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien entfernt",
+            "detail": {
+              "text": "100.000000",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Geschäft",
+        "data": [
+          {
+            "title": "Bruttoertrag",
+            "detail": {
+              "text": "0,10 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Steuer",
+            "detail": {
+              "text": "0,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "0,10 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "10.05.2025",
+            "action": {
+              "type": "browserModal",
+              "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/"
+            },
+            "id": "75aa8fe4-cec5-4963-bf8a-2f5aec65c4f5",
+            "postboxType": "CA_INCOME_SECURITIES_INVOICE"
+          }
+        ],
+        "action": null,
+        "type": "documents"
+      },
+      {
+        "title": "",
+        "data": [
+          {
+            "title": "",
+            "detail": {
+              "icon": "common_empty_string",
+              "action": {
+                "type": "customerSupportChat",
+                "payload": {
+                  "contextParams": {
+                    "timelineEventId": "75c154a8-d171-445a-ac87-174513cf58ee",
+                    "chat_flow_key": "NHC_0029_wealth_general_question_corporate_action"
+                  },
+                  "contextCategory": "NHC"
+                }
+              },
+              "style": "highlighted",
+              "type": "listItemAvatarDefault"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      }
+    ]
+  }
+}
