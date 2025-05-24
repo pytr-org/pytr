@@ -252,6 +252,7 @@ class Event:
             if event_type is PPEventType.DIVIDEND:
                 isin = cls._parse_isin(event_dict)
                 taxes = cls._parse_taxes(event_dict)
+                shares, _, _, _ = cls._parse_shares_fees_taxes_and_value(event_dict)
 
             elif event_type is PPEventType.INTEREST:
                 taxes = cls._parse_taxes(event_dict)
@@ -280,6 +281,11 @@ class Event:
             action = section.get("action", None)
             if action and action.get("type", {}) == "instrumentDetail":
                 isin2 = section.get("action", {}).get("payload")
+                break
+            if section.get("type", {}) == "header":
+                isin2 = section.get("data", {}).get("icon")
+                isin2 = isin2[isin2.find("/") + 1 :]
+                isin2 = isin2[: isin2.find("/")]
                 break
         if isin != isin2:
             isin = isin2
@@ -327,6 +333,8 @@ class Event:
                         taxes_dict = item
                     elif title == "Gesamt":
                         gesamt_dict = item
+                    elif title == "Aktien entfernt":
+                        shares_dict = item
                     elif title == "Transaktion":
                         transaction_dict = item
                         detail = item.get("detail", {})
