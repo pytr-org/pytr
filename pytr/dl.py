@@ -133,7 +133,10 @@ class DL:
             id=doc_id,
         )
 
-        filename_with_doc_id = filename + f" ({doc_id})"
+        # In case, the filename already ends with the doc id, we remove it to avoid a duplicate id in the name
+        filename_with_doc_id = (
+            filename[: -len(doc_id)].rstrip() if filename.endswith(doc_id) else filename
+        ) + f" ({doc_id})"
 
         if doc_type in ["Kontoauszug", "Depotauszug"]:
             filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"
