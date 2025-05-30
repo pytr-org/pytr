@@ -188,6 +188,8 @@ class Event:
         elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
             shares, fees = cls._parse_shares_and_fees(event_dict)
+            if shares is None:
+                shares, _ = cls._parse_shares_from_overview(event_dict)
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type is PPEventType.INTEREST:
@@ -263,7 +265,22 @@ class Event:
 
             break
 
+
         return shares, fees
+
+    @classmethod
+    def _parse_shares_from_overview(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float], Optional[float]]:
+        """Extract the number of shares from the "displayValue", useful if "Transaktion" is missing."""
+        sections = event_dict.get("details", {}).get("sections", [{}])
+        overview_dicts = filter(lambda x: x.get("title") in ["Übersicht"], sections)
+        for overview_dict in overview_dicts:
+            data = overview_dict.get("data", [{}])
+            transaction_dicts = filter(lambda x: x["title"] in ["Transaktion"], data)
+            for transaction_dict in transaction_dicts:
+                display_value = transaction_dict.get("detail", {}).get("displayValue", None)
+                shares, price = cls._parse_display_value(display_value)
+                return shares, price
+        return None, None
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
@@ -372,3 +389,48 @@ class Event:
             )
 
         return None if result == 0.0 else result
+
+
+    @staticmethod
+    def _parse_display_value(
+        display_value_dict: Optional[Dict[str, str]],
+        pref_locale="de",
+    ) -> Tuple[Optional[float], Optional[float]]:
+        """
+        Try to get some reasonable information from data like:
+
+        "displayValue": {
+            "text": "5,23 €",
+            "prefix": "17,219607 × "
+        }
+
+        as (17.219607, 5.23)
+
+        resp.
+
+        "displayValue": {
+            "text": "0,239762 €",
+            "prefix": "1 PLN"
+        }
+
+        as (1.0, 0.239762)
+        """
+        if display_value_dict is None:
+            return None, None
+
+        def _parse(text):
+            stripped = re.sub(r"[^\,\.\d-]", "", text)
+            try:
+                return float(parse_decimal(stripped, "de", strict=True))
+            except NumberFormatError:
+                return float(parse_decimal(stripped, "en", strict=True))
+
+        try:
+            prefix = _parse(display_value_dict["prefix"])
+            value = _parse(display_value_dict["text"])
+        except (KeyError, NumberFormatError):
+            get_event_logger().debug(
+                "Failed to extract values from", json.dumps(display_value_dict, indent=4)
+            )
+            return None, None
+        return prefix, value
