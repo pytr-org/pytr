@@ -265,7 +265,6 @@ class Event:
 
             break
 
-
         return shares, fees
 
     @classmethod
@@ -390,7 +389,6 @@ class Event:
 
         return None if result == 0.0 else result
 
-
     @staticmethod
     def _parse_display_value(
         display_value_dict: Optional[Dict[str, str]],
@@ -429,8 +427,6 @@ class Event:
             prefix = _parse(display_value_dict["prefix"])
             value = _parse(display_value_dict["text"])
         except (KeyError, NumberFormatError):
-            get_event_logger().debug(
-                "Failed to extract values from", json.dumps(display_value_dict, indent=4)
-            )
+            get_event_logger().debug("Failed to extract values from", json.dumps(display_value_dict, indent=4))
             return None, None
         return prefix, value
