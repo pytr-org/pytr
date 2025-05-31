@@ -166,7 +166,6 @@ class Timeline:
                 "GESH_CORPORATE_ACTION": "Misc",
                 "INPAYMENTS_SEPA_MANDATE_CREATED": "Misc",
                 "INSTRUCTION_CORPORATE_ACTION": "Misc",
-                "PAYMENT-SERVICE-IN-PAYMENT-DIRECT-DEBIT": "Misc",
                 "PRE_DETERMINED_TAX_BASE_EARNING": "Misc",
                 "QUARTERLY_REPORT": "Misc",
                 "SHAREBOOKING": "Misc",
