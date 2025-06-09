@@ -271,12 +271,14 @@ class Event:
 
         transaction_dict = next(filter(lambda x: x.get("title") in ["Transaktion"], sections), None)
         if transaction_dict:
+            # old style event
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
             shares_dict = next(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data), None)
             fees_dict = next(filter(lambda x: x["title"] == "Gebühr", data), None)
             taxes_dict = next(filter(lambda x: x["title"] in ["Steuer", "Steuern"], data), None)
         else:
+            # new style event
             uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
             if uebersicht_dict:
                 for item in uebersicht_dict.get("data", []):
