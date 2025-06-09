@@ -41,6 +41,7 @@ class PPEventType(EventType):
 
 tr_event_type_mapping = {
     # Deposits
+    "ACCOUNT_TRANSFER_INCOMING": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER_DELEGATION": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND": PPEventType.DEPOSIT,
@@ -68,6 +69,7 @@ tr_event_type_mapping = {
     # Saveback
     "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
     # Tax refunds
+    "TAX_CORRECTION": PPEventType.TAX_REFUND,
     "TAX_REFUND": PPEventType.TAX_REFUND,
     "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
     # Trade invoices
@@ -92,26 +94,47 @@ def get_event_logger():
 
 
 events_known_ignored = [
+    "AML_SOURCE_OF_WEALTH_RESPONSE_EXECUTED",
+    "CASH_ACCOUNT_CHANGED",
+    "CREDIT_CANCELED",
     "CUSTOMER_CREATED",
     "DEVICE_RESET",
     "DOCUMENTS_ACCEPTED",
+    "DOCUMENTS_CHANGED",
     "DOCUMENTS_CREATED",
     "EMAIL_VALIDATED",
+    "EX_POST_COST_REPORT",
+    "EXEMPTION_ORDER_CHANGE_REQUESTED",
+    "EXEMPTION_ORDER_CHANGE_REQUESTED_AUTOMATICALLY",
+    "EXEMPTION_ORDER_CHANGED",
+    "INPAYMENTS_SEPA_MANDATE_CREATED",
+    "INSTRUCTION_CORPORATE_ACTION",
+    "GENERAL_MEETING",
+    "GESH_CORPORATE_ACTION",
+    "MATURITY",
     "ORDER_CANCELED",
     "ORDER_CREATED",
     "ORDER_EXPIRED",
     "ORDER_REJECTED",
+    "PRE_DETERMINED_TAX_BASE_EARNING",
     "PUK_CREATED",
+    "QUARTERLY_REPORT",
     "RDD_FLOW",
     "REFERENCE_ACCOUNT_CHANGED",
+    "REFERRAL_FIRST_TRADE_EXECUTED_INVITEE",
     "SECURITIES_ACCOUNT_CREATED",
+    "SHAREBOOKING",
+    "SHAREBOOKING_TRANSACTIONAL",
+    "STOCK_PERK_REFUNDED",
     "TAX_YEAR_END_REPORT",
     "VERIFICATION_TRANSFER_ACCEPTED",
+    "YEAR_END_TAX_REPORT",
     "card_failed_verification",
     "card_successful_verification",
     "crypto_annual_statement",
     "current_account_activated",
     "new_tr_iban",
+    "ssp_tender_offer_customer_instruction",
     "trading_order_cancelled",
     "trading_order_created",
     "trading_order_rejected",
@@ -187,14 +210,12 @@ class Event:
 
         elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
-            shares, fees = cls._parse_shares_and_fees(event_dict)
-            taxes = cls._parse_taxes(event_dict)
+            shares, fees, taxes = cls._parse_shares_fees_and_taxes(event_dict)
 
         elif event_type is PPEventType.INTEREST:
             taxes = cls._parse_taxes(event_dict)
 
         elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
-            shares, fees = cls._parse_shares_and_fees(event_dict)
             note = cls._parse_card_note(event_dict)
 
         return fees, isin, note, shares, taxes
@@ -224,46 +245,117 @@ class Event:
         return isin
 
     @classmethod
-    def _parse_shares_and_fees(cls, event_dict: Dict[Any, Any]) -> Tuple[Optional[float], Optional[float]]:
-        """Parses the amount of shares and the applicable fees
+    def _parse_shares_fees_and_taxes(
+        cls, event_dict: Dict[Any, Any]
+    ) -> Tuple[Optional[float], Optional[float], Optional[float]]:
+        """Parses the amount of shares, applicable fees and taxes
 
         Args:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[float]]: shares, fees
+            Tuple[Optional[float]]: shares, fees, taxes
         """
-        shares, fees = None, None
+        shares, fees, taxes, uebersicht_dict, shares_dict, fees_dict, taxes_dict = (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
-        transaction_dicts = filter(lambda x: x.get("title") in ["Transaktion"], sections)
-        for transaction_dict in transaction_dicts:
+
+        transaction_dict = next(filter(lambda x: x.get("title") in ["Transaktion"], sections), None)
+        if transaction_dict:
+            # old style event
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
-            shares_dicts = filter(lambda x: x["title"] in ["Aktien", "Anteile"], data)
-            for shares_dict in shares_dicts:
-                dump_dict["subtitle"] = shares_dict["title"]
-                dump_dict["type"] = "shares"
-                pref_locale = (
-                    "en"
-                    if event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
-                    and shares_dict["title"] == "Aktien"
-                    else "de"
-                )
-                shares = cls._parse_float_from_detail(shares_dict, dump_dict, pref_locale)
-                break
+            shares_dict = next(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data), None)
+            fees_dict = next(filter(lambda x: x["title"] == "Gebühr", data), None)
+            taxes_dict = next(filter(lambda x: x["title"] in ["Steuer", "Steuern"], data), None)
+        else:
+            # new style event
+            uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
+            if uebersicht_dict:
+                for item in uebersicht_dict.get("data", []):
+                    title = item.get("title")
+                    if title == "Gebühr":
+                        fees_dict = item
+                        if shares_dict and taxes_dict:
+                            break
+                        else:
+                            continue
+                    elif title == "Steuer":
+                        taxes_dict = item
+                        if fees_dict and shares_dict:
+                            break
+                        else:
+                            continue
+                    elif title != "Transaktion":
+                        continue
+                    transaction_dict = item
+                    detail = item.get("detail", {})
+                    action = detail.get("action", {})
+                    payload = action.get("payload", {})
+                    sections = payload.get("sections", [])
 
-            fees_dicts = filter(lambda x: x["title"] == "Gebühr", data)
-            for fees_dict in fees_dicts:
-                dump_dict["subtitle"] = fees_dict["title"]
-                dump_dict["type"] = "fees"
-                fees = cls._parse_float_from_detail(fees_dict, dump_dict)
-                break
+                    for section in sections:
+                        if section.get("type") == "table":
+                            for subitem in section.get("data", []):
+                                if subitem.get("title") == "Aktien":
+                                    shares_dict = subitem
+                                    break
+                            if shares_dict:
+                                break
 
-            break
+                    if fees_dict and taxes_dict:
+                        break
+                    else:
+                        continue
 
-        return shares, fees
+        if shares_dict:
+            dump_dict["subtitle"] = shares_dict["title"]
+            dump_dict["type"] = "shares"
+            pref_locale = (
+                "en"
+                if event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
+                and shares_dict["title"] == "Aktien"
+                else "de"
+            )
+            shares = cls._parse_float_from_text_value(
+                shares_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
+            )
+        elif (
+            event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
+            and uebersicht_dict
+            and transaction_dict
+        ):
+            shares = cls._parse_float_from_text_value(
+                transaction_dict.get("detail", {}).get("displayValue", {}).get("prefix", ""), dump_dict, "en", False
+            )
+        else:
+            get_event_logger().warning("Could not parse shares from %s", event_dict["eventType"])
+            get_event_logger().debug("Failed to parse shares from: %s", json.dumps(event_dict, indent=4))
+
+        if fees_dict:
+            dump_dict["subtitle"] = fees_dict["title"]
+            dump_dict["type"] = "fees"
+            fees = cls._parse_float_from_text_value(fees_dict.get("detail", {}).get("text", ""), dump_dict)
+        else:
+            get_event_logger().warning("Could not parse fees from %s", event_dict["eventType"])
+            get_event_logger().debug("Failed to parse fees from %s", json.dumps(event_dict, indent=4))
+
+        if taxes_dict:
+            dump_dict["subtitle"] = taxes_dict["title"]
+            dump_dict["type"] = "taxes"
+            taxes = cls._parse_float_from_text_value(taxes_dict.get("detail", {}).get("text", ""), dump_dict)
+        # no logging here because events may or may not have taxes
+
+        return shares, fees, taxes
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
@@ -275,26 +367,36 @@ class Event:
         Returns:
             Optional[float]: taxes
         """
-        parsed_taxes_val = None
+        taxes, taxes_dict = None, None
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
         pref_locale = "en" if event_dict["eventType"] in ["INTEREST_PAYOUT"] else "de"
 
         sections = event_dict.get("details", {}).get("sections", [{}])
-        transaction_dicts = filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections)
-        for transaction_dict in transaction_dicts:
+        transaction_dict = next(filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections), None)
+        if transaction_dict:
             # Filter for taxes dicts
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
-            taxes_dicts = filter(lambda x: x["title"] in ["Steuer", "Steuern"], data)
-            # Iterate over dicts containing tax information and parse each one
-            for taxes_dict in taxes_dicts:
-                dump_dict["subtitle"] = taxes_dict["title"]
-                dump_dict["type"] = "taxes"
-                parsed_taxes_val = cls._parse_float_from_detail(taxes_dict, dump_dict, pref_locale)
-                break
-            break
+            taxes_dict = next(filter(lambda x: x["title"] in ["Steuer", "Steuern"], data), None)
+        else:
+            uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
+            # Iterate over the top-level data list
+            if uebersicht_dict:
+                for item in uebersicht_dict.get("data", []):
+                    if item.get("title") == "Steuer":
+                        taxes_dict = item
+                        break
 
-        return parsed_taxes_val
+        # Iterate over dicts containing tax information and parse each one
+        if taxes_dict:
+            dump_dict["subtitle"] = taxes_dict["title"]
+            dump_dict["type"] = "taxes"
+            taxes = cls._parse_float_from_text_value(
+                taxes_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
+            )
+        # no logging here because events may or may not have taxes
+
+        return taxes
 
     @staticmethod
     def _parse_card_note(event_dict: Dict[Any, Any]) -> Optional[str]:
@@ -311,20 +413,20 @@ class Event:
         return None
 
     @staticmethod
-    def _parse_float_from_detail(
-        elem_dict: Dict[str, Any],
+    def _parse_float_from_text_value(
+        unparsed_val: str,
         dump_dict={"eventType": "Unknown", "id": "Unknown", "type": "Unknown"},
         pref_locale="de",
+        spei=False,
     ) -> Optional[float]:
-        """Parses a "detail" dictionary potentially containing a float in a certain locale format
+        """Parses a text value potentially containing a float in a certain locale format
 
         Args:
-            str (Dict[str, Any]): _description_
+            str: unparsed value
 
         Returns:
             Optional[float]: parsed float value or None
         """
-        unparsed_val = elem_dict.get("detail", {}).get("text", "")
         if unparsed_val == "":
             return None
         parsed_val = re.sub(r"[^\,\.\d-]", "", unparsed_val)
