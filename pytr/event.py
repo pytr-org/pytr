@@ -83,6 +83,22 @@ tr_event_type_mapping = {
     "TRADE_CORRECTED": ConditionalEventType.TRADE_INVOICE,
 }
 
+timeline_legacy_migrated_events_title_type_mapping = {
+    # Interests
+    "Zinsen": PPEventType.INTEREST,
+}
+
+timeline_legacy_migrated_events_subtitle_type_mapping = {
+    # Trade invoices
+    "Kauforder": ConditionalEventType.TRADE_INVOICE,
+    "Limit-Buy-Order": ConditionalEventType.TRADE_INVOICE,
+    "Limit-Sell-Order": ConditionalEventType.TRADE_INVOICE,
+    "Limit Verkauf-Order neu abgerechnet": ConditionalEventType.TRADE_INVOICE,
+    "Sparplan ausgeführt": ConditionalEventType.TRADE_INVOICE,
+    "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
+    "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
+}
+
 logger = None
 
 
@@ -179,7 +195,25 @@ class Event:
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
         eventTypeStr = event_dict.get("eventType", "")
-        event_type: Optional[EventType] = tr_event_type_mapping.get(eventTypeStr, None)
+        event_type: Optional[EventType] = None
+        if eventTypeStr == "timeline_legacy_migrated_events":
+            event_type = timeline_legacy_migrated_events_title_type_mapping.get(event_dict.get("title", ""), None)
+            if event_type is None:
+                event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(
+                    event_dict.get("subtitle", ""), None
+                )
+            if event_type is None:
+                for item in event_dict.get("details", {}).get("sections", []):
+                    title = item.get("title", "")
+                    if title.startswith("Du hast ") and title.endswith(" erhalten"):
+                        event_type = PPEventType.DEPOSIT
+                        break
+            if event_type is None:
+                print(
+                    f"unmatched timeline_legacy_migrated_events: title={event_dict.get('title', '')} subtitle={event_dict.get('subtitle', '')}"
+                )
+        else:
+            event_type = tr_event_type_mapping.get(eventTypeStr, None)
         if event_type is not None:
             if event_dict.get("status", "").lower() == "canceled":
                 event_type = None
