@@ -19,6 +19,7 @@ event_subfolder_mapping = {
     "PAYMENT_INBOUND_GOOGLE_PAY": "Einzahlungen",
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": "Einzahlungen",
     "CREDIT_CANCELED": "Misc",
+    "CRYPTO_ANNUAL_STATEMENT": "Misc",
     "CUSTOMER_CREATED": "Misc",
     "DOCUMENTS_ACCEPTED": "Misc",
     "DOCUMENTS_CHANGED": "Misc",
