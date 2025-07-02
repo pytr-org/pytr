@@ -60,6 +60,7 @@ event_subfolder_mapping = {
     "trading_order_created": "Trades",
     "trading_order_rejected": "Trades",
     "trading_trade_executed": "Trades",
+    "ACQUISITION_TRADE_PERK": "Vorteil",
     "INTEREST_PAYOUT": "Zinsen",
     "INTEREST_PAYOUT_CREATED": "Zinsen",
 }

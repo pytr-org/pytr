@@ -68,6 +68,7 @@ tr_event_type_mapping = {
     "card_successful_atm_withdrawal": PPEventType.REMOVAL,
     "card_successful_transaction": PPEventType.REMOVAL,
     # Saveback
+    "ACQUISITION_TRADE_PERK": ConditionalEventType.SAVEBACK,
     "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
     # Tax refunds
     "TAX_CORRECTION": PPEventType.TAX_REFUND,
