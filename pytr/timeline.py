@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pytr.event import Event
 
@@ -12,7 +12,7 @@ class UnsupportedEventError(Exception):
 
 
 class Timeline:
-    def __init__(self, tr, max_age_timestamp):
+    def __init__(self, tr, not_before):
         self.tr = tr
         self.log = get_logger(__name__)
         self.received_detail = 0
@@ -22,7 +22,7 @@ class Timeline:
         self.events_with_docs = []
         self.num_timelines = 0
         self.timeline_events = {}
-        self.max_age_timestamp = max_age_timestamp
+        self.not_before = not_before
 
     async def get_next_timeline_transactions(self, response=None):
         """
@@ -40,8 +40,8 @@ class Timeline:
             added_last_event = True
             for event in response["items"]:
                 if (
-                    self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
+                    self.not_before == 0
+                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo) >= self.not_before
                 ):
                     event["source"] = "timelineTransaction"
                     self.timeline_events[event["id"]] = event
@@ -75,8 +75,8 @@ class Timeline:
             added_last_event = False
             for event in response["items"]:
                 if (
-                    self.max_age_timestamp == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).timestamp() >= self.max_age_timestamp
+                    self.not_before == 0
+                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo) >= self.not_before
                 ):
                     if event["id"] in self.timeline_events:
                         self.log.warning(f"Received duplicate event {event['id']}")
@@ -213,7 +213,7 @@ class Timeline:
                     print(f"no timestamp parseable from {timestamp_str}")
                     docdate = datetime.now()
 
-                if self.max_age_timestamp == 0 or self.max_age_timestamp < docdate.timestamp():
+                if self.not_before == datetime.min or self.not_before < docdate:
                     title = f"{doc['title']} - {event['title']} - {event['subtitle']}"
                     dl.dl_doc(doc, title, subfolder, docdate)
 
