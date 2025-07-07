@@ -29,7 +29,7 @@ class DL:
         tr: api object
         output_path: name of the directory where the downloaded files are saved
         filename_fmt: format string to customize the file names
-        not_before: downloaded files since this date (unix timestamp)
+        not_before: downloaded files since this date
         """
         self.tr = tr
         self.output_path = Path(output_path)
