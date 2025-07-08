@@ -5,7 +5,7 @@ from pathvalidate import sanitize_filepath
 from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
 from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline, UnsupportedEventError
+from pytr.timeline import Timeline
 from pytr.utils import get_logger, preview
 
 
@@ -29,13 +29,11 @@ class DL:
         tr: api object
         output_path: name of the directory where the downloaded files are saved
         filename_fmt: format string to customize the file names
-        since_timestamp: downloaded files since this date (unix timestamp)
         """
         self.tr = tr
         self.output_path = Path(output_path)
         self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
-        self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
         self.lang = lang
         self.date_with_time = date_with_time
@@ -51,7 +49,7 @@ class DL:
         self.filepaths = []
         self.doc_urls = []
         self.doc_urls_history = []
-        self.tl = Timeline(self.tr, self.since_timestamp)
+        self.tl = Timeline(self.tr, since_timestamp)
         self.log = get_logger(__name__)
         self.load_history()
 
@@ -69,7 +67,7 @@ class DL:
             self.log.info("Created history file")
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline_transactions()
+        await self.tl.get_next_timeline_transactions(None, self)
 
         while True:
             try:
@@ -80,16 +78,11 @@ class DL:
                 continue
 
             if subscription.get("type", "") == "timelineTransactions":
-                await self.tl.get_next_timeline_transactions(response)
+                await self.tl.get_next_timeline_transactions(response, self)
             elif subscription.get("type", "") == "timelineActivityLog":
-                await self.tl.get_next_timeline_activity_log(response)
+                await self.tl.get_next_timeline_activity_log(response, self)
             elif subscription.get("type", "") == "timelineDetailV2":
-                try:
-                    self.tl.process_timelineDetail(response, self)
-                except UnsupportedEventError:
-                    self.log.warning("Ignoring unsupported event %s", response)
-                    self.tl.skipped_detail += 1
-                    self.tl.check_if_done(self)
+                await self.tl.process_timelineDetail(response, self)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
