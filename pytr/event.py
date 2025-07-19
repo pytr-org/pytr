@@ -49,6 +49,7 @@ tr_event_type_mapping = {
     "PAYMENT_INBOUND_GOOGLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_CREDIT_CARD": PPEventType.DEPOSIT,
+    "PAYMENT-SERVICE-IN-PAYMENT-DIRECT-DEBIT": PPEventType.DEPOSIT,
     "card_refund": PPEventType.DEPOSIT,
     "card_successful_oct": PPEventType.DEPOSIT,
     "card_tr_refund": PPEventType.DEPOSIT,
@@ -67,6 +68,7 @@ tr_event_type_mapping = {
     "card_successful_atm_withdrawal": PPEventType.REMOVAL,
     "card_successful_transaction": PPEventType.REMOVAL,
     # Saveback
+    "ACQUISITION_TRADE_PERK": ConditionalEventType.SAVEBACK,
     "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
     # Tax refunds
     "TAX_CORRECTION": PPEventType.TAX_REFUND,
@@ -81,6 +83,22 @@ tr_event_type_mapping = {
     "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
     "TRADE_CORRECTED": ConditionalEventType.TRADE_INVOICE,
+}
+
+timeline_legacy_migrated_events_title_type_mapping = {
+    # Interests
+    "Zinsen": PPEventType.INTEREST,
+}
+
+timeline_legacy_migrated_events_subtitle_type_mapping = {
+    # Trade invoices
+    "Kauforder": ConditionalEventType.TRADE_INVOICE,
+    "Limit-Buy-Order": ConditionalEventType.TRADE_INVOICE,
+    "Limit-Sell-Order": ConditionalEventType.TRADE_INVOICE,
+    "Limit Verkauf-Order neu abgerechnet": ConditionalEventType.TRADE_INVOICE,
+    "Sparplan ausgeführt": ConditionalEventType.TRADE_INVOICE,
+    "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
+    "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
 }
 
 logger = None
@@ -98,6 +116,7 @@ events_known_ignored = [
     "CASH_ACCOUNT_CHANGED",
     "CREDIT_CANCELED",
     "CUSTOMER_CREATED",
+    "CRYPTO_ANNUAL_STATEMENT",
     "DEVICE_RESET",
     "DOCUMENTS_ACCEPTED",
     "DOCUMENTS_CHANGED",
@@ -137,6 +156,7 @@ events_known_ignored = [
     "ssp_tender_offer_customer_instruction",
     "trading_order_cancelled",
     "trading_order_created",
+    "trading_order_expired",
     "trading_order_rejected",
     "trading_savingsplan_execution_failed",
     "ssp_corporate_action_informative_notification",
@@ -168,18 +188,37 @@ class Event:
             Event: Event object
         """
         date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
-        event_type: Optional[EventType] = cls._parse_type(event_dict)
         title: str = event_dict["title"]
-        value: Optional[float] = (
-            v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
-        )
-        fees, isin, note, shares, taxes = cls._parse_type_dependent_params(event_type, event_dict)
+        event_type: Optional[EventType] = cls._parse_type(event_dict)
+        fees, isin, note, shares, taxes, value = cls._parse_type_dependent_params(event_type, event_dict)
         return cls(date, title, event_type, fees, isin, note, shares, taxes, value)
 
     @staticmethod
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
         eventTypeStr = event_dict.get("eventType", "")
-        event_type: Optional[EventType] = tr_event_type_mapping.get(eventTypeStr, None)
+        event_type: Optional[EventType] = None
+        if eventTypeStr == "timeline_legacy_migrated_events":
+            event_type = timeline_legacy_migrated_events_title_type_mapping.get(event_dict.get("title", ""), None)
+            if event_type is None:
+                event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(
+                    event_dict.get("subtitle", ""), None
+                )
+            if event_type is None:
+                for item in event_dict.get("details", {}).get("sections", []):
+                    title = item.get("title", "")
+                    if title.startswith("Du hast "):
+                        if title.endswith(" erhalten"):
+                            event_type = PPEventType.DEPOSIT
+                            break
+                        elif title.endswith(" gesendet"):
+                            event_type = PPEventType.REMOVAL
+                            break
+            if event_type is None:
+                print(
+                    f"unmatched timeline_legacy_migrated_events: title={event_dict.get('title', '')} subtitle={event_dict.get('subtitle', '')}"
+                )
+        else:
+            event_type = tr_event_type_mapping.get(eventTypeStr, None)
         if event_type is not None:
             if event_dict.get("status", "").lower() == "canceled":
                 event_type = None
@@ -192,7 +231,7 @@ class Event:
     @classmethod
     def _parse_type_dependent_params(
         cls, event_type: Optional[EventType], event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[float], Optional[str], Optional[str], Optional[float], Optional[float]]:
+    ) -> Tuple[Optional[float], Optional[str], Optional[str], Optional[float], Optional[float], Optional[float]]:
         """Parses the fees, isin, note, shares and taxes fields
 
         Args:
@@ -202,23 +241,25 @@ class Event:
         Returns:
             Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes
         """
-        isin, shares, taxes, note, fees = (None,) * 5
+        isin, shares, taxes, note, fees, value = (None,) * 6
 
-        if event_type is PPEventType.DIVIDEND:
+        if isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
-            taxes = cls._parse_taxes(event_dict)
+            shares, fees, taxes, value = cls._parse_shares_fees_taxes_and_value(event_dict)
+        else:
+            value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
 
-        elif isinstance(event_type, ConditionalEventType):
-            isin = cls._parse_isin(event_dict)
-            shares, fees, taxes = cls._parse_shares_fees_and_taxes(event_dict)
+            if event_type is PPEventType.DIVIDEND:
+                isin = cls._parse_isin(event_dict)
+                taxes = cls._parse_taxes(event_dict)
 
-        elif event_type is PPEventType.INTEREST:
-            taxes = cls._parse_taxes(event_dict)
+            elif event_type is PPEventType.INTEREST:
+                taxes = cls._parse_taxes(event_dict)
 
-        elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
-            note = cls._parse_card_note(event_dict)
+            elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
+                note = cls._parse_card_note(event_dict)
 
-        return fees, isin, note, shares, taxes
+        return fees, isin, note, shares, taxes, value
 
     @staticmethod
     def _parse_isin(event_dict: Dict[Any, Any]) -> str:
@@ -245,9 +286,9 @@ class Event:
         return isin
 
     @classmethod
-    def _parse_shares_fees_and_taxes(
+    def _parse_shares_fees_taxes_and_value(
         cls, event_dict: Dict[Any, Any]
-    ) -> Tuple[Optional[float], Optional[float], Optional[float]]:
+    ) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
         """Parses the amount of shares, applicable fees and taxes
 
         Args:
@@ -256,15 +297,12 @@ class Event:
         Returns:
             Tuple[Optional[float]]: shares, fees, taxes
         """
-        shares, fees, taxes, uebersicht_dict, shares_dict, fees_dict, taxes_dict = (
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
+        shares, fees, taxes, fees_dict, taxes_dict, gesamt_dict, uebersicht_dict, shares_dict = (None,) * 8
+
+        value: Optional[float] = (
+            v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
         )
+
         dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -285,37 +323,22 @@ class Event:
                     title = item.get("title")
                     if title == "Gebühr":
                         fees_dict = item
-                        if shares_dict and taxes_dict:
-                            break
-                        else:
-                            continue
                     elif title == "Steuer":
                         taxes_dict = item
-                        if fees_dict and shares_dict:
-                            break
-                        else:
-                            continue
-                    elif title != "Transaktion":
-                        continue
-                    transaction_dict = item
-                    detail = item.get("detail", {})
-                    action = detail.get("action", {})
-                    payload = action.get("payload", {})
-                    sections = payload.get("sections", [])
+                    elif title == "Gesamt":
+                        gesamt_dict = item
+                    elif title == "Transaktion":
+                        transaction_dict = item
+                        detail = item.get("detail", {})
+                        action = detail.get("action", {})
+                        payload = action.get("payload", {})
+                        sections = payload.get("sections", [])
 
-                    for section in sections:
-                        if section.get("type") == "table":
-                            for subitem in section.get("data", []):
-                                if subitem.get("title") == "Aktien":
-                                    shares_dict = subitem
-                                    break
-                            if shares_dict:
-                                break
-
-                    if fees_dict and taxes_dict:
-                        break
-                    else:
-                        continue
+                        for section in sections:
+                            if section.get("type") == "table":
+                                for subitem in section.get("data", []):
+                                    if subitem.get("title") == "Aktien":
+                                        shares_dict = subitem
 
         if shares_dict:
             dump_dict["subtitle"] = shares_dict["title"]
@@ -330,13 +353,16 @@ class Event:
                 shares_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
             )
         elif (
-            event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
+            event_dict["eventType"]
+            in ["benefits_saveback_execution", "benefits_spare_change_execution", "ACQUISITION_TRADE_PERK"]
             and uebersicht_dict
             and transaction_dict
         ):
             shares = cls._parse_float_from_text_value(
-                transaction_dict.get("detail", {}).get("displayValue", {}).get("prefix", ""), dump_dict, "en", False
+                transaction_dict.get("detail", {}).get("displayValue", {}).get("prefix", ""), dump_dict, "en"
             )
+            if event_dict["eventType"] == "ACQUISITION_TRADE_PERK" and gesamt_dict:
+                value = cls._parse_float_from_text_value(gesamt_dict.get("detail", {}).get("text", ""), dump_dict)
         else:
             get_event_logger().warning("Could not parse shares from %s", event_dict["eventType"])
             get_event_logger().debug("Failed to parse shares from: %s", json.dumps(event_dict, indent=4))
@@ -355,7 +381,7 @@ class Event:
             taxes = cls._parse_float_from_text_value(taxes_dict.get("detail", {}).get("text", ""), dump_dict)
         # no logging here because events may or may not have taxes
 
-        return shares, fees, taxes
+        return shares, fees, taxes, value
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
@@ -417,7 +443,6 @@ class Event:
         unparsed_val: str,
         dump_dict={"eventType": "Unknown", "id": "Unknown", "type": "Unknown"},
         pref_locale="de",
-        spei=False,
     ) -> Optional[float]:
         """Parses a text value potentially containing a float in a certain locale format
 
