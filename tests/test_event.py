@@ -70,3 +70,29 @@ def test_old_sell_event_from_dict():
     assert event.event_type == ConditionalEventType.TRADE_INVOICE
     assert event.value == 119.37
     assert event.shares == 3
+
+
+def test_new_deposit_from_dict():
+    # Load the sample JSON file
+    with open("tests/sample_deposit_new.json", "r") as file:
+        sample_data = json.load(file)
+
+    # Parse the JSON data using the from_dict function
+    event = Event.from_dict(sample_data)
+
+    # Assert the expected values
+    assert event.event_type == PPEventType.DEPOSIT
+    assert event.value == 200
+
+
+def test_new_removal_from_dict():
+    # Load the sample JSON file
+    with open("tests/sample_removal_new.json", "r") as file:
+        sample_data = json.load(file)
+
+    # Parse the JSON data using the from_dict function
+    event = Event.from_dict(sample_data)
+
+    # Assert the expected values
+    assert event.event_type == PPEventType.REMOVAL
+    assert event.value == -750
