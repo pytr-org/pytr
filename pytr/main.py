@@ -349,7 +349,7 @@ def main():
     if hasattr(args, "last_days") and args.last_days > 0:
         not_before = datetime.now().astimezone() - timedelta(days=args.last_days)
     else:
-        not_before = datetime.min.replace(tzinfo=timezone.utc) # Get everything
+        not_before = datetime.min.replace(tzinfo=timezone.utc)  # Get everything
 
     if args.command == "login":
         login(

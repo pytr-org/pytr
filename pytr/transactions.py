@@ -7,9 +7,9 @@ from datetime import datetime
 from locale import getdefaultlocale
 from typing import Any, Iterable, Literal, Optional, TextIO, TypedDict, Union
 
-from pytr.utils import preview
-
 from babel.numbers import format_decimal
+
+from pytr.utils import preview
 
 from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation

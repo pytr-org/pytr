@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import datetime
 
 from pytr.event import Event
 
@@ -98,7 +98,8 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.not_before == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo) >= self.not_before
+                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo)
+                    >= self.not_before
                 ):
                     event["source"] = "timelineTransaction"
                     self.timeline_events[event["id"]] = event
@@ -134,7 +135,8 @@ class Timeline:
             for event in response["items"]:
                 if (
                     self.not_before == 0
-                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo) >= self.not_before
+                    or datetime.fromisoformat(event["timestamp"][:19]).replace(tzinfo=self.not_before.tzinfo)
+                    >= self.not_before
                 ):
                     if event["id"] in self.timeline_events:
                         self.log.warning(f"Received duplicate event {event['id']}")
