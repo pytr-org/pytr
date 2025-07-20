@@ -348,10 +348,8 @@ def main():
     # Compute the latest timestamp to get data for if last_days is specified
     if hasattr(args, "last_days") and args.last_days > 0:
         not_before = datetime.now().astimezone() - timedelta(days=args.last_days)
-    elif args.last_days == 0:
-        not_before = datetime.min.replace(tzinfo=timezone.utc) # Get everything
     else:
-        not_before = datetime.fromtimestamp(0)
+        not_before = datetime.min.replace(tzinfo=timezone.utc) # Get everything
 
     if args.command == "login":
         login(
