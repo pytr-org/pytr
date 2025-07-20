@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pytr"
-version = "0.4.2"
+version = "0.4.3"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
     { name = "marzzzello", email = "853485-marzzzello@users.noreply.gitlab.com" }
