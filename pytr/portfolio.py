@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 from pytr.utils import preview
 
@@ -83,6 +84,19 @@ class Portfolio:
             f.write("\n".join(csv_lines) + ("\n" if csv_lines else ""))
 
         print(f"Wrote {len(csv_lines) + 1} lines to {output_path}")
+
+    def portfolio_to_json(self, output_path):
+        # Combine the portfolio positions with the cash portfolio.
+        data = {
+            "positions": sorted(self.portfolio["positions"], key=lambda x: x["netSize"], reverse=True),
+            "cash": self.cash,
+        }
+        if output_path is None or str(output_path) == "-":
+            print(json.dumps(data, indent=2))
+        else:
+            with open(output_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+                print(f"Wrote portfolio and cash data to {output_path}")
 
     def overview(self):
         print(
