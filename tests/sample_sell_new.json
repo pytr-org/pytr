@@ -1,0 +1,280 @@
+{
+    "id": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
+    "timestamp": "2025-05-20T08:03:45.106+0000",
+    "title": "D-Wave Quantum",
+    "icon": "logos/US26740W1099/v2",
+    "badge": null,
+    "subtitle": "Limit-Sell-Order",
+    "amount": {
+      "currency": "EUR",
+      "value": 114.91,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "f9e68fd7-6d43-474a-a5f3-8f92761539d2"
+    },
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "0674716511",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
+      "sections": [
+        {
+          "title": "Du hast 114,91 € erhalten",
+          "data": {
+            "icon": "logos/US26740W1099/v2",
+            "subtitleText": null,
+            "timestamp": "2025-05-20T08:03:45.106+0000",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "US26740W1099",
+            "type": "instrumentDetail",
+            "overrideAction": null
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Portfolio",
+              "detail": {
+                "text": "Brokerage",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Limit Order",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "action": null,
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "D-Wave Quantum",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "",
+                "trend": null,
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "action": null,
+                        "type": "title"
+                      },
+                      {
+                        "title": null,
+                        "data": [
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "11",
+                              "trend": null,
+                              "action": null,
+                              "displayValue": null,
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "12,12 €",
+                              "trend": null,
+                              "action": null,
+                              "displayValue": null,
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "133,27 €",
+                              "trend": null,
+                              "action": null,
+                              "displayValue": null,
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "action": null,
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage",
+                  "overrideAction": null
+                },
+                "displayValue": {
+                  "text": "12,12 €",
+                  "prefix": "11 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "17,36 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "114,91 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "89,42 %",
+                "trend": "positive",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gewinn",
+              "detail": {
+                "text": "62,44 €",
+                "trend": "positive",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "horizontalTable"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Auftragsbestätigung",
+              "detail": null,
+              "action": {
+                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "d5eadf0e-ce7a-4894-b20c-004365ac676c",
+              "postboxType": "ORDER_CONFIRMATION"
+            },
+            {
+              "title": "Kosteninformation",
+              "detail": null,
+              "action": {
+                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "cff96a32-fb28-477f-9f5f-b5ed6af788eb",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            },
+            {
+              "title": "Abrechnung",
+              "detail": null,
+              "action": {
+                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "c973a255-89aa-48ba-931a-4ff94fbb56ec",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            }
+          ],
+          "action": null,
+          "type": "documents"
+        },
+        {
+          "title": "",
+          "data": [
+            {
+              "title": "",
+              "detail": {
+                "icon": "",
+                "action": {
+                  "payload": {
+                    "contextCategory": "NHC",
+                    "contextParams": {
+                      "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
+                      "timelineEventId": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
+                      "primId": "N1370361796"
+                    }
+                  },
+                  "type": "customerSupportChat",
+                  "overrideAction": null
+                },
+                "style": "highlighted",
+                "type": "listItemAvatarDefault"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        }
+      ]
+    }
+  }

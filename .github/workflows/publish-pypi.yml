@@ -17,7 +17,6 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.9"
           - "3.10"
           - "3.11"
           - "3.12"
@@ -28,7 +27,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: ${{ env.UV_VERSION }}
-          python-verson: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }}
       - name: Pytest
         run: uv run pytest
       - name: Ruff check

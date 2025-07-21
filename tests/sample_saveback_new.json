@@ -1,0 +1,117 @@
+{
+    "id": "836369c0-f623-4ad0-a259-8bd3807a6be6",
+    "timestamp": "2025-04-02T13:54:23.344+0000",
+    "title": "S&P 500 Information Tech USD (Acc)",
+    "icon": "logos/IE00B3WJKG14/v2",
+    "badge": null,
+    "subtitle": "Saveback",
+    "amount": {
+        "currency": "EUR",
+        "value": -15.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "836369c0-f623-4ad0-a259-8bd3807a6be6"
+    },
+    "eventType": "benefits_saveback_execution",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "836369c0-f623-4ad0-a259-8bd3807a6be6",
+        "sections": [
+            {
+                "title": "Du hast 15,00\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/IE00B3WJKG14/v2",
+                    "timestamp": "2025-04-02T13:54:23.344+0000",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "IE00B3WJKG14",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Saveback",
+                        "detail": {
+                            "text": "Abgeschlossen",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "S&P 500 Information Tech USD (Acc)",
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "",
+                            "displayValue": {
+                                "text": "27,45\u00a0\u20ac",
+                                "prefix": "0.546348 x "
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "Kostenlos",
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Gesamt",
+                        "detail": {
+                            "text": "15,00\u00a0\u20ac",
+                            "type": "text"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Wertpapierabrechnung",
+                        "action": {
+                            "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                            "type": "browserModal"
+                        },
+                        "id": "8886fc15-a3e4-40c1-9604-e8e27f8ed992",
+                        "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+                    },
+                    {
+                        "title": "Kosteninformation",
+                        "action": {
+                            "payload": "https://traderepublic-data-production.s3.eu-central-1.amazonaws.com/",
+                            "type": "browserModal"
+                        },
+                        "id": "001c5873-ddf6-42be-9eaa-19df21ef82f8",
+                        "postboxType": "COSTS_INFO_SAVINGS_PLAN_V2"
+                    }
+                ],
+                "type": "documents"
+            }
+        ]
+    }
+}

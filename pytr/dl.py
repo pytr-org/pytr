@@ -1,4 +1,3 @@
-import re
 from concurrent.futures import as_completed
 from pathlib import Path
 
@@ -6,7 +5,7 @@ from pathvalidate import sanitize_filepath
 from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
 from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline, UnsupportedEventError
+from pytr.timeline import Timeline
 from pytr.utils import get_logger, preview
 
 
@@ -20,21 +19,27 @@ class DL:
         history_file="pytr_history",
         max_workers=8,
         universal_filepath=False,
+        lang="en",
+        date_with_time=True,
+        decimal_localization=False,
         sort_export=False,
+        format_export="csv",
     ):
         """
         tr: api object
         output_path: name of the directory where the downloaded files are saved
         filename_fmt: format string to customize the file names
-        since_timestamp: downloaded files since this date (unix timestamp)
         """
         self.tr = tr
         self.output_path = Path(output_path)
         self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
-        self.since_timestamp = since_timestamp
         self.universal_filepath = universal_filepath
+        self.lang = lang
+        self.date_with_time = date_with_time
+        self.decimal_localization = decimal_localization
         self.sort_export = sort_export
+        self.format_export = format_export
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
         self.futures = []
@@ -44,7 +49,7 @@ class DL:
         self.filepaths = []
         self.doc_urls = []
         self.doc_urls_history = []
-        self.tl = Timeline(self.tr, self.since_timestamp)
+        self.tl = Timeline(self.tr, since_timestamp)
         self.log = get_logger(__name__)
         self.load_history()
 
@@ -62,7 +67,7 @@ class DL:
             self.log.info("Created history file")
 
     async def dl_loop(self):
-        await self.tl.get_next_timeline_transactions()
+        await self.tl.get_next_timeline_transactions(None, self)
 
         while True:
             try:
@@ -73,48 +78,26 @@ class DL:
                 continue
 
             if subscription.get("type", "") == "timelineTransactions":
-                await self.tl.get_next_timeline_transactions(response)
+                await self.tl.get_next_timeline_transactions(response, self)
             elif subscription.get("type", "") == "timelineActivityLog":
-                await self.tl.get_next_timeline_activity_log(response)
+                await self.tl.get_next_timeline_activity_log(response, self)
             elif subscription.get("type", "") == "timelineDetailV2":
-                try:
-                    self.tl.process_timelineDetail(response, self)
-                except UnsupportedEventError:
-                    self.log.warning("Ignoring unsupported event %s", response)
-                    self.tl.skipped_detail += 1
-                    self.tl.check_if_done(self)
+                await self.tl.process_timelineDetail(response, self)
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-    def dl_doc(self, doc, titleText, subtitleText, subfolder=None, timestamp=None):
+    def dl_doc(self, doc, titleText, subfolder, doc_date):
         """
         send asynchronous request, append future with filepath to self.futures
         """
         doc_url = doc["action"]["payload"]
+        subtitleText = doc.get("detail")
         if subtitleText is None:
             subtitleText = ""
 
-        try:
-            date = doc["detail"]
-            iso_date = "-".join(date.split(".")[::-1])
-        except KeyError:
-            if timestamp:
-                date = timestamp.strftime("%d.%m.%Y")
-                iso_date = timestamp.strftime("%Y-%m-%d")
-            else:
-                date = ""
-                iso_date = ""
         doc_id = doc["id"]
-
-        # extract time from subtitleText
-        try:
-            time = re.findall("um (\\d+:\\d+) Uhr", subtitleText)
-            if time == []:
-                time = ""
-            else:
-                time = f" {time[0]}"
-        except TypeError:
-            time = ""
+        iso_date = doc_date.strftime("%Y-%m-%d")
+        time = doc_date.strftime("%H:%M")
 
         if subfolder is not None:
             directory = self.output_path / subfolder
@@ -124,11 +107,13 @@ class DL:
         # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
         doc_type = doc["title"].rsplit(" ")
         if doc_type[-1].isnumeric() is True:
-            doc_type_num = f" {doc_type.pop()}"
+            doc_type_num = doc_type.pop()
         else:
             doc_type_num = ""
 
         doc_type = " ".join(doc_type)
+        if doc_type == "Abrechnung Ausführung" or doc_type == "Abrechnungsausführung":
+            doc_type = "Abrechnung"
         titleText = titleText.replace("\n", "").replace("/", "-")
         subtitleText = subtitleText.replace("\n", "").replace("/", "-")
 
@@ -141,7 +126,8 @@ class DL:
             id=doc_id,
         )
 
-        filename_with_doc_id = filename + f" ({doc_id})"
+        # In case, the filename already ends with the doc id, we remove it to avoid a duplicate id in the name
+        filename_with_doc_id = filename.removesuffix(doc_id).rstrip() + f" ({doc_id})"
 
         if doc_type in ["Kontoauszug", "Depotauszug"]:
             filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"

@@ -9,7 +9,7 @@ def test_event_float_from_detail():
     """Test parsing of values from strings found in real world examples."""
 
     def test(data: Dict[str, Any], number: float):
-        assert number == Event._parse_float_from_detail(data)
+        assert number == Event._parse_float_from_text_value(data.get("detail", {}).get("text", ""))
 
     test(
         {
@@ -23,6 +23,15 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         9400.0,
+    )
+
+    test(
+        {
+            "title": "Anteile",
+            "detail": {"text": "1,875", "trend": None, "action": None, "type": "text"},
+            "style": "plain",
+        },
+        1.875,
     )
 
     test(
