@@ -8,6 +8,7 @@ bond_pattern = re.compile(
     re.IGNORECASE,
 )
 
+
 class Portfolio:
     def __init__(self, tr):
         self.tr = tr
