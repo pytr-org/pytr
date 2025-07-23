@@ -23,10 +23,7 @@ class Portfolio:
         while recv > 0:
             subscription_id, subscription, response = await self.tr.recv()
 
-            if subscription["type"] == "portfolio":
-                recv -= 1
-                self.portfolio = response
-            elif subscription["type"] == "compactPortfolio":
+            if subscription["type"] == "compactPortfolio":
                 recv -= 1
                 self.portfolio = response
             elif subscription["type"] == "cash":
