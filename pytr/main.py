@@ -16,7 +16,7 @@ from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
-from pytr.portfolio import Portfolio
+from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
 from pytr.utils import check_version, get_logger
 
@@ -186,11 +186,30 @@ def get_main_parser():
     parser_portfolio = parser_cmd.add_parser(
         "portfolio",
         formatter_class=formatter,
-        parents=[parser_login_args],
+        parents=[parser_login_args, parser_lang, parser_decimal_localization],
         help=info,
         description=info,
     )
+    parser_portfolio.add_argument(
+        "--include-watchlist",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Include watchlist.",
+    )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
+    parser_portfolio.add_argument(
+        "--sort-by-column",
+        type=str.lower,
+        choices=[col.lower() for col in PORTFOLIO_COLUMNS],
+        default=None,
+        help="Sort results by column.",
+    )
+    parser_portfolio.add_argument(
+        "--sort-ascending",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Whether to sort in ascending order.",
+    )
 
     # details
     info = "Get details for an ISIN"
@@ -400,11 +419,15 @@ def main():
                 pin=args.pin,
                 web=not args.applogin,
                 store_credentials=args.store_credentials,
-            )
+            ),
+            args.include_watchlist,
+            lang=args.lang,
+            decimal_localization=args.decimal_localization,
+            output=args.output,
+            sort_by_column=args.sort_by_column,
+            sort_descending=not args.sort_ascending,
         )
         p.get()
-        if args.output is not None:
-            p.portfolio_to_csv(args.output)
     elif args.command == "export_transactions":
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(

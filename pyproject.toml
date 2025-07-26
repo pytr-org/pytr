@@ -22,6 +22,7 @@ classifiers = [
     "Topic :: Office/Business :: Financial :: Investment",
 ]
 dependencies = [
+    "babel",
     "certifi",
     "coloredlogs",
     "ecdsa",
@@ -31,7 +32,6 @@ dependencies = [
     "requests_futures",
     "shtab",
     "websockets>=14",
-    "babel",
 ]
 
 [project.scripts]
@@ -57,4 +57,4 @@ line-length = 120
 extend-select = ["I"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
