@@ -1,12 +1,102 @@
-from concurrent.futures import as_completed
+import asyncio
+import json
+from concurrent.futures import Future, as_completed
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Literal
 
 from pathvalidate import sanitize_filepath
+from requests import Response
 from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
-from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline
-from pytr.utils import get_logger, preview
+from .event import Event
+from .timeline import Timeline
+from .transactions import TransactionExporter
+from .utils import get_logger
+
+event_subfolder_mapping = {
+    "OUTGOING_TRANSFER_DELEGATION": "Auszahlungen",
+    "OUTGOING_TRANSFER": "Auszahlungen",
+    "CREDIT": "Dividende",
+    "ssp_corporate_action_invoice_cash": "Dividende",
+    "ACCOUNT_TRANSFER_INCOMING": "Einzahlungen",
+    "INCOMING_TRANSFER_DELEGATION": "Einzahlungen",
+    "INCOMING_TRANSFER": "Einzahlungen",
+    "PAYMENT_INBOUND_GOOGLE_PAY": "Einzahlungen",
+    "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": "Einzahlungen",
+    "CREDIT_CANCELED": "Misc",
+    "CRYPTO_ANNUAL_STATEMENT": "Misc",
+    "CUSTOMER_CREATED": "Misc",
+    "DOCUMENTS_ACCEPTED": "Misc",
+    "DOCUMENTS_CHANGED": "Misc",
+    "DOCUMENTS_CREATED": "Misc",
+    "EX_POST_COST_REPORT": "Misc",
+    "EX_POST_COST_REPORT_CREATED": "Misc",
+    "GENERAL_MEETING": "Misc",
+    "GESH_CORPORATE_ACTION": "Misc",
+    "INPAYMENTS_SEPA_MANDATE_CREATED": "Misc",
+    "INSTRUCTION_CORPORATE_ACTION": "Misc",
+    "JUNIOR_ONBOARDING_GUARDIAN_B_CONSENT": "Misc",
+    "PRE_DETERMINED_TAX_BASE_EARNING": "Misc",
+    "QUARTERLY_REPORT": "Misc",
+    "SHAREBOOKING": "Misc",
+    "SHAREBOOKING_TRANSACTIONAL": "Misc",
+    "STOCK_PERK_REFUNDED": "Misc",
+    "TAX_YEAR_END_REPORT": "Misc",
+    "YEAR_END_TAX_REPORT": "Misc",
+    "crypto_annual_statement": "Misc",
+    "private_markets_suitability_quiz_completed": "Misc",
+    "ssp_capital_increase_customer_instruction": "Misc",
+    "ssp_corporate_action_informative_notification": "Misc",
+    "ssp_corporate_action_invoice_shares": "Misc",
+    "ssp_dividend_option_customer_instruction": "Misc",
+    "ssp_general_meeting_customer_instruction": "Misc",
+    "ssp_tender_offer_customer_instruction": "Misc",
+    "benefits_spare_change_execution": "RoundUp",
+    "benefits_saveback_execution": "Saveback",
+    "SAVINGS_PLAN_EXECUTED": "Sparplan",
+    "SAVINGS_PLAN_INVOICE_CREATED": "Sparplan",
+    "trading_savingsplan_executed": "Sparplan",
+    "trading_savingsplan_execution_failed": "Sparplan",
+    "TAX_CORRECTION": "Steuerkorrekturen",
+    "TAX_REFUND": "Steuerkorrekturen",
+    "ssp_tax_correction_invoice": "Steuerkorrekturen",
+    "ORDER_CANCELED": "Trades",
+    "ORDER_EXECUTED": "Trades",
+    "ORDER_EXPIRED": "Trades",
+    "ORDER_REJECTED": "Trades",
+    "TRADE_CORRECTED": "Trades",
+    "TRADE_INVOICE": "Trades",
+    "private_markets_order_created": "Trades",
+    "trading_order_cancelled": "Trades",
+    "trading_order_created": "Trades",
+    "trading_order_rejected": "Trades",
+    "trading_trade_executed": "Trades",
+    "trading_order_expired": "Trades",
+    "ACQUISITION_TRADE_PERK": "Vorteil",
+    "INTEREST_PAYOUT": "Zinsen",
+    "INTEREST_PAYOUT_CREATED": "Zinsen",
+}
+
+title_subfolder_mapping = {
+    "Steuerkorrektur": "Steuerkorrekturen",
+    "Zinsen": "Zinsen",
+}
+
+subtitle_subfolder_mapping = {
+    "Bardividende": "Dividende",
+    "Cash oder Aktie": "Dividende",
+    "Dividende Wahlweise": "Dividende",
+    "Kauforder": "Trades",
+    "Limit-Buy-Order": "Trades",
+    "Limit-Sell-Order": "Trades",
+    "Limit-Sell-Order erstellt": "Trades",
+    "Limit-Sell-Order storniert": "Trades",
+    "Limit Verkauf-Order neu abgerechnet": "Trades",
+    "Sparplan ausgeführt": "Trades",
+    "Stop-Sell-Order": "Trades",
+    "Verkaufsorder": "Trades",
+}
 
 
 class DL:
@@ -15,7 +105,11 @@ class DL:
         tr,
         output_path,
         filename_fmt,
-        since_timestamp=0,
+        not_before=float(0),
+        not_after=float(0),
+        store_event_database=True,
+        dump_raw_data=False,
+        export_transactions=True,
         history_file="pytr_history",
         max_workers=8,
         universal_filepath=False,
@@ -23,7 +117,7 @@ class DL:
         date_with_time=True,
         decimal_localization=False,
         sort_export=False,
-        format_export="csv",
+        format_export: Literal["json", "csv"] = "csv",
     ):
         """
         tr: api object
@@ -32,24 +126,31 @@ class DL:
         """
         self.tr = tr
         self.output_path = Path(output_path)
-        self.history_file = self.output_path / history_file
         self.filename_fmt = filename_fmt
+        self.dump_raw_data = dump_raw_data
+        self.export_transactions = export_transactions
+        self.history_file = self.output_path / history_file
         self.universal_filepath = universal_filepath
         self.lang = lang
         self.date_with_time = date_with_time
         self.decimal_localization = decimal_localization
         self.sort_export = sort_export
-        self.format_export = format_export
+        self.format_export: Literal["json", "csv"] = format_export
+
+        self.tl = Timeline(self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback)
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
-        self.futures = []
+        self.futures: list[Future[Response]] = []
+
+        self.events_without_docs: List[Dict[str, Any]] = []
+        self.events_with_docs: List[Dict[str, Any]] = []
 
         self.docs_request = 0
         self.done = 0
-        self.filepaths = []
-        self.doc_urls = []
-        self.doc_urls_history = []
-        self.tl = Timeline(self.tr, since_timestamp)
+        self.filepaths: List[str] = []
+        self.doc_urls: List[str] = []
+        self.doc_urls_history: List[str] = []
+
         self.log = get_logger(__name__)
         self.load_history()
 
@@ -66,25 +167,86 @@ class DL:
             self.history_file.touch()
             self.log.info("Created history file")
 
-    async def dl_loop(self):
-        await self.tl.get_next_timeline_transactions(None, self)
+    def do_dl(self):
+        asyncio.run(self.tl.tl_loop())
 
-        while True:
-            try:
-                _, subscription, response = await self.tr.recv()
-            except TradeRepublicError as e:
-                self.log.error(f'Error response for subscription "{e.subscription}". Re-subscribing...')
-                await self.tr.subscribe(e.subscription)
+        if self.dump_raw_data:
+            with open(self.output_path / "events_with_documents.json", "w", encoding="utf-8") as f:
+                json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+
+            with open(self.output_path / "other_events.json", "w", encoding="utf-8") as f:
+                json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+
+        if self.export_transactions:
+            with (self.output_path / "account_transactions.csv").open("w", encoding="utf-8") as f:
+                TransactionExporter(
+                    lang=self.lang,
+                    date_with_time=self.date_with_time,
+                    decimal_localization=self.decimal_localization,
+                ).export(
+                    f,
+                    [Event.from_dict(ev) for ev in self.tl.events],
+                    sort=self.sort_export,
+                    format=self.format_export,
+                )
+
+        self.work_responses()
+
+    def dl_callback(self, event):
+        has_docs = False
+        for section in event["details"]["sections"]:
+            if section["type"] != "documents":
                 continue
 
-            if subscription.get("type", "") == "timelineTransactions":
-                await self.tl.get_next_timeline_transactions(response, self)
-            elif subscription.get("type", "") == "timelineActivityLog":
-                await self.tl.get_next_timeline_activity_log(response, self)
-            elif subscription.get("type", "") == "timelineDetailV2":
-                await self.tl.process_timelineDetail(response, self)
+            has_docs = True
+
+            subfolder = None
+            eventType = event.get("eventType", None)
+            title = event.get("title", "")
+            subtitle = event.get("subtitle", "")
+            eventdesc = f"{title} {subtitle}"
+            sections = event.get("details", {}).get("sections", [{}])
+            uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
+            if eventType in ["timeline_legacy_migrated_events", None]:
+                subfolder = title_subfolder_mapping.get(title)
+                if subfolder is None:
+                    subfolder = subtitle_subfolder_mapping.get(subtitle)
             else:
-                self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+                subfolder = event_subfolder_mapping.get(eventType)
+
+            if subfolder is None and uebersicht_dict:
+                for item in uebersicht_dict.get("data", []):
+                    ititle = item.get("title")
+                    if ititle == "Überweisung":
+                        subfolder = "Einzahlungen"
+
+            if subfolder is None and sections:
+                for item in sections:
+                    ititle = item.get("title")
+                    if ititle == "Du hast eine Kapitalma\u00dfnahme erhalten":
+                        subfolder = "Misc"
+                        break
+
+            if subfolder is None:
+                self.log.warning(f"no subfolder mapping for {eventdesc}")
+
+            for doc in section["data"]:
+                timestamp_str = event["timestamp"]
+                if timestamp_str[-3] != ":":
+                    timestamp_str = timestamp_str[:-2] + ":" + timestamp_str[-2:]
+                try:
+                    docdate = datetime.fromisoformat(timestamp_str)
+                except ValueError:
+                    self.log.warning(f"no timestamp parseable from {timestamp_str}")
+                    docdate = datetime.now()
+
+                title = f"{doc['title']} - {event['title']} - {event['subtitle']}"
+                self.dl_doc(doc, title, subfolder, docdate)
+
+        if has_docs:
+            self.events_with_docs.append(event)
+        else:
+            self.events_without_docs.append(event)
 
     def dl_doc(self, doc, titleText, subfolder, doc_date):
         """
@@ -151,7 +313,7 @@ class DL:
             else:
                 filepath = filepath_with_doc_id
         doc["local_filepath"] = str(filepath)
-        self.filepaths.append(filepath)
+        self.filepaths.append(str(filepath))
 
         if filepath.is_file() is False:
             doc_url_base = doc_url.split("?")[0]
@@ -165,40 +327,41 @@ class DL:
                 self.doc_urls.append(doc_url_base)
 
             future = self.session.get(doc_url)
-            future.filepath = filepath
-            future.doc_url_base = doc_url_base
-            self.futures.append(future)
+            future.filepath = filepath  # type: ignore[attr-defined]
+            future.doc_url_base = doc_url_base  # type: ignore[attr-defined]
+            self.futures.append(future) # type: ignore[arg-type]
             self.log.debug(f"Added {filepath} to queue")
         else:
             self.log.debug(f"file {filepath} already exists. Skipping...")
 
     def work_responses(self):
         """
-        process responses of async requests
+        process responses of async download requests
         """
         if len(self.doc_urls) == 0:
-            self.log.info("Nothing to download")
-            exit(0)
+            self.log.info("Nothing to download.")
+            return
 
         with self.history_file.open("a") as history_file:
-            self.log.info("Waiting for downloads to complete..")
+            self.log.info("Waiting for downloads to complete...")
             for future in as_completed(self.futures):
-                if future.filepath.is_file() is True:
-                    self.log.debug(f"file {future.filepath} was already downloaded.")
+                if future.filepath.is_file() is True:  # type: ignore[attr-defined]
+                    self.log.debug(f"file {future.filepath} was already downloaded.")  # type: ignore[attr-defined]
 
                 try:
                     r = future.result()
                 except Exception as e:
                     self.log.fatal(str(e))
+                    continue
 
-                future.filepath.parent.mkdir(parents=True, exist_ok=True)
-                with open(future.filepath, "wb") as f:
+                future.filepath.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[attr-defined]
+                with open(future.filepath, "wb") as f:  # type: ignore[attr-defined]
                     f.write(r.content)
                     self.done += 1
-                    history_file.write(f"{future.doc_url_base}\n")
+                    history_file.write(f"{future.doc_url_base}\n")  # type: ignore[attr-defined]
 
-                    self.log.debug(f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}")
+                    self.log.debug(f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}")  # type: ignore[attr-defined]
 
                 if self.done == len(self.doc_urls):
                     self.log.info("Done.")
-                    exit(0)
+                    return

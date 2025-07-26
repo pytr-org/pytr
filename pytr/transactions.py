@@ -171,7 +171,7 @@ class TransactionExporter:
         sort: bool = False,
         format: Literal["json", "csv"] = "csv",
     ) -> None:
-        self._log.info("Exporting transactions ...")
+        self._log.info("Exporting transactions...")
         if sort:
             events = sorted(events, key=lambda ev: ev.date)
 

@@ -79,8 +79,9 @@ Commands:
     details                             Get details for an ISIN
     get_price_alarms                    Get current price alarms
     set_price_alarms                    Set new price alarms
-    export_transactions                 Create a CSV with the deposits and removals ready for importing into Portfolio
-                                        Performance
+    export_transactions                 Get data from the timeline and export account transactions
+                                        (account_transactions.csv) and according events in a JSON file
+                                        (all_events.json)
     completion                          Print shell tab completion
 
 Options:
