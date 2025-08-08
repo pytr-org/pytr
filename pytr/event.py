@@ -2,6 +2,7 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import datetime
+from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum, auto
 from typing import Any, Dict, Optional, Tuple
 
@@ -123,6 +124,7 @@ events_known_ignored = [
     "DOCUMENTS_CREATED",
     "EMAIL_VALIDATED",
     "EX_POST_COST_REPORT",
+    "EX_POST_COST_REPORT_CREATED",
     "EXEMPTION_ORDER_CHANGE_REQUESTED",
     "EXEMPTION_ORDER_CHANGE_REQUESTED_AUTOMATICALLY",
     "EXEMPTION_ORDER_CHANGED",
@@ -295,7 +297,18 @@ class Event:
         Returns:
             Tuple[Optional[float]]: shares, fees, taxes
         """
-        shares, fees, taxes, fees_dict, taxes_dict, gesamt_dict, uebersicht_dict, shares_dict = (None,) * 8
+        (
+            shares,
+            fees,
+            taxes,
+            fees_dict,
+            taxes_dict,
+            gesamt_dict,
+            uebersicht_dict,
+            shares_dict,
+            quotation_dict,
+            order_dict,
+        ) = (None,) * 10
 
         value: Optional[float] = (
             v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
@@ -336,6 +349,10 @@ class Event:
                             for subitem in section.get("data", []):
                                 if subitem.get("title") == "Aktien" and not shares_dict:
                                     shares_dict = subitem
+                                elif subitem.get("title") == "Quotation" and not quotation_dict:
+                                    quotation_dict = subitem
+                                elif subitem.get("title") == "Order" and not order_dict:
+                                    order_dict = subitem
 
         if shares_dict:
             dump_dict["subtitle"] = shares_dict["title"]
@@ -354,6 +371,15 @@ class Event:
             shares = cls._parse_float_from_text_value(
                 shares_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
             )
+        elif order_dict and quotation_dict:
+            order = cls._parse_float_from_text_value(order_dict.get("detail", {}).get("text", ""), dump_dict)
+            quotation = cls._parse_float_from_text_value(quotation_dict.get("detail", {}).get("text", ""), dump_dict)
+            if order and quotation:
+                shares = float(
+                    (Decimal(order) / Decimal(quotation) * Decimal(100)).quantize(
+                        Decimal("0.01"), rounding=ROUND_HALF_UP
+                    )
+                )
         elif (
             event_dict["eventType"]
             in ["benefits_saveback_execution", "benefits_spare_change_execution", "ACQUISITION_TRADE_PERK"]

@@ -3,6 +3,7 @@ import locale
 import re
 from decimal import ROUND_HALF_UP, Decimal
 from locale import getdefaultlocale
+from pathlib import Path
 from typing import Optional, Union
 
 from babel.numbers import format_decimal
@@ -154,18 +155,19 @@ class Portfolio:
                 await self.tr.unsubscribe(subscription_id)
                 pos = subscriptions.pop(subscription_id, None)
                 pos["price"] = response["last"]["price"]
+                # Bond handling
+                # Identify bonds by parsing the name - bond names are like "... month year"
+                if bond_pattern.search(pos["name"]):
+                    # Bond prices are per €100 face value
+                    pos["price"] = Decimal(pos["price"]) / 100
+
                 # watchlist positions don't have size/value
                 if "netSize" not in pos:
                     pos["netSize"] = "0"
-                    pos["averageBuyIn"] = response["last"]["price"]
-                pos["netValue"] = (Decimal(response["last"]["price"]) * Decimal(pos["netSize"])).quantize(
+                    pos["averageBuyIn"] = pos["price"]
+                pos["netValue"] = (Decimal(pos["price"]) * Decimal(pos["netSize"])).quantize(
                     Decimal("0.01"), rounding=ROUND_HALF_UP
                 )
-                # Bond handling
-                # Identify bonds by parsing the name - bond names are like "... month year"
-                # Bond prices are per €100 face value
-                if bond_pattern.search(pos["name"]):
-                    pos["netValue"] = pos["netValue"] / 100
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
@@ -216,6 +218,7 @@ class Portfolio:
                 f"{self._decimal_format(pos['netValue'])}"
             )
 
+        Path(self.output).parent.mkdir(parents=True, exist_ok=True)
         with open(self.output, "w", encoding="utf-8") as f:
             f.write("Name;ISIN;quantity;price;avgCost;netValue\n")
             f.write("\n".join(csv_lines) + ("\n" if csv_lines else ""))
