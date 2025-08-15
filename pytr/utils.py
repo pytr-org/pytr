@@ -3,9 +3,19 @@
 import json
 import logging
 
-import coloredlogs  # type: ignore[import-untyped]
-import requests
-from packaging import version
+try:
+    import coloredlogs  # type: ignore[import-untyped]
+except ImportError:
+    coloredlogs = None
+
+try:
+    import requests
+except ImportError:
+    requests = None
+try:
+    from packaging import version
+except ImportError:
+    version = None
 
 log_level = None
 debug_logfile_handler = None
@@ -85,14 +95,15 @@ def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None
         "warning": {"color": "yellow"},
     }
 
-    coloredlogs.install(
-        level=log_level,
-        logger=logger,
-        fmt=fmt,
-        datefmt=datefmt,
-        level_styles=ls,
-        field_styles=fs,
-    )
+    if coloredlogs:
+        coloredlogs.install(
+            level=log_level,
+            logger=logger,
+            fmt=fmt,
+            datefmt=datefmt,
+            level_styles=ls,
+            field_styles=fs,
+        )
 
     return logger
 
@@ -110,6 +121,9 @@ def preview(response, num_lines=5):
 
 def check_version(installed_version):
     log = get_logger(__name__)
+    if not requests or not version:
+        log.error("Cannot check version: 'requests' or 'packaging.version' not available")
+        return
     try:
         r = requests.get("https://api.github.com/repos/pytr-org/pytr/tags", timeout=1)
     except Exception as e:

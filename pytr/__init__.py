@@ -2,7 +2,6 @@
 
 # Package-level API for programmatic access
 from .account import login
-from .api import TradeRepublicApi
 from .client import TradeRepublic
 from .portfolio import Portfolio
 from .transactions import TransactionExporter

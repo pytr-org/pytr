@@ -57,6 +57,9 @@ class TradeRepublic:
         self,
         phone: str,
         pin: str,
+        *,
+        timeout: float = 10.0,
+        debug: bool = False,
         keyfile: Optional[str] = None,
         locale: str = "de",
         save_session: bool = True,
@@ -74,6 +77,8 @@ class TradeRepublic:
         :param credentials_file: Override credentials file path.
         :param cookies_file: Override cookies file path.
         """
+        self.timeout = timeout
+        self.debug = debug
         self._api = TradeRepublicApi(
             phone_no=phone,
             pin=pin,
@@ -82,6 +87,8 @@ class TradeRepublic:
             save_cookies=save_session,
             credentials_file=credentials_file,
             cookies_file=cookies_file,
+            timeout=timeout,
+            debug=debug,
         )
 
     # High-level data-first methods for convenience (non-streaming APIs)
@@ -238,8 +245,24 @@ class TradeRepublic:
 
         :returns: Serialized session data.
         """
-        # Placeholder: implement secure serialization
-        return b""
+        """
+        Serialize current session state (tokens and cookies) to opaque bytes.
+        """
+        import pickle
+        try:
+            from requests.utils import dict_from_cookiejar
+        except ImportError:
+            dict_from_cookiejar = None
+        state: dict = {
+            "refresh_token": getattr(self._api, '_refresh_token', None),
+            "session_token": getattr(self._api, '_session_token', None),
+            "session_token_expires_at": getattr(self._api, '_session_token_expires_at', None),
+        }
+        if dict_from_cookiejar:
+            state["cookies"] = dict_from_cookiejar(
+                getattr(self._api._websession, 'cookies', None)
+            )
+        return pickle.dumps(state)
 
     async def resume_session(self, data: bytes) -> None:
         """
@@ -247,8 +270,22 @@ class TradeRepublic:
 
         :param data: Opaque session bytes from serialize_session().
         """
-        # Placeholder: implement secure deserialization
-        pass
+        """
+        Resume a previously serialized session state.
+        """
+        import pickle
+        try:
+            from requests.utils import cookiejar_from_dict
+        except ImportError:
+            cookiejar_from_dict = None
+        state = pickle.loads(data)
+        # restore tokens
+        for key in ('_refresh_token', '_session_token', '_session_token_expires_at'):
+            if key[1:] in state:
+                setattr(self._api, key, state.get(key[1:]))
+        # restore cookies
+        if cookiejar_from_dict and state.get('cookies') is not None:
+            self._api._websession.cookies = cookiejar_from_dict(state['cookies'])
 
     @property
     def stream(self) -> _StreamFacade:

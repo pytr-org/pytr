@@ -99,6 +99,9 @@ class TradeRepublicApi:
         self,
         phone_no=None,
         pin=None,
+        *,
+        timeout: float = 10.0,
+        debug: bool = False,
         keyfile=None,
         locale="de",
         save_cookies=False,
@@ -108,6 +111,8 @@ class TradeRepublicApi:
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
+        self.timeout = timeout
+        self.debug = debug
 
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
