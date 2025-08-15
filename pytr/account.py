@@ -3,7 +3,10 @@ import sys
 import time
 from getpass import getpass
 
-from pygments import formatters, highlight, lexers
+try:
+    from pygments import formatters, highlight, lexers
+except ImportError:
+    formatters = highlight = lexers = None
 
 from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
 from pytr.utils import get_logger
@@ -17,11 +20,12 @@ def get_settings(tr):
     :returns: A JSON string of settings, colorized if in a TTY.
     """
     formatted_json = json.dumps(tr.settings(), indent=2)
-    if sys.stdout.isatty():
-        colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
+    if sys.stdout.isatty() and highlight and lexers and formatters:
+        colorful_json = highlight(
+            formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter()
+        )
         return colorful_json
-    else:
-        return formatted_json
+    return formatted_json
 
 
 def login(phone_no=None, pin=None, web=True, store_credentials=False):

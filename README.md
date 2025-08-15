@@ -256,16 +256,16 @@ Clone the repository:
 $ git clone https://github.com/pytr-org/pytr.git
 ```
 
-Install dependencies:
+Install dependencies (runtime + development extras):
 
 ```console
-$ uv sync
+$ pip install -e .[dev]
 ```
 
 Run the tests to ensure everything is set up correctly:
 
 ```console
-$ uv run pytest
+$ pytest
 ```
 
 ### Linting and Code Formatting

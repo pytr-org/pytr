@@ -37,6 +37,13 @@ dependencies = [
 [project.scripts]
 pytr = "pytr.main:main"
 
+[project.optional-dependencies]
+# Development dependencies for testing and local development
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=1.0.0",
+]
+
 [tool.hatch.build.hooks.babel]
 locale_dir = "pytr/locale"
 

@@ -1,7 +1,7 @@
 """
 pytr package-first async client entrypoint.
 """
-from typing import Any, Dict, List, Optional
+from typing import Any, AsyncIterator, Callable, Dict, List, Optional, TypeVar, Generic
 
 from .api import TradeRepublicApi
 from .models import (
@@ -11,6 +11,8 @@ from .models import (
     Quote,
     Paginated,
 )
+
+T = TypeVar("T")
 
 
 class TradeRepublic:
@@ -160,10 +162,41 @@ class TradeRepublic:
         pass
 
     @property
-    def stream(self) -> Any:
+    def stream(self) -> _StreamFacade:
         """
-        Low-level streaming interface (advanced subscription APIs).
+        Low-level streaming namespace for real-time subscriptions.
 
-        E.g., client.stream.timeline(), client.stream.ticker(isin)
+        Usage:
+            async for update in client.stream.timeline(after=cursor):
+                handle(update)
+
+        :returns: A facade exposing async iterators for websocket topics.
         """
-        return self._api
+        return _StreamFacade(self._api)
+
+    async def iterate(
+        self,
+        method: Callable[..., Paginated[T]],
+        *args: Any,
+        max_pages: Optional[int] = None,
+        **kwargs: Any,
+    ) -> AsyncIterator[T]:
+        """
+        Generic paginator to asynchronously iterate over all pages of a Paginated result.
+
+        :param method: Async method returning Paginated[T].
+        :param args: Positional args for the method.
+        :param max_pages: Maximum number of pages to fetch (None for unlimited).
+        :param kwargs: Keyword args for the method.
+        :yields: Individual items of type T across pages.
+        """
+        cursor: Optional[str] = None
+        pages = 0
+        while True:
+            page: Paginated[T] = await method(*args, after=cursor, **kwargs)  # type: ignore
+            for item in page.items:
+                yield item
+            cursor = page.cursor
+            pages += 1
+            if not cursor or (max_pages is not None and pages >= max_pages):
+                break

@@ -32,11 +32,23 @@ import uuid
 from http.cookiejar import MozillaCookieJar
 from typing import Any, Dict
 
-import certifi
-import requests
-import websockets
-from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
-from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
+try:
+    import certifi
+except ImportError:
+    certifi = None
+try:
+    import requests
+except ImportError:
+    requests = None
+try:
+    import websockets
+except ImportError:
+    websockets = None
+try:
+    from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
+    from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
+except ImportError:
+    NIST256p = SigningKey = sigencode_der = None
 
 from pytr.utils import get_logger
 
@@ -271,7 +283,10 @@ class TradeRepublicApi:
             return self._ws
 
         self.log.info("Connecting to websocket ...")
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        if certifi:
+            ssl_context = ssl.create_default_context(cafile=certifi.where())
+        else:
+            ssl_context = ssl.create_default_context()
         extra_headers = None
         connection_message = {"locale": self._locale}
         connect_id = 21
