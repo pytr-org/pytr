@@ -1,0 +1,18 @@
+[
+  {
+    "isin": "US0378331005",
+    "ticker": "AAPL",
+    "name": "Apple Inc",
+    "sector": "Technology",
+    "country": "US",
+    "updated_at": "2024-01-01T12:00:00"
+  },
+  {
+    "isin": "US0231351067",
+    "ticker": "AMZN",
+    "name": "Amazon.com Inc",
+    "sector": "Consumer Discretionary",
+    "country": "US",
+    "updated_at": "2024-01-02T15:30:00"
+  }
+]

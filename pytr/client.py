@@ -10,6 +10,7 @@ from .models import (
     CashBalance,
     Quote,
     Paginated,
+    InstrumentMetadata,
 )
 
 T = TypeVar("T")
@@ -326,3 +327,15 @@ class TradeRepublic:
             pages += 1
             if not cursor or (max_pages is not None and pages >= max_pages):
                 break
+
+    async def instrument_details(self, isin: str) -> InstrumentMetadata:
+        """
+        Fetch rich metadata for a given instrument ISIN.
+
+        :param isin: Instrument ISIN code.
+        :returns: InstrumentMetadata object.
+        """
+        sub_id = await self._api.instrument_details(isin)
+        _, _, resp = await self._api.recv()
+        await self._api.unsubscribe(sub_id)
+        return InstrumentMetadata(**resp)

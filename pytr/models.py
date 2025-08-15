@@ -66,6 +66,18 @@ class Quote(BaseModel):
     ts: datetime
 
 
+class InstrumentMetadata(BaseModel):
+    """
+    Metadata for a financial instrument, keyed by ISIN.
+    """
+    isin: str
+    ticker: Optional[str] = None
+    name: Optional[str] = None
+    sector: Optional[str] = None
+    country: Optional[str] = None
+    updated_at: Optional[datetime] = None
+
+
 class Paginated(BaseModel, Generic[T]):
     items: List[T] = Field(..., description="Page of results")
     cursor: Optional[str] = Field(None, description="Cursor for next page, or None if last page")
