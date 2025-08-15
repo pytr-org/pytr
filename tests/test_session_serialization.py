@@ -33,9 +33,11 @@ def test_session_serialize_resume():
     )
     client._api._websession.cookies.set_cookie(dummy)
 
+
     data = client.serialize_session()
-    # ensure data is pickle-able bytes
-    state = pickle.loads(data)
+    # datason.dumps returns a JSON-compatible dict
+    assert isinstance(data, dict)
+    state = data
     assert state["refresh_token"] == "rtoken"
     assert state["session_token"] == "stoken"
     assert state["session_token_expires_at"] == 123456.0
