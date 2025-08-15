@@ -488,9 +488,24 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "timelineDetailV2", "id": timeline_id})
 
     async def search_tags(self):
+        """
+        Retrieve all available search tags (e.g., countries, indices, sectors).
+
+        Returns:
+            int: Subscription ID to receive the tag stream.
+        """
         return await self.subscribe({"type": "neonSearchTags"})
 
     async def search_suggested_tags(self, query):
+        """
+        Retrieve suggested tags that match a partial query.
+
+        Args:
+            query (str): Partial tag name to search for.
+
+        Returns:
+            int: Subscription ID to receive the suggested tags.
+        """
         return await self.subscribe({"type": "neonSearchSuggestedTags", "data": {"q": query}})
 
     async def search(
@@ -524,6 +539,24 @@ class TradeRepublicApi:
             search_parameters["filter"].append({"key": "sector", "value": filter_sector})
 
         search_type = "neonSearch" if not aggregate else "neonSearchAggregations"
+        """
+        Search for instruments matching a query string and filters.
+
+        Args:
+            query (str): Search term (name or ISIN).
+            asset_type (str): Asset type filter, e.g. 'stock', 'etf', 'crypto'.
+            page (int): Page number of results (1-indexed).
+            page_size (int): Number of results per page.
+            aggregate (bool): If True, return aggregation facets instead of raw results.
+            only_savable (bool): If True, include only assets that support saving plans.
+            filter_index (Optional[str]): Index filter (e.g. 'sp500').
+            filter_country (Optional[str]): Country code filter (e.g. 'DE').
+            filter_sector (Optional[str]): Sector filter key (e.g. 'electronics').
+            filter_region (Optional[str]): Region filter key.
+
+        Returns:
+            int: Subscription ID to receive the search results stream.
+        """
         return await self.subscribe({"type": search_type, "data": search_parameters})
 
     async def search_derivative(self, underlying_isin, product_type):
