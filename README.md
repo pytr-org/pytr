@@ -259,8 +259,9 @@ $ git clone https://github.com/pytr-org/pytr.git
 Install dependencies (runtime + development extras):
 
 ```console
-$ pip install -e .[dev]
-```
+# On zsh, quote the extras spec to avoid globbing:
+$ pip install -e ".[dev]"
+``` 
 
 Run the tests to ensure everything is set up correctly:
 
