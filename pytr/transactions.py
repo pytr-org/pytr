@@ -176,3 +176,22 @@ class TransactionExporter:
                 fp.write("\n")
 
         self._log.info("Transactions exported.")
+
+    def to_list(
+        self,
+        events: Iterable[Event],
+        sort: bool = False,
+    ) -> list[dict[str, Any]]:
+        """
+        Convert a sequence of Event objects into a list of simplified transaction dicts.
+
+        :param events: Iterable of Event objects
+        :param sort: whether to sort by the 'date' field
+        :return: list of transaction dicts with localized headers
+        """
+        txns = []
+        seq = sorted(events, key=lambda ev: ev.date) if sort else events
+        for event in seq:
+            for txn in self.from_event(event):
+                txns.append(txn)
+        return txns

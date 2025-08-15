@@ -153,11 +153,14 @@ class TradeRepublicApi:
                 f.write(self.sk.to_pem())
 
     def login(self):
-        self.log.info("Logging in")
+        self.log.info(f"Logging in with phone: {self.phone_no}, pin: {'*' * len(self.pin)}")
         r = self._sign_request(
             "/api/v1/auth/login",
             payload={"phoneNumber": self.phone_no, "pin": self.pin},
         )
+        # Log response status and body for debugging login issues
+        self.log.info(f"Login response status code: {r.status_code}")
+        self.log.debug(f"Login response body: {r.text}")
         self._refresh_token = r.json()["refreshToken"]
         self.session_token = r.json()["sessionToken"]
 

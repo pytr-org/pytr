@@ -92,6 +92,108 @@ Options:
 ```
 <!-- end runcmd -->
 
+## Using pytr as a library
+
+Beyond the terminal interface, you can embed pytr into your own Python scripts. Below is an example
+demonstrating authentication, fetching the current portfolio, and exporting all past transactions to CSV.
+
+```python
+# 1) Authenticate (web-based login)
+from pytr import login, Portfolio, DL
+from pytr.event import Event
+from pytr.transactions import TransactionExporter
+import asyncio
+
+tr = login(phone_no='+4912345678', pin='1234', web=True)
+
+# 2) Fetch current portfolio
+pf = Portfolio(tr)
+pf.get()
+print('Positions:', pf.portfolio)
+print('Cash:', pf.cash)
+
+# 3) Download timeline events (in-memory)
+dl = DL(tr, output_path='.', filename_fmt='{iso_date}-{id}', lang='en', date_with_time=True)
+asyncio.run(dl.dl_loop())
+
+# 4) Convert raw events and export transactions
+raw_events = list(dl.tl.timeline_events.values())
+events = [Event.from_dict(e) for e in raw_events]
+exporter = TransactionExporter(lang='en', date_with_time=True)
+with open('transactions.csv', 'w') as fp:
+    exporter.export(fp, events, sort=True, format='csv')
+```
+
+### Portfolio object
+
+After fetching your portfolio, `pf.portfolio` is a list of position dicts and `pf.cash` holds cash balances:
+
+```python
+print(pf.portfolio)
+# Example output:
+[
+    {
+        "name": "Apple Inc",
+        "instrumentId": "US0378331005",
+        "netSize": "10",
+        "price": 145.32,
+        "averageBuyIn": 130.50,
+        "netValue": 1453.20,
+    },
+    {
+        "name": "Global Clean Energy USD (Dist)",
+        "instrumentId": "US37954Y8490",
+        "netSize": "5",
+        "price": 25.10,
+        "averageBuyIn": 22.45,
+        "netValue": 125.50,
+    },
+]
+
+print(pf.cash)
+# Example output:
+[
+    {"amount": "100.00", "currencyId": "EUR"}
+]
+```
+
+### Timeline events & raw data
+
+Raw timeline entries are stored in `dl.tl.timeline_events` (a mapping from ID to JSON):
+
+```python
+for eid, raw in dl.tl.timeline_events.items():
+    print(eid, raw.get("timestamp"), raw.get("eventType"))
+# Example output:
+# 9f8a7b6c-d5e4-3c2b-1a0f-9e8d7c6b5a4f 2024-01-01T12:00:00 timelineTransaction
+# 4a3b2c1d-0e9f-8a7b-6c5d-4e3f2a1b0c9e 2024-01-02T15:30:00 timeline_legacy_migrated_events
+```
+
+Convert raw payloads into `Event` objects:
+
+```python
+events = [Event.from_dict(raw) for raw in dl.tl.timeline_events.values()]
+for ev in events:
+    print(ev.date, ev.event_type, ev.value)
+# Example output:
+# 2024-01-01 12:00:00 PPEventType.BUY -145.32
+# 2024-01-02 15:30:00 PPEventType.DEPOSIT 500.00
+```
+
+### Transaction export
+
+Export a CSV of transactions using `TransactionExporter`:
+
+```python
+exporter = TransactionExporter(lang='en', date_with_time=True)
+# write CSV file
+with open('transactions.csv', 'w') as fp:
+    exporter.export(fp, events, sort=True, format='csv')
+# or get transactions directly as a list of dicts in memory:
+tx_list = exporter.to_list(events, sort=True)
+# each entry in tx_list is a dict with keys: Date, Type, Value, Note, ISIN, Shares, Fees, Taxes
+```
+
 ## Authentication
 
 There are two authentication methods:
