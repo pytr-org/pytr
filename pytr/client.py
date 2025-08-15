@@ -46,14 +46,63 @@ class TradeRepublic:
         )
         # TODO: apply timeout, debug flags to underlying API
 
-    # High-level methods to be implemented:
-    # async def positions(self, portfolio_id: Optional[str] = None, fresh: bool = False) -> List[Position]: ...
-    # async def transactions(
-    #     self, after: Optional[str] = None, limit: int = 100
-    # ) -> Paginated[Transaction]: ...
-    # async def cash(self) -> CashBalance: ...
-    # async def quotes(self, isins: List[str]) -> Dict[str, Quote]: ...
-    # async def portfolio_summary(self, portfolio_id: Optional[str] = None) -> Position: ...
+    # High-level data-first methods for convenience (non-streaming APIs)
+    async def positions(
+        self,
+        portfolio_id: Optional[str] = None,
+        fresh: bool = False,
+    ) -> List[Position]:
+        """
+        Fetch current portfolio positions as Position models.
+
+        :param portfolio_id: Optional specific portfolio identifier.
+        :param fresh: If True, bypass any cached session data.
+        :returns: List of Position objects.
+        """
+        raise NotImplementedError
+
+    async def transactions(
+        self,
+        after: Optional[str] = None,
+        limit: int = 100,
+    ) -> Paginated[Transaction]:
+        """
+        Retrieve past transactions with pagination support.
+
+        :param after: Pagination cursor for continuation.
+        :param limit: Maximum number of records to return.
+        :returns: Paginated[Transaction] result.
+        """
+        raise NotImplementedError
+
+    async def cash(self) -> CashBalance:
+        """
+        Fetch account cash balance.
+
+        :returns: CashBalance object.
+        """
+        raise NotImplementedError
+
+    async def quotes(self, isins: List[str]) -> Dict[str, Quote]:
+        """
+        Retrieve current market quotes for given instrument ISINs.
+
+        :param isins: List of ISIN strings.
+        :returns: Mapping from ISIN to Quote models.
+        """
+        raise NotImplementedError
+
+    async def portfolio_summary(
+        self,
+        portfolio_id: Optional[str] = None,
+    ) -> Position:
+        """
+        Fetch a summarized overview of the portfolio (positions + cash + total).
+
+        :param portfolio_id: Optional specific portfolio identifier.
+        :returns: Position object representing aggregated summary.
+        """
+        raise NotImplementedError
 
     # Streaming namespace placeholder
     @property
