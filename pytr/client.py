@@ -15,6 +15,35 @@ from .models import (
 T = TypeVar("T")
 
 
+class _StreamFacade:
+    """
+    Facade for async streaming subscriptions.
+    Provides async iterators over websocket topics with auto-unsubscribe.
+    """
+    def __init__(self, api: TradeRepublicApi):
+        self._api = api
+
+    async def timeline(self, after: Optional[str] = None) -> AsyncIterator[Any]:
+        sub_id = await self._api.timeline_transactions(after)
+        try:
+            while True:
+                _, _, resp = await self._api.recv()
+                yield resp
+        finally:
+            await self._api.unsubscribe(sub_id)
+
+    async def ticker(self, isin: str, exchange: str = "LSX") -> AsyncIterator[Any]:
+        sub_id = await self._api.ticker(isin, exchange)
+        try:
+            while True:
+                _, _, resp = await self._api.recv()
+                yield resp
+        finally:
+            await self._api.unsubscribe(sub_id)
+
+T = TypeVar("T")
+
+
 class TradeRepublic:
     """
     Async-first, data-centric client for Trade Republic API.
@@ -68,7 +97,27 @@ class TradeRepublic:
         :param fresh: If True, bypass any cached session data.
         :returns: List of Position objects.
         """
-        raise NotImplementedError
+        # reuse Portfolio helper for fetching positions
+        from .portfolio import Portfolio as _PortfolioHelper
+        # retrieve cash for currency context
+        cb = await self.cash()
+        helper = _PortfolioHelper(self._api)
+        await helper.portfolio_loop()
+        result: List[Position] = []
+        for pos in helper.portfolio:
+            result.append(
+                Position(
+                    isin=pos["instrumentId"],
+                    name=pos.get("name"),
+                    quantity=float(pos.get("netSize", 0)),
+                    average_buy_in=float(pos.get("averageBuyIn", 0)),
+                    current_price=float(pos.get("price", 0)),
+                    market_value=float(pos.get("netValue", 0)),
+                    currency=cb.currency,
+                    updated_at=None,
+                )
+            )
+        return result
 
     async def transactions(
         self,
@@ -82,7 +131,18 @@ class TradeRepublic:
         :param limit: Maximum number of records to return.
         :returns: Paginated[Transaction] result.
         """
-        raise NotImplementedError
+        # collect timeline transactions and convert to models
+        from .timeline import Timeline
+        from .transactions import TransactionExporter
+        from .event import Event
+
+        tl = Timeline(self._api, since_timestamp=None)
+        await tl.get_next_timeline_transactions(None, self)
+        events = [Event.from_dict(ev) for ev in tl.timeline_events.values()]
+        exporter = TransactionExporter()
+        txns = exporter.to_list(events, sort=True)
+        items = [Transaction(**txn) for txn in txns[:limit]]
+        return Paginated(items=items, cursor=None)
 
     async def cash(self) -> CashBalance:
         """
@@ -90,7 +150,16 @@ class TradeRepublic:
 
         :returns: CashBalance object.
         """
-        raise NotImplementedError
+        # subscribe to cash topic
+        sub_id = await self._api.cash()
+        _, _, resp = await self._api.recv()
+        await self._api.unsubscribe(sub_id)
+        entry = resp[0]
+        return CashBalance(
+            value=float(entry.get("amount", 0)),
+            currency=entry.get("currencyId", ""),
+            updated_at=None,
+        )
 
     async def quotes(self, isins: List[str]) -> Dict[str, Quote]:
         """
@@ -99,7 +168,15 @@ class TradeRepublic:
         :param isins: List of ISIN strings.
         :returns: Mapping from ISIN to Quote models.
         """
-        raise NotImplementedError
+        result: Dict[str, Quote] = {}
+        for isin in isins:
+            sub_id = await self._api.ticker(isin)
+            _, _, resp = await self._api.recv()
+            await self._api.unsubscribe(sub_id)
+            price = resp.get("last", {}).get("price", 0)
+            currency = resp.get("last", {}).get("currencyId", "")
+            result[isin] = Quote(isin=isin, price=float(price), currency=currency, ts=None)
+        return result
 
     async def portfolio_summary(
         self,
@@ -111,7 +188,19 @@ class TradeRepublic:
         :param portfolio_id: Optional specific portfolio identifier.
         :returns: Position object representing aggregated summary.
         """
-        raise NotImplementedError
+        positions = await self.positions(portfolio_id)
+        cash = await self.cash()
+        total = sum(p.market_value or 0 for p in positions) + cash.value
+        return Position(
+            isin="",
+            name="Summary",
+            quantity=0,
+            average_buy_in=None,
+            current_price=None,
+            market_value=total,
+            currency=cash.currency,
+            updated_at=None,
+        )
 
     # Authentication and session management
     async def authenticate(self) -> Dict[str, Any]:

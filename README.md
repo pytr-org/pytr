@@ -243,7 +243,62 @@ $ pytr -v debug search "Apple"
 You can also refine your query with filters:
 
 ```bash
-$ pytr search --only-savable --page 2 --page-size 10 "Clean Energy"
+  $ pytr search --only-savable --page 2 --page-size 10 "Clean Energy"
+
+## Package-first API examples
+
+Below are sample scripts demonstrating the new high-level package‑first API.
+
+```python
+# client_example.py
+import asyncio
+from pathlib import Path
+
+from pytr import TradeRepublic, FakeTradeRepublic
+from pytr.models import Position, Transaction, CashBalance, Quote, Paginated
+
+# ---------- Real client usage ----------
+async def demo_real():
+    client = TradeRepublic(phone='+4912345678', pin='1234')
+    auth = await client.authenticate()
+    if auth['requires_otp']:
+        code = input('Enter OTP: ')
+        await client.verify_otp(code)
+
+    positions: list[Position] = await client.positions()
+    print('Positions:', positions)
+
+    tx_page: Paginated[Transaction] = await client.transactions(limit=50)
+    print('Retrieved', len(tx_page.items), 'transactions')
+
+    cash: CashBalance = await client.cash()
+    print('Cash balance:', cash)
+
+    quotes: dict[str, Quote] = await client.quotes([p.isin for p in positions])
+    print('Quotes:', quotes)
+
+    # streaming timeline events (first page only)
+    async for ev in client.stream.timeline():
+        print('Timeline event:', ev)
+        break
+
+
+# ---------- Fake client usage for tests ----------
+def demo_fake():
+    fake = FakeTradeRepublic(sample_dir=Path('tests'))
+    # run via asyncio.run in real code or pytest asyncio
+    positions = asyncio.run(fake.positions())
+    print('Fake positions:', positions)
+
+    tx_page = asyncio.run(fake.transactions(limit=5))
+    print('Fake transactions:', tx_page.items)
+
+    cash = asyncio.run(fake.cash())
+    print('Fake cash:', cash)
+
+    quotes = asyncio.run(fake.quotes([p.isin for p in positions]))
+    print('Fake quotes:', quotes)
+```
 ```
 
 ## Development

@@ -27,6 +27,7 @@ dependencies = [
     "coloredlogs",
     "ecdsa",
     "packaging",
+    "pydantic>=1.10.0",
     "pathvalidate",
     "pygments",
     "requests_futures",

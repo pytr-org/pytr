@@ -8,3 +8,4 @@ from .portfolio import Portfolio
 from .transactions import TransactionExporter
 from .timeline import Timeline
 from .dl import DL
+from .fake import FakeTradeRepublic
