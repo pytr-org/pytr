@@ -51,6 +51,17 @@ class Portfolio:
         sort_by_column=None,
         sort_descending=True,
     ):
+        """
+        Initialize Portfolio fetching parameters.
+
+        :param tr: An authenticated TradeRepublicApi instance.
+        :param include_watchlist: Include watchlist items in the output.
+        :param lang: Language code for formatting.
+        :param decimal_localization: Localize decimal numbers per locale.
+        :param output: Path for CSV output (optional).
+        :param sort_by_column: Column name to sort by (e.g. 'netValue').
+        :param sort_descending: Sort descending if True; ascending otherwise.
+        """
         self.tr = tr
         self.include_watchlist = include_watchlist
         self.lang = lang
@@ -75,15 +86,27 @@ class Portfolio:
             self.lang = "en"
 
     def _decimal_format(self, value: Optional[float], precision: int = 2) -> Union[str, None]:
+        """
+        Format a numeric value to a string, localizing if requested.
+
+        :param value: The numeric value to format.
+        :param precision: Decimal precision to display.
+        :returns: Localized string or None if value is None.
+        """
         if value is None:
             return None
         if self.decimal_localization:
-            format = "#,##0." + ("#" * precision)
-            return format_decimal(value, format=format, locale=self.lang)
+            fmt = "#,##0." + ("#" * precision)
+            return format_decimal(value, format=fmt, locale=self.lang)
         else:
             return f"{float(value):.{precision}f}".rstrip("0").rstrip(".")
 
     async def portfolio_loop(self):
+        """
+        Internal async loop to fetch portfolio, cash, and watchlist data via websocket.
+
+        Populates self.portfolio, self.cash, and self.watchlist attributes.
+        """
         recv = 0
         await self.tr.compact_portfolio()
         recv += 1
@@ -179,6 +202,11 @@ class Portfolio:
                 pos["netValue"] = Decimal("0.0")
 
     def _get_sort_func(self):
+        """
+        Determine a key function for sorting portfolio positions.
+
+        :returns: A callable that extracts the sort field from a position dict.
+        """
         if self.sort_by_column:
             match self.sort_by_column.lower():
                 case "name":
@@ -204,6 +232,11 @@ class Portfolio:
             return lambda x: x["netValue"]
 
     def portfolio_to_csv(self):
+        """
+        Write the portfolio to a CSV file at the configured output path.
+
+        CSV columns: Name;ISIN;quantity;price;avgCost;netValue
+        """
         if self.output is None:
             return
 
@@ -226,6 +259,11 @@ class Portfolio:
         print(f"Wrote {len(csv_lines) + 1} lines to {self.output}")
 
     def overview(self):
+        """
+        Print a human-readable summary of the portfolio and cash balances to stdout.
+
+        Includes total buy cost, net value, cash, and overall totals.
+        """
         totalBuyCost = Decimal("0")
         totalNetValue = Decimal("0")
 
@@ -270,6 +308,12 @@ class Portfolio:
         print(f"Total {cash + totalBuyCost:>43.2f} -> {cash + totalNetValue:>10.2f}")
 
     def get(self):
+        """
+        Execute the portfolio fetch loop and output results.
+
+        Blocks until portfolio, cash, and watchlist are retrieved,
+        then prints overview and writes CSV (if output is set).
+        """
         asyncio.get_event_loop().run_until_complete(self.portfolio_loop())
 
         self.overview()

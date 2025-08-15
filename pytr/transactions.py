@@ -102,17 +102,23 @@ class TransactionExporter:
 
     def from_event(self, event: Event) -> Iterable[dict[str, Any]]:
         """
-        Given an event, produces one or more JSON objects representing a transaction. The returned object contains
-        the given fields, localized in the selected language.
+        Convert a single Event into one or more simplified transaction records.
 
-        - `date`
-        - `type`
-        - `value`
-        - `note`
-        - `isin`
-        - `shares`
-        - `fees`
-        - `taxes`
+        Each record contains the following fields:
+        - `date`: ISO8601 timestamp or date.
+        - `type`: Translated transaction type (BUY, SELL, DEPOSIT, etc.).
+        - `value`: Transaction monetary value.
+        - `note`: Localized description and title.
+        - `isin`: Instrument ISIN if applicable.
+        - `shares`: Number of shares transacted.
+        - `fees`: Fees as negative values.
+        - `taxes`: Taxes as negative values.
+
+        Special handling:
+        - ConditionalEventType.SAVEBACK yields both a BUY and DEPOSIT record.
+
+        :param event: The Event object to convert.
+        :returns: Iterable of transaction dicts ready for export.
         """
 
         if event.event_type is None:

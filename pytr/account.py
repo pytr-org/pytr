@@ -10,6 +10,12 @@ from pytr.utils import get_logger
 
 
 def get_settings(tr):
+    """
+    Retrieve and pretty-print the API client settings.
+
+    :param tr: An authenticated TradeRepublicApi instance.
+    :returns: A JSON string of settings, colorized if in a TTY.
+    """
     formatted_json = json.dumps(tr.settings(), indent=2)
     if sys.stdout.isatty():
         colorful_json = highlight(formatted_json, lexers.JsonLexer(), formatters.TerminalFormatter())
@@ -20,9 +26,16 @@ def get_settings(tr):
 
 def login(phone_no=None, pin=None, web=True, store_credentials=False):
     """
-    If web is true, use web login method, else simulate app login.
-    Handle credentials parameters and store to credentials file if requested.
-    If no parameters are set but are needed then ask for input
+    Authenticate against Trade Republic, via web or app flow.
+
+    If phone_no/pin are not provided, reads them from the credentials file or prompts interactively.
+    Optionally stores credentials and manages cookie persistence for web login.
+
+    :param phone_no: Phone number in international format (e.g. +4912345678).
+    :param pin: PIN code for authentication.
+    :param web: If True, use web-based login; otherwise, use app login and handle device reset.
+    :param store_credentials: If True, save phone_no and pin to the credentials file.
+    :returns: An authenticated TradeRepublicApi instance.
     """
     log = get_logger(__name__)
     save_cookies = True

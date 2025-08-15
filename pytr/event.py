@@ -181,13 +181,14 @@ class Event:
 
     @classmethod
     def from_dict(cls, event_dict: Dict[Any, Any]):
-        """Deserializes the event dictionary into an Event object
+        """
+        Deserialize a raw event dictionary into an Event object.
 
-        Args:
-            event_dict (json): _description_
+        Parses eventType, subtleties, and populates typed attributes:
+        date, title, event_type, fees, isin, note, shares, taxes, value.
 
-        Returns:
-            Event: Event object
+        :param event_dict: The raw JSON event dictionary from timeline.
+        :returns: An Event instance.
         """
         date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
         title: str = event_dict["title"]
