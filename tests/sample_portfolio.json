@@ -1,0 +1,13 @@
+[{
+  "isin": "US0378331005",
+  "ticker": "AAPL",
+  "name": "Apple Inc",
+  "quantity": 10.0,
+  "average_buy_in": 120.5,
+  "current_price": 150.25,
+  "market_value": 1502.5,
+  "currency": "USD",
+  "sector": "Technology",
+  "country": "US",
+  "updated_at": "2024-01-01T12:00:00"
+}]

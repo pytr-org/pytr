@@ -1,0 +1,11 @@
+[{
+  "id": "txn1",
+  "isin": "US0378331005",
+  "type": "BUY",
+  "status": "EXECUTED",
+  "amount": -150.25,
+  "quantity": 1.0,
+  "unit_price": 150.25,
+  "currency": "USD",
+  "timestamp": "2024-01-01T12:00:00"
+}]
