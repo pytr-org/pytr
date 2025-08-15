@@ -26,25 +26,32 @@ class TradeRepublic:
         self,
         phone: str,
         pin: str,
-        timeout: float = 10.0,
-        debug: bool = False,
+        keyfile: Optional[str] = None,
+        locale: str = "de",
         save_session: bool = True,
+        credentials_file: Optional[str] = None,
+        cookies_file: Optional[str] = None,
     ) -> None:
         """
-        Initialize the TradeRepublic client.
+        Initialize the TradeRepublic client with authentication credentials.
 
-        :param phone: Phone number for authentication.
-        :param pin: PIN code for authentication.
-        :param timeout: Default timeout for API calls.
-        :param debug: Enable debug logging.
-        :param save_session: Persist web session cookies.
+        :param phone: Phone number in international format (e.g. +4912345678).
+        :param pin: PIN for login.
+        :param keyfile: Path to ECDSA keyfile for device reset.
+        :param locale: Locale code for event formatting.
+        :param save_session: Persist web session cookies to disk.
+        :param credentials_file: Override credentials file path.
+        :param cookies_file: Override cookies file path.
         """
         self._api = TradeRepublicApi(
             phone_no=phone,
             pin=pin,
+            keyfile=keyfile,
+            locale=locale,
             save_cookies=save_session,
+            credentials_file=credentials_file,
+            cookies_file=cookies_file,
         )
-        # TODO: apply timeout, debug flags to underlying API
 
     # High-level data-first methods for convenience (non-streaming APIs)
     async def positions(
@@ -104,12 +111,59 @@ class TradeRepublic:
         """
         raise NotImplementedError
 
-    # Streaming namespace placeholder
+    # Authentication and session management
+    async def authenticate(self) -> Dict[str, Any]:
+        """
+        Perform a web-based authentication flow.
+
+        Initiates login or resumes an existing session transparently.
+
+        :returns: A dict with authentication status and any OTP requirements:
+            {
+              'requires_otp': bool,
+              'otp_countdown': Optional[int]
+            }
+        """
+        if self._api.resume_websession():
+            return {'requires_otp': False, 'otp_countdown': None}
+        countdown = self._api.inititate_weblogin()
+        return {'requires_otp': True, 'otp_countdown': countdown}
+
+    async def verify_otp(self, code: Optional[str] = None) -> None:
+        """
+        Complete the OTP verification for web login.
+
+        :param code: 4-digit code from app or SMS. If None, will request SMS resend.
+        """
+        if code is None:
+            # resend on countdown expiry
+            await self._api.resend_weblogin()
+            return
+        await self._api.complete_weblogin(code)
+
+    def serialize_session(self) -> bytes:
+        """
+        Serialize the current authentication session (cookies + tokens) to opaque bytes.
+
+        :returns: Serialized session data.
+        """
+        # Placeholder: implement secure serialization
+        return b""
+
+    async def resume_session(self, data: bytes) -> None:
+        """
+        Resume a previously serialized session.
+
+        :param data: Opaque session bytes from serialize_session().
+        """
+        # Placeholder: implement secure deserialization
+        pass
+
     @property
     def stream(self) -> Any:
         """
-        Low-level streaming interface for subscriptions (advanced).
+        Low-level streaming interface (advanced subscription APIs).
 
         E.g., client.stream.timeline(), client.stream.ticker(isin)
         """
-        return self._api  # placeholder until streaming facade is built
+        return self._api
