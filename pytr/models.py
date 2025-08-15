@@ -108,3 +108,19 @@ class ApiShapeError(PytrError):
 class UnsupportedVersionError(PytrError):
     "Raised when the client library version is incompatible with server API." 
     retryable = False
+
+
+class OtpRequired(AuthError):
+    "Raised when an OTP is required to continue authentication."  
+    retryable = False
+
+
+class SessionExpired(AuthError):
+    "Raised when the session has expired and needs re-authentication."  
+    retryable = True
+
+
+class NetworkError(PytrError):
+    "Raised when a network error occurs (e.g. DNS failure, connection timeout)."
+    retryable = True
+    recommended_backoff = 1.0
