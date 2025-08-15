@@ -242,6 +242,32 @@ def get_main_parser():
         nargs="?",
     )
 
+    # search instruments
+    info = "Search instruments by name or ISIN"
+    parser_search = parser_cmd.add_parser(
+        "search",
+        formatter_class=formatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    parser_search.add_argument("query", help="Search query string")
+    parser_search.add_argument(
+        "-t", "--type", dest="asset_type",
+        choices=["stock", "etf", "crypto"], default="stock",
+        help="Asset type filter",
+    )
+    parser_search.add_argument("--page", type=int, default=1, help="Page number")
+    parser_search.add_argument(
+        "--page-size", dest="page_size", type=int, default=20,
+        help="Results per page",
+    )
+    parser_search.add_argument(
+        "--only-savable",
+        action="store_true",
+        help="Only include savable assets",
+    )
+
     # set_price_alarms
     info = "Set new price alarms"
     parser_set_price_alarms = parser_cmd.add_parser(
@@ -402,6 +428,28 @@ def main():
         except ValueError as e:
             print(e)
             return -1
+    elif args.command == "search":
+        tr_api = login(
+            phone_no=args.phone_no,
+            pin=args.pin,
+            web=not args.applogin,
+            store_credentials=args.store_credentials,
+        )
+        async def _run_search():
+            sub_id = await tr_api.search(
+                args.query,
+                asset_type=args.asset_type,
+                page=args.page,
+                page_size=args.page_size,
+                only_savable=args.only_savable,
+            )
+            sub_id, subscription, response = await tr_api.recv()
+            await tr_api.unsubscribe(sub_id)
+            return response
+
+        results = asyncio.get_event_loop().run_until_complete(_run_search())
+        print(json.dumps(results, indent=2))
+        return 0
     elif args.command == "details":
         Details(
             login(

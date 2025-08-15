@@ -219,6 +219,33 @@ $ pytr login --phone_no +49123456789 --pin 1234
 If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain
 the phone number, the second line the pin). If the file doesn't exist pytr will ask for for the phone number and pin.
 
+## Search command
+
+You can search Trade Republic’s instrument database directly from the terminal. This will return JSON payloads
+with matching instruments and their metadata.
+
+```bash
+$ pytr -v debug search "Apple"
+[
+  {
+    "assetClass": "stock",
+    "instrumentId": "US0378331005",
+    "name": "Apple Inc",
+    "exchange": "XNAS",
+    "currency": "USD",
+    "isin": "US0378331005",
+    // ... more fields
+  },
+  // more matches
+]
+```
+
+You can also refine your query with filters:
+
+```bash
+$ pytr search --only-savable --page 2 --page-size 10 "Clean Energy"
+```
+
 ## Development
 
 ### Setting Up a Development Environment
