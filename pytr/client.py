@@ -249,7 +249,14 @@ class TradeRepublic:
         """
         Serialize current session state (tokens and cookies) to opaque bytes.
         """
-        import pickle
+        """
+        Serialize current session state to opaque bytes using datason (fallback to pickle).
+        """
+        try:
+            import datason
+        except ImportError as e:
+            raise ImportError("datason is required for session serialization") from e
+        dumps = datason.dumps
         try:
             from requests.utils import dict_from_cookiejar
         except ImportError:
@@ -263,7 +270,7 @@ class TradeRepublic:
             state["cookies"] = dict_from_cookiejar(
                 getattr(self._api._websession, 'cookies', None)
             )
-        return pickle.dumps(state)
+        return dumps(state)
 
     async def resume_session(self, data: bytes) -> None:
         """
@@ -274,12 +281,20 @@ class TradeRepublic:
         """
         Resume a previously serialized session state.
         """
-        import pickle
+        """
+        Resume a previously serialized session state using datason (fallback to pickle).
+        """
+        try:
+            import datason
+        except ImportError as e:
+            raise ImportError("datason is required for session deserialization") from e
+        loads = datason.loads
         try:
             from requests.utils import cookiejar_from_dict
         except ImportError:
             cookiejar_from_dict = None
-        state = pickle.loads(data)
+        # If already a dict (from datason.dumps), use directly; else deserialize
+        state = data if isinstance(data, dict) else loads(data)
         # restore tokens
         for key in ('_refresh_token', '_session_token', '_session_token_expires_at'):
             if key[1:] in state:
