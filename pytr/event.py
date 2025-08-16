@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from babel.numbers import NumberFormatError, parse_decimal
 
-from pytr.utils import get_logger
+from pytr.logger import get_logger
 
 
 class EventType(Enum):

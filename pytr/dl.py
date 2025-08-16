@@ -12,7 +12,7 @@ except ImportError:
 
 from pytr.api import TradeRepublicError
 from pytr.timeline import Timeline
-from pytr.utils import get_logger, preview
+from .logger import get_logger, preview
 
 
 class DL:

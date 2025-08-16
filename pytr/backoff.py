@@ -54,7 +54,7 @@ async def retry_async(
     """
     last_exc = None
     intervals = backoff_intervals(initial_delay, max_delay, factor, max_attempts - 1, jitter)
-    for delay in intervals:
+    async for delay in intervals:
         try:
             return await func(*args)
         except Exception as e:

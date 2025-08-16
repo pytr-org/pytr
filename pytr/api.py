@@ -50,7 +50,7 @@ try:
 except ImportError:
     NIST256p = SigningKey = sigencode_der = None
 
-from pytr.utils import get_logger
+from pytr.logger import get_logger
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"

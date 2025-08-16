@@ -28,6 +28,7 @@ dependencies = [
     "ecdsa",
     "packaging",
     "pydantic>=1.10.0",
+    "datason>=0.12.0",
     "pathvalidate",
     "pygments",
     "requests_futures",
@@ -43,6 +44,7 @@ pytr = "pytr.main:main"
 dev = [
     "pytest>=8.3.4",
     "pytest-asyncio>=1.0.0",
+    "datason>=0.12.0",
 ]
 
 [tool.hatch.build.hooks.babel]

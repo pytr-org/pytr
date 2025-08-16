@@ -9,7 +9,7 @@ from babel.numbers import format_decimal
 
 from .event import ConditionalEventType, Event, PPEventType
 from .translation import setup_translation
-from .utils import get_logger
+from .logger import get_logger
 
 SUPPORTED_LANGUAGES = {
     "cs",

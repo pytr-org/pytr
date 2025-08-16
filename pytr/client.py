@@ -12,6 +12,9 @@ from .models import (
     Paginated,
     InstrumentMetadata,
 )
+from .utils.decorators import safe_output
+from .errors import ApiShapeError, redact_sensitive_data
+from pydantic import ValidationError
 
 T = TypeVar("T")
 
@@ -92,7 +95,18 @@ class TradeRepublic:
             debug=debug,
         )
 
+    def _safe_model(self, model_cls, data):
+        try:
+            return model_cls(**data)
+        except ValidationError as e:
+            redacted_data = redact_sensitive_data(data)
+            raise ApiShapeError(
+                f"Failed to instantiate {model_cls.__name__} from API data",
+                data=redacted_data
+            )
+
     # High-level data-first methods for convenience (non-streaming APIs)
+    @safe_output(Position)
     async def positions(
         self,
         portfolio_id: Optional[str] = None,
@@ -111,19 +125,19 @@ class TradeRepublic:
         cb = await self.cash()
         helper = _PortfolioHelper(self._api)
         await helper.portfolio_loop()
-        result: List[Position] = []
+        result: List[Dict] = []
         for pos in helper.portfolio:
             result.append(
-                Position(
-                    isin=pos["instrumentId"],
-                    name=pos.get("name"),
-                    quantity=float(pos.get("netSize", 0)),
-                    average_buy_in=float(pos.get("averageBuyIn", 0)),
-                    current_price=float(pos.get("price", 0)),
-                    market_value=float(pos.get("netValue", 0)),
-                    currency=cb.currency,
-                    updated_at=None,
-                )
+                {
+                    "isin": pos["instrumentId"],
+                    "name": pos.get("name"),
+                    "quantity": float(pos.get("netSize", 0)),
+                    "average_buy_in": float(pos.get("averageBuyIn", 0)),
+                    "current_price": float(pos.get("price", 0)),
+                    "market_value": float(pos.get("netValue", 0)),
+                    "currency": cb.currency,
+                    "updated_at": None,
+                }
             )
         return result
 
@@ -149,9 +163,10 @@ class TradeRepublic:
         events = [Event.from_dict(ev) for ev in tl.timeline_events.values()]
         exporter = TransactionExporter()
         txns = exporter.to_list(events, sort=True)
-        items = [Transaction(**txn) for txn in txns[:limit]]
+        items = [self._safe_model(Transaction, txn) for txn in txns[:limit]]
         return Paginated(items=items, cursor=None)
 
+    @safe_output(CashBalance)
     async def cash(self) -> CashBalance:
         """
         Fetch account cash balance.
@@ -163,11 +178,11 @@ class TradeRepublic:
         _, _, resp = await self._api.recv()
         await self._api.unsubscribe(sub_id)
         entry = resp[0]
-        return CashBalance(
-            value=float(entry.get("amount", 0)),
-            currency=entry.get("currencyId", ""),
-            updated_at=None,
-        )
+        return {
+            "value": float(entry.get("amount", 0)),
+            "currency": entry.get("currencyId", ""),
+            "updated_at": None,
+        }
 
     async def quotes(self, isins: List[str]) -> Dict[str, Quote]:
         """
@@ -181,9 +196,13 @@ class TradeRepublic:
             sub_id = await self._api.ticker(isin)
             _, _, resp = await self._api.recv()
             await self._api.unsubscribe(sub_id)
-            price = resp.get("last", {}).get("price", 0)
-            currency = resp.get("last", {}).get("currencyId", "")
-            result[isin] = Quote(isin=isin, price=float(price), currency=currency, ts=None)
+            payload = {
+                "isin": isin,
+                "price": float(resp.get("last", {}).get("price", 0)),
+                "currency": resp.get("last", {}).get("currencyId", ""),
+                "ts": resp.get("last", {}).get("timestamp"),
+            }
+            result[isin] = self._safe_model(Quote, payload)
         return result
 
     async def portfolio_summary(
@@ -343,6 +362,7 @@ class TradeRepublic:
             if not cursor or (max_pages is not None and pages >= max_pages):
                 break
 
+    @safe_output(InstrumentMetadata)
     async def instrument_details(self, isin: str) -> InstrumentMetadata:
         """
         Fetch rich metadata for a given instrument ISIN.
@@ -353,4 +373,4 @@ class TradeRepublic:
         sub_id = await self._api.instrument_details(isin)
         _, _, resp = await self._api.recv()
         await self._api.unsubscribe(sub_id)
-        return InstrumentMetadata(**resp)
+        return resp

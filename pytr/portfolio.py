@@ -8,7 +8,7 @@ from typing import Optional, Union
 
 from babel.numbers import format_decimal
 
-from .utils import get_logger, preview
+from .logger import get_logger, preview
 
 SUPPORTED_LANGUAGES = {
     "cs",

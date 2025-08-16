@@ -9,7 +9,7 @@ except ImportError:
     formatters = highlight = lexers = None
 
 from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
-from pytr.utils import get_logger
+from pytr.logger import get_logger
 
 
 def get_settings(tr):

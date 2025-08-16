@@ -4,7 +4,7 @@ from datetime import datetime
 from pytr.event import Event
 
 from .transactions import TransactionExporter
-from .utils import get_logger
+from .logger import get_logger
 
 MAX_EVENT_REQUEST_BATCH = 1000
 

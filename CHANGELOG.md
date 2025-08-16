@@ -19,5 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Removed
 - Removed direct export of `TradeRepublicApi` from the package root to promote the single `TradeRepublic` entry point.
 
+### Added
+- Sanitizer module (`pytr.sanitize`) leveraging DataSON's `RedactionEngine` to scrub sensitive fields (IBAN, ISIN, currency amounts, phone, PIN) and optionally produce an audit trail.
+
 ## [0.4.3] - 2025-08-15
 - Initial release matching v0.4.3 on PyPI
