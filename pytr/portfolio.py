@@ -209,9 +209,11 @@ class Portfolio:
 
         csv_lines = []
         for pos in sorted(self.portfolio, key=self._get_sort_func(), reverse=self.sort_descending):
+            exchange = pos["exchangeIds"][0] if pos.get("exchangeIds") and len(pos["exchangeIds"]) > 0 else ""
             csv_lines.append(
                 f"{pos['name']};"
                 f"{pos['instrumentId']};"
+                f"{exchange};"
                 f"{self._decimal_format(pos['netSize'], precision=6)};"
                 f"{self._decimal_format(pos['price'], precision=4)};"
                 f"{self._decimal_format(pos['averageBuyIn'], precision=4)};"
@@ -220,7 +222,7 @@ class Portfolio:
 
         Path(self.output).parent.mkdir(parents=True, exist_ok=True)
         with open(self.output, "w", encoding="utf-8") as f:
-            f.write("Name;ISIN;quantity;price;avgCost;netValue\n")
+            f.write("Name;ISIN;Exchange;quantity;price;avgCost;netValue\n")
             f.write("\n".join(csv_lines) + ("\n" if csv_lines else ""))
 
         print(f"Wrote {len(csv_lines) + 1} lines to {self.output}")
@@ -231,10 +233,11 @@ class Portfolio:
 
         if not self.output:
             print(
-                "Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue      price       diff   %-diff"
+                "Name                      ISIN       Exchange    avgCost *   quantity =    buyCost ->   netValue      price       diff   %-diff"
             )
 
         for pos in sorted(self.portfolio, key=self._get_sort_func(), reverse=self.sort_descending):
+            exchange = pos["exchangeIds"][0] if pos.get("exchangeIds") and len(pos["exchangeIds"]) > 0 else ""
             buyCost = (Decimal(pos["averageBuyIn"]) * Decimal(pos["netSize"])).quantize(
                 Decimal("0.01"), rounding=ROUND_HALF_UP
             )
@@ -246,7 +249,8 @@ class Portfolio:
             if not self.output:
                 print(
                     f"{pos['name']:<25.25} "
-                    f"{pos['instrumentId']} "
+                    f"{pos['instrumentId']:<12} "
+                    f"{exchange:<10} "
                     f"{Decimal(pos['averageBuyIn']):>10.2f} * "
                     f"{Decimal(pos['netSize']):>10.6f} = "
                     f"{buyCost:>10.2f} -> "
@@ -258,7 +262,7 @@ class Portfolio:
 
         if not self.output:
             print(
-                "Name                      ISIN            avgCost *   quantity =    buyCost ->   netValue      price       diff   %-diff"
+                "Name                      ISIN       Exchange    avgCost *   quantity =    buyCost ->   netValue      price       diff   %-diff"
             )
             print()
 
