@@ -1,5 +1,5 @@
 {
-    "id": "eb8e7900-f759-4a7f-a717-a5c6e98c3d0e",
+    "id": "12345678",
     "timestamp": "2025-05-14T07:01:32.079+0000",
     "title": "Daimler Truck Holding",
     "icon": "logos/DE000DTR0CK8/v2",
@@ -14,15 +14,15 @@
     "status": "EXECUTED",
     "action": {
       "type": "timelineDetail",
-      "payload": "eb8e7900-f759-4a7f-a717-a5c6e98c3d0e"
+      "payload": "12345678"
     },
     "eventType": "trading_trade_executed",
-    "cashAccountNumber": "0674716511",
+    "cashAccountNumber": "12345678",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
     "details": {
-      "id": "eb8e7900-f759-4a7f-a717-a5c6e98c3d0e",
+      "id": "12345678",
       "sections": [
         {
           "title": "Du hast 119,37 € erhalten",
@@ -187,7 +187,7 @@
               "title": "Abrechnung",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },
@@ -198,7 +198,7 @@
               "title": "Kosteninformation",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },
@@ -209,7 +209,7 @@
               "title": "Auftragsbestätigung",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },

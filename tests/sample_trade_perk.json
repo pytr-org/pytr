@@ -72,21 +72,21 @@
             "title": "Rechnung",
             "action": {
               "type": "browserModal",
-              "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2025/4/1/103cfad0/pb1743516145307908619770277243.pdf?X-Amz-Security-"
+              "payload": ""
             },
             "id": "d660e559-1b9f-453f-8023-6be2f23cb02d",
             "postboxType": "SECURITIES_SETTLEMENT",
-            "local_filepath": "/tmp/pytr-output/Rechnung/2025-04-01 14:09 Rechnung - Aktien-Bonus - Eingelöst.pdf"
+            "local_filepath": ""
           },
           {
             "title": "Kosteninformation",
             "action": {
               "type": "browserModal",
-              "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2025/3/31/103cfad0/pb1743449991935843192641925527.pdf?X-Amz-Security"
+              "payload": ""
             },
             "id": "f10c0473-4991-4ab8-b38c-d44f8c80eb8a",
             "postboxType": "EQUITIES_BUY_EX_ANTE",
-            "local_filepath": "/tmp/pytr-output/Kosteninformation/2025-04-01 14:09 Kosteninformation - Aktien-Bonus - Eingelöst.pdf"
+            "local_filepath": ""
           }
         ],
         "type": "documents"

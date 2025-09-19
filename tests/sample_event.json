@@ -81,12 +81,12 @@
             {
               "title": "Transaktionsbestätigung",
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2024/9/10/XXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf?X-Amz-Security-Token=xxxx&X-Amz-Algorithm=xxxx&X-Amz-Date=xxxx&X-Amz-SignedHeaders=host&X-Amz-Expires=xxxx&X-Amz-Credential=xxxx&X-Amz-Signature=XXXX",
+                "payload": "",
                 "type": "browserModal"
               },
               "id": "4254e648-e0da-4e0a-94be-c95499b35d9a",
               "postboxType": "INCOMING_TRANSFER",
-              "local filepath": "/tmp/pytr-output/Transaktionsbestätigung/ Transaktionsbestätigung - Vorname Nachname.pdf"
+              "local filepath": ""
             }
           ],
           "type": "documents"

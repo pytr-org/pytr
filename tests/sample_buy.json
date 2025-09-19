@@ -130,7 +130,7 @@
               },
               "id": "",
               "postboxType": "SECURITIES_SETTLEMENT",
-              "local filepath": "20241021/Abrechnung/2024-02-20 Abrechnung - Euro Stoxx 50 EUR (Dist).pdf"
+              "local filepath": ""
             },
             {
               "title": "Basisinformationsblatt",
@@ -139,9 +139,9 @@
                 "type": "browserModal",
                 "payload": ""
               },
-              "id": "62c2529e",
+              "id": "12345678",
               "postboxType": "INFO",
-              "local filepath": "20241021/Basisinformationsblatt/2024-02-20 Basisinformationsblatt - Euro Stoxx 50 EUR (Dist).pdf"
+              "local filepath": ""
             },
             {
               "title": "Kosteninformation",
@@ -150,9 +150,9 @@
                 "type": "browserModal",
                 "payload": ""
               },
-              "id": "668b8e97",
+              "id": "12345678",
               "postboxType": "COSTS_INFO_BUY_V2",
-              "local filepath": "20241021/Kosteninformation/2024-02-20 Kosteninformation - Euro Stoxx 50 EUR (Dist).pdf"
+              "local filepath": ""
             }
           ],
           "action": null,

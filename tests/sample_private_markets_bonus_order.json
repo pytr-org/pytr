@@ -1,0 +1,182 @@
+{
+    "id": "12345678",
+    "timestamp": "2025-09-18T07:15:25.085+0000",
+    "title": "Private Equity",
+    "icon": "logos/LU3176111881/v2",
+    "avatar": {
+        "asset": "logos/LU3176111881/v2",
+        "badge": {
+            "asset": "logos/timeline_one_percent/v2",
+            "type": "icon"
+        }
+    },
+    "badge": null,
+    "subtitle": "1 % Bonus",
+    "amount": {
+        "currency": "EUR",
+        "value": -1.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "12345678"
+    },
+    "eventType": "private_markets_order_created",
+    "cashAccountNumber": "12345678",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "12345678",
+        "sections": [
+            {
+                "title": "Du hast 1,00\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/LU3176111881/v2",
+                    "timestamp": "2025-09-18T07:15:25.085181Z",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "LU3176111881",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "1% Bonus",
+                        "detail": {
+                            "text": "Erstellt",
+                            "functionalStyle": "CREATED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "Private Equity",
+                            "displayValue": {
+                                "text": "Private Equity"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "1,00\u00a0\u20ac",
+                            "action": {
+                                "payload": {
+                                    "id": "00000000-0000-0000-0000-000000000000",
+                                    "sections": [
+                                        {
+                                            "title": "Transaktion",
+                                            "type": "title"
+                                        },
+                                        {
+                                            "data": [
+                                                {
+                                                    "title": "Summe",
+                                                    "detail": {
+                                                        "text": "1,00\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "1,00\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                }
+                                            ],
+                                            "type": "table"
+                                        }
+                                    ]
+                                },
+                                "type": "infoPage"
+                            },
+                            "displayValue": {
+                                "text": "1,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "0,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "0,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Summe",
+                        "detail": {
+                            "text": "1,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "1,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Kosteninformation",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "12345678",
+                        "postboxType": "EQUITIES_BUY_EX_ANTE",
+                        "local_filepath": ""
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0029_wealth_private_buying_selling_open_order",
+                                        "timelineEventId": "",
+                                        "orderType": "BUY",
+                                        "instrumentId": "LU3176111881",
+                                        "orderCreationDate": "2025-09-18",
+                                        "orderCutoffDate": "2025-10-14"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    },
+    "has_docs": true
+}

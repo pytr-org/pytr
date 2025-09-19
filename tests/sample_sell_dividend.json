@@ -132,7 +132,7 @@
             "detail": "10.05.2025",
             "action": {
               "type": "browserModal",
-              "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/"
+              "payload": ""
             },
             "id": "75aa8fe4-cec5-4963-bf8a-2f5aec65c4f5",
             "postboxType": "CA_INCOME_SECURITIES_INVOICE"
