@@ -94,7 +94,7 @@
                     {
                         "title": "Wertpapierabrechnung",
                         "action": {
-                            "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                            "payload": "",
                             "type": "browserModal"
                         },
                         "id": "8886fc15-a3e4-40c1-9604-e8e27f8ed992",
@@ -103,7 +103,7 @@
                     {
                         "title": "Kosteninformation",
                         "action": {
-                            "payload": "https://traderepublic-data-production.s3.eu-central-1.amazonaws.com/",
+                            "payload": "",
                             "type": "browserModal"
                         },
                         "id": "001c5873-ddf6-42be-9eaa-19df21ef82f8",

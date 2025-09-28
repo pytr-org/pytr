@@ -118,10 +118,6 @@ class TransactionExporter:
         if event.event_type is None:
             return
 
-        if event.event_type == ConditionalEventType.TRADE_INVOICE:
-            assert event.value is not None, event
-            event.event_type = PPEventType.BUY if event.value < 0 else PPEventType.SELL
-
         kwargs: _SimpleTransaction = {
             "date": event.date.isoformat() if self.date_with_time else event.date.date().isoformat(),
             "type": self._translate(event.event_type.value) if isinstance(event.event_type, PPEventType) else None,
@@ -133,10 +129,13 @@ class TransactionExporter:
             "taxes": self._decimal_format(-event.taxes) if event.taxes is not None else None,
         }
 
+        if event.event_type == ConditionalEventType.TRADE_INVOICE:
+            assert event.value is not None, event
+            kwargs["type"] = self._translate((PPEventType.BUY if event.value < 0 else PPEventType.SELL).value)
         # Special case for saveback events. Example payload: https://github.com/pytr-org/pytr/issues/116#issuecomment-2377491990
         # With saveback, a small amount already invested into a savings plans is invested again, effectively representing
         # a deposit (you get money from Trade Republic) and then a buy of the related asset.
-        if event.event_type == ConditionalEventType.SAVEBACK:
+        elif event.event_type == ConditionalEventType.SAVEBACK:
             assert event.value is not None, event
             kwargs["type"] = self._translate(PPEventType.BUY.value)
             yield self._localize_keys(kwargs)
@@ -146,9 +145,24 @@ class TransactionExporter:
             kwargs["value"] = self._decimal_format(-event.value)
             kwargs["isin"] = None
             kwargs["shares"] = None
-            yield self._localize_keys(kwargs)
-        else:
-            yield self._localize_keys(kwargs)
+        elif event.event_type == ConditionalEventType.PRIVATE_MARKETS_ORDER:
+            if event.isin == "LU3176111881":
+                kwargs["note"] = "EQT"
+            elif event.isin == "LU3170240538":
+                kwargs["note"] = "Apollo"
+
+            assert event.value is not None, event
+            kwargs["type"] = self._translate((PPEventType.BUY if event.value < 0 else PPEventType.SELL).value)
+            if event.note == "1 % Bonus":
+                yield self._localize_keys(kwargs)
+
+                kwargs = kwargs.copy()
+                kwargs["type"] = self._translate(PPEventType.DEPOSIT.value)
+                kwargs["value"] = self._decimal_format(-event.value)
+                kwargs["isin"] = None
+                kwargs["shares"] = None
+
+        yield self._localize_keys(kwargs)
 
     def export(
         self,

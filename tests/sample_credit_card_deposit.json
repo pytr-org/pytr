@@ -97,11 +97,11 @@
                         "detail": "27.08.2022",
                         "action": {
                             "type": "browserModal",
-                            "payload": "https://traderepublic-data-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2022/8/27/51850145/pb16615767906502642694118463234.pdf?REDACTED"
+                            "payload": ""
                         },
                         "id": "4f6f159f-08f1-4573-9b69-2418d57ca37a",
                         "postboxType": "PAYMENT_INBOUND_INVOICE",
-                        "local_filepath": "out/Abrechnung Einzahlung/2022-08-27 Abrechnung Einzahlung - Einzahlung.pdf"
+                        "local_filepath": ""
                     }
                 ],
                 "action": null,

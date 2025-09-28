@@ -1,5 +1,5 @@
 {
-    "id": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
+    "id": "12345678",
     "timestamp": "2025-05-20T08:03:45.106+0000",
     "title": "D-Wave Quantum",
     "icon": "logos/US26740W1099/v2",
@@ -14,15 +14,15 @@
     "status": "EXECUTED",
     "action": {
       "type": "timelineDetail",
-      "payload": "f9e68fd7-6d43-474a-a5f3-8f92761539d2"
+      "payload": "12345678"
     },
     "eventType": "trading_trade_executed",
-    "cashAccountNumber": "0674716511",
+    "cashAccountNumber": "12345678",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
     "details": {
-      "id": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
+      "id": "12345678",
       "sections": [
         {
           "title": "Du hast 114,91 € erhalten",
@@ -214,29 +214,29 @@
               "title": "Auftragsbestätigung",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },
-              "id": "d5eadf0e-ce7a-4894-b20c-004365ac676c",
+              "id": "12345678",
               "postboxType": "ORDER_CONFIRMATION"
             },
             {
               "title": "Kosteninformation",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },
-              "id": "cff96a32-fb28-477f-9f5f-b5ed6af788eb",
+              "id": "12345678",
               "postboxType": "EQUITIES_SELL_EX_ANTE"
             },
             {
               "title": "Abrechnung",
               "detail": null,
               "action": {
-                "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/",
+                "payload": "",
                 "type": "browserModal",
                 "overrideAction": null
               },
@@ -259,8 +259,8 @@
                     "contextCategory": "NHC",
                     "contextParams": {
                       "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
-                      "timelineEventId": "f9e68fd7-6d43-474a-a5f3-8f92761539d2",
-                      "primId": "N1370361796"
+                      "timelineEventId": "12345678",
+                      "primId": ""
                     }
                   },
                   "type": "customerSupportChat",
