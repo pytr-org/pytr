@@ -62,12 +62,12 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 <!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
+            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,ticker,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion}
+  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,ticker,completion}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
@@ -81,6 +81,7 @@ Commands:
     set_price_alarms                    Set new price alarms
     export_transactions                 Create a CSV with the deposits and removals ready for importing into Portfolio
                                         Performance
+    ticker                              Subscribe to the price of a stock
     completion                          Print shell tab completion
 
 Options:

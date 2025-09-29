@@ -17,6 +17,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
+from pytr.subscriptions import run_subscribe_price_command
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
 from pytr.utils import check_version, get_logger
 
@@ -296,6 +297,15 @@ def get_main_parser():
         help="The output file format.",
     )
 
+    # ticker
+    info = "Subscribe to the price of a stock"
+    parser_ticker = parser_cmd.add_parser(
+        "ticker", formatter_class=formatter, help=info, description=info, parents=[parser_login_args]
+    )
+    parser_ticker.add_argument("isin", help="ISIN of the stock")
+    parser_ticker.add_argument("--exchange", default="LSX", help="Exchange (default: LSX)")
+    parser_ticker.set_defaults(func=run_subscribe_price_command)
+
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
         "completion",
@@ -339,7 +349,9 @@ def main():
     if args.verbosity.upper() == "DEBUG":
         log.debug("logging is set to debug")
 
-    if args.command == "login":
+    if hasattr(args, "func"):
+        args.func(args)
+    elif args.command == "login":
         login(
             phone_no=args.phone_no,
             pin=args.pin,
