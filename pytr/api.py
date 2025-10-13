@@ -197,7 +197,7 @@ class TradeRepublicApi:
             headers=headers,
         )
 
-    def inititate_weblogin(self):
+    def initiate_weblogin(self):
         r = self._websession.post(
             f"{self._host}/api/v1/auth/web/login",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
