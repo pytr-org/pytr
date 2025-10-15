@@ -65,7 +65,7 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
             log.info("Web session resumed")
         else:
             try:
-                countdown = tr.inititate_weblogin()
+                countdown = tr.initiate_weblogin()
             except ValueError as e:
                 log.fatal(str(e))
                 exit(1)
