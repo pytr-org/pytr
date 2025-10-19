@@ -5,6 +5,7 @@ import asyncio
 import json
 import shutil
 import signal
+import json 
 from datetime import datetime, timedelta
 from importlib.metadata import version
 from pathlib import Path
@@ -295,7 +296,24 @@ def get_main_parser():
         default="csv",
         help="The output file format.",
     )
-
+    # accountdetails
+    info = "Show account details"
+    parser_accountdetails = parser_cmd.add_parser(
+        "accountdetails",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    parser_accountdetails.add_argument(
+        "-o",
+        "--outfile",
+        help='Output path of JSON file. [default: "-" (stdout)]',
+        metavar="PATH",
+        type=argparse.FileType("w"),
+        default="-",
+    )
+    # completion
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
         "completion",
@@ -444,6 +462,10 @@ def main():
         installed_version = version("pytr")
         print(installed_version)
         check_version(installed_version)
+    elif args.command == "accountdetails":
+        tr = login(phone_no=args.phone_no, pin=args.pin, web=not args.applogin)
+        account_details = tr.get_account_details()
+        args.jsonoutput.write(json.dumps(account_details))
     else:
         parser.print_help()
 
