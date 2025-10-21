@@ -64,6 +64,7 @@ tr_event_type_mapping = {
     # Removals
     "OUTGOING_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER_DELEGATION": PPEventType.REMOVAL,
+    "DIRECT_DEBIT_TRANSFER_DELEGATION": PPEventType.REMOVAL,
     "PAYMENT_OUTBOUND": PPEventType.REMOVAL,
     "card_failed_transaction": PPEventType.REMOVAL,
     "card_order_billed": PPEventType.REMOVAL,
