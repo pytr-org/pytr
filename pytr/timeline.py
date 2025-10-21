@@ -11,6 +11,7 @@ MAX_EVENT_REQUEST_BATCH = 1000
 event_subfolder_mapping = {
     "OUTGOING_TRANSFER_DELEGATION": "Auszahlungen",
     "OUTGOING_TRANSFER": "Auszahlungen",
+    "DIRECT_DEBIT_TRANSFER_DELEGATION": "Auszahlungen",
     "CREDIT": "Dividende",
     "ssp_corporate_action_invoice_cash": "Dividende",
     "ACCOUNT_TRANSFER_INCOMING": "Einzahlungen",
