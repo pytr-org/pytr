@@ -1,0 +1,253 @@
+{
+    "id": "12345678",
+    "timestamp": "2025-05-14T07:01:32.079+0000",
+    "title": "Daimler Truck Holding",
+    "icon": "logos/DE000DTR0CK8/v2",
+    "badge": null,
+    "subtitle": "Limit-Sell-Order",
+    "amount": {
+      "currency": "EUR",
+      "value": 119.37,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "12345678"
+    },
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "12345678",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "12345678",
+      "sections": [
+        {
+          "title": "Du hast 119,37 € erhalten",
+          "data": {
+            "icon": "logos/DE000DTR0CK8/v2",
+            "subtitleText": null,
+            "timestamp": "2025-05-14T07:01:32.079+0000",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "DE000DTR0CK8",
+            "type": "instrumentDetail",
+            "overrideAction": null
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Portfolio",
+              "detail": {
+                "text": "Brokerage",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "action": null,
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Limit Order",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Daimler Truck Holding",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "0,43 %",
+                "trend": "positive",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gewinn",
+              "detail": {
+                "text": "0,51 €",
+                "trend": "positive",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "horizontalTable"
+        },
+        {
+          "title": "Transaktion",
+          "data": [
+            {
+              "title": "Aktien",
+              "detail": {
+                "text": "3",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktienkurs",
+              "detail": {
+                "text": "40,17 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "0,14 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "119,37 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "detail": null,
+              "action": {
+                "payload": "",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "dd153475-fc29-4ab0-ba00-3ce83247de39",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Kosteninformation",
+              "detail": null,
+              "action": {
+                "payload": "",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "ef30342c-838f-4b1f-9ed8-c9d629f3d3a9",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            },
+            {
+              "title": "Auftragsbestätigung",
+              "detail": null,
+              "action": {
+                "payload": "",
+                "type": "browserModal",
+                "overrideAction": null
+              },
+              "id": "e1fd1815-65fd-43da-9d80-c51d8aa8eb01",
+              "postboxType": "ORDER_CONFIRMATION"
+            }
+          ],
+          "action": null,
+          "type": "documents"
+        },
+        {
+          "title": "",
+          "data": [
+            {
+              "title": "",
+              "detail": {
+                "icon": "",
+                "action": {
+                  "payload": {
+                    "contextCategory": "NHC",
+                    "contextParams": {
+                      "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
+                      "timelineEventId": "eb8e7900-f759-4a7f-a717-a5c6e98c3d0e",
+                      "primId": "N1363196846"
+                    }
+                  },
+                  "type": "customerSupportChat",
+                  "overrideAction": null
+                },
+                "style": "highlighted",
+                "type": "listItemAvatarDefault"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        }
+      ]
+    }
+  }
