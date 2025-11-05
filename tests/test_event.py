@@ -5,7 +5,7 @@ from pytr.event import ConditionalEventType, Event, PPEventType
 
 def test_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_event.json", "r") as file:
+    with open("tests/sample_event.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -18,7 +18,7 @@ def test_event_from_dict():
 
 def test_new_saveback_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_saveback_new.json", "r") as file:
+    with open("tests/sample_saveback_new.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -32,7 +32,7 @@ def test_new_saveback_event_from_dict():
 
 def test_trade_perk_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_trade_perk.json", "r") as file:
+    with open("tests/sample_trade_perk.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -46,7 +46,7 @@ def test_trade_perk_from_dict():
 
 def test_new_sell_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_sell_new.json", "r") as file:
+    with open("tests/sample_sell_new.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -60,7 +60,7 @@ def test_new_sell_event_from_dict():
 
 def test_old_sell_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_sell_old.json", "r") as file:
+    with open("tests/sample_sell_old.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -74,7 +74,7 @@ def test_old_sell_event_from_dict():
 
 def test_buy_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_buy.json", "r") as file:
+    with open("tests/sample_buy.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -88,7 +88,7 @@ def test_buy_event_from_dict():
 
 def test_new_deposit_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_deposit_new.json", "r") as file:
+    with open("tests/sample_deposit_new.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -101,7 +101,7 @@ def test_new_deposit_from_dict():
 
 def test_new_removal_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_removal_new.json", "r") as file:
+    with open("tests/sample_removal_new.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -114,7 +114,7 @@ def test_new_removal_from_dict():
 
 def test_dividend_sell_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_sell_dividend.json", "r") as file:
+    with open("tests/sample_sell_dividend.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -129,7 +129,7 @@ def test_dividend_sell_event_from_dict():
 
 def test_private_markets_buy_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_private_markets_order.json", "r") as file:
+    with open("tests/sample_private_markets_order.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
@@ -143,7 +143,7 @@ def test_private_markets_buy_event_from_dict():
 
 def test_private_markets_bonus_event_from_dict():
     # Load the sample JSON file
-    with open("tests/sample_private_markets_bonus_order.json", "r") as file:
+    with open("tests/sample_private_markets_bonus_order.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
