@@ -70,7 +70,7 @@ class DlRaw:
         doc_id = doc["id"]
         doc_url = doc["action"]["payload"]
         doc_url_base = doc_url.split("?")[0]
-        filename = doc_url_base.split('/')[-1]
+        filename = doc_url_base.split("/")[-1]
 
         filepath = self.output_path / filename
 
@@ -82,7 +82,6 @@ class DlRaw:
         self.filepaths.append(filepath)
 
         if filepath.is_file() is False:
-            
             if doc_url_base in self.doc_urls:
                 self.log.debug("URL %s already in queue. Skipping...", doc_url_base)
                 return
