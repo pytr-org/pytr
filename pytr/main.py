@@ -187,7 +187,7 @@ def get_main_parser():
         "Download JSON files with events (all_events.json,"
         + " events_with_documents.json,"
         + " other_events.json)"
-        + " and documents with their UUID."
+        + " and documents with their original TR file name."
     )
     parser_dl_raw = parser_cmd.add_parser(
         "dl_raw",

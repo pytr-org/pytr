@@ -76,7 +76,7 @@ Commands:
                                         export account transactions (account_transactions.csv) and JSON files with all
                                         events (events_with_documents.json and other_events.json)
     dl_raw                              Download JSON files with events (all_events.json, events_with_documents.json,
-                                        other_events.json) and documents with their UUID.
+                                        other_events.json) and documents with their original TR file name.
     portfolio                           Show current portfolio
     details                             Get details for an ISIN
     get_price_alarms                    Get current price alarms
