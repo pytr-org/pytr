@@ -147,7 +147,7 @@ class Alarms:
                 except InvalidOperation:
                     raise ValueError(f"{token} is no valid ISIN or decimal value that could represent an alarm.")
 
-        asyncio.get_event_loop().run_until_complete(self.alarms_loop())
+        asyncio.run(self.alarms_loop())
 
         self.overview()
 
@@ -178,8 +178,10 @@ class Alarms:
                     if value is not None and value != "":
                         bisect.insort(self.data[isin], Decimal(value.replace(",", "")))
 
-        # get current alarms
-        asyncio.get_event_loop().run_until_complete(self.alarms_loop())
+        async def _flow():
+            # get current alarms
+            await self.alarms_loop()
+            # set/remove alarms
+            await self.set_alarms()
 
-        # set/remove alarms
-        asyncio.get_event_loop().run_until_complete(self.set_alarms())
+        asyncio.run(_flow())
