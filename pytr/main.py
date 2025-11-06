@@ -15,6 +15,7 @@ from pytr.account import login
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
+from pytr.dl_raw import DlRaw
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
@@ -181,6 +182,36 @@ def get_main_parser():
         help="The output file format.",
     )
 
+    # dl_raw
+    info = (
+        "Download JSON files with events (all_events.json,"
+        + " events_with_documents.json,"
+        + " other_events.json)"
+        + " and documents with their UUID."
+    )
+    parser_dl_raw = parser_cmd.add_parser(
+        "dl_raw",
+        formatter_class=formatter,
+        parents=[
+            parser_login_args,
+            parser_lang,
+            parser_date_with_time,
+            parser_decimal_localization,
+            parser_sort_export,
+        ],
+        help=info,
+        description=info,
+    )
+
+    parser_dl_raw.add_argument("output", help="Output directory", metavar="PATH", type=Path)
+
+    parser_dl_raw.add_argument(
+        "--workers",
+        help="Number of workers for parallel downloading",
+        default=8,
+        type=int,
+    )
+
     # portfolio
     info = "Show current portfolio"
     parser_portfolio = parser_cmd.add_parser(
@@ -232,7 +263,10 @@ def get_main_parser():
         description=info,
     )
     parser_get_price_alarms.add_argument(
-        "input", nargs="*", help="Input data in the form of <ISIN1> <ISIN2> ...", default=[]
+        "input",
+        nargs="*",
+        help="Input data in the form of <ISIN1> <ISIN2> ...",
+        default=[],
     )
     parser_get_price_alarms.add_argument(
         "--outputfile",
@@ -252,7 +286,10 @@ def get_main_parser():
         description=info,
     )
     parser_set_price_alarms.add_argument(
-        "input", nargs="*", help="Input data in the form of <ISIN> <alarm1> <alarm2> ...", default=[]
+        "input",
+        nargs="*",
+        help="Input data in the form of <ISIN> <alarm1> <alarm2> ...",
+        default=[],
     )
     parser_set_price_alarms.add_argument(
         "--remove-current-alarms",
@@ -273,7 +310,12 @@ def get_main_parser():
     parser_export_transactions = parser_cmd.add_parser(
         "export_transactions",
         formatter_class=formatter,
-        parents=[parser_lang, parser_date_with_time, parser_decimal_localization, parser_sort_export],
+        parents=[
+            parser_lang,
+            parser_date_with_time,
+            parser_decimal_localization,
+            parser_sort_export,
+        ],
         help=info,
         description=info,
     )
@@ -371,6 +413,24 @@ def main():
             format_export=args.export_format,
         )
         asyncio.run(dl.dl_loop())
+
+    elif args.command == "dl_raw":
+        since_timestamp = 0
+
+        dl_raw = DlRaw(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
+            args.output,
+            max_workers=args.workers,
+            lang=args.lang,
+            decimal_localization=args.decimal_localization,
+        )
+        asyncio.run(dl_raw.dl_loop())
+
     elif args.command == "get_price_alarms":
         try:
             Alarms(

@@ -230,7 +230,9 @@ class Timeline:
             event["has_docs"] = True
             subfolder = None
 
-            if event["eventType"] == "timeline_legacy_migrated_events":
+            eventType = event.get("eventType", "noEventType")
+
+            if eventType == "timeline_legacy_migrated_events":
                 subtitle = event.get("subtitle", "")
                 if event.get("title", "") == "Zinsen":
                     subfolder = "Zinsen"
@@ -249,10 +251,10 @@ class Timeline:
                         f"no mapping for timeline_legacy_migrated_events: title={event.get('title', '')} subtitle={event.get('subtitle', '')}"
                     )
             else:
-                subfolder = event_subfolder_mapping.get(event["eventType"])
+                subfolder = event_subfolder_mapping.get(eventType)
 
             if subfolder is None:
-                self.log.warning(f"no mapping for {event['eventType']}")
+                self.log.warning(f"no mapping for {eventType}")
 
             for doc in section["data"]:
                 timestamp_str = event["timestamp"]
