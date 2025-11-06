@@ -10,18 +10,17 @@ Bank GmbH.
 __Table of Contents__
 
 <!-- toc -->
-- [pytr: Use TradeRepublic in terminal](#pytr-use-traderepublic-in-terminal)
-  - [Quickstart](#quickstart)
-  - [Usage](#usage)
-  - [Authentication](#authentication)
-    - [Web login (default)](#web-login-default)
-    - [App login](#app-login)
-  - [Development](#development)
-    - [Setting Up a Development Environment](#setting-up-a-development-environment)
-    - [Linting and Code Formatting](#linting-and-code-formatting)
-    - [Release process](#release-process)
-    - [Keep the readme updated](#keep-the-readme-updated)
-  - [License](#license)
+* [Quickstart](#quickstart)
+* [Usage](#usage)
+* [Authentication](#authentication)
+  * [Web login (default)](#web-login-default)
+  * [App login](#app-login)
+* [Development](#development)
+  * [Setting Up a Development Environment](#setting-up-a-development-environment)
+  * [Linting and Code Formatting](#linting-and-code-formatting)
+  * [Release process](#release-process)
+  * [Keep the readme updated](#keep-the-readme-updated)
+* [License](#license)
 <!-- end toc -->
 
 ## Quickstart
