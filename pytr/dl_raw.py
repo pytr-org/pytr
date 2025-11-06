@@ -67,10 +67,12 @@ class DlRaw:
         """
         send asynchronous request, append future with filepath to self.futures
         """
-        doc_url = doc["action"]["payload"]
         doc_id = doc["id"]
+        doc_url = doc["action"]["payload"]
+        doc_url_base = doc_url.split("?")[0]
+        filename = doc_url_base.split('/')[-1]
 
-        filepath = self.output_path / f"{doc_id}.pdf"
+        filepath = self.output_path / filename
 
         if filepath in self.filepaths:
             self.log.debug("File %s already in queue. Append document id %s...", filepath, doc_id)
@@ -80,7 +82,7 @@ class DlRaw:
         self.filepaths.append(filepath)
 
         if filepath.is_file() is False:
-            doc_url_base = doc_url.split("?")[0]
+            
             if doc_url_base in self.doc_urls:
                 self.log.debug("URL %s already in queue. Skipping...", doc_url_base)
                 return
