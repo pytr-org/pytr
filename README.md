@@ -10,17 +10,18 @@ Bank GmbH.
 __Table of Contents__
 
 <!-- toc -->
-* [Quickstart](#quickstart)
-* [Usage](#usage)
-* [Authentication](#authentication)
-  * [Web login (default)](#web-login-default)
-  * [App login](#app-login)
-* [Development](#development)
-  * [Setting Up a Development Environment](#setting-up-a-development-environment)
-  * [Linting and Code Formatting](#linting-and-code-formatting)
-  * [Release process](#release-process)
-  * [Keep the readme updated](#keep-the-readme-updated)
-* [License](#license)
+- [pytr: Use TradeRepublic in terminal](#pytr-use-traderepublic-in-terminal)
+  - [Quickstart](#quickstart)
+  - [Usage](#usage)
+  - [Authentication](#authentication)
+    - [Web login (default)](#web-login-default)
+    - [App login](#app-login)
+  - [Development](#development)
+    - [Setting Up a Development Environment](#setting-up-a-development-environment)
+    - [Linting and Code Formatting](#linting-and-code-formatting)
+    - [Release process](#release-process)
+    - [Keep the readme updated](#keep-the-readme-updated)
+  - [License](#license)
 <!-- end toc -->
 
 ## Quickstart
@@ -62,12 +63,12 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 <!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
+            {help,login,dl_docs,dl_raw,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,dl_docs,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion}
+  {help,login,dl_docs,dl_raw,portfolio,details,get_price_alarms,set_price_alarms,export_transactions,completion}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
@@ -75,6 +76,8 @@ Commands:
     dl_docs                             Download all pdf documents from the timeline and sort them into folders. Also
                                         export account transactions (account_transactions.csv) and JSON files with all
                                         events (events_with_documents.json and other_events.json)
+    dl_raw                              Download JSON files with events (all_events.json, events_with_documents.json,
+                                        other_events.json) and documents with their UUID.
     portfolio                           Show current portfolio
     details                             Get details for an ISIN
     get_price_alarms                    Get current price alarms
@@ -172,7 +175,7 @@ checks and type checks.
 This readme contains a few automatically generated bits. To keep them up to date, simply run the following command:
 
 ```console
-$ uvx mksync@0.1.4 -i README.md
+$ uvx mksync@0.1.6 -i README.md
 ```
 
 ## License
