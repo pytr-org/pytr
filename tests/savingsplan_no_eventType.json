@@ -1,0 +1,231 @@
+{
+    "id": "78862117-79a9-4330-b594-ec62c3685a16",
+    "timestamp": "2025-11-03T15:58:11.121+0000",
+    "title": "TSMC (ADR)",
+    "icon": "logos/US8740391003/v2",
+    "avatar": {
+        "asset": "logos/US8740391003/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Sparplan ausgef\u00fchrt",
+    "amount": {
+        "currency": "EUR",
+        "value": -10.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "78862117-79a9-4330-b594-ec62c3685a16"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "78862117-79a9-4330-b594-ec62c3685a16",
+        "sections": [
+            {
+                "title": "Du hast 10,00\u00a0\u20ac gespart",
+                "data": {
+                    "icon": "logos/US8740391003/v2",
+                    "timestamp": "2025-11-03T15:58:11.121982Z",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "US8740391003",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Sparplan",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Zahlung",
+                        "detail": {
+                            "text": "Cash",
+                            "icon": "logos/bank_traderepublic/v2",
+                            "type": "iconWithText"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "TSMC (ADR)",
+                            "displayValue": {
+                                "text": "TSMC (ADR)"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "0,037523 \u00d7  266,50\u00a0\u20ac",
+                            "action": {
+                                "payload": {
+                                    "id": "00000000-0000-0000-0000-000000000000",
+                                    "sections": [
+                                        {
+                                            "title": "Transaktion",
+                                            "type": "title"
+                                        },
+                                        {
+                                            "data": [
+                                                {
+                                                    "title": "Aktien",
+                                                    "detail": {
+                                                        "text": "0,037523",
+                                                        "displayValue": {
+                                                            "text": "0,037523"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Aktienkurs",
+                                                    "detail": {
+                                                        "text": "266,50\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "266,50\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Summe",
+                                                    "detail": {
+                                                        "text": "10,00\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "10,00\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                }
+                                            ],
+                                            "type": "table"
+                                        }
+                                    ]
+                                },
+                                "type": "infoPage"
+                            },
+                            "displayValue": {
+                                "text": "266,50\u00a0\u20ac",
+                                "prefix": "0,037523 \u00d7 "
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "Kostenlos",
+                            "displayValue": {
+                                "text": "Kostenlos"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Summe",
+                        "detail": {
+                            "text": "10,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "10,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Sparplan",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "title": "TSMC (ADR)",
+                            "timestamp": "2025-11-03T15:58:11.121982Z",
+                            "amount": "10,00\u00a0\u20ac",
+                            "icon": "logos/US8740391003/v2",
+                            "status": "executed",
+                            "action": {
+                                "payload": {
+                                    "savingsPlanId": "407449dc-fce1-48c3-93a6-e86919e5b385"
+                                },
+                                "type": "openSavingsPlanOverview"
+                            },
+                            "subtitle": "W\u00f6chentlich",
+                            "type": "embeddedTimelineItem"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Abrechnungsausf\u00fchrung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "548c51bd-f5c3-45f4-b794-b68bb90dc10c",
+                        "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0029_wealth_Failed_savings_plan_execution",
+                                        "timelineEventId": "78862117-79a9-4330-b594-ec62c3685a16",
+                                        "savingsPlanId": "407449dc-fce1-48c3-93a6-e86919e5b385",
+                                        "primId": "N1546849464"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}

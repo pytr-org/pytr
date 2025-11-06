@@ -1,0 +1,72 @@
+{
+    "id": "bbf2affb-30ab-45bd-a7d6-d3047360e905",
+    "timestamp": "2025-11-04T08:59:35.225+0000",
+    "title": "L'Oreal",
+    "icon": "logos/FR0000120321/v2",
+    "subtitle": "Tausch",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "bbf2affb-30ab-45bd-a7d6-d3047360e905"
+    },
+    "source": "timelineActivity",
+    "details": {
+        "id": "bbf2affb-30ab-45bd-a7d6-d3047360e905",
+        "sections": [
+            {
+                "title": "Du hast eine Kapitalma\u00dfnahme erhalten",
+                "data": {
+                    "icon": "logos/FR0000120321/v2",
+                    "timestamp": "2025-11-04T08:59:35.225Z",
+                    "status": "executed"
+                },
+                "type": "header"
+            },
+            {
+                "title": "Information",
+                "text": "Das beigef\u00fcgte Dokument enth\u00e4lt wichtige Informationen zu deiner L'Oreal-Investition. Bitte \u00fcberpr\u00fcfe das Dokument.",
+                "type": "text"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Kapitalma\u00dfnahmen",
+                        "detail": "04.11.2025",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "e68a0462-3569-4eea-a33c-f5b10154986a",
+                        "postboxType": "CA_GENERIC_OPTIONS_NOTIFICATION"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "common_empty_string",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "timelineEventId": "bbf2affb-30ab-45bd-a7d6-d3047360e905",
+                                        "chat_flow_key": "NHC_0029_wealth_general_question_corporate_action"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}
