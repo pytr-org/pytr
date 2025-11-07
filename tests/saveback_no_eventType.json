@@ -1,0 +1,147 @@
+{
+    "id": "b5999007-483d-4013-b582-347471a42a6a",
+    "timestamp": "2025-11-03T15:30:22.202+0000",
+    "title": "Lockheed Martin",
+    "icon": "logos/US5398301094/v2",
+    "avatar": {
+        "asset": "logos/US5398301094/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Saveback",
+    "amount": {
+        "currency": "EUR",
+        "value": -15.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "b5999007-483d-4013-b582-347471a42a6a"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "b5999007-483d-4013-b582-347471a42a6a",
+        "sections": [
+            {
+                "title": "Du hast 15,00\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/US5398301094/v2",
+                    "timestamp": "2025-11-03T15:30:22.202665Z",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "US5398301094",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Saveback",
+                        "detail": {
+                            "text": "Abgeschlossen",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "Lockheed Martin",
+                            "displayValue": {
+                                "text": "Lockheed Martin"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "0.035252 x  425,50\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "425,50\u00a0\u20ac",
+                                "prefix": "0.035252 x "
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "Kostenlos",
+                            "displayValue": {
+                                "text": "Kostenlos"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Gesamt",
+                        "detail": {
+                            "text": "15,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "15,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Wertpapierabrechnung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "0117fe00-93e5-47c2-9f7f-85f72d51da48",
+                        "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+                    },
+                    {
+                        "title": "Aktivierung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "6387ff2c-656c-4f9a-a238-4a151dff6212",
+                        "postboxType": "BENEFIT_ACTIVATED"
+                    },
+                    {
+                        "title": "Kosteninformation",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "29cca886-9baa-4153-947f-8dba06e618c9",
+                        "postboxType": "COSTS_INFO_SAVINGS_PLAN"
+                    },
+                    {
+                        "title": "Auftragsbest\u00e4tigung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "3da1d209-7d52-4017-8397-1b9817f68432",
+                        "postboxType": "SAVINGS_PLAN_CREATED"
+                    }
+                ],
+                "type": "documents"
+            }
+        ]
+    }
+}

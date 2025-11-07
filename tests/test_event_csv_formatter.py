@@ -35,7 +35,7 @@ def test_event_csv_formatter():
 
 def test_buy():
     # Load the sample JSON file
-    with open("tests/sample_buy.json", "r") as file:
+    with open("tests/sample_buy.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function

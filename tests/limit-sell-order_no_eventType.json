@@ -1,0 +1,268 @@
+{
+    "id": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
+    "timestamp": "2025-11-05T12:03:19.648+0000",
+    "title": "Teva Pharmaceutical Industries (ADR)",
+    "icon": "logos/US8816242098/v2",
+    "avatar": {
+        "asset": "logos/US8816242098/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Limit-Sell-Order",
+    "amount": {
+        "currency": "EUR",
+        "value": 139.74,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
+        "sections": [
+            {
+                "title": "Du hast 139,74\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/US8816242098/v2",
+                    "timestamp": "2025-11-05T12:03:19.648Z",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "US8816242098",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Portfolio",
+                        "detail": {
+                            "text": "Brokerage",
+                            "displayValue": {
+                                "text": "Brokerage"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Limit Order",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "Teva Pharmaceutical Industries (ADR)",
+                            "displayValue": {
+                                "text": "Teva Pharmaceutical Industries (ADR)"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "8 \u00d7  18,55\u00a0\u20ac",
+                            "action": {
+                                "payload": {
+                                    "id": "00000000-0000-0000-0000-000000000000",
+                                    "sections": [
+                                        {
+                                            "title": "Transaktion",
+                                            "type": "title"
+                                        },
+                                        {
+                                            "data": [
+                                                {
+                                                    "title": "Aktien",
+                                                    "detail": {
+                                                        "text": "8",
+                                                        "displayValue": {
+                                                            "text": "8"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Aktienkurs",
+                                                    "detail": {
+                                                        "text": "18,55\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "18,55\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Summe",
+                                                    "detail": {
+                                                        "text": "148,40\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "148,40\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                }
+                                            ],
+                                            "type": "table"
+                                        }
+                                    ]
+                                },
+                                "type": "infoPage"
+                            },
+                            "displayValue": {
+                                "text": "18,55\u00a0\u20ac",
+                                "prefix": "8 \u00d7 "
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Steuer",
+                        "detail": {
+                            "text": "7,66\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "7,66\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "1,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "1,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Summe",
+                        "detail": {
+                            "text": "139,74\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "139,74\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Performance",
+                "data": [
+                    {
+                        "title": "Rendite",
+                        "detail": {
+                            "text": "22,96 %",
+                            "trend": "positive",
+                            "displayValue": {
+                                "text": "22,96 %"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Gewinn",
+                        "detail": {
+                            "text": "27,52\u00a0\u20ac",
+                            "trend": "positive",
+                            "displayValue": {
+                                "text": "27,52\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "horizontalTable"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Kosteninformation",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "eb32bdce-1b2a-4a56-882a-24cb814ee867",
+                        "postboxType": "EQUITIES_SELL_EX_ANTE"
+                    },
+                    {
+                        "title": "Auftragsbest\u00e4tigung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "96eccb8a-cca0-47aa-a2aa-ee5427d8eb26",
+                        "postboxType": "ORDER_CONFIRMATION"
+                    },
+                    {
+                        "title": "Abrechnung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "88b2b6cc-aa38-46e4-bb93-6b54b1dfee32",
+                        "postboxType": "SECURITIES_SETTLEMENT"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
+                                        "timelineEventId": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
+                                        "instrumentType": "stock",
+                                        "instrumentId": "US8816242098",
+                                        "primId": "N1549193313"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}

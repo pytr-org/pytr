@@ -1,0 +1,125 @@
+{
+    "id": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3",
+    "timestamp": "2025-11-04T23:31:58.000+0000",
+    "title": "Steuerkorrektur",
+    "icon": "logos/timeline_person/v2",
+    "avatar": {
+        "asset": "logos/timeline_person/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+        "currency": "EUR",
+        "value": 0.76,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3",
+        "sections": [
+            {
+                "title": "Du hast 0,76\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/timeline_person/v2",
+                    "timestamp": "2025-11-04T23:31:58Z",
+                    "status": "executed"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Event",
+                        "detail": {
+                            "text": "Steuerkorrektur",
+                            "displayValue": {
+                                "text": "Steuerkorrektur"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Gesch\u00e4ft",
+                "data": [
+                    {
+                        "title": "Gesamt",
+                        "detail": {
+                            "text": "0,76\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "0,76\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Steuerabrechnung",
+                        "detail": "04.11.2025",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "b1cbfe63-4737-4112-a8c7-033f69d1ed49",
+                        "postboxType": "TAX_OPTIMIZATION_INVOICE"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "common_empty_string",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "timelineEventId": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3",
+                                        "chat_flow_key": "NHC_0029_tax_optimization_picker"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}
