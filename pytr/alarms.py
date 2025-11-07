@@ -44,6 +44,9 @@ class Alarms:
                 return
 
     async def set_alarms(self):
+        # get current alarms
+        await self.alarms_loop()
+
         current_alarms = {}
         new_alarms = {}
         alarms_to_keep = {}
@@ -177,9 +180,6 @@ class Alarms:
                     value = row[fieldnames[i]]
                     if value is not None and value != "":
                         bisect.insort(self.data[isin], Decimal(value.replace(",", "")))
-
-        # get current alarms
-        asyncio.run(self.alarms_loop())
 
         # set/remove alarms
         asyncio.run(self.set_alarms())
