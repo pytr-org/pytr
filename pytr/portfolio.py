@@ -270,7 +270,7 @@ class Portfolio:
         print(f"Total {cash + totalBuyCost:>43.2f} -> {cash + totalNetValue:>10.2f}")
 
     def get(self):
-        asyncio.get_event_loop().run_until_complete(self.portfolio_loop())
+        asyncio.run(self.portfolio_loop())
 
         self.overview()
         self.portfolio_to_csv()

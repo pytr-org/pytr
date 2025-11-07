@@ -400,7 +400,7 @@ class TradeRepublicApi:
             await self.unsubscribe(subscription_id)
 
     def run_blocking(self, fut, timeout=5.0):
-        return asyncio.get_event_loop().run_until_complete(self._receive_one(fut, timeout=timeout))
+        return asyncio.run(self._receive_one(fut, timeout=timeout))
 
     async def portfolio(self):
         return await self.subscribe({"type": "portfolio"})

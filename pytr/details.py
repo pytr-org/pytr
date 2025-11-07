@@ -87,6 +87,6 @@ class Details:
         self.stock_details()
 
     def get(self):
-        asyncio.get_event_loop().run_until_complete(self.details_loop())
+        asyncio.run(self.details_loop())
 
         self.overview()
