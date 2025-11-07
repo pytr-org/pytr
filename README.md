@@ -172,7 +172,7 @@ checks and type checks.
 This readme contains a few automatically generated bits. To keep them up to date, simply run the following command:
 
 ```console
-$ uvx mksync@0.1.4 -i README.md
+$ uvx mksync@0.1.5 -i README.md
 ```
 
 ## License
