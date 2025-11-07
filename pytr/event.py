@@ -93,6 +93,10 @@ tr_event_type_mapping = {
 timeline_legacy_migrated_events_title_type_mapping = {
     # Interests
     "Zinsen": PPEventType.INTEREST,
+    # Document events (not transactions)
+    "Monatlicher Steuerbericht": None,
+    "Jährlicher Steuerreport": None,
+    "Rechtliche Dokumente": None,
 }
 
 timeline_legacy_migrated_events_subtitle_type_mapping = {
@@ -104,6 +108,27 @@ timeline_legacy_migrated_events_subtitle_type_mapping = {
     "Sparplan ausgeführt": ConditionalEventType.TRADE_INVOICE,
     "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
     "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
+    # Dividends
+    "Bardividende": PPEventType.DIVIDEND,
+    "Dividende": PPEventType.DIVIDEND,
+    # Deposits
+    "Einzahlung": PPEventType.DEPOSIT,
+    # Removals
+    "Auszahlung": PPEventType.REMOVAL,
+    "Gesendet": PPEventType.REMOVAL,
+    # Saveback & Round up
+    "Saveback": ConditionalEventType.SAVEBACK,
+    "Round up": ConditionalEventType.TRADE_INVOICE,  # Round up is similar to spare change
+    # Account changes (typically not transactions)
+    "Geändert": None,
+    "Bestätigt": None,
+    "Eröffnet": None,
+    "Erhalten": None,
+    "Hinzugefügt": None,
+    "Angenommen": None,
+    "Kommt in 2 Tagen": None,
+    "Abgebrochen": None,
+    "Kartenprüfung": None,
 }
 
 logger = None
@@ -207,35 +232,65 @@ class Event:
     def _parse_type(event_dict: Dict[Any, Any]) -> Optional[EventType]:
         eventTypeStr = event_dict.get("eventType", "")
         event_type: Optional[EventType] = None
-        if eventTypeStr == "timeline_legacy_migrated_events":
-            event_type = timeline_legacy_migrated_events_title_type_mapping.get(event_dict.get("title", ""), None)
-            if event_type is None:
-                event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(
-                    event_dict.get("subtitle", ""), None
-                )
-            if event_type is None:
+        
+        # Handle legacy events or missing eventType with heuristic parsing
+        if eventTypeStr == "timeline_legacy_migrated_events" or eventTypeStr == "":
+            # First try title mapping
+            title = event_dict.get("title", "")
+            title_in_mapping = title in timeline_legacy_migrated_events_title_type_mapping
+            if title_in_mapping:
+                event_type = timeline_legacy_migrated_events_title_type_mapping[title]
+            
+            # Then try subtitle mapping (only if title wasn't mapped)
+            subtitle = event_dict.get("subtitle")  # Keep as None if missing, don't default to ""
+            subtitle_in_mapping = subtitle in timeline_legacy_migrated_events_subtitle_type_mapping
+            
+            if event_type is None and not title_in_mapping and not subtitle_in_mapping:
+                # Only check section titles if neither title nor subtitle were explicitly mapped
                 for item in event_dict.get("details", {}).get("sections", []):
-                    title = item.get("title", "")
-                    if title.startswith("Du hast "):
-                        if title.endswith(" erhalten"):
+                    section_title = item.get("title", "")
+                    if section_title.startswith ("Du hast "):
+                        if section_title.endswith(" erhalten"):
                             event_type = PPEventType.DEPOSIT
                             break
-                        elif title.endswith(" gesendet"):
+                        elif section_title.endswith(" gesendet"):
                             event_type = PPEventType.REMOVAL
                             break
-            if event_type is None:
+            
+            if event_type is None and subtitle_in_mapping:
+                # Subtitle was explicitly mapped (possibly to None, which means "not a transaction")
+                event_type = timeline_legacy_migrated_events_subtitle_type_mapping[subtitle]
+            
+            # Handle card transactions: events with amount but unmapped title/subtitle
+            # These are likely card transactions (purchases, withdrawals, etc.)
+            if event_type is None and not title_in_mapping and not subtitle_in_mapping and subtitle in [None, "", "None"]:
+                amount_value = event_dict.get("amount", {}).get("value")
+                if amount_value is not None and amount_value != 0.0:
+                    # Negative amounts are removals (purchases/payments), positive are deposits (refunds)
+                    if amount_value < 0:
+                        event_type = PPEventType.REMOVAL
+                    else:
+                        event_type = PPEventType.DEPOSIT
+            
+            # Log unmapped events only if we have an explicit eventType
+            if event_type is None and eventTypeStr == "timeline_legacy_migrated_events":
                 print(
                     f"unmatched timeline_legacy_migrated_events: title={event_dict.get('title', '')} subtitle={event_dict.get('subtitle', '')}"
                 )
         else:
+            # Normal event type mapping
             event_type = tr_event_type_mapping.get(eventTypeStr, None)
+        
+        # Check if canceled
         if event_type is not None:
             if event_dict.get("status", "").lower() == "canceled":
                 event_type = None
         else:
-            if eventTypeStr not in events_known_ignored:
+            # Only warn about truly unknown events (not missing eventType)
+            if eventTypeStr and eventTypeStr not in events_known_ignored:
                 get_event_logger().warning(f"Ignoring unknown event {eventTypeStr}")
                 get_event_logger().debug("Unknown event %s: %s", eventTypeStr, json.dumps(event_dict, indent=4))
+        
         return event_type
 
     @classmethod
@@ -323,7 +378,7 @@ class Event:
             v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
         )
 
-        dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
+        dump_dict = {"eventType": event_dict.get("eventType", "UNKNOWN"), "id": event_dict["id"]}
 
         sections = event_dict.get("details", {}).get("sections", [{}])
 
@@ -368,7 +423,7 @@ class Event:
             dump_dict["type"] = "shares"
             pref_locale = (
                 "en"
-                if event_dict["eventType"]
+                if event_dict.get("eventType", "")
                 in [
                     "benefits_saveback_execution",
                     "benefits_spare_change_execution",
@@ -390,7 +445,7 @@ class Event:
                     )
                 )
         elif (
-            event_dict["eventType"]
+            event_dict.get("eventType", "")
             in ["benefits_saveback_execution", "benefits_spare_change_execution", "ACQUISITION_TRADE_PERK"]
             and uebersicht_dict
             and transaction_dict
@@ -398,18 +453,18 @@ class Event:
             shares = cls._parse_float_from_text_value(
                 transaction_dict.get("detail", {}).get("displayValue", {}).get("prefix", ""), dump_dict, "en"
             )
-            if event_dict["eventType"] == "ACQUISITION_TRADE_PERK" and gesamt_dict:
+            if event_dict.get("eventType") == "ACQUISITION_TRADE_PERK" and gesamt_dict:
                 value = cls._parse_float_from_text_value(gesamt_dict.get("detail", {}).get("text", ""), dump_dict)
-        elif event_dict["eventType"] not in ["ssp_corporate_action_invoice_cash", "private_markets_order_created"]:
-            get_event_logger().warning("Could not parse shares from %s", event_dict["eventType"])
+        elif event_dict.get("eventType", "") not in ["ssp_corporate_action_invoice_cash", "private_markets_order_created", ""]:
+            get_event_logger().warning("Could not parse shares from %s", event_dict.get("eventType", "UNKNOWN"))
             get_event_logger().debug("Failed to parse shares from: %s", json.dumps(event_dict, indent=4))
 
         if fees_dict:
             dump_dict["subtitle"] = fees_dict["title"]
             dump_dict["type"] = "fees"
             fees = cls._parse_float_from_text_value(fees_dict.get("detail", {}).get("text", ""), dump_dict)
-        elif event_dict["eventType"] != "ssp_corporate_action_invoice_cash":
-            get_event_logger().warning("Could not parse fees from %s", event_dict["eventType"])
+        elif event_dict.get("eventType") != "ssp_corporate_action_invoice_cash":
+            get_event_logger().warning("Could not parse fees from %s", event_dict.get("eventType", "UNKNOWN"))
             get_event_logger().debug("Failed to parse fees from %s", json.dumps(event_dict, indent=4))
 
         if taxes_dict:
@@ -418,7 +473,7 @@ class Event:
             taxes = cls._parse_float_from_text_value(taxes_dict.get("detail", {}).get("text", ""), dump_dict)
         # no logging here because events may or may not have taxes
 
-        if event_dict["eventType"] == "private_markets_order_created":
+        if event_dict.get("eventType") == "private_markets_order_created":
             if value is None:
                 shares = 0
             else:
@@ -440,8 +495,8 @@ class Event:
             Optional[float]: taxes
         """
         taxes, taxes_dict = None, None
-        dump_dict = {"eventType": event_dict["eventType"], "id": event_dict["id"]}
-        pref_locale = "en" if event_dict["eventType"] in ["INTEREST_PAYOUT"] else "de"
+        dump_dict = {"eventType": event_dict.get("eventType", "UNKNOWN"), "id": event_dict["id"]}
+        pref_locale = "en" if event_dict.get("eventType") in ["INTEREST_PAYOUT"] else "de"
 
         sections = event_dict.get("details", {}).get("sections", [{}])
         transaction_dict = next(filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections), None)
@@ -478,10 +533,18 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Optional[str]: note
+            Optional[str]: note - the eventType for old events, or the title (merchant name) for new events
         """
-        if event_dict.get("eventType", "").startswith("card_"):
-            return event_dict["eventType"]
+        event_type = event_dict.get("eventType", "")
+        if event_type.startswith("card_"):
+            return event_type
+        
+        # For events without eventType, if subtitle is None and we have a title,
+        # it's likely a card transaction - use the title as the note (merchant name)
+        subtitle = event_dict.get("subtitle")
+        if subtitle in [None, "", "None"] and event_dict.get("title"):
+            return event_dict["title"]
+        
         return None
 
     @staticmethod

@@ -118,11 +118,19 @@ class TransactionExporter:
         if event.event_type is None:
             return
 
+        # For card transactions, note and title are the same (merchant name), avoid duplication
+        if event.note is not None and event.note == event.title:
+            note_text = event.title
+        elif event.note is not None:
+            note_text = self._translate(event.note) + " - " + event.title
+        else:
+            note_text = event.title
+
         kwargs: _SimpleTransaction = {
             "date": event.date.isoformat() if self.date_with_time else event.date.date().isoformat(),
             "type": self._translate(event.event_type.value) if isinstance(event.event_type, PPEventType) else None,
             "value": self._decimal_format(event.value),
-            "note": self._translate(event.note) + " - " + event.title if event.note is not None else event.title,
+            "note": note_text,
             "isin": event.isin,
             "shares": self._decimal_format(event.shares, False),
             "fees": self._decimal_format(-event.fees) if event.fees is not None else None,

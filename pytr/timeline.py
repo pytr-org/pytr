@@ -230,9 +230,15 @@ class Timeline:
             event["has_docs"] = True
             subfolder = None
 
-            if event["eventType"] == "timeline_legacy_migrated_events":
+            # Get eventType safely - it may not exist in newer API responses
+            event_type = event.get("eventType")
+            
+            if event_type == "timeline_legacy_migrated_events" or event_type is None:
+                # For legacy events or when eventType is missing, use heuristic based on title/subtitle
                 subtitle = event.get("subtitle", "")
-                if event.get("title", "") == "Zinsen":
+                title = event.get("title", "")
+                
+                if title == "Zinsen":
                     subfolder = "Zinsen"
                 elif subtitle in [
                     "Kauforder",
@@ -244,15 +250,41 @@ class Timeline:
                     "Verkaufsorder",
                 ]:
                     subfolder = "Trades"
+                elif subtitle in ["Bardividende", "Dividende"]:
+                    subfolder = "Dividende"
+                elif subtitle in ["Einzahlung", "Geändert"] or "Einzahlung" in title:
+                    subfolder = "Einzahlungen"
+                elif subtitle in ["Auszahlung", "Gesendet"] or "Auszahlung" in title:
+                    subfolder = "Auszahlungen"
+                elif subtitle in ["Saveback"]:
+                    subfolder = "Saveback"
+                elif subtitle in ["Round Up", "Round up"]:
+                    subfolder = "RoundUp"
+                elif subtitle in ["2 % p.a.", "Zinsen"]:
+                    subfolder = "Zinsen"
                 else:
-                    self.log.warning(
-                        f"no mapping for timeline_legacy_migrated_events: title={event.get('title', '')} subtitle={event.get('subtitle', '')}"
-                    )
+                    # Try to infer from title if no subtitle match
+                    if "Dividende" in title or "Dividend" in title:
+                        subfolder = "Dividende"
+                    elif event_type is None and subtitle not in [None, "", "None", "Abgebrochen", "Kartenprüfung", "Bestätigt", "Eröffnet", "Erhalten", "Geändert", "Kommt in 2 Tagen"]:
+                        # No eventType and couldn't infer from title/subtitle
+                        # Only warn if it's not a known non-document event
+                        self.log.warning(
+                            f"no eventType and no mapping match: title={title} subtitle={subtitle}"
+                        )
+                        subfolder = "Misc"
+                    elif event_type is None:
+                        # Known non-document event types, don't create subfolder
+                        subfolder = None
+                    else:
+                        self.log.warning(
+                            f"no mapping for timeline_legacy_migrated_events: title={title} subtitle={subtitle}"
+                        )
             else:
-                subfolder = event_subfolder_mapping.get(event["eventType"])
+                subfolder = event_subfolder_mapping.get(event_type)
 
-            if subfolder is None:
-                self.log.warning(f"no mapping for {event['eventType']}")
+            if subfolder is None and event_type is not None:
+                self.log.warning(f"no mapping for {event_type}")
 
             for doc in section["data"]:
                 timestamp_str = event["timestamp"]
