@@ -115,6 +115,7 @@ title_event_type_mapping = {
 
 subtitle_event_type_mapping = {
     # Dividends
+    "Dividende": PPEventType.DIVIDEND,
     "Bardividende": PPEventType.DIVIDEND,
     # Saveback
     "Saveback": ConditionalEventType.SAVEBACK,
