@@ -155,9 +155,9 @@ def test_private_markets_bonus_event_from_dict():
     assert event.shares == 1
 
 
-def test_dividende_no_eventType():
+def test_bardividende_no_eventType():
     # Load the sample JSON file
-    with open("tests/dividende_no_eventType.json", "r", encoding="utf-8") as file:
+    with open("tests/bardividende_no_eventType.json", "r", encoding="utf-8") as file:
         sample_data = json.load(file)
 
     # Parse the JSON data using the from_dict function
