@@ -1,0 +1,259 @@
+{
+    "id": "c082a8d2-8816-4d33-829b-6cb78584df34",
+    "timestamp": "2025-11-04T16:27:25.185+0000",
+    "title": "Home Depot",
+    "icon": "logos/US4370761029/v2",
+    "avatar": {
+        "asset": "logos/US4370761029/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Verkaufsorder",
+    "amount": {
+        "currency": "EUR",
+        "value": 100.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "c082a8d2-8816-4d33-829b-6cb78584df34"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "c082a8d2-8816-4d33-829b-6cb78584df34",
+        "sections": [
+            {
+                "title": "Du hast 100,00\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/US4370761029/v2",
+                    "timestamp": "2025-11-04T16:27:25.185Z",
+                    "status": "executed"
+                },
+                "action": {
+                    "payload": "US4370761029",
+                    "type": "instrumentDetail"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Portfolio",
+                        "detail": {
+                            "text": "Brokerage",
+                            "displayValue": {
+                                "text": "Brokerage"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Verkaufen",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Asset",
+                        "detail": {
+                            "text": "Home Depot",
+                            "displayValue": {
+                                "text": "Home Depot"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Transaktion",
+                        "detail": {
+                            "text": "0,305182 \u00d7  330,95\u00a0\u20ac",
+                            "action": {
+                                "payload": {
+                                    "id": "00000000-0000-0000-0000-000000000000",
+                                    "sections": [
+                                        {
+                                            "title": "Transaktion",
+                                            "type": "title"
+                                        },
+                                        {
+                                            "data": [
+                                                {
+                                                    "title": "Aktien",
+                                                    "detail": {
+                                                        "text": "0,305182",
+                                                        "displayValue": {
+                                                            "text": "0,305182"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Aktienkurs",
+                                                    "detail": {
+                                                        "text": "330,95\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "330,95\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                },
+                                                {
+                                                    "title": "Summe",
+                                                    "detail": {
+                                                        "text": "101,00\u00a0\u20ac",
+                                                        "displayValue": {
+                                                            "text": "101,00\u00a0\u20ac"
+                                                        },
+                                                        "type": "text"
+                                                    },
+                                                    "style": "plain"
+                                                }
+                                            ],
+                                            "type": "table"
+                                        }
+                                    ]
+                                },
+                                "type": "infoPage"
+                            },
+                            "displayValue": {
+                                "text": "330,95\u00a0\u20ac",
+                                "prefix": "0,305182 \u00d7 "
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Steuer",
+                        "detail": {
+                            "text": "0,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "0,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Geb\u00fchr",
+                        "detail": {
+                            "text": "1,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "1,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Summe",
+                        "detail": {
+                            "text": "100,00\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "100,00\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Performance",
+                "data": [
+                    {
+                        "title": "Rendite",
+                        "detail": {
+                            "text": "19,22 %",
+                            "trend": "negative",
+                            "displayValue": {
+                                "text": "19,22 %"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Verlust",
+                        "detail": {
+                            "text": "-16,12\u00a0\u20ac",
+                            "trend": "negative",
+                            "displayValue": {
+                                "text": "-16,12\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "horizontalTable"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Abrechnung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "b5d0cd84-ed10-4e52-9582-61b313e45593",
+                        "postboxType": "SECURITIES_SETTLEMENT"
+                    },
+                    {
+                        "title": "Kosteninformation",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "df64bd22-637b-4d24-b201-eafa7bc6a2d1",
+                        "postboxType": "EQUITIES_SELL_EX_ANTE"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
+                                        "timelineEventId": "c082a8d2-8816-4d33-829b-6cb78584df34",
+                                        "instrumentType": "stock",
+                                        "instrumentId": "US4370761029",
+                                        "groupId": "c082a8d2-8816-4d33-829b-6cb78584df34"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}

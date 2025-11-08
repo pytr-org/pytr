@@ -370,7 +370,7 @@ def main():
             sort_export=args.sort,
             format_export=args.export_format,
         )
-        asyncio.get_event_loop().run_until_complete(dl.dl_loop())
+        asyncio.run(dl.dl_loop())
     elif args.command == "get_price_alarms":
         try:
             Alarms(
