@@ -1,0 +1,169 @@
+{
+    "id": "de17e7cb-49cd-322f-8345-1b265dc9730d",
+    "timestamp": "2025-11-05T18:31:19.339+0000",
+    "title": "Lowe's",
+    "icon": "logos/US5486611073/v2",
+    "avatar": {
+        "asset": "logos/US5486611073/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Bardividende",
+    "amount": {
+        "currency": "EUR",
+        "value": 0.92,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "de17e7cb-49cd-322f-8345-1b265dc9730d"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "de17e7cb-49cd-322f-8345-1b265dc9730d",
+        "sections": [
+            {
+                "title": "Du hast 0,92\u00a0\u20ac erhalten",
+                "data": {
+                    "icon": "logos/US5486611073/v2",
+                    "timestamp": "2025-11-05T18:31:19.339Z",
+                    "status": "executed"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Event",
+                        "detail": {
+                            "text": "Bardividende",
+                            "displayValue": {
+                                "text": "Bardividende"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Wertpapier",
+                        "detail": {
+                            "text": "Lowe's",
+                            "displayValue": {
+                                "text": "Lowe's"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Gesch\u00e4ft",
+                "data": [
+                    {
+                        "title": "Aktien",
+                        "detail": {
+                            "text": "1.189904",
+                            "displayValue": {
+                                "text": "1.189904"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Dividende pro Aktie",
+                        "detail": {
+                            "text": "1,20\u00a0$",
+                            "displayValue": {
+                                "text": "1,20\u00a0$"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Steuer",
+                        "detail": {
+                            "text": "-0,32\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "-0,32\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Gesamt",
+                        "detail": {
+                            "text": "0,92\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "0,92\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokumente",
+                "data": [
+                    {
+                        "title": "Dokumente",
+                        "detail": "05.11.2025",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "36b29c55-5bef-44c3-b50c-7541403a9414",
+                        "postboxType": "CA_INCOME_INVOICE"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "common_empty_string",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "timelineEventId": "de17e7cb-49cd-322f-8345-1b265dc9730d",
+                                        "chat_flow_key": "NHC_0029_wealth_general_question_dividends"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "highlighted"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}
