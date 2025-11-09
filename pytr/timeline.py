@@ -207,12 +207,33 @@ class Timeline:
         create other_events.json, events_with_documents.json and account_transactions.csv
         """
 
-        event = self.timeline_events.get(response["id"], None)
+        response_id = response.get("id", None)
+
+        event = self.timeline_events.get(response_id, None)
         if event is None:
-            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
-            self.skipped_detail += 1
-            self.finish_if_done(dl)
-            return
+            # Extract timestamp from response sections if available
+            sections = response.get("sections", [])
+            timestamp = "Unknown"
+
+            # Search for timestamp in any section and data entry
+            for section in sections:
+                data = section.get("data", [])
+                if isinstance(data, list):
+                    for data_item in data:
+                        if isinstance(data_item, dict) and "timestamp" in data_item:
+                            timestamp = data_item["timestamp"]
+                            break
+                elif isinstance(data, dict) and "timestamp" in data:
+                    timestamp = data["timestamp"]
+                    break
+
+                if timestamp != "Unknown":
+                    break
+
+            event = {"id": response["id"], "title": "Unknown", "subtitle": "Unknown", "timestamp": timestamp}
+            self.timeline_events[response["id"]] = event
+
+            self.log.warning("Created pseudo-event for unrequested event response id '%s'", response_id)
 
         self.received_detail += 1
         event["details"] = response
@@ -229,7 +250,7 @@ class Timeline:
 
             event["has_docs"] = True
             subfolder = None
-            
+
             # Extract commonly used values once
             event_type = event.get("eventType", "")
             title = event.get("title", "")
