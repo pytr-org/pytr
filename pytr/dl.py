@@ -137,7 +137,9 @@ class DL:
         self.sort_export = sort_export
         self.format_export: Literal["json", "csv"] = format_export
 
-        self.tl = Timeline(self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback)
+        self.tl = Timeline(
+            self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback
+        )
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
         self.futures: list[Future[Response]] = []
@@ -329,7 +331,7 @@ class DL:
             future = self.session.get(doc_url)
             future.filepath = filepath  # type: ignore[attr-defined]
             future.doc_url_base = doc_url_base  # type: ignore[attr-defined]
-            self.futures.append(future) # type: ignore[arg-type]
+            self.futures.append(future)  # type: ignore[arg-type]
             self.log.debug(f"Added {filepath} to queue")
         else:
             self.log.debug(f"file {filepath} already exists. Skipping...")

@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 
 from .api import TradeRepublicError
-from .event import Event
 from .utils import get_logger, preview
 
 MAX_EVENT_REQUEST_BATCH = 1000
@@ -34,7 +33,16 @@ def is_likely_same_but_newer(event, old_event):
 
 
 class Timeline:
-    def __init__(self, tr, output_path, not_before=float(0), not_after=float(0), store_event_database=True, dump_raw_data=False, event_callback=lambda *a, **kw: None):
+    def __init__(
+        self,
+        tr,
+        output_path,
+        not_before=float(0),
+        not_after=float(0),
+        store_event_database=True,
+        dump_raw_data=False,
+        event_callback=lambda *a, **kw: None,
+    ):
         self.tr = tr
         self.output_path = output_path
         self.not_before = not_before
@@ -267,7 +275,9 @@ class Timeline:
                     old_events = json.load(f)
                     for i in range(len(old_events) - 1, -1, -1):
                         ts = datetime.fromisoformat(old_events[i]["timestamp"][:19]).timestamp()
-                        if (self.not_before == 0 or ts > self.not_before) and (self.not_after == 0 or ts < self.not_after):
+                        if (self.not_before == 0 or ts > self.not_before) and (
+                            self.not_after == 0 or ts < self.not_after
+                        ):
                             del old_events[i]
 
             # merge new and old events

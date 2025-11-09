@@ -181,9 +181,24 @@ def get_main_parser():
         type=int,
     )
     parser_dl_docs.add_argument("--universal", help="Platform independent file names", action="store_true")
-    parser_dl_docs.add_argument("--store-event-database", default=True, help="Writes and maintains an event database file (all_events.json)", action=argparse.BooleanOptionalAction)
-    parser_dl_docs.add_argument("--dump-raw-data", default=False, help="Dump more raw data in json format", action=argparse.BooleanOptionalAction)
-    parser_dl_docs.add_argument("--export-transactions", default=True, help="Export transactions into a file, e.g. as csv into account_transactions.csv.", action=argparse.BooleanOptionalAction)
+    parser_dl_docs.add_argument(
+        "--store-event-database",
+        default=True,
+        help="Writes and maintains an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--dump-raw-data",
+        default=False,
+        help="Dump more raw data in json format",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--export-transactions",
+        default=True,
+        help="Export transactions into a file, e.g. as csv into account_transactions.csv.",
+        action=argparse.BooleanOptionalAction,
+    )
     parser_dl_docs.add_argument(
         "--export-format",
         choices=("json", "csv"),
@@ -309,10 +324,21 @@ def get_main_parser():
         default=0,
         type=int,
     )
-    parser_export_transactions.add_argument("--store-event-database", default=True, help="Writes and maintains an event database file (all_events.json)", action=argparse.BooleanOptionalAction)
-    parser_export_transactions.add_argument("--dump-raw-data", default=False, help="Dump more raw data in json format", action=argparse.BooleanOptionalAction)
     parser_export_transactions.add_argument(
-        "--export-format", "--format",
+        "--store-event-database",
+        default=True,
+        help="Writes and maintains an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--dump-raw-data",
+        default=False,
+        help="Dump more raw data in json format",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--export-format",
+        "--format",
         choices=("json", "csv"),
         default="csv",
         help="The output file format.",

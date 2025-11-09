@@ -79,9 +79,8 @@ Commands:
     details                             Get details for an ISIN
     get_price_alarms                    Get current price alarms
     set_price_alarms                    Set new price alarms
-    export_transactions                 Get data from the timeline and export account transactions
-                                        (account_transactions.csv) and according events in a JSON file
-                                        (all_events.json)
+    export_transactions                 Read data from the TR timeline and export transactions into a file, e.g. as
+                                        csv into account_transactions.csv.
     completion                          Print shell tab completion
 
 Options:
