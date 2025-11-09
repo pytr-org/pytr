@@ -1,0 +1,305 @@
+{
+    "id": "00000000-0000-0000-0000-000000000000",
+    "timestamp": "2024-12-31T23:59:59.999+0000",
+    "title": "MSCI World USD (Dist)",
+    "icon": "logos/LU0392494562/v2",
+    "avatar": {
+      "asset": "logos/LU0392494562/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Dividende",
+    "amount": {
+      "currency": "EUR",
+      "value": 30.21,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "00000000-0000-0000-0000-000000000000"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "sections": [
+        {
+          "title": "Du hast 30,21 € erhalten",
+          "data": {
+            "icon": "logos/LU0392494562/v2",
+            "subtitleText": null,
+            "timestamp": "2024-12-31T23:59:59.999+0000",
+            "status": "executed"
+          },
+          "action": null,
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Ereignis",
+              "detail": {
+                "text": "Ausschüttung",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "MSCI World USD (Dist)",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Transaktion",
+          "data": [
+            {
+              "title": "Anteile",
+              "detail": {
+                "text": "32",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Dividende je Aktie",
+              "detail": {
+                "text": "1,16 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuern",
+              "detail": {
+                "text": "6,83 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "+ 30,21 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "highlighted"
+            }
+          ],
+          "action": {
+            "type": "infoPage",
+            "payload": {
+              "sections": [
+                {
+                  "title": "Transaktion",
+                  "action": null,
+                  "type": "title"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Anteile",
+                      "detail": {
+                        "text": "32",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Dividende je Aktie",
+                      "detail": {
+                        "text": "1,18 $",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Wechselkurs",
+                      "detail": {
+                        "text": "1 € to 1,01932 $",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Dividende je Aktie",
+                      "detail": {
+                        "text": "1,16 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Dividendenzahlung",
+                      "detail": {
+                        "text": "+ 37,04 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Kapitalertragsteuer",
+                      "detail": {
+                        "text": "6,48 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Solidaritätszuschlag",
+                      "detail": {
+                        "text": "0,35 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Steuern",
+                      "detail": {
+                        "text": "6,83 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Dividendenzahlung",
+                      "detail": {
+                        "text": "+ 37,04 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Steuern",
+                      "detail": {
+                        "text": "6,83 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Gebühr",
+                      "detail": {
+                        "text": "Gratis",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Gesamt",
+                      "detail": {
+                        "text": "+ 30,21 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                }
+              ]
+            }
+          },
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "detail": "31.12.2024",
+              "action": {
+                "type": "browserModal",
+                "payload": "dummy.pdf"
+              },
+              "id": "00000000-0000-0000-0000-000000000000",
+              "postboxType": "INCOME"
+            }
+          ],
+          "action": null,
+          "type": "documents"
+        }
+      ]
+    },
+    "has_docs": true
+  }

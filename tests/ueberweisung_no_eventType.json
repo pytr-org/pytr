@@ -1,0 +1,187 @@
+{
+    "id": "60518353-20ba-457a-9114-fdc887ae1fba",
+    "timestamp": "2025-11-05T09:21:28.041+0000",
+    "title": "Jens Mueller",
+    "icon": "logos/contacts-C-Grey/v2",
+    "avatar": {
+        "asset": "logos/contacts-C-Grey/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "Fertig",
+    "amount": {
+        "currency": "EUR",
+        "value": 14.41,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "60518353-20ba-457a-9114-fdc887ae1fba"
+    },
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "60518353-20ba-457a-9114-fdc887ae1fba",
+        "sections": [
+            {
+                "title": "Du hast 14,41\u00a0\u20ac von Jens Mueller erhalten",
+                "data": {
+                    "icon": "logos/contacts-C-Grey/v2",
+                    "timestamp": "2025-11-05T09:21:28.037785Z",
+                    "status": "executed"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "\u00dcberweisung",
+                        "detail": {
+                            "text": "Abgeschlossen",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Absender",
+                        "detail": {
+                            "text": "Jens Mueller",
+                            "displayValue": {
+                                "text": "Jens Mueller"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "IBAN",
+                        "detail": {
+                            "text": "..1200",
+                            "action": {
+                                "payload": {
+                                    "id": "60518353-20ba-457a-9114-fdc887ae1fba",
+                                    "sections": [
+                                        {
+                                            "title": "IBAN",
+                                            "data": [
+                                                {
+                                                    "title": "DE12 3456 7890 1234 567 89",
+                                                    "detail": {
+                                                        "icon": "logos/bank_comdirect/v2",
+                                                        "style": "highlighted",
+                                                        "type": "listItemAvatarDefault"
+                                                    },
+                                                    "style": "plain"
+                                                }
+                                            ],
+                                            "type": "table"
+                                        }
+                                    ]
+                                },
+                                "type": "infoPage"
+                            },
+                            "displayValue": {
+                                "text": "..1200"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Gesamt",
+                        "detail": {
+                            "text": "+14,41\u00a0\u20ac",
+                            "displayValue": {
+                                "text": "+14,41\u00a0\u20ac"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "data": {
+                    "text": "Text"
+                },
+                "type": "note"
+            },
+            {
+                "title": "Absender",
+                "data": [
+                    {
+                        "title": "Absender",
+                        "detail": {
+                            "text": "Jens Mueller",
+                            "displayValue": {
+                                "text": "Jens Mueller"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "IBAN",
+                        "detail": {
+                            "text": "DE12 3456 7890 1234 567 89",
+                            "displayValue": {
+                                "text": "DE12 3456 7890 1234 567 89"
+                            },
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokument",
+                "data": [
+                    {
+                        "title": "Transaktionsbest\u00e4tigung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "f5bef8df-3452-4d9b-a7e2-7896ad01e6c8",
+                        "postboxType": "INCOMING_TRANSFER"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "payload": {
+                                    "contextCategory": "NHC",
+                                    "contextParams": {
+                                        "timelineEventId": "60518353-20ba-457a-9114-fdc887ae1fba",
+                                        "transferId": "3068ed91-be29-44c7-9db3-8fc64d4fe89e",
+                                        "chat_flow_key": "NHC_0024_deposit_report_an_issue"
+                                    }
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}

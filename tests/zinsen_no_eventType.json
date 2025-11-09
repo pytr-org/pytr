@@ -1,0 +1,190 @@
+{
+    "id": "019a3d4a-7d3a-7733-9027-c0c996d414c3",
+    "timestamp": "2025-11-01T07:47:47.979+0000",
+    "title": "Zinsen",
+    "icon": "logos/timeline_interest_new/v2",
+    "avatar": {
+        "asset": "logos/timeline_interest_new/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": "2\u00a0% p.a.",
+    "amount": {
+        "currency": "EUR",
+        "value": 3.6,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "019a3d4a-7d3a-7733-9027-c0c996d414c3"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "019a3d4a-7d3a-7733-9027-c0c996d414c3",
+        "sections": [
+            {
+                "title": "Du hast \u20ac3.60 erhalten",
+                "data": {
+                    "icon": "logos/timeline_interest_new/v2",
+                    "timestamp": "2025-11-01T08:47:53.912935+01:00",
+                    "status": "executed"
+                },
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "style": "plain",
+                        "detail": {
+                            "text": "Ausgef\u00fchrt",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        }
+                    },
+                    {
+                        "title": "Durchschnittssaldo",
+                        "style": "plain",
+                        "detail": {
+                            "text": "\u20ac7,886.25",
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "title": "J\u00e4hrliche Rate",
+                        "style": "plain",
+                        "detail": {
+                            "text": "2.00 %",
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "title": "Asset",
+                        "style": "plain",
+                        "detail": {
+                            "text": "Cash",
+                            "type": "text"
+                        }
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Status",
+                "steps": [
+                    {
+                        "leading": {
+                            "avatar": {
+                                "status": "completed",
+                                "type": "bullet"
+                            },
+                            "connection": {
+                                "order": "first"
+                            }
+                        },
+                        "content": {
+                            "title": "Zinsberechnung",
+                            "subtitle": null,
+                            "timestamp": "2025-11-01T08:47:53.912935+01:00",
+                            "cta": null
+                        }
+                    },
+                    {
+                        "leading": {
+                            "avatar": {
+                                "status": "completed",
+                                "type": "bullet"
+                            },
+                            "connection": {
+                                "order": "last"
+                            }
+                        },
+                        "content": {
+                            "title": "Zinszahlung",
+                            "subtitle": null,
+                            "timestamp": "2025-11-01T08:47:53.912935+01:00",
+                            "cta": null
+                        }
+                    }
+                ],
+                "type": "steps"
+            },
+            {
+                "title": "Transaktion",
+                "data": [
+                    {
+                        "title": "Angesammelt",
+                        "style": "plain",
+                        "detail": {
+                            "text": "\u20ac6.40",
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "title": "Steuern",
+                        "style": "plain",
+                        "detail": {
+                            "text": "\u20ac0.20",
+                            "type": "text"
+                        }
+                    },
+                    {
+                        "title": "Gesamt",
+                        "style": "plain",
+                        "detail": {
+                            "text": "\u20ac3.60",
+                            "type": "text"
+                        }
+                    }
+                ],
+                "type": "table"
+            },
+            {
+                "title": "Dokument",
+                "data": [
+                    {
+                        "title": "Abrechnung",
+                        "action": {
+                            "payload": "",
+                            "type": "browserModal"
+                        },
+                        "id": "019a3e63-1bb6-7207-b465-e16efe2a2ec2",
+                        "postboxType": "INTEREST_PAYOUT_INVOICE"
+                    }
+                ],
+                "type": "documents"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "style": "plain",
+                        "detail": {
+                            "icon": "",
+                            "style": "highlighted",
+                            "action": {
+                                "payload": {
+                                    "contextParams": {
+                                        "timelineEventId": "019a3d4a-7d3a-7733-9027-c0c996d414c3",
+                                        "chat_flow_key": "NHC_0020_interest_past_interest_payout"
+                                    },
+                                    "contextCategory": "NHC"
+                                },
+                                "type": "customerSupportChat"
+                            },
+                            "type": "listItemAvatarDefault"
+                        }
+                    }
+                ],
+                "type": "table"
+            }
+        ]
+    }
+}
