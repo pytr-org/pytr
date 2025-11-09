@@ -1,98 +1,106 @@
 import json
 from datetime import datetime
 
-from pytr.event import Event
-
-from .transactions import TransactionExporter
-from .utils import get_logger
+from .api import TradeRepublicError
+from .utils import get_logger, preview
 
 MAX_EVENT_REQUEST_BATCH = 1000
 
-event_subfolder_mapping = {
-    "OUTGOING_TRANSFER_DELEGATION": "Auszahlungen",
-    "OUTGOING_TRANSFER": "Auszahlungen",
-    "CREDIT": "Dividende",
-    "ssp_corporate_action_invoice_cash": "Dividende",
-    "ACCOUNT_TRANSFER_INCOMING": "Einzahlungen",
-    "INCOMING_TRANSFER_DELEGATION": "Einzahlungen",
-    "INCOMING_TRANSFER": "Einzahlungen",
-    "PAYMENT_INBOUND_GOOGLE_PAY": "Einzahlungen",
-    "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": "Einzahlungen",
-    "CREDIT_CANCELED": "Misc",
-    "CRYPTO_ANNUAL_STATEMENT": "Misc",
-    "CUSTOMER_CREATED": "Misc",
-    "DOCUMENTS_ACCEPTED": "Misc",
-    "DOCUMENTS_CHANGED": "Misc",
-    "DOCUMENTS_CREATED": "Misc",
-    "EX_POST_COST_REPORT": "Misc",
-    "EX_POST_COST_REPORT_CREATED": "Misc",
-    "GENERAL_MEETING": "Misc",
-    "GESH_CORPORATE_ACTION": "Misc",
-    "INPAYMENTS_SEPA_MANDATE_CREATED": "Misc",
-    "INSTRUCTION_CORPORATE_ACTION": "Misc",
-    "JUNIOR_ONBOARDING_GUARDIAN_B_CONSENT": "Misc",
-    "PRE_DETERMINED_TAX_BASE_EARNING": "Misc",
-    "QUARTERLY_REPORT": "Misc",
-    "SHAREBOOKING": "Misc",
-    "SHAREBOOKING_TRANSACTIONAL": "Misc",
-    "STOCK_PERK_REFUNDED": "Misc",
-    "TAX_YEAR_END_REPORT": "Misc",
-    "YEAR_END_TAX_REPORT": "Misc",
-    "crypto_annual_statement": "Misc",
-    "private_markets_suitability_quiz_completed": "Misc",
-    "ssp_capital_increase_customer_instruction": "Misc",
-    "ssp_corporate_action_informative_notification": "Misc",
-    "ssp_corporate_action_invoice_shares": "Misc",
-    "ssp_dividend_option_customer_instruction": "Misc",
-    "ssp_general_meeting_customer_instruction": "Misc",
-    "ssp_tender_offer_customer_instruction": "Misc",
-    "benefits_spare_change_execution": "RoundUp",
-    "benefits_saveback_execution": "Saveback",
-    "SAVINGS_PLAN_EXECUTED": "Sparplan",
-    "SAVINGS_PLAN_INVOICE_CREATED": "Sparplan",
-    "trading_savingsplan_executed": "Sparplan",
-    "trading_savingsplan_execution_failed": "Sparplan",
-    "TAX_CORRECTION": "Steuerkorrekturen",
-    "TAX_REFUND": "Steuerkorrekturen",
-    "ssp_tax_correction_invoice": "Steuerkorrekturen",
-    "ORDER_CANCELED": "Trades",
-    "ORDER_EXECUTED": "Trades",
-    "ORDER_EXPIRED": "Trades",
-    "ORDER_REJECTED": "Trades",
-    "TRADE_CORRECTED": "Trades",
-    "TRADE_INVOICE": "Trades",
-    "private_markets_order_created": "Trades",
-    "trading_order_cancelled": "Trades",
-    "trading_order_created": "Trades",
-    "trading_order_rejected": "Trades",
-    "trading_trade_executed": "Trades",
-    "trading_order_expired": "Trades",
-    "ACQUISITION_TRADE_PERK": "Vorteil",
-    "INTEREST_PAYOUT": "Zinsen",
-    "INTEREST_PAYOUT_CREATED": "Zinsen",
-}
+
+def is_likely_same_but_newer(event, old_event):
+    if event["title"] != old_event["title"]:
+        return False
+
+    if (
+        event["subtitle"] != "Limit-Sell-Order"
+        and event["subtitle"] != "Limit-Buy-Order"
+        and event["subtitle"] != "Sparplan ausgeführt"
+    ):
+        return False
+
+    if event["subtitle"] != old_event["subtitle"]:
+        return False
+
+    # Check timestamps
+    fmt = "%Y-%m-%dT%H:%M:%S.%f%z"
+    date_new = datetime.strptime(event["timestamp"], fmt)
+    date_old = datetime.strptime(old_event["timestamp"], fmt)
+
+    if date_new < date_old:
+        return False
+
+    return abs((date_new - date_old).total_seconds() * 1000) <= 500
 
 
 class Timeline:
-    def __init__(self, tr, max_age_timestamp):
+    def __init__(
+        self,
+        tr,
+        output_path,
+        not_before=float(0),
+        not_after=float(0),
+        store_event_database=True,
+        dump_raw_data=False,
+        event_callback=lambda *a, **kw: None,
+    ):
         self.tr = tr
+        self.output_path = output_path
+        self.not_before = not_before
+        self.not_after = not_after
+        self.store_event_database = store_event_database
+        self.dump_raw_data = dump_raw_data
+        self.event_callback = event_callback
         self.log = get_logger(__name__)
+        self.dl_done = False
+        self.error_counts = {}
+        self.num_timelines = 0
         self.all_detail = 0
         self.requested_detail = 0
         self.received_detail = 0
         self.skipped_detail = 0
         self.detail_digits = 0
-        self.events_without_docs = []
-        self.events_with_docs = []
-        self.num_timelines = 0
-        self.timeline_events = {}
-        self.max_age_timestamp = max_age_timestamp
+        self.timeline_transactions = {}
+        self.timeline_activities = {}
+        self.timeline_details = {}
+        self.events = []
 
-    async def get_next_timeline_transactions(self, response, dl):
+        output_path.mkdir(parents=True, exist_ok=True)
+
+    async def tl_loop(self):
+        await self.get_next_timeline_transactions(None)
+
+        while not self.dl_done:
+            try:
+                _, subscription, response = await self.tr.recv()
+            except TradeRepublicError as e:
+                self.log.error(f'Error response for subscription "{e.subscription}".')
+                subscriptionid = e.subscription["id"]
+                curct = self.error_counts.get(subscriptionid, 0)
+                self.log.error(f'Errorcount for subscription {subscriptionid} is {curct}".')
+                if curct < 3:
+                    self.log.error(f'Error count for subscription {subscriptionid} is {curct}". Re-subscribing...')
+                    self.error_counts[subscriptionid] = curct + 1
+                    await self.tr.subscribe(e.subscription)
+                    continue
+                else:
+                    self.log.error(
+                        f'Error count for subscription {subscriptionid} is {curct}". Continuing with failure...'
+                    )
+                    subscription = e.subscription
+                    response = {}
+
+            if subscription.get("type", "") == "timelineTransactions":
+                await self.get_next_timeline_transactions(response)
+            elif subscription.get("type", "") == "timelineActivityLog":
+                await self.get_next_timeline_activity_log(response)
+            elif subscription.get("type", "") == "timelineDetailV2":
+                await self.process_timelineDetail(response)
+            else:
+                self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
+
+    async def get_next_timeline_transactions(self, response):
         """
-        Get timelines transactions and save time in list timelines.
-        Extract timeline transactions events and save them in list timeline_events
-
+        Get timeline transactions and store them in list timeline_transactions
         """
         if response is None:
             # empty response / first timeline
@@ -104,9 +112,10 @@ class Timeline:
             added_last_event = False
             for event in response["items"]:
                 event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                if self.max_age_timestamp == 0 or event_timestamp >= self.max_age_timestamp:
-                    event["source"] = "timelineTransaction"
-                    self.timeline_events[event["id"]] = event
+                if self.not_before == 0 or event_timestamp >= self.not_before:
+                    if self.not_after == 0 or event_timestamp <= self.not_after:
+                        event["source"] = "timelineTransaction"
+                        self.timeline_transactions[event["id"]] = event
                     added_last_event = True
                 else:
                     break
@@ -120,13 +129,14 @@ class Timeline:
             else:
                 # last timeline is reached
                 self.log.info(f"Timeline transactions: Received #{self.num_timelines} (last relevant).")
-                await self.get_next_timeline_activity_log(None, dl)
+                if self.dump_raw_data:
+                    with (self.output_path / "timeline_transactions.json").open("w") as f:
+                        json.dump(self.timeline_transactions, f, indent=4)
+                await self.get_next_timeline_activity_log(None)
 
-    async def get_next_timeline_activity_log(self, response, dl):
+    async def get_next_timeline_activity_log(self, response):
         """
-        Get timelines acvtivity log and save time in list timelines.
-        Extract timeline acvtivity log events and save them in list timeline_events
-
+        Get timeline acvtivity log events and store them in list timeline_activities
         """
         if response is None:
             # empty response / first timeline
@@ -138,11 +148,10 @@ class Timeline:
             added_last_event = False
             for event in response["items"]:
                 event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                if self.max_age_timestamp == 0 or event_timestamp >= self.max_age_timestamp:
-                    if event["id"] in self.timeline_events:
-                        self.log.warning(f"Received duplicate event {event['id']}")
-                    event["source"] = "timelineActivity"
-                    self.timeline_events[event["id"]] = event
+                if self.not_before == 0 or event_timestamp >= self.not_before:
+                    if self.not_after == 0 or event_timestamp <= self.not_after:
+                        event["source"] = "timelineActivity"
+                        self.timeline_activities[event["id"]] = event
                     added_last_event = True
                 else:
                     break
@@ -155,39 +164,49 @@ class Timeline:
                 await self.tr.timeline_activity_log(after)
             else:
                 self.log.info(f"Timeline activity log: Received #{self.num_timelines} (last relevant).")
-                self.request_timeline_details_generator = self._request_timeline_details(dl)
+                if self.dump_raw_data:
+                    with (self.output_path / "timeline_activities.json").open("w") as f:
+                        json.dump(self.timeline_activities, f, indent=4)
+
+                duplicates = set(self.timeline_transactions) & set(self.timeline_activities)
+                if duplicates:
+                    self.log.warning(f"Received duplicate events: {', '.join(duplicates)}")
+
+                self.timeline_details = {**self.timeline_transactions, **self.timeline_activities}
+
+                self.request_timeline_details_generator = self._request_timeline_details()
                 try:
                     await self.request_timeline_details_generator.__anext__()
                 except StopAsyncIteration:
                     pass
 
-    async def _request_timeline_details(self, dl):
+    async def _request_timeline_details(self):
         """
         request timeline details
         """
-        self.all_detail = len(self.timeline_events.values())
+        self.all_detail = len(self.timeline_details.values())
         self.detail_digits = len(str(self.all_detail))
 
-        for event in self.timeline_events.values():
-            action = event.get("action")
+        for event in self.timeline_details.values():
             msg = None
+            action = event.get("action")
             if action is None:
                 if event.get("actionLabel") is None:
-                    msg = "Skip timeline detail: no action"
+                    msg = "Skip timeline detail: No action/actionLabel section"
             elif action.get("type") != "timelineDetail":
-                msg = f"Skip timeline detail: unmatched action type ({action['type']})"
+                msg = f"Skip timeline detail: Action type {action['type']} is not timelineDetail"
             elif action.get("payload") != event["id"]:
-                msg = f"Skip timeline detail: unmatched action payload ({action['payload']})"
+                msg = f"Skip timeline detail: Action payload {action['payload']} does not match id {event['id']}"
 
             self.requested_detail += 1
             if msg is None:
                 await self.tr.timeline_detail_v2(event["id"])
             else:
                 self.received_detail += 1
-                self.events_without_docs.append(event)
-                self.log.info(
+                self.events.append(event)
+                self.log.warning(
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
-                    + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
+                    + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]} {msg}"
                 )
                 self.log.debug("%s: %s", msg, json.dumps(event, indent=4))
 
@@ -198,83 +217,7 @@ class Timeline:
                 yield
 
         self.log.info(f"Requested all timeline details ({self.requested_detail}/{self.all_detail}).")
-        self.finish_if_done(dl)
-
-    async def process_timelineDetail(self, response, dl):
-        """
-        process timeline details response
-        download any associated docs
-        create other_events.json, events_with_documents.json and account_transactions.csv
-        """
-
-        event = self.timeline_events.get(response["id"], None)
-        if event is None:
-            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
-            self.skipped_detail += 1
-            self.finish_if_done(dl)
-            return
-
-        self.received_detail += 1
-        event["details"] = response
-
-        self.log.info(
-            f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
-            + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
-        )
-
-        event["has_docs"] = False
-        for section in response["sections"]:
-            if section["type"] != "documents":
-                continue
-
-            event["has_docs"] = True
-            subfolder = None
-
-            if event.get("eventType", "") == "timeline_legacy_migrated_events":
-                subtitle = event.get("subtitle", "")
-                if event.get("title", "") == "Zinsen":
-                    subfolder = "Zinsen"
-                elif subtitle in [
-                    "Kauforder",
-                    "Limit-Buy-Order",
-                    "Limit-Sell-Order",
-                    "Limit Verkauf-Order neu abgerechnet",
-                    "Sparplan ausgeführt",
-                    "Stop-Sell-Order",
-                    "Verkaufsorder",
-                ]:
-                    subfolder = "Trades"
-                else:
-                    self.log.warning(
-                        f"no mapping for timeline_legacy_migrated_events: title={event.get('title', '')} subtitle={event.get('subtitle', '')}"
-                    )
-            else:
-                subfolder = event_subfolder_mapping.get(event.get("eventType", ""))
-
-            if subfolder is None:
-                self.log.warning(f"no mapping for {event.get('eventType', '')}")
-
-            for doc in section["data"]:
-                timestamp_str = event["timestamp"]
-                if timestamp_str[-3] != ":":
-                    timestamp_str = timestamp_str[:-2] + ":" + timestamp_str[-2:]
-                try:
-                    docdate = datetime.fromisoformat(timestamp_str)
-                except ValueError:
-                    self.log.warning(f"no timestamp parseable from {timestamp_str}")
-                    docdate = datetime.now()
-
-                if self.max_age_timestamp == 0 or self.max_age_timestamp < docdate.timestamp():
-                    title = f"{doc['title']} - {event['title']} - {event['subtitle']}"
-                    dl.dl_doc(doc, title, subfolder, docdate)
-
-        if event["has_docs"]:
-            self.events_with_docs.append(event)
-        else:
-            self.events_without_docs.append(event)
-
-        await self.request_more_timeline_details()
-        self.finish_if_done(dl)
+        self.finish_if_done()
 
     async def request_more_timeline_details(self):
         if self.requested_detail == self.all_detail:
@@ -285,42 +228,99 @@ class Timeline:
             except StopAsyncIteration:
                 pass
 
-    def finish_if_done(self, dl):
+    async def process_timelineDetail(self, response):
+        """
+        process timeline details response
+        """
+
+        event = self.timeline_details.get(response.get("id", "dummy"), None)
+        if event is None:
+            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
+            self.skipped_detail += 1
+            self.finish_if_done()
+            return
+
+        self.received_detail += 1
+        event["details"] = response
+
+        self.log.info(
+            f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
+            + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
+        )
+        self.events.append(event)
+        self.event_callback(event)
+
+        await self.request_more_timeline_details()
+        self.finish_if_done()
+
+    def finish_if_done(self):
         if self.requested_detail != self.all_detail:
             return
         if (self.received_detail + self.skipped_detail) == self.requested_detail:
-            self.finish_timeline_details(dl)
+            self.finish_timeline_details()
 
-    def finish_timeline_details(self, dl):
-        self.log.info("Received all details")
+    def finish_timeline_details(self):
+        self.log.info("Received all event details.")
         if self.skipped_detail > 0:
             self.log.warning(f"Skipped {self.skipped_detail} unsupported events")
 
-        dl.output_path.mkdir(parents=True, exist_ok=True)
-        with open(dl.output_path / "other_events.json", "w", encoding="utf-8") as f:
-            json.dump(self.events_without_docs, f, ensure_ascii=False, indent=2)
+        if self.store_event_database:
+            self.log.info("Updating event database...")
 
-        with open(dl.output_path / "events_with_documents.json", "w", encoding="utf-8") as f:
-            json.dump(self.events_with_docs, f, ensure_ascii=False, indent=2)
+            # read old events from all_events.json
+            old_events = []
+            all_events_path = self.output_path / "all_events.json"
+            if (self.not_before != 0 or self.not_after != 0) and all_events_path.exists():
+                with open(all_events_path, "r", encoding="utf-8") as f:
+                    old_events = json.load(f)
+                    for i in range(len(old_events) - 1, -1, -1):
+                        ts = datetime.fromisoformat(old_events[i]["timestamp"][:19]).timestamp()
+                        if (self.not_before == 0 or ts > self.not_before) and (
+                            self.not_after == 0 or ts < self.not_after
+                        ):
+                            del old_events[i]
 
-        with open(dl.output_path / "all_events.json", "w", encoding="utf-8") as f:
-            json.dump(
-                self.events_without_docs + self.events_with_docs,
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
+            # merge new and old events
+            if old_events:
+                cur_events = {}
 
-        with (dl.output_path / "account_transactions.csv").open("w", encoding="utf-8") as f:
-            TransactionExporter(
-                lang=dl.lang,
-                date_with_time=dl.date_with_time,
-                decimal_localization=dl.decimal_localization,
-            ).export(
-                f,
-                [Event.from_dict(ev) for ev in self.events_without_docs + self.events_with_docs],
-                sort=dl.sort_export,
-                format=dl.format_export,
-            )
+                # drop duplicates in old events
+                for event in old_events:
+                    idtodel = None
+                    for id in cur_events:
+                        cur_event = cur_events[id]
+                        if is_likely_same_but_newer(event, cur_event):
+                            self.log.warning(
+                                f"Dropping potential duplicate event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
+                            )
+                            idtodel = id
+                            break
+                    if idtodel is not None:
+                        cur_events.pop(idtodel)
+                    cur_events[event["id"]] = event
 
-        dl.work_responses()
+                # add new events
+                for event in self.events:
+                    idtodel = None
+                    for id in cur_events:
+                        cur_event = cur_events[id]
+                        if event["id"] != id and is_likely_same_but_newer(event, cur_event):
+                            self.log.warning(
+                                f"Dropping existing event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
+                            )
+                            idtodel = id
+                            break
+                    if idtodel is not None:
+                        cur_events.pop(idtodel)
+                    cur_events[event["id"]] = event
+
+                self.events = list(cur_events.values())
+
+            self.events.sort(key=lambda value: datetime.fromisoformat(value["timestamp"][:19]))
+
+            with open(all_events_path, "w", encoding="utf-8") as f:
+                json.dump(self.events, f, ensure_ascii=False, indent=2, default=str)
+
+            self.log.info("Updated event database.")
+
+        self.dl_done = True
