@@ -229,10 +229,14 @@ class Timeline:
 
             event["has_docs"] = True
             subfolder = None
+            
+            # Extract commonly used values once
+            event_type = event.get("eventType", "")
+            title = event.get("title", "")
+            subtitle = event.get("subtitle", "")
 
-            if event.get("eventType", "") == "timeline_legacy_migrated_events":
-                subtitle = event.get("subtitle", "")
-                if event.get("title", "") == "Zinsen":
+            if event_type == "timeline_legacy_migrated_events":
+                if title == "Zinsen":
                     subfolder = "Zinsen"
                 elif subtitle in [
                     "Kauforder",
@@ -246,13 +250,13 @@ class Timeline:
                     subfolder = "Trades"
                 else:
                     self.log.warning(
-                        f"no mapping for timeline_legacy_migrated_events: title={event.get('title', '')} subtitle={event.get('subtitle', '')}"
+                        f"no mapping for timeline_legacy_migrated_events: title={title} subtitle={subtitle}"
                     )
             else:
-                subfolder = event_subfolder_mapping.get(event.get("eventType", ""))
+                subfolder = event_subfolder_mapping.get(event_type)
 
             if subfolder is None:
-                self.log.warning(f"no mapping for {event.get('eventType', '')}")
+                self.log.warning(f"no mapping for {event_type}")
 
             for doc in section["data"]:
                 timestamp_str = event["timestamp"]
