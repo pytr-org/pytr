@@ -184,6 +184,7 @@ events_known_ignored = [
 ]
 
 events_known_ignored_subtitle = [
+    "Cash oder Aktie",
     "Limit-Sell-Order erstellt",
     "Limit-Sell-Order storniert",
 ]
