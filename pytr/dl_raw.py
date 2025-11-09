@@ -4,6 +4,7 @@ from pathlib import Path
 from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
 from pytr.api import TradeRepublicError
+from pytr.post_sort import post_sort
 from pytr.timeline import Timeline
 from pytr.utils import get_logger, preview
 
@@ -123,4 +124,5 @@ class DlRaw:
 
             if self.done == len(self.doc_urls):
                 self.log.info("Done.")
+                post_sort(self.output_path)
                 exit(0)
