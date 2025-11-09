@@ -133,79 +133,6 @@ def get_main_parser():
         description=info,
     )
 
-    # dl_docs
-    info = (
-        "Download all pdf documents from the timeline and sort them into folders."
-        + " Also export account transactions (account_transactions.csv)"
-        + " and JSON files with all events (events_with_documents.json and other_events.json)"
-    )
-    parser_dl_docs = parser_cmd.add_parser(
-        "dl_docs",
-        formatter_class=formatter,
-        parents=[
-            parser_login_args,
-            parser_lang,
-            parser_date_with_time,
-            parser_decimal_localization,
-            parser_sort_export,
-        ],
-        help=info,
-        description=info,
-    )
-
-    parser_dl_docs.add_argument("output", help="Output directory", metavar="PATH", type=Path)
-    parser_dl_docs.add_argument(
-        "--format",
-        help="available variables:\tiso_date, time, title, subtitle, doc_num, id",
-        metavar="FORMAT_STRING",
-        default="{iso_date} {time} {title}",
-    )
-    parser_dl_docs.add_argument(
-        "--last_days",
-        help="Number of last days to include (use 0 get all days)",
-        metavar="DAYS",
-        default=0,
-        type=int,
-    )
-    parser_dl_docs.add_argument(
-        "--days_until",
-        help="Number of days until which to download (use 0 get all days)",
-        metavar="DAYS",
-        default=0,
-        type=int,
-    )
-    parser_dl_docs.add_argument(
-        "--workers",
-        help="Number of workers for parallel downloading",
-        default=8,
-        type=int,
-    )
-    parser_dl_docs.add_argument("--universal", help="Platform independent file names", action="store_true")
-    parser_dl_docs.add_argument(
-        "--store-event-database",
-        default=True,
-        help="Writes and maintains an event database file (all_events.json)",
-        action=argparse.BooleanOptionalAction,
-    )
-    parser_dl_docs.add_argument(
-        "--dump-raw-data",
-        default=False,
-        help="Dump more raw data in json format",
-        action=argparse.BooleanOptionalAction,
-    )
-    parser_dl_docs.add_argument(
-        "--export-transactions",
-        default=True,
-        help="Export transactions into a file, e.g. as csv into account_transactions.csv.",
-        action=argparse.BooleanOptionalAction,
-    )
-    parser_dl_docs.add_argument(
-        "--export-format",
-        choices=("json", "csv"),
-        default="csv",
-        help="The output file format for the transaction export.",
-    )
-
     # portfolio
     info = "Show current portfolio"
     parser_portfolio = parser_cmd.add_parser(
@@ -246,6 +173,143 @@ def get_main_parser():
         description=info,
     )
     parser_details.add_argument("isin", help="ISIN of intrument")
+
+    # dl_docs
+    info = (
+        "Download all pdf documents from the timeline and sort them into folders."
+        + " Also export account transactions (account_transactions.csv)"
+        + " and JSON files with all events (events_with_documents.json and other_events.json)"
+    )
+    parser_dl_docs = parser_cmd.add_parser(
+        "dl_docs",
+        formatter_class=formatter,
+        parents=[
+            parser_login_args,
+            parser_lang,
+            parser_date_with_time,
+            parser_decimal_localization,
+            parser_sort_export,
+        ],
+        help=info,
+        description=info,
+    )
+
+    parser_dl_docs.add_argument("output", help="Output directory", metavar="PATH", type=Path)
+    parser_dl_docs.add_argument(
+        "--format",
+        help="available variables:\tiso_date, time, title, subtitle, doc_num, id",
+        metavar="FORMAT_STRING",
+        default="{iso_date} {time} {title}",
+    )
+    parser_dl_docs.add_argument(
+        "--last_days",
+        help="Include data from the last N days (0 = include all days)",
+        metavar="DAYS",
+        default=0,
+        type=int,
+    )
+    parser_dl_docs.add_argument(
+        "--days_until",
+        help="Include data up to N days ago (0 = include all days)",
+        metavar="DAYS",
+        default=0,
+        type=int,
+    )
+    parser_dl_docs.add_argument(
+        "--workers",
+        help="Number of workers for parallel downloading",
+        default=8,
+        type=int,
+    )
+    parser_dl_docs.add_argument("--universal", help="Platform independent file names", action="store_true")
+    parser_dl_docs.add_argument(
+        "--store-event-database",
+        default=True,
+        help="Write and maintain an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--dump-raw-data",
+        default=False,
+        help="Dump more raw data in json format",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--export-transactions",
+        default=True,
+        help="Export transactions into a file, e.g. as csv into account_transactions.csv",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--export-format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format for the transaction export",
+    )
+
+    # export_transactions
+    info = (
+        "Read data from the TR timeline and export transactions into a file, e.g. as csv into account_transactions.csv."
+    )
+    parser_export_transactions = parser_cmd.add_parser(
+        "export_transactions",
+        formatter_class=formatter,
+        parents=[
+            parser_login_args,
+            parser_lang,
+            parser_date_with_time,
+            parser_decimal_localization,
+            parser_sort_export,
+        ],
+        help=info,
+        description=info,
+    )
+    parser_export_transactions.add_argument(
+        "--last_days",
+        help="Include data from the last N days (0 = include all days)",
+        metavar="DAYS",
+        default=0,
+        type=int,
+    )
+    parser_export_transactions.add_argument(
+        "--days_until",
+        help="Include data up to N days ago (0 = include all days)",
+        metavar="DAYS",
+        default=0,
+        type=int,
+    )
+    parser_export_transactions.add_argument(
+        "--store-event-database",
+        default=True,
+        help="Write and maintain an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--dump-raw-data",
+        default=False,
+        help="Dump more raw data in json format",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--export-format",
+        "--format",
+        choices=("json", "csv"),
+        default="csv",
+        help="The output file format for the transaction export",
+    )
+    parser_export_transactions.add_argument(
+        "--outputdir",
+        help="Output directory",
+        metavar="PATH",
+        type=Path,
+        default=Path("."),
+    )
+    parser_export_transactions.add_argument(
+        "outputfile",
+        help="Output file path (optional)",
+        type=argparse.FileType("w", encoding="utf-8"),
+        nargs="?",
+    )
 
     # get_price_alarms
     info = "Get current price alarms"
@@ -293,70 +357,7 @@ def get_main_parser():
         nargs="?",
     )
 
-    # export_transactions
-    info = (
-        "Read data from the TR timeline and export transactions into a file, e.g. as csv into account_transactions.csv."
-    )
-    parser_export_transactions = parser_cmd.add_parser(
-        "export_transactions",
-        formatter_class=formatter,
-        parents=[
-            parser_login_args,
-            parser_lang,
-            parser_date_with_time,
-            parser_decimal_localization,
-            parser_sort_export,
-        ],
-        help=info,
-        description=info,
-    )
-    parser_export_transactions.add_argument(
-        "--last_days",
-        help="Number of last days to include (use 0 get all days)",
-        metavar="DAYS",
-        default=0,
-        type=int,
-    )
-    parser_export_transactions.add_argument(
-        "--days_until",
-        help="Number of days until which to download (use 0 get all days)",
-        metavar="DAYS",
-        default=0,
-        type=int,
-    )
-    parser_export_transactions.add_argument(
-        "--store-event-database",
-        default=True,
-        help="Writes and maintains an event database file (all_events.json)",
-        action=argparse.BooleanOptionalAction,
-    )
-    parser_export_transactions.add_argument(
-        "--dump-raw-data",
-        default=False,
-        help="Dump more raw data in json format",
-        action=argparse.BooleanOptionalAction,
-    )
-    parser_export_transactions.add_argument(
-        "--export-format",
-        "--format",
-        choices=("json", "csv"),
-        default="csv",
-        help="The output file format.",
-    )
-    parser_export_transactions.add_argument(
-        "--outputdir",
-        help="Output directory",
-        metavar="PATH",
-        type=Path,
-        default=Path("."),
-    )
-    parser_export_transactions.add_argument(
-        "outputfile",
-        help="Output file path (optional)",
-        type=argparse.FileType("w", encoding="utf-8"),
-        nargs="?",
-    )
-
+    # completion
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
         "completion",
@@ -419,7 +420,32 @@ def main():
             web=not args.applogin,
             store_credentials=args.store_credentials,
         )
-
+    elif args.command == "portfolio":
+        p = Portfolio(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
+            args.include_watchlist,
+            lang=args.lang,
+            decimal_localization=args.decimal_localization,
+            output=args.output,
+            sort_by_column=args.sort_by_column,
+            sort_descending=not args.sort_ascending,
+        )
+        p.get()
+    elif args.command == "details":
+        Details(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
+            args.isin,
+        ).get()
     elif args.command == "dl_docs":
         DL(
             login(
@@ -443,63 +469,6 @@ def main():
             sort_export=args.sort,
             format_export=args.export_format,
         ).do_dl()
-    elif args.command == "get_price_alarms":
-        try:
-            Alarms(
-                login(
-                    phone_no=args.phone_no,
-                    pin=args.pin,
-                    web=not args.applogin,
-                    store_credentials=args.store_credentials,
-                ),
-                args.input,
-                args.outputfile,
-            ).get()
-        except ValueError as e:
-            print(e)
-            return -1
-    elif args.command == "set_price_alarms":
-        try:
-            Alarms(
-                login(
-                    phone_no=args.phone_no,
-                    pin=args.pin,
-                    web=not args.applogin,
-                    store_credentials=args.store_credentials,
-                ),
-                args.input,
-                args.inputfile,
-                args.remove_current_alarms,
-            ).set()
-        except ValueError as e:
-            print(e)
-            return -1
-    elif args.command == "details":
-        Details(
-            login(
-                phone_no=args.phone_no,
-                pin=args.pin,
-                web=not args.applogin,
-                store_credentials=args.store_credentials,
-            ),
-            args.isin,
-        ).get()
-    elif args.command == "portfolio":
-        p = Portfolio(
-            login(
-                phone_no=args.phone_no,
-                pin=args.pin,
-                web=not args.applogin,
-                store_credentials=args.store_credentials,
-            ),
-            args.include_watchlist,
-            lang=args.lang,
-            decimal_localization=args.decimal_localization,
-            output=args.output,
-            sort_by_column=args.sort_by_column,
-            sort_descending=not args.sort_ascending,
-        )
-        p.get()
     elif args.command == "export_transactions":
         if args.outputfile is None and args.outputdir is None:
             print("No output argument given.")
@@ -536,6 +505,37 @@ def main():
                 sort=args.sort,
                 format=args.export_format,
             )
+    elif args.command == "get_price_alarms":
+        try:
+            Alarms(
+                login(
+                    phone_no=args.phone_no,
+                    pin=args.pin,
+                    web=not args.applogin,
+                    store_credentials=args.store_credentials,
+                ),
+                args.input,
+                args.outputfile,
+            ).get()
+        except ValueError as e:
+            print(e)
+            return -1
+    elif args.command == "set_price_alarms":
+        try:
+            Alarms(
+                login(
+                    phone_no=args.phone_no,
+                    pin=args.pin,
+                    web=not args.applogin,
+                    store_credentials=args.store_credentials,
+                ),
+                args.input,
+                args.inputfile,
+                args.remove_current_alarms,
+            ).set()
+        except ValueError as e:
+            print(e)
+            return -1
     elif args.version:
         installed_version = version("pytr")
         print(installed_version)
