@@ -235,10 +235,30 @@ class Timeline:
 
         event = self.timeline_details.get(response.get("id", "dummy"), None)
         if event is None:
-            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
-            self.skipped_detail += 1
-            self.finish_if_done()
-            return
+            # Extract timestamp from response sections if available
+            sections = response.get("sections", [])
+            pseudo_timestamp = "1999-12-31T23:59:59.999+0000"
+            timestamp = pseudo_timestamp
+
+            # Search for timestamp in any section and data entry
+            for section in sections:
+                data = section.get("data", [])
+                if isinstance(data, list):
+                    for data_item in data:
+                        if isinstance(data_item, dict) and "timestamp" in data_item:
+                            timestamp = data_item["timestamp"]
+                            break
+                elif isinstance(data, dict) and "timestamp" in data:
+                    timestamp = data["timestamp"]
+                    break
+
+                if timestamp != pseudo_timestamp:
+                    break
+
+            event = {"id": response["id"], "title": "Pseudo", "subtitle": "Pseudo", "timestamp": timestamp}
+            self.timeline_activities[response["id"]] = event
+
+            self.log.warning("Created pseudo-event for unrequested event response id '%s'", response.get("id"))
 
         self.received_detail += 1
         event["details"] = response
