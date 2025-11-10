@@ -322,7 +322,7 @@ class DL:
                     return
                 else:
                     filepath = filepath_with_doc_id
-                    
+
         doc["local_filepath"] = str(filepath)
         self.filepaths.append(str(filepath))
 
