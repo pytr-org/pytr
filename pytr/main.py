@@ -246,6 +246,12 @@ def get_main_parser():
         default="csv",
         help="The output file format for the transaction export",
     )
+    parser_dl_docs.add_argument(
+        "--nosort",
+        default=False,
+        help="Do not sort documents into folders and keep their original filenames",
+        action=argparse.BooleanOptionalAction,
+    )
 
     # export_transactions
     info = (
@@ -468,6 +474,7 @@ def main():
             decimal_localization=args.decimal_localization,
             sort_export=args.sort,
             format_export=args.export_format,
+            nosort=args.nosort,
         ).do_dl()
     elif args.command == "export_transactions":
         if args.outputfile is None and args.outputdir is None:

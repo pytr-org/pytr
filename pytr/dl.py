@@ -118,6 +118,7 @@ class DL:
         decimal_localization=False,
         sort_export=False,
         format_export: Literal["json", "csv"] = "csv",
+        nosort=False,
     ):
         """
         tr: api object
@@ -136,6 +137,7 @@ class DL:
         self.decimal_localization = decimal_localization
         self.sort_export = sort_export
         self.format_export: Literal["json", "csv"] = format_export
+        self.nosort = nosort
 
         self.tl = Timeline(
             self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback
@@ -255,65 +257,72 @@ class DL:
         send asynchronous request, append future with filepath to self.futures
         """
         doc_url = doc["action"]["payload"]
-        subtitleText = doc.get("detail")
-        if subtitleText is None:
-            subtitleText = ""
 
-        doc_id = doc["id"]
-        iso_date = doc_date.strftime("%Y-%m-%d")
-        time = doc_date.strftime("%H:%M")
-
-        if subfolder is not None:
-            directory = self.output_path / subfolder
+        if self.nosort:
+            doc_url_base = doc_url.split("?")[0]
+            filename = doc_url_base.split("/")[-1]
+            filepath = self.output_path / filename
         else:
-            directory = self.output_path
+            subtitleText = doc.get("detail")
+            if subtitleText is None:
+                subtitleText = ""
 
-        # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
-        doc_type = doc["title"].rsplit(" ")
-        if doc_type[-1].isnumeric() is True:
-            doc_type_num = doc_type.pop()
-        else:
-            doc_type_num = ""
+            doc_id = doc["id"]
+            iso_date = doc_date.strftime("%Y-%m-%d")
+            time = doc_date.strftime("%H:%M")
 
-        doc_type = " ".join(doc_type)
-        if doc_type == "Abrechnung Ausführung" or doc_type == "Abrechnungsausführung":
-            doc_type = "Abrechnung"
-        titleText = titleText.replace("\n", "").replace("/", "-")
-        subtitleText = subtitleText.replace("\n", "").replace("/", "-")
-
-        filename = self.filename_fmt.format(
-            iso_date=iso_date,
-            time=time,
-            title=titleText,
-            subtitle=subtitleText,
-            doc_num=doc_type_num,
-            id=doc_id,
-        )
-
-        # In case, the filename already ends with the doc id, we remove it to avoid a duplicate id in the name
-        filename_with_doc_id = filename.removesuffix(doc_id).rstrip() + f" ({doc_id})"
-
-        if doc_type in ["Kontoauszug", "Depotauszug"]:
-            filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"
-            filepath_with_doc_id = directory / "Abschlüsse" / f"{filename_with_doc_id}" / f"{doc_type}.pdf"
-        else:
-            filepath = directory / doc_type / f"{filename}.pdf"
-            filepath_with_doc_id = directory / doc_type / f"{filename_with_doc_id}.pdf"
-
-        if self.universal_filepath:
-            filepath = sanitize_filepath(filepath, "_", "universal")
-            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "universal")
-        else:
-            filepath = sanitize_filepath(filepath, "_", "auto")
-            filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "auto")
-
-        if filepath in self.filepaths:
-            self.log.debug(f"File {filepath} already in queue. Append document id {doc_id}...")
-            if filepath_with_doc_id in self.filepaths:
-                self.log.debug(f"File {filepath_with_doc_id} already in queue. Skipping...")
-                return
+            if subfolder is not None:
+                directory = self.output_path / subfolder
             else:
-                filepath = filepath_with_doc_id
+                directory = self.output_path
+
+            # If doc_type is something like 'Kosteninformation 2', then strip the 2 and save it in doc_type_num
+            doc_type = doc["title"].rsplit(" ")
+            if doc_type[-1].isnumeric() is True:
+                doc_type_num = doc_type.pop()
+            else:
+                doc_type_num = ""
+
+            doc_type = " ".join(doc_type)
+            if doc_type == "Abrechnung Ausführung" or doc_type == "Abrechnungsausführung":
+                doc_type = "Abrechnung"
+            titleText = titleText.replace("\n", "").replace("/", "-")
+            subtitleText = subtitleText.replace("\n", "").replace("/", "-")
+
+            filename = self.filename_fmt.format(
+                iso_date=iso_date,
+                time=time,
+                title=titleText,
+                subtitle=subtitleText,
+                doc_num=doc_type_num,
+                id=doc_id,
+            )
+
+            # In case, the filename already ends with the doc id, we remove it to avoid a duplicate id in the name
+            filename_with_doc_id = filename.removesuffix(doc_id).rstrip() + f" ({doc_id})"
+
+            if doc_type in ["Kontoauszug", "Depotauszug"]:
+                filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"
+                filepath_with_doc_id = directory / "Abschlüsse" / f"{filename_with_doc_id}" / f"{doc_type}.pdf"
+            else:
+                filepath = directory / doc_type / f"{filename}.pdf"
+                filepath_with_doc_id = directory / doc_type / f"{filename_with_doc_id}.pdf"
+
+            if self.universal_filepath:
+                filepath = sanitize_filepath(filepath, "_", "universal")
+                filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "universal")
+            else:
+                filepath = sanitize_filepath(filepath, "_", "auto")
+                filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "auto")
+
+            if filepath in self.filepaths:
+                self.log.debug(f"File {filepath} already in queue. Append document id {doc_id}...")
+                if filepath_with_doc_id in self.filepaths:
+                    self.log.debug(f"File {filepath_with_doc_id} already in queue. Skipping...")
+                    return
+                else:
+                    filepath = filepath_with_doc_id
+                    
         doc["local_filepath"] = str(filepath)
         self.filepaths.append(str(filepath))
 
