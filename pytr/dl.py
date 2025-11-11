@@ -118,7 +118,7 @@ class DL:
         decimal_localization=False,
         sort_export=False,
         format_export: Literal["json", "csv"] = "csv",
-        nosort=False,
+        flat=False,
     ):
         """
         tr: api object
@@ -137,7 +137,7 @@ class DL:
         self.decimal_localization = decimal_localization
         self.sort_export = sort_export
         self.format_export: Literal["json", "csv"] = format_export
-        self.nosort = nosort
+        self.flat = flat
 
         self.tl = Timeline(
             self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback
@@ -258,7 +258,7 @@ class DL:
         """
         doc_url = doc["action"]["payload"]
 
-        if self.nosort:
+        if self.flat:
             doc_url_base = doc_url.split("?")[0]
             filename = doc_url_base.split("/")[-1]
             filepath = self.output_path / filename
