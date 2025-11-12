@@ -252,6 +252,12 @@ def get_main_parser():
         help="Do not sort documents into folders and keep their original filenames",
         action="store_true",
     )
+    parser_dl_docs.add_argument(
+        "--details-matching",
+        choices=("sub_id", "event_id"),
+        default="event_id",
+        help="Use subscription ID (sub_id) or event ID (event_id) to match timeline details with timeline events",
+    )
 
     # export_transactions
     info = (
@@ -315,6 +321,12 @@ def get_main_parser():
         help="Output file path (optional)",
         type=argparse.FileType("w", encoding="utf-8"),
         nargs="?",
+    )
+    parser_export_transactions.add_argument(
+        "--details-matching",
+        choices=("sub_id", "event_id"),
+        default="event_id",
+        help="Use subscription ID (sub_id) or event ID (event_id) to match timeline details with timeline events",
     )
 
     # get_price_alarms
@@ -475,6 +487,7 @@ def main():
             sort_export=args.sort,
             format_export=args.export_format,
             flat=args.flat,
+            details_matching=args.details_matching,
         ).do_dl()
     elif args.command == "export_transactions":
         if args.outputfile is None and args.outputdir is None:
@@ -493,6 +506,7 @@ def main():
             not_after,
             args.store_event_database,
             args.dump_raw_data,
+            details_matching=args.details_matching,
         )
         asyncio.run(tl.tl_loop())
         events = tl.events

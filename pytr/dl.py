@@ -119,6 +119,7 @@ class DL:
         sort_export=False,
         format_export: Literal["json", "csv"] = "csv",
         flat=False,
+        details_matching="event_id",
     ):
         """
         tr: api object
@@ -140,7 +141,14 @@ class DL:
         self.flat = flat
 
         self.tl = Timeline(
-            self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback
+            self.tr,
+            self.output_path,
+            not_before,
+            not_after,
+            store_event_database,
+            dump_raw_data,
+            self.dl_callback,
+            details_matching,
         )
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
