@@ -1,0 +1,96 @@
+{
+    "id": "324a06e3-9693-473e-a22c-e9f3a14b8951",
+    "timestamp": "2025-09-17T19:35:32.658+0000",
+    "title": "Maria Mueller",
+    "icon": "logos/contacts-C-Grey/v2",
+    "avatar": {
+      "asset": "logos/contacts-C-Grey/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+      "currency": "EUR",
+      "value": -50.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "324a06e3-9693-473e-a22c-e9f3a14b8951"
+    },
+    "eventType": "junior_p2p_transfer",
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "324a06e3-9693-473e-a22c-e9f3a14b8951",
+      "sections": [
+        {
+          "title": "Du hast 50,00 € gesendet",
+          "data": {
+            "icon": "logos/contacts-C-Grey/v2",
+            "timestamp": "2025-09-17T19:35:32.656185Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Überweisen",
+              "detail": {
+                "text": "Abgeschlossen",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Zahlung",
+              "detail": {
+                "text": "Cash",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Empfänger",
+              "detail": {
+                "text": "Maria Mueller",
+                "trend": "positive",
+                "displayValue": {
+                  "text": "Maria Mueller"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "50,00 €",
+                "trend": "positive",
+                "displayValue": {
+                  "text": "50,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "data": {
+            "text": "Betreff"
+          },
+          "type": "note"
+        }
+      ]
+    }
+}

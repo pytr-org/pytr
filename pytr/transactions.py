@@ -93,8 +93,6 @@ class TransactionExporter:
         )
 
     def _localize_keys(self, txn: _SimpleTransaction) -> dict[str, Any]:
-        if self.lang is None:
-            return
         return {self._translate(value): txn[key] for key, value in CSVCOLUMN_TO_TRANSLATION_KEY.items()}  # type: ignore[literal-required]
 
     def fields(self) -> list[str]:
@@ -131,7 +129,59 @@ class TransactionExporter:
 
         if event.event_type == ConditionalEventType.TRADE_INVOICE:
             assert event.value is not None, event
-            kwargs["type"] = self._translate((PPEventType.BUY if event.value < 0 else PPEventType.SELL).value)
+            ev_value = event.value
+            if event.shares2:
+                kwargs2 = kwargs.copy()
+                kwargs2["type"] = self._translate((PPEventType.BUY if event.value < 0 else PPEventType.SELL).value)
+                kwargs2["note"] = event.isin2
+                if event.isin2 == "ORSTED A/S EM.09/25 DK 10":
+                    kwargs2["isin"] = "DK0064307755"
+                else:
+                    kwargs2["isin"] = event.isin2
+                kwargs2["shares"] = self._decimal_format(event.shares2, False)
+                yield self._localize_keys(kwargs2)
+                kwargs["value"] = self._decimal_format(0)
+                ev_value = 0
+
+            kwargs["type"] = self._translate((PPEventType.BUY if ev_value < 0 else PPEventType.SELL).value)
+        elif event.event_type == ConditionalEventType.SPINOFF:
+            if event.shares2:
+                kwargs2 = kwargs.copy()
+                kwargs2["type"] = self._translate(PPEventType.SELL.value)
+                yield self._localize_keys(kwargs2)
+
+            kwargs["type"] = self._translate(PPEventType.BUY.value)
+            kwargs["note"] = event.isin2
+            if event.isin2 == "BlackRock Funding":
+                kwargs["isin"] = "US09290D1019"
+            elif event.isin2 == "BYD":
+                kwargs["isin"] = "CNE100000296"
+            elif event.isin2 == "Chipotle":
+                kwargs["isin"] = "US1696561059"
+            elif event.isin2 == "Eckert & Ziegler":
+                kwargs["isin"] = "DE0005659700"
+            elif event.isin2 == "Enovix Corp. WTS 01.10.26":
+                kwargs["isin"] = "US2935941318"
+            elif event.isin2 == "Gamestop Corp. WTS 30.10.26":
+                kwargs["isin"] = "US36467W1172"
+            elif event.isin2 == "GLOBALSTAR INC. O.N.":
+                kwargs["isin"] = "US3789735079"
+            elif event.isin2 == "Netflix":
+                kwargs["isin"] = "US64110L1061"
+            elif event.isin2 == "NVIDIA":
+                kwargs["isin"] = "US67066G1040"
+            elif event.isin2 == "Orsted":
+                kwargs["isin"] = "DK0060094928"
+            elif event.isin2 == "ORSTED A/S   -ANR-":
+                kwargs["isin"] = "DK0064307839"
+            elif event.isin2 == "ROCKET LAB CORP. O.N.":
+                kwargs["isin"] = "US7731211089"
+            elif event.isin2 == "TKMS":
+                kwargs["isin"] = "DE000TKMS001"
+            else:
+                kwargs["isin"] = event.isin2
+            if event.shares2:
+                kwargs["shares"] = self._decimal_format(event.shares2, False)
         # Special case for saveback events. Example payload: https://github.com/pytr-org/pytr/issues/116#issuecomment-2377491990
         # With saveback, a small amount already invested into a savings plans is invested again, effectively representing
         # a deposit (you get money from Trade Republic) and then a buy of the related asset.

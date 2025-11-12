@@ -1,0 +1,113 @@
+{
+    "id": "c351c859-99e9-3d10-9049-f3b4daf30799",
+    "timestamp": "2025-10-23T14:46:49.868+0000",
+    "title": "ORSTED A/S EM.09/25 DK 10",
+    "icon": "logos/DK0064307755/v2",
+    "subtitle": "Teilrückzahlung ohne Reduzierung des Poolfaktors",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "c351c859-99e9-3d10-9049-f3b4daf30799"
+    },
+    "eventType": "ssp_corporate_action_invoice_shares",
+    "source": "timelineActivity",
+    "details": {
+      "id": "c351c859-99e9-3d10-9049-f3b4daf30799",
+      "sections": [
+        {
+          "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+          "data": {
+            "icon": "logos/DK0064307755/v2",
+            "timestamp": "2025-10-23T14:46:49.868Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Teilrückzahlung ohne Reduzierung des Poolfaktors",
+                "displayValue": {
+                  "text": "Teilrückzahlung ohne Reduzierung des Poolfaktors"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "ORSTED A/S EM.09/25 DK 10",
+                "displayValue": {
+                  "text": "ORSTED A/S EM.09/25 DK 10"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "17.000000",
+                "displayValue": {
+                  "text": "17.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Orsted",
+                "displayValue": {
+                  "text": "Orsted"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "17.000000",
+                "displayValue": {
+                  "text": "17.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "23.10.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "6ea247d9-0b29-4637-b669-932f22ee745b",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

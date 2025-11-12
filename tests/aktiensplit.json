@@ -1,0 +1,91 @@
+{
+    "id": "e230be28-286a-31b6-879f-5c97f8a9d85a",
+    "timestamp": "2024-06-26T08:06:40.347+0000",
+    "title": "Chipotle Mexican Grill",
+    "icon": "logos/US1696561059/v2",
+    "subtitle": "Aktiensplit",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "e230be28-286a-31b6-879f-5c97f8a9d85a"
+    },
+    "eventType": "ssp_corporate_action_invoice_shares",
+    "source": "timelineActivity",
+    "details": {
+      "id": "e230be28-286a-31b6-879f-5c97f8a9d85a",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/US1696561059/v2",
+            "timestamp": "2024-06-26T08:06:40.347Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Aktiensplit",
+                "displayValue": {
+                  "text": "Aktiensplit"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Chipotle",
+                "displayValue": {
+                  "text": "Chipotle"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "49.000000",
+                "displayValue": {
+                  "text": "49.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "26.06.2024",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "327ea786-399b-406b-988a-0f47e7c68f38",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

@@ -8,8 +8,8 @@ from pytr.event import Event
 def test_event_float_from_detail():
     """Test parsing of values from strings found in real world examples."""
 
-    def test(data: Dict[str, Any], number: float):
-        assert number == Event._parse_float_from_text_value(data.get("detail", {}).get("text", ""))
+    def test(data: Dict[str, Any], number: float, locale: str):
+        assert number == Event._parse_float_from_text_value(data.get("detail", {}).get("text", ""), pref_locale=locale)
 
     test(
         {
@@ -23,6 +23,7 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         9400.0,
+        "de",
     )
 
     test(
@@ -32,6 +33,7 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         1.875,
+        "de",
     )
 
     test(
@@ -46,6 +48,7 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         14.0,
+        "en",
     )
 
     test(
@@ -55,6 +58,7 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         50.0,
+        "de",
     )
 
     test(
@@ -69,6 +73,7 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         5.928385,
+        "de",
     )
 
     test(
@@ -78,6 +83,7 @@ def test_event_float_from_detail():
             "detail": {"text": "€11.14", "type": "text"},
         },
         11.14,
+        "en",
     )
 
     test(
@@ -92,4 +98,5 @@ def test_event_float_from_detail():
             "style": "plain",
         },
         17.77,
+        "de",
     )

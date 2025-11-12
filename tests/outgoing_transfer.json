@@ -1,0 +1,121 @@
+  {
+    "id": "01b0c632-47de-4beb-9b09-6eb8ac42e871",
+    "timestamp": "2024-07-21T09:35:47.370+0000",
+    "title": "Hans Mustermann",
+    "icon": "logos/contacts-C-Lightblue/v2",
+    "avatar": {
+      "asset": "logos/contacts-C-Lightblue/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Gesendet",
+    "amount": {
+      "currency": "EUR",
+      "value": -50.3,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "01b0c632-47de-4beb-9b09-6eb8ac42e871"
+    },
+    "eventType": "OUTGOING_TRANSFER",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "01b0c632-47de-4beb-9b09-6eb8ac42e871",
+      "sections": [
+        {
+          "title": "Du hast -50,30 € an Hans Mustermann gesendet",
+          "data": {
+            "icon": "logos/contacts-C-Lightblue/v2",
+            "timestamp": "2024-07-21T09:35:47.37Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesendet mit",
+              "detail": {
+                "text": "Cash",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Referenz",
+              "detail": {
+                "text": "Sent via Trade Republic",
+                "displayValue": {
+                  "text": "Sent via Trade Republic"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Empfänger",
+          "data": [
+            {
+              "title": "Name",
+              "detail": {
+                "text": "Hans Mustermann",
+                "displayValue": {
+                  "text": "Hans Mustermann"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "IBAN",
+              "detail": {
+                "text": "DE12345",
+                "displayValue": {
+                  "text": "DE12345"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokument",
+          "data": [
+            {
+              "title": "Transaktionsbestätigung",
+              "detail": "22.07.2024",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "325de7ad-a645-442f-bb14-09a4de5f7fbf",
+              "postboxType": "OUTGOING_TRANSFER"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

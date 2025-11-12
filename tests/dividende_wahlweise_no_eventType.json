@@ -1,0 +1,133 @@
+{
+    "id": "ba69948e-fd42-30d0-924f-f94241ee3fbc",
+    "timestamp": "2024-07-19T13:28:04.386+0000",
+    "title": "National Grid",
+    "icon": "logos/GB00BDR05C01/v2",
+    "avatar": {
+      "asset": "logos/GB00BDR05C01/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Dividende Wahlweise",
+    "amount": {
+      "currency": "EUR",
+      "value": 3.37,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "ba69948e-fd42-30d0-924f-f94241ee3fbc"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "ba69948e-fd42-30d0-924f-f94241ee3fbc",
+      "sections": [
+        {
+          "title": "Du hast 3,37 € erhalten",
+          "data": {
+            "icon": "logos/GB00BDR05C01/v2",
+            "timestamp": "2024-07-19T13:28:04.386Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Dividende Wahlweise",
+                "displayValue": {
+                  "text": "Dividende Wahlweise"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "National Grid",
+                "displayValue": {
+                  "text": "National Grid"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bruttoertrag",
+              "detail": {
+                "text": "4,65 €",
+                "displayValue": {
+                  "text": "4,65 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-1,28 €",
+                "displayValue": {
+                  "text": "-1,28 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "3,37 €",
+                "displayValue": {
+                  "text": "3,37 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "19.07.2024",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "60f383fd-f2b0-4f2f-8639-ba41a4559926",
+              "postboxType": "CA_INCOME_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

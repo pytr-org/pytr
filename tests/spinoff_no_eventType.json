@@ -1,0 +1,90 @@
+{
+    "id": "30759295-1d4b-3e2a-b248-8bf6779cf30c",
+    "timestamp": "2025-10-20T11:25:29.214+0000",
+    "title": "ThyssenKrupp",
+    "icon": "logos/DE0007500001/v2",
+    "subtitle": "Spin-off",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "30759295-1d4b-3e2a-b248-8bf6779cf30c"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "30759295-1d4b-3e2a-b248-8bf6779cf30c",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/DE0007500001/v2",
+            "timestamp": "2025-10-20T11:25:29.214Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Spin-off",
+                "displayValue": {
+                  "text": "Spin-off"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "TKMS",
+                "displayValue": {
+                  "text": "TKMS"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "0.309986",
+                "displayValue": {
+                  "text": "0.309986"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "20.10.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "9151d59c-29d8-4537-bb82-9d32824fbb04",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

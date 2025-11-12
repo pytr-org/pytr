@@ -1,0 +1,87 @@
+{
+    "id": "bbb1c70e-d6b8-5c5f-86d4-7bf5b1890535",
+    "timestamp": "2025-08-17T07:23:44.511+0000",
+    "title": "Decathlon",
+    "icon": "logos/merchant-a938525e-f1ec-4094-98f3-ad441e120e58/v2",
+    "avatar": {
+      "asset": "logos/merchant-a938525e-f1ec-4094-98f3-ad441e120e58/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+      "currency": "EUR",
+      "value": 24.99,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "bbb1c70e-d6b8-5c5f-86d4-7bf5b1890535"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "bbb1c70e-d6b8-5c5f-86d4-7bf5b1890535",
+      "sections": [
+        {
+          "title": "Du hast 24,99 € erhalten",
+          "data": {
+            "icon": "logos/merchant-a938525e-f1ec-4094-98f3-ad441e120e58/v2",
+            "timestamp": "2025-08-17T07:23:44.511Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Kartenerstattung",
+              "detail": {
+                "text": "Fertig",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Zahlung",
+              "detail": {
+                "text": "··5891",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Händler",
+              "detail": {
+                "text": "Decathlon",
+                "displayValue": {
+                  "text": "Decathlon"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "+24,99 €",
+                "displayValue": {
+                  "text": "+24,99 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        }
+      ]
+    }
+}

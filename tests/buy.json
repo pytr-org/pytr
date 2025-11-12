@@ -157,35 +157,7 @@
           ],
           "action": null,
           "type": "documents"
-        },
-        {
-          "title": "Hilfe",
-          "data": [
-            {
-              "title": "Report a issue",
-              "detail": {
-                "icon": "logos/timeline_communication/v2",
-                "action": {
-                  "type": "customerSupportChat",
-                  "payload": {
-                    "contextParams": {
-                      "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
-                      "timelineEventId": "",
-                      "primId": ""
-                    },
-                    "contextCategory": "NHC"
-                  }
-                },
-                "style": "highlighted",
-                "type": "listItemAvatarDefault"
-              },
-              "style": "plain"
-            }
-          ],
-          "action": null,
-          "type": "table"
         }
       ]
-    },
-    "has_docs": true
+    }
   }

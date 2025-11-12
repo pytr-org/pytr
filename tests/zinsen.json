@@ -20,6 +20,7 @@
       "type": "timelineDetail",
       "payload": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36"
     },
+    "eventType": "INTEREST_PAYOUT",
     "cashAccountNumber": null,
     "hidden": false,
     "deleted": false,

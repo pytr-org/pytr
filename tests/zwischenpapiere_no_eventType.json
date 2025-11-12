@@ -1,37 +1,37 @@
-  {
-    "id": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36",
-    "timestamp": "2025-07-01T06:46:37.846+0000",
-    "title": "Zinsen",
-    "icon": "logos/timeline_interest_new/v2",
+{
+    "id": "f2b4bb94-b1dd-37ef-880e-1f3714b3b497",
+    "timestamp": "2025-10-21T07:39:39.830+0000",
+    "title": "ORSTED A/S   -ANR-",
+    "icon": "logos/DK0064307839/v2",
     "avatar": {
-      "asset": "logos/timeline_interest_new/v2",
+      "asset": "logos/DK0064307839/v2",
       "badge": null
     },
     "badge": null,
-    "subtitle": "2 % p.a.",
+    "subtitle": "Aufruf von Zwischenpapieren",
     "amount": {
       "currency": "EUR",
-      "value": 4.87,
+      "value": -151.59,
       "fractionDigits": 2
     },
     "subAmount": null,
     "status": "EXECUTED",
     "action": {
       "type": "timelineDetail",
-      "payload": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36"
+      "payload": "f2b4bb94-b1dd-37ef-880e-1f3714b3b497"
     },
-    "cashAccountNumber": null,
+    "cashAccountNumber": "",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
     "details": {
-      "id": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36",
+      "id": "f2b4bb94-b1dd-37ef-880e-1f3714b3b497",
       "sections": [
         {
-          "title": "Du hast 4,87 € erhalten",
+          "title": "Du hast -151,59 € bezahlt",
           "data": {
-            "icon": "logos/timeline_interest_new/v2",
-            "timestamp": "2025-07-01T06:46:42.342175Z",
+            "icon": "logos/DK0064307839/v2",
+            "timestamp": "2025-10-21T07:39:39.83Z",
             "status": "executed"
           },
           "type": "header"
@@ -49,33 +49,55 @@
               "style": "plain"
             },
             {
-              "title": "Durchschnittssaldo",
+              "title": "Event",
               "detail": {
-                "text": "3.900,38 €",
+                "text": "Aufruf von Zwischenpapieren",
                 "displayValue": {
-                  "text": "3.900,38 €"
+                  "text": "Aufruf von Zwischenpapieren"
                 },
                 "type": "text"
               },
               "style": "plain"
             },
             {
-              "title": "Jährliche Rate",
+              "title": "Wertpapier",
               "detail": {
-                "text": "2.00 %",
+                "text": "ORSTED A/S   -ANR-",
                 "displayValue": {
-                  "text": "2.00 %"
+                  "text": "ORSTED A/S   -ANR-"
                 },
                 "type": "text"
               },
               "style": "plain"
             },
             {
-              "title": "Asset",
+              "title": "Aktien entfernt",
               "detail": {
-                "text": "Cash",
+                "text": "119.000000",
                 "displayValue": {
-                  "text": "Cash"
+                  "text": "119.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "ORSTED A/S EM.09/25 DK 10",
+                "displayValue": {
+                  "text": "ORSTED A/S EM.09/25 DK 10"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "17.000000",
+                "displayValue": {
+                  "text": "17.000000"
                 },
                 "type": "text"
               },
@@ -85,61 +107,25 @@
           "type": "table"
         },
         {
-          "title": "Status",
-          "steps": [
-            {
-              "leading": {
-                "avatar": {
-                  "status": "completed",
-                  "type": "bullet"
-                },
-                "connection": {
-                  "order": "first"
-                }
-              },
-              "content": {
-                "title": "Zinsberechnung",
-                "timestamp": "2025-07-01T06:46:42.342175Z"
-              }
-            },
-            {
-              "leading": {
-                "avatar": {
-                  "status": "completed",
-                  "type": "bullet"
-                },
-                "connection": {
-                  "order": "last"
-                }
-              },
-              "content": {
-                "title": "Zinszahlung",
-                "timestamp": "2025-07-01T06:46:42.342175Z"
-              }
-            }
-          ],
-          "type": "steps"
-        },
-        {
-          "title": "Transaktion",
+          "title": "Geschäft",
           "data": [
             {
-              "title": "Angesammelt",
+              "title": "Bezugspreis",
               "detail": {
-                "text": "6,74 €",
+                "text": "-151,59 €",
                 "displayValue": {
-                  "text": "6,74 €"
+                  "text": "-151,59 €"
                 },
                 "type": "text"
               },
               "style": "plain"
             },
             {
-              "title": "Steuern",
+              "title": "Steuer",
               "detail": {
-                "text": "1,87 €",
+                "text": "0,00 €",
                 "displayValue": {
-                  "text": "1,87 €"
+                  "text": "0,00 €"
                 },
                 "type": "text"
               },
@@ -148,9 +134,9 @@
             {
               "title": "Gesamt",
               "detail": {
-                "text": "4,87 €",
+                "text": "-151,59 €",
                 "displayValue": {
-                  "text": "4,87 €"
+                  "text": "-151,59 €"
                 },
                 "type": "text"
               },
@@ -160,16 +146,17 @@
           "type": "table"
         },
         {
-          "title": "Dokument",
+          "title": "Dokumente",
           "data": [
             {
-              "title": "Abrechnung",
+              "title": "Dokumente",
+              "detail": "21.10.2025",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "3a982728-a476-44cd-bce9-aaa520b55f6f",
-              "postboxType": ""
+              "id": "bab90597-6a6a-4925-ac20-51d7dd4eea04",
+              "postboxType": "CA_INCOME_SECURITIES_INVOICE"
             }
           ],
           "type": "documents"

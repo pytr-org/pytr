@@ -1,0 +1,134 @@
+{
+    "id": "574bc726-c7c2-3439-9708-1801f30259c0",
+    "timestamp": "2025-01-28T14:54:28.155+0000",
+    "title": "MSCI China USD (Acc)",
+    "icon": "logos/IE00BJ5JPG56/v2",
+    "avatar": {
+      "asset": "logos/IE00BJ5JPG56/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Vorabpauschale",
+    "amount": {
+      "currency": "EUR",
+      "value": -0.19,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "574bc726-c7c2-3439-9708-1801f30259c0"
+    },
+    "eventType": "ssp_corporate_action_invoice_cash",
+    "cashAccountNumber": "",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "574bc726-c7c2-3439-9708-1801f30259c0",
+      "sections": [
+        {
+          "title": "Du hast -0,19 € bezahlt",
+          "data": {
+            "icon": "logos/IE00BJ5JPG56/v2",
+            "timestamp": "2025-01-28T14:54:28.155Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Vorabpauschale",
+                "displayValue": {
+                  "text": "Vorabpauschale"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "MSCI China USD (Acc)",
+                "displayValue": {
+                  "text": "MSCI China USD (Acc)"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bruttoertrag",
+              "detail": {
+                "text": "0,00 €",
+                "displayValue": {
+                  "text": "0,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-0,19 €",
+                "displayValue": {
+                  "text": "-0,19 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "-0,19 €",
+                "displayValue": {
+                  "text": "-0,19 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Vorabpauschale",
+              "detail": "28.02.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "4e227b8e-63c5-49a1-8e0b-adf8aaa6b81a",
+              "postboxType": "CA_VOPA_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

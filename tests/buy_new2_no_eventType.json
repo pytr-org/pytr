@@ -1,0 +1,200 @@
+{
+    "id": "471bf3aa-541e-42b5-a600-c5180b139806",
+    "timestamp": "2025-08-01T08:28:01.425+0000",
+    "title": "Rocket Lab Corp. Registered Shares DL-,0001",
+    "icon": "logos/US7731211089/v2",
+    "avatar": {
+      "asset": "logos/US7731211089/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Limit-Buy-Order",
+    "amount": {
+      "currency": "EUR",
+      "value": -75.6,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "471bf3aa-541e-42b5-a600-c5180b139806"
+    },
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "471bf3aa-541e-42b5-a600-c5180b139806",
+      "sections": [
+        {
+          "title": "Du hast 75,60 € investiert",
+          "data": {
+            "icon": "logos/US7731211089/v2",
+            "timestamp": "2025-08-01T08:28:01.425Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "US7731211089",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Portfolio",
+              "detail": {
+                "text": "Brokerage",
+                "displayValue": {
+                  "text": "Brokerage"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Limit Order",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Rocket Lab Corp. Registered Shares DL-,0001",
+                "displayValue": {
+                  "text": "Rocket Lab Corp. Registered Shares DL-,0001"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "2 ×  37,30 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "2",
+                              "displayValue": {
+                                "text": "2"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "37,30 €",
+                              "displayValue": {
+                                "text": "37,30 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "74,60 €",
+                              "displayValue": {
+                                "text": "74,60 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "37,30 €",
+                  "prefix": "2 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "75,60 €",
+                "displayValue": {
+                  "text": "75,60 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "2b2f5b5e-d6c9-4f87-ab7b-fafe426b2c84",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            },
+            {
+              "title": "Auftragsbestätigung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "77927fdb-67f9-40fa-908b-32dea64fcf2f",
+              "postboxType": "ORDER_CONFIRMATION"
+            },
+            {
+              "title": "Abrechnung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "42bd93b1-8f48-489f-b1e3-6eb955191d62",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

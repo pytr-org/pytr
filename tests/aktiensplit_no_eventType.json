@@ -1,0 +1,90 @@
+{
+    "id": "f122c692-98cf-3acc-b86b-9eff6b9d9980",
+    "timestamp": "2025-11-17T06:07:56.460+0000",
+    "title": "Netflix",
+    "icon": "logos/US64110L1061/v2",
+    "subtitle": "Aktiensplit",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "f122c692-98cf-3acc-b86b-9eff6b9d9980"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "f122c692-98cf-3acc-b86b-9eff6b9d9980",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/US64110L1061/v2",
+            "timestamp": "2025-11-17T06:07:56.46Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Aktiensplit",
+                "displayValue": {
+                  "text": "Aktiensplit"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Netflix",
+                "displayValue": {
+                  "text": "Netflix"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "2.743902",
+                "displayValue": {
+                  "text": "2.743902"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "17.11.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "69e378d1-bade-4c76-9886-74cb4d669d00",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "id": "e8aa0763-c7ac-3cbe-b72c-762fa4489450",
+    "timestamp": "2025-08-15T14:53:09.730+0000",
+    "title": "BYD",
+    "icon": "logos/CNE100000296/v2",
+    "avatar": {
+      "asset": "logos/CNE100000296/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Bonusaktien",
+    "amount": {
+      "currency": "EUR",
+      "value": -8.67,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "e8aa0763-c7ac-3cbe-b72c-762fa4489450"
+    },
+    "eventType": "ssp_corporate_action_invoice_cash",
+    "cashAccountNumber": "0674716511",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "e8aa0763-c7ac-3cbe-b72c-762fa4489450",
+      "sections": [
+        {
+          "title": "Du hast -8,67 € bezahlt",
+          "data": {
+            "icon": "logos/CNE100000296/v2",
+            "timestamp": "2025-08-15T14:53:09.73Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Bonusaktien",
+                "displayValue": {
+                  "text": "Bonusaktien"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "BYD",
+                "displayValue": {
+                  "text": "BYD"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bruttoertrag",
+              "detail": {
+                "text": "0,00 €",
+                "displayValue": {
+                  "text": "0,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-8,67 €",
+                "displayValue": {
+                  "text": "-8,67 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "-8,67 €",
+                "displayValue": {
+                  "text": "-8,67 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "15.08.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "28f2dde3-c3f0-4c34-8c5d-f7ab968d3983",
+              "postboxType": "CA_INCOME_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

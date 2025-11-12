@@ -1,0 +1,133 @@
+{
+    "id": "07005e09-2961-36af-a804-b56697756c08",
+    "timestamp": "2025-09-22T11:20:31.704+0000",
+    "title": "Glencore",
+    "icon": "logos/JE00B4T3BW64/v2",
+    "avatar": {
+      "asset": "logos/JE00B4T3BW64/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Aktienprämiendividende",
+    "amount": {
+      "currency": "EUR",
+      "value": 3.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "07005e09-2961-36af-a804-b56697756c08"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "07005e09-2961-36af-a804-b56697756c08",
+      "sections": [
+        {
+          "title": "Du hast 3,00 € erhalten",
+          "data": {
+            "icon": "logos/JE00B4T3BW64/v2",
+            "timestamp": "2025-09-22T11:20:31.704Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Aktienprämiendividende",
+                "displayValue": {
+                  "text": "Aktienprämiendividende"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Glencore",
+                "displayValue": {
+                  "text": "Glencore"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bruttoertrag",
+              "detail": {
+                "text": "4,15 €",
+                "displayValue": {
+                  "text": "4,15 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-1,15 €",
+                "displayValue": {
+                  "text": "-1,15 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "3,00 €",
+                "displayValue": {
+                  "text": "3,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "22.09.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "af94328e-5e5f-4409-8aa3-da2834f5d486",
+              "postboxType": "CA_INCOME_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}
