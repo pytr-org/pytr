@@ -250,7 +250,7 @@ def get_main_parser():
         "--flat",
         default=False,
         help="Do not sort documents into folders and keep their original filenames",
-        action=argparse.BooleanOptionalAction,
+        action="store_true",
     )
     parser_dl_docs.add_argument(
         "--details-matching",
