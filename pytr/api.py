@@ -66,6 +66,7 @@ class TradeRepublicApi:
     _subscription_id_counter = 1
     _previous_responses: Dict[str, str] = {}
     subscriptions: Dict[str, Dict[str, Any]] = {}
+    secAccNo = None
 
     _credentials_file = CREDENTIALS_FILE
     _cookies_file = COOKIES_FILE
@@ -409,7 +410,20 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "portfolioStatus"})
 
     async def compact_portfolio(self):
-        return await self.subscribe({"type": "compactPortfolio"})
+        # Ensure secAccNo is available
+        if self.secAccNo is None:
+            self.settings()
+        if self.secAccNo is None:
+            raise ValueError("secAccNo not available. Unable to retrieve securities account number.")
+        return await self.subscribe({"type": "compactPortfolio", "secAccNo": self.secAccNo})
+
+    async def compact_portfolio_by_type(self):
+        # Ensure secAccNo is available
+        if self.secAccNo is None:
+            self.settings()
+        if self.secAccNo is None:
+            raise ValueError("secAccNo not available. Unable to retrieve securities account number.")
+        return await self.subscribe({"type": "compactPortfolioByType", "secAccNo": self.secAccNo})
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})
@@ -749,7 +763,28 @@ class TradeRepublicApi:
         else:
             r = self._sign_request("/api/v1/auth/account", method="GET")
         r.raise_for_status()
-        return r.json()
+        settings_data = r.json()
+        # Extract secAccNo from settings if available
+        if self.secAccNo is None:
+            # Try various possible locations for secAccNo
+            if "securitiesAccountNumber" in settings_data:
+                self.secAccNo = settings_data["securitiesAccountNumber"]
+            elif "securitiesAccount" in settings_data:
+                if isinstance(settings_data["securitiesAccount"], dict) and "id" in settings_data["securitiesAccount"]:
+                    self.secAccNo = settings_data["securitiesAccount"]["id"]
+                elif isinstance(settings_data["securitiesAccount"], list) and len(settings_data["securitiesAccount"]) > 0:
+                    # If it's a list, get the first account's id
+                    if "id" in settings_data["securitiesAccount"][0]:
+                        self.secAccNo = settings_data["securitiesAccount"][0]["id"]
+            if self.secAccNo is None and "securitiesAccountId" in settings_data:
+                self.secAccNo = settings_data["securitiesAccountId"]
+            if self.secAccNo is None and "accounts" in settings_data:
+                # Try looking in accounts array
+                for account in settings_data["accounts"]:
+                    if account.get("type") == "securities" and "id" in account:
+                        self.secAccNo = account["id"]
+                        break
+        return settings_data
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
         url = (
