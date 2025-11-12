@@ -307,7 +307,7 @@ class Event:
             value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
 
             if event_type is PPEventType.INTEREST:
-                taxes = cls._parse_taxes(event_type, event_dict)
+                taxes = cls._parse_taxes(event_dict)
             elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
                 note = cls._parse_card_note(event_dict)
 
@@ -483,7 +483,7 @@ class Event:
         return shares, value, fees, taxes, note
 
     @classmethod
-    def _parse_taxes(cls, event_type: Optional[EventType], event_dict: Dict[Any, Any]) -> Optional[float]:
+    def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
         """Parses the levied taxes
 
         Args:
@@ -497,7 +497,7 @@ class Event:
         subtitle = event_dict["subtitle"]
         eventdesc = f"{title} {subtitle}"
         dump_dict = {"eventdesc": eventdesc, "id": event_dict["id"]}
-        pref_locale = "en" if event_type == PPEventType.INTEREST else "de"
+        pref_locale = "en" if event_dict.get("eventType", None) in [None, "INTEREST_PAYOUT"] else "de"
 
         sections = event_dict.get("details", {}).get("sections", [{}])
         transaction_dict = next(filter(lambda x: x["title"] in ["Transaktion", "Geschäft"], sections), None)
@@ -536,8 +536,18 @@ class Event:
         Returns:
             Optional[str]: note
         """
-        if event_dict.get("eventType", "").startswith("card_"):
-            return event_dict.get("eventType", "")
+        eventTypeStr = event_dict.get("eventType", "")
+        if eventTypeStr.startswith("card_"):
+            return eventTypeStr
+
+        sections = event_dict.get("details", {}).get("sections", [{}])
+        uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
+        # Iterate over the top-level data list
+        if uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                if item.get("title") == "Kartenzahlung":
+                    return "card_successful_transaction"
+
         return None
 
     @staticmethod

@@ -1,0 +1,103 @@
+{
+    "id": "39a1ecdf-0c09-5e5f-8e31-ba666f1eefe6",
+    "timestamp": "2025-10-21T17:30:01.281+0000",
+    "title": "Coop Pronto",
+    "icon": "logos/merchant-fallback-groceries/v2",
+    "avatar": {
+        "asset": "logos/merchant-fallback-groceries/v2",
+        "badge": null
+    },
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+        "currency": "EUR",
+        "value": -12.16,
+        "fractionDigits": 2
+    },
+    "subAmount": {
+        "currency": "CHF",
+        "value": -11.2,
+        "fractionDigits": 2
+    },
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "39a1ecdf-0c09-5e5f-8e31-ba666f1eefe6"
+    },
+    "eventType": "card_successful_transaction",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "39a1ecdf-0c09-5e5f-8e31-ba666f1eefe6",
+        "sections": [
+        {
+            "title": "Du hast 12,16 € ausgegeben",
+            "data": {
+            "icon": "logos/merchant-fallback-groceries/v2",
+            "timestamp": "2025-10-21T17:30:01.281Z",
+            "status": "executed"
+            },
+            "type": "header"
+        },
+        {
+            "title": "Übersicht",
+            "data": [
+            {
+                "title": "Kartenzahlung",
+                "detail": {
+                "text": "Fertig",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+                },
+                "style": "plain"
+            },
+            {
+                "title": "Zahlung",
+                "detail": {
+                "text": "··5891",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+                },
+                "style": "plain"
+            },
+            {
+                "title": "Händler",
+                "detail": {
+                "text": "Coop Pronto",
+                "displayValue": {
+                    "text": "Coop Pronto"
+                },
+                "type": "text"
+                },
+                "style": "plain"
+            },
+            {
+                "title": "Betrag",
+                "detail": {
+                "text": "11,20 CHF",
+                "displayValue": {
+                    "text": "11,20 CHF"
+                },
+                "type": "text"
+                },
+                "style": "plain"
+            },
+            {
+                "title": "Gesamt",
+                "detail": {
+                "text": "12,16 €",
+                "displayValue": {
+                    "text": "12,16 €"
+                },
+                "type": "text"
+                },
+                "style": "plain"
+            }
+            ],
+            "type": "table"
+        }
+        ]
+    }
+}

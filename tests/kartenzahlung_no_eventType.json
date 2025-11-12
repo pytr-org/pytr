@@ -40,43 +40,13 @@
                 "title": "\u00dcbersicht",
                 "data": [
                     {
-                        "title": "Kartenzahlung",
-                        "detail": {
-                            "text": "Ausstehend",
-                            "action": {
-                                "payload": {
-                                    "id": "809a35a2-99d6-5fcd-ba87-fd618f90710a",
-                                    "sections": [
-                                        {
-                                            "title": "Ausstehende Transaktionen",
-                                            "type": "title"
-                                        },
-                                        {
-                                            "text": "Diese Transaktion kann von uns nicht storniert werden und wird automatisch auf 13 November r\u00fcckg\u00e4ngig gemacht, wenn sie vom H\u00e4ndler nicht in Anspruch genommen wird.",
-                                            "type": "text"
-                                        },
-                                        {
-                                            "data": {
-                                                "title": "Weitere Informationen",
-                                                "action": {
-                                                    "payload": {
-                                                        "link": "traderepublic://help-center/269df522-bbbc-43bd-914a-ac4def329069"
-                                                    },
-                                                    "type": "deeplink"
-                                                }
-                                            },
-                                            "type": "actionButtons"
-                                        }
-                                    ]
-                                },
-                                "type": "infoPage"
-                            },
-                            "displayValue": {
-                                "text": "Ausstehend"
-                            },
-                            "type": "text"
-                        },
-                        "style": "plain"
+                    "title": "Kartenzahlung",
+                    "detail": {
+                        "text": "Fertig",
+                        "functionalStyle": "EXECUTED",
+                        "type": "status"
+                    },
+                    "style": "plain"
                     },
                     {
                         "title": "Zahlung",

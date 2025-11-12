@@ -201,6 +201,22 @@ def test_kartenzahlung_no_eventType():
     assert event.event_type == PPEventType.REMOVAL
     assert event.title == "Baecker"
     assert event.value == -2
+    assert event.note == "card_successful_transaction"
+
+
+def test_kartenzahlung_with_eventType():
+    # Load the sample JSON file
+    with open("tests/kartenzahlung_w_eventType.json", "r", encoding="utf-8") as file:
+        sample_data = json.load(file)
+
+    # Parse the JSON data using the from_dict function
+    event = Event.from_dict(sample_data)
+
+    # Assert the expected values
+    assert event.event_type == PPEventType.REMOVAL
+    assert event.title == "Coop Pronto"
+    assert event.value == -12.16
+    assert event.note == "card_successful_transaction"
 
 
 def test_ueberweisung_no_eventType():
