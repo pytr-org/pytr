@@ -1,0 +1,138 @@
+{
+    "id": "5b516589-a0b6-46fb-80e1-2506bef82542",
+    "timestamp": "2024-10-02T15:05:40.970+0000",
+    "title": "SuperDividend USD (Dist)",
+    "icon": "logos/IE00077FRP95/v2",
+    "avatar": {
+      "asset": "logos/IE00077FRP95/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Round up",
+    "amount": {
+      "currency": "EUR",
+      "value": -3.38,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "5b516589-a0b6-46fb-80e1-2506bef82542"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "5b516589-a0b6-46fb-80e1-2506bef82542",
+      "sections": [
+        {
+          "title": "Du hast 3,38 € investiert",
+          "data": {
+            "icon": "logos/IE00077FRP95/v2",
+            "timestamp": "2024-10-02T15:05:40.970073Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "IE00077FRP95",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Round up",
+              "detail": {
+                "text": "Abgeschlossen",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "SuperDividend USD (Dist)",
+                "displayValue": {
+                  "text": "SuperDividend USD (Dist)"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "0.383219 x  8,82 €",
+                "displayValue": {
+                  "text": "8,82 €",
+                  "prefix": "0.383219 x "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "Kostenlos",
+                "displayValue": {
+                  "text": "Kostenlos"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "3,38 €",
+                "displayValue": {
+                  "text": "3,38 €"
+                },
+                "type": "text"
+              },
+              "style": "highlighted"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung Ausführung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "42368c8d-a698-4682-80dd-8ca0f0b25fea",
+              "postboxType": "SAVINGS_PLAN_EXECUTED_V2"
+            },
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "044294ae-0534-45e3-a0ff-14d212e1c48f",
+              "postboxType": "COSTS_INFO_SAVINGS_PLAN_V2"
+            },
+            {
+              "title": "Deaktivierung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "f21430be-32c6-4fa6-9512-7210d07f41fe",
+              "postboxType": "BENEFIT_DEACTIVATED"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

@@ -1,0 +1,180 @@
+{
+    "id": "053da9f8-ab00-4839-b95f-d2ed83fc5dc6",
+    "timestamp": "2025-09-18T07:14:56.634+0000",
+    "title": "Private Equity",
+    "icon": "logos/LU3170240538/v2",
+    "avatar": {
+      "asset": "logos/LU3170240538/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Kauforder",
+    "amount": {
+      "currency": "EUR",
+      "value": -101.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "053da9f8-ab00-4839-b95f-d2ed83fc5dc6"
+    },
+    "eventType": "private_markets_trade_executed",
+    "cashAccountNumber": "12345678",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "053da9f8-ab00-4839-b95f-d2ed83fc5dc6",
+      "sections": [
+        {
+          "title": "Du hast 101,00 € investiert",
+          "data": {
+            "icon": "logos/LU3170240538/v2",
+            "timestamp": "2025-09-18T07:14:56.623029Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "LU3170240538",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Kauf",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Private Equity",
+                "displayValue": {
+                  "text": "Private Equity"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "1 ×  100,00 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "1",
+                              "displayValue": {
+                                "text": "1"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "100,00 €",
+                              "displayValue": {
+                                "text": "100,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "100,00 €",
+                              "displayValue": {
+                                "text": "100,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "100,00 €",
+                  "prefix": "1 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "101,00 €",
+                "displayValue": {
+                  "text": "101,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "a7730267-753e-46a0-8213-54de9cf184e0",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            },
+            {
+              "title": "Abrechnung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "d0e63e45-6c50-4ce2-adce-83c32841a227",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

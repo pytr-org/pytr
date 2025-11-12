@@ -90,33 +90,7 @@
             }
           ],
           "type": "documents"
-        },
-        {
-          "title": "Hilfe",
-          "data": [
-            {
-              "title": "Ein Problem melden",
-              "style": "plain",
-              "detail": {
-                "icon": "logos/timeline_communication/v2",
-                "style": "highlighted",
-                "action": {
-                  "payload": {
-                    "contextParams": {
-                      "timelineEventId": "d8a5aa3d-12a4-465a-90ad-3fca36eff19a",
-                      "chat_flow_key": "NHC_0024_deposit_report_an_issue"
-                    },
-                    "contextCategory": "NHC"
-                  },
-                  "type": "customerSupportChat"
-                },
-                "type": "listItemAvatarDefault"
-              }
-            }
-          ],
-          "type": "table"
         }
       ]
-    },
-    "has_docs": true
-  }
+    }
+}

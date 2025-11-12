@@ -1,0 +1,144 @@
+{
+    "id": "da13151b-c8c3-3c4e-a613-24b28d5b16ac",
+    "timestamp": "2025-03-20T15:04:31.460+0000",
+    "title": "Medical Properties Trust",
+    "icon": "logos/US58463J3041/v2",
+    "avatar": {
+      "asset": "logos/US58463J3041/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Bardividende korrigiert",
+    "amount": {
+      "currency": "EUR",
+      "value": 4.01,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "da13151b-c8c3-3c4e-a613-24b28d5b16ac"
+    },
+    "cashAccountNumber": "1234567",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "da13151b-c8c3-3c4e-a613-24b28d5b16ac",
+      "sections": [
+        {
+          "title": "Du hast 4,01 € erhalten",
+          "data": {
+            "icon": "logos/US58463J3041/v2",
+            "timestamp": "2025-03-20T15:04:31.46Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Bardividende korrigiert",
+                "displayValue": {
+                  "text": "Bardividende korrigiert"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Medical Properties Trust",
+                "displayValue": {
+                  "text": "Medical Properties Trust"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Aktien",
+              "detail": {
+                "text": "40.000000",
+                "displayValue": {
+                  "text": "40.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Dividende pro Aktie",
+              "detail": {
+                "text": "0,15 $",
+                "displayValue": {
+                  "text": "0,15 $"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-1,53 €",
+                "displayValue": {
+                  "text": "-1,53 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "4,01 €",
+                "displayValue": {
+                  "text": "4,01 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "20.03.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "4b1c122a-a6e2-48aa-a9d2-900f47668de8",
+              "postboxType": "CA_INCOME_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

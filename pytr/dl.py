@@ -79,23 +79,32 @@ event_subfolder_mapping = {
 }
 
 title_subfolder_mapping = {
+    "Basisinformationen": "Misc",
+    "Jährlicher Steuerreport": "Misc",
+    "Rechtliche Dokumente": "Misc",
+    "Ex-Post Kosteninformation": "Trades",
     "Steuerkorrektur": "Steuerkorrekturen",
     "Zinsen": "Zinsen",
 }
 
 subtitle_subfolder_mapping = {
+    "Erteilt": "Misc",
+    "Jährliche Hauptversammlung": "Misc",
     "Bardividende": "Dividende",
     "Cash oder Aktie": "Dividende",
     "Dividende Wahlweise": "Dividende",
+    "Saveback": "Saveback",
     "Kauforder": "Trades",
     "Limit-Buy-Order": "Trades",
     "Limit-Sell-Order": "Trades",
+    "Limit-Sell-Order abgelaufen": "Trades",
     "Limit-Sell-Order erstellt": "Trades",
     "Limit-Sell-Order storniert": "Trades",
     "Limit Verkauf-Order neu abgerechnet": "Trades",
     "Sparplan ausgeführt": "Trades",
     "Stop-Sell-Order": "Trades",
     "Verkaufsorder": "Trades",
+    "Verkaufsorder abgelehnt": "Trades",
 }
 
 

@@ -1,0 +1,112 @@
+{
+    "id": "1957e12e-a7f6-396c-97e4-5237b113c45a",
+    "timestamp": "2025-05-29T13:04:58.676+0000",
+    "title": "Rocket Lab USA",
+    "icon": "logos/US7731221062/v2",
+    "subtitle": "Zusammenschluss",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "1957e12e-a7f6-396c-97e4-5237b113c45a"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "1957e12e-a7f6-396c-97e4-5237b113c45a",
+      "sections": [
+        {
+          "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+          "data": {
+            "icon": "logos/US7731221062/v2",
+            "timestamp": "2025-05-29T13:04:58.676Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Zusammenschluss",
+                "displayValue": {
+                  "text": "Zusammenschluss"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Rocket Lab USA",
+                "displayValue": {
+                  "text": "Rocket Lab USA"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "5.943100",
+                "displayValue": {
+                  "text": "5.943100"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "ROCKET LAB CORP. O.N.",
+                "displayValue": {
+                  "text": "ROCKET LAB CORP. O.N."
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "5.943100",
+                "displayValue": {
+                  "text": "5.943100"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "29.05.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "86a172b6-39e7-4d8f-9637-24b4feed62c6",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

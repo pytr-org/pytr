@@ -1,0 +1,113 @@
+{
+    "id": "f07b77c6-eed4-334b-8236-c9fdf49cf5d5",
+    "timestamp": "2025-02-11T08:13:48.877+0000",
+    "title": "Globalstar",
+    "icon": "logos/US3789734080/v2",
+    "subtitle": "Reverse Split",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "f07b77c6-eed4-334b-8236-c9fdf49cf5d5"
+    },
+    "eventType": "ssp_corporate_action_invoice_shares",
+    "source": "timelineActivity",
+    "details": {
+      "id": "f07b77c6-eed4-334b-8236-c9fdf49cf5d5",
+      "sections": [
+        {
+          "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+          "data": {
+            "icon": "logos/US3789734080/v2",
+            "timestamp": "2025-02-11T08:13:48.877Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Reverse Split",
+                "displayValue": {
+                  "text": "Reverse Split"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Globalstar",
+                "displayValue": {
+                  "text": "Globalstar"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "110.403067",
+                "displayValue": {
+                  "text": "110.403067"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "GLOBALSTAR INC. O.N.",
+                "displayValue": {
+                  "text": "GLOBALSTAR INC. O.N."
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "7.360204",
+                "displayValue": {
+                  "text": "7.360204"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "11.02.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "4c005c61-08ae-4205-9b77-02b886c0a5e5",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

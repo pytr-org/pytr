@@ -1,0 +1,191 @@
+{
+    "id": "63c6df01-c99b-4bda-aec0-c8f996fbaae1",
+    "timestamp": "2025-10-10T19:29:43.928+0000",
+    "title": "NVIDIA",
+    "icon": "logos/US67066G1040/v2",
+    "avatar": {
+      "asset": "logos/US67066G1040/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Kauforder",
+    "amount": {
+      "currency": "EUR",
+      "value": -111.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "63c6df01-c99b-4bda-aec0-c8f996fbaae1"
+    },
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "63c6df01-c99b-4bda-aec0-c8f996fbaae1",
+      "sections": [
+        {
+          "title": "Du hast 111,00 € investiert",
+          "data": {
+            "icon": "logos/US67066G1040/v2",
+            "timestamp": "2025-10-10T19:29:43.928252Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "US67066G1040",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Portfolio",
+              "detail": {
+                "text": "Brokerage",
+                "displayValue": {
+                  "text": "Brokerage"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Kauf",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "NVIDIA",
+                "displayValue": {
+                  "text": "NVIDIA"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "0,685102 ×  160,56 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "0,685102",
+                              "displayValue": {
+                                "text": "0,685102"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "160,56 €",
+                              "displayValue": {
+                                "text": "160,56 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "110,00 €",
+                              "displayValue": {
+                                "text": "110,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "160,56 €",
+                  "prefix": "0,685102 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "111,00 €",
+                "displayValue": {
+                  "text": "111,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "085e4556-22b9-4af6-977b-f34fb90d1dee",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "2ea881b8-e8e7-4d4d-8df9-07d2d9cab6a8",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

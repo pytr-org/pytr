@@ -41,31 +41,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "common_empty_string",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "timelineEventId": "bbf2affb-30ab-45bd-a7d6-d3047360e905",
-                                        "chat_flow_key": "NHC_0029_wealth_general_question_corporate_action"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "highlighted"
-                    }
-                ],
-                "type": "table"
             }
         ]
     }

@@ -1,0 +1,90 @@
+{
+    "id": "c4be0e34-b591-32eb-9d1d-ad9b5c5da1e4",
+    "timestamp": "2025-07-22T14:31:49.846+0000",
+    "title": "Enovix",
+    "icon": "logos/US2935941078/v2",
+    "subtitle": "Aktiendividende",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "c4be0e34-b591-32eb-9d1d-ad9b5c5da1e4"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "c4be0e34-b591-32eb-9d1d-ad9b5c5da1e4",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/US2935941078/v2",
+            "timestamp": "2025-07-22T14:31:49.846Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Aktiendividende",
+                "displayValue": {
+                  "text": "Aktiendividende"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Enovix Corp. WTS 01.10.26",
+                "displayValue": {
+                  "text": "Enovix Corp. WTS 01.10.26"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "0.494370",
+                "displayValue": {
+                  "text": "0.494370"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "22.07.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "84c35bc3-e130-44ca-aa87-3a66b055b185",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

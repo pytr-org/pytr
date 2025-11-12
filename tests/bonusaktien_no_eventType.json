@@ -1,0 +1,100 @@
+{
+    "id": "9af345e0-248d-36ed-bc76-6fb96033ba1d",
+    "timestamp": "2025-08-15T08:10:12.583+0000",
+    "title": "Eckert & Ziegler",
+    "icon": "logos/DE0005659700/v2",
+    "subtitle": "Bonusaktien",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "9af345e0-248d-36ed-bc76-6fb96033ba1d"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "9af345e0-248d-36ed-bc76-6fb96033ba1d",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/DE0005659700/v2",
+            "timestamp": "2025-08-15T08:10:12.583Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Bonusaktien",
+                "displayValue": {
+                  "text": "Bonusaktien"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Eckert & Ziegler",
+                "displayValue": {
+                  "text": "Eckert & Ziegler"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "5.706536",
+                "displayValue": {
+                  "text": "5.706536"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "18.08.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "ac5a0f89-1766-4c95-b056-498be4ed550b",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            },
+            {
+              "title": "Dokumente",
+              "detail": "15.08.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "dc687f7d-5fa0-48b4-ba37-35b7d06df261",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

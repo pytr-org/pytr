@@ -1,0 +1,111 @@
+  {
+    "id": "6aec5a4c-f424-4b9e-a1c2-1ac2faac3439",
+    "timestamp": "2024-09-02T17:49:12.516+0000",
+    "title": "Klaus Mustermann",
+    "icon": "logos/contacts-C-Lightblue/v2",
+    "avatar": {
+      "asset": "logos/contacts-C-Lightblue/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Fertig",
+    "amount": {
+      "currency": "EUR",
+      "value": 88.04,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "6aec5a4c-f424-4b9e-a1c2-1ac2faac3439"
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "6aec5a4c-f424-4b9e-a1c2-1ac2faac3439",
+      "sections": [
+        {
+          "title": "Du hast 88,04 € von Klaus Mustermann erhalten",
+          "data": {
+            "icon": "logos/contacts-C-Lightblue/v2",
+            "timestamp": "2024-09-02T17:49:12.516Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Referenz",
+              "detail": {
+                "text": "Referenz Text",
+                "displayValue": {
+                  "text": "Referenz Text"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Absender",
+          "data": [
+            {
+              "title": "Name",
+              "detail": {
+                "text": "Klaus Mustermann",
+                "displayValue": {
+                  "text": "Klaus Mustermann"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "IBAN",
+              "detail": {
+                "text": "12345",
+                "displayValue": {
+                  "text": "12345"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokument",
+          "data": [
+            {
+              "title": "Transaktionsbestätigung",
+              "detail": "02.09.2024",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "53e0fc86-840d-4dba-8e74-2a56ab6b73d4",
+              "postboxType": "INCOMING_TRANSFER"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

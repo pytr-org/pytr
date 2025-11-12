@@ -1,0 +1,171 @@
+{
+    "id": "e5f930fc-4bb0-47de-919d-94a2d0b3f438",
+    "timestamp": "2025-08-18T12:16:06.806+0000",
+    "title": "Nina",
+    "icon": "logos/contacts-N-Grey/v2",
+    "avatar": {
+      "asset": "logos/contacts-N-Grey/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Gesendet",
+    "amount": {
+      "currency": "EUR",
+      "value": -67.0,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "e5f930fc-4bb0-47de-919d-94a2d0b3f438"
+    },
+    "eventType": "OUTGOING_TRANSFER_DELEGATION",
+    "cashAccountNumber": "12345678",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "e5f930fc-4bb0-47de-919d-94a2d0b3f438",
+      "sections": [
+        {
+          "title": "Du hast 67,00 € an Nina gesendet",
+          "data": {
+            "icon": "logos/contacts-N-Grey/v2",
+            "timestamp": "2025-08-18T12:16:06.803132Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Überweisung",
+              "detail": {
+                "text": "Abgeschlossen",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Zahlung",
+              "detail": {
+                "text": "Cash",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Empfänger",
+              "detail": {
+                "text": "Nina",
+                "displayValue": {
+                  "text": "Nina"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "IBAN",
+              "detail": {
+                "text": "",
+                "action": {
+                  "payload": {
+                    "id": "e5f930fc-4bb0-47de-919d-94a2d0b3f438",
+                    "sections": [
+                      {
+                        "title": "IBAN",
+                        "data": [
+                          {
+                            "title": "",
+                            "detail": {
+                              "icon": "logos/bank_default/v2",
+                              "style": "highlighted",
+                              "type": "listItemAvatarDefault"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": ""
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "67,00 €",
+                "displayValue": {
+                  "text": "67,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "data": {
+            "text": "text"
+          },
+          "type": "note"
+        },
+        {
+          "title": "Empfänger",
+          "data": [
+            {
+              "title": "Empfänger",
+              "detail": {
+                "text": "Nina",
+                "displayValue": {
+                  "text": "Nina"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "IBAN",
+              "detail": {
+                "text": "",
+                "displayValue": {
+                  "text": ""
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokument",
+          "data": [
+            {
+              "title": "Transaktionsbestätigung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "194eed58-5c67-4b4c-8e62-9d7814038fdf",
+              "postboxType": "OUTGOING_TRANSFER"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

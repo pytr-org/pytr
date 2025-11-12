@@ -1,0 +1,90 @@
+{
+    "id": "79d5c1c7-cfa7-36a0-b4d9-8bf202490402",
+    "timestamp": "2025-09-19T12:02:49.989+0000",
+    "title": "Orsted",
+    "icon": "logos/DK0060094928/v2",
+    "subtitle": "Zwischenvertrieb von Wertpapieren",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "79d5c1c7-cfa7-36a0-b4d9-8bf202490402"
+    },
+    "source": "timelineActivity",
+    "details": {
+      "id": "79d5c1c7-cfa7-36a0-b4d9-8bf202490402",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+          "data": {
+            "icon": "logos/DK0060094928/v2",
+            "timestamp": "2025-09-19T12:02:49.989Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Zwischenvertrieb von Wertpapieren",
+                "displayValue": {
+                  "text": "Zwischenvertrieb von Wertpapieren"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "ORSTED A/S   -ANR-",
+                "displayValue": {
+                  "text": "ORSTED A/S   -ANR-"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "119.285835",
+                "displayValue": {
+                  "text": "119.285835"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "19.09.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "aebaf075-9a89-4d0d-836a-be61e4ad7725",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

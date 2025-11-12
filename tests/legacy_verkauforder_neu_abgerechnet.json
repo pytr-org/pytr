@@ -1,0 +1,303 @@
+{
+    "id": "d0506e95-27ae-44b5-a4fb-aabfd70bd28e",
+    "timestamp": "2025-02-21T11:14:54.026+0000",
+    "title": "Marie Brizard Wine and Spirits",
+    "icon": "logos/FR0000060873/v2",
+    "avatar": {
+      "asset": "logos/FR0000060873/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Limit Verkauf-Order neu abgerechnet",
+    "amount": {
+      "currency": "EUR",
+      "value": 91.34,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "d0506e95-27ae-44b5-a4fb-aabfd70bd28e"
+    },
+    "eventType": "timeline_legacy_migrated_events",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "d0506e95-27ae-44b5-a4fb-aabfd70bd28e",
+      "sections": [
+        {
+          "title": "Du hast 91,34 €  erhalten",
+          "data": {
+            "icon": "logos/FR0000060873/v2",
+            "subtitleText": null,
+            "timestamp": "2025-02-21T11:14:54.026+0000",
+            "status": "executed"
+          },
+          "action": {
+            "type": "instrumentDetail",
+            "payload": "FR0000060873"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Limit Verkauf",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Marie Brizard Wine and Spirits",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "table"
+        },
+        {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "8,48 %",
+                "trend": "negative",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Verlust",
+              "detail": {
+                "text": "8,56 €",
+                "trend": "negative",
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "action": null,
+          "type": "horizontalTable"
+        },
+        {
+          "title": "Transaktion",
+          "data": [
+            {
+              "title": "Anteile",
+              "detail": {
+                "text": "27",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktienkurs",
+              "detail": {
+                "text": "3,42 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "+ 91,34 €",
+                "trend": null,
+                "action": null,
+                "displayValue": null,
+                "type": "text"
+              },
+              "style": "highlighted"
+            }
+          ],
+          "action": {
+            "type": "infoPage",
+            "payload": {
+              "sections": [
+                {
+                  "title": "Transaktion",
+                  "action": null,
+                  "type": "title"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Anteile",
+                      "detail": {
+                        "text": "27",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Aktienkurs",
+                      "detail": {
+                        "text": "3,42 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Order",
+                      "detail": {
+                        "text": "+ 92,34 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Order",
+                      "detail": {
+                        "text": "+ 92,34 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Gebühr",
+                      "detail": {
+                        "text": "1,00 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Gesamt",
+                      "detail": {
+                        "text": "+ 91,34 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                }
+              ]
+            }
+          },
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung 2",
+              "detail": "27.02.2025",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "b0f0a8e4-b8cf-4878-aa70-3e772d163f49",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Abrechnung 1",
+              "detail": "21.02.2025",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "42b598ad-9c8e-440e-868e-37cfc3c44dcc",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Auftragsbestätigung",
+              "detail": "21.02.2025",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "0f9ee818-3567-4a82-8986-448e62c4b92d",
+              "postboxType": "CONFIRM_ORDER_CREATE_V2"
+            },
+            {
+              "title": "Kosteninformation",
+              "detail": "21.02.2025",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "id": "4868af5a-277c-4f31-a8a9-e703e5f24fb2",
+              "postboxType": "COSTS_INFO_SELL_V2"
+            }
+          ],
+          "action": null,
+          "type": "documents"
+        }
+      ]
+    }
+}

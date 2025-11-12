@@ -155,32 +155,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "timelineEventId": "60518353-20ba-457a-9114-fdc887ae1fba",
-                                        "transferId": "3068ed91-be29-44c7-9db3-8fc64d4fe89e",
-                                        "chat_flow_key": "NHC_0024_deposit_report_an_issue"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "type": "table"
             }
         ]
     }

@@ -1,0 +1,91 @@
+{
+    "id": "c187c065-fadf-33bd-8de9-fe0ac6c0e686",
+    "timestamp": "2025-10-28T15:46:46.286+0000",
+    "title": "ORSTED A/S   -ANR-",
+    "icon": "logos/DK0064307839/v2",
+    "subtitle": "Wertlos",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "c187c065-fadf-33bd-8de9-fe0ac6c0e686"
+    },
+    "eventType": "ssp_corporate_action_invoice_shares",
+    "source": "timelineActivity",
+    "details": {
+      "id": "c187c065-fadf-33bd-8de9-fe0ac6c0e686",
+      "sections": [
+        {
+          "title": "Aktien wurden im Rahmen einer Kapitalmaßnahme entfernt",
+          "data": {
+            "icon": "logos/DK0064307839/v2",
+            "timestamp": "2025-10-28T15:46:46.286Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Wertlos",
+                "displayValue": {
+                  "text": "Wertlos"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "ORSTED A/S   -ANR-",
+                "displayValue": {
+                  "text": "ORSTED A/S   -ANR-"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "0.285835",
+                "displayValue": {
+                  "text": "0.285835"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "28.10.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "9fdeded6-aa07-401a-ad47-740da1a4c41e",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}
