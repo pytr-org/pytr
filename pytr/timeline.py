@@ -42,6 +42,7 @@ class Timeline:
         store_event_database=True,
         dump_raw_data=False,
         event_callback=lambda *a, **kw: None,
+        details_matching="event_id",
     ):
         self.tr = tr
         self.output_path = output_path
@@ -50,6 +51,7 @@ class Timeline:
         self.store_event_database = store_event_database
         self.dump_raw_data = dump_raw_data
         self.event_callback = event_callback
+        self.details_matching = details_matching
         self.log = get_logger(__name__)
         self.dl_done = False
         self.error_counts = {}
@@ -94,7 +96,7 @@ class Timeline:
             elif subscription.get("type", "") == "timelineActivityLog":
                 await self.get_next_timeline_activity_log(response)
             elif subscription.get("type", "") == "timelineDetailV2":
-                await self.process_timelineDetail(response)
+                await self.process_timelineDetail(response, subscription.get("id"))
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
@@ -200,7 +202,8 @@ class Timeline:
 
             self.requested_detail += 1
             if msg is None:
-                await self.tr.timeline_detail_v2(event["id"])
+                subscription_id = await self.tr.timeline_detail_v2(event["id"])
+                event["timeline_detail_subscription_id"] = subscription_id
             else:
                 self.received_detail += 1
                 self.events.append(event)
@@ -228,12 +231,16 @@ class Timeline:
             except StopAsyncIteration:
                 pass
 
-    async def process_timelineDetail(self, response):
+    async def process_timelineDetail(self, response, subscription_id):
         """
         process timeline details response
         """
 
-        event = self.timeline_details.get(response.get("id", "dummy"), None)
+        if self.details_matching == "sub_id":
+            event = self.timeline_details.get(subscription_id, None)
+        else:
+            event = self.timeline_details.get(response.get("id", "dummy"), None)
+
         if event is None:
             self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
             self.skipped_detail += 1
