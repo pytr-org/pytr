@@ -59,9 +59,11 @@ $ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 
 ## Usage
 
-<!-- runcmd code:console COLUMNS=120 uv run --python 3.13 pytr -->
+<!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
 ```console
-usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
+usage: pytr [-h] [-V] [-v {warning,info,debug}]
+            [--debug-logfile DEBUG_LOGFILE]
+            [--debug-log-filter DEBUG_LOG_FILTER]
             {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
@@ -70,24 +72,34 @@ Commands:
   {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,completion}
                                         Desired action to perform
     help                                Print this help message
-    login                               Check if credentials file exists. If not create it and ask for input. Try to
-                                        login. Ask for device reset if needed
+    login                               Check if credentials file exists. If
+                                        not create it and ask for input. Try
+                                        to login. Ask for device reset if
+                                        needed
     portfolio                           Show current portfolio
     details                             Get details for an ISIN
-    dl_docs                             Download all pdf documents from the timeline and sort them into folders. Also
-                                        export account transactions (account_transactions.csv) and JSON files with all
-                                        events (events_with_documents.json and other_events.json)
-    export_transactions                 Read data from the TR timeline and export transactions into a file, e.g. as
-                                        csv into account_transactions.csv.
+    dl_docs                             Download all pdf documents from the
+                                        timeline and sort them into folders.
+                                        Also export account transactions
+                                        (account_transactions.csv) and JSON
+                                        files with all events
+                                        (events_with_documents.json and
+                                        other_events.json)
+    export_transactions                 Read data from the TR timeline and
+                                        export transactions into a file, e.g.
+                                        as csv into account_transactions.csv.
     get_price_alarms                    Get current price alarms
     set_price_alarms                    Set new price alarms
     completion                          Print shell tab completion
 
 Options:
   -h, --help                            show this help message and exit
-  -V, --version                         Print version information and quit (default: False)
-  -v, --verbosity {warning,info,debug}  Set verbosity level (default: info) (default: info)
-  --debug-logfile DEBUG_LOGFILE         Dump debug logs to a file (default: None)
+  -V, --version                         Print version information and quit
+                                        (default: False)
+  -v, --verbosity {warning,info,debug}  Set verbosity level (default: info)
+                                        (default: info)
+  --debug-logfile DEBUG_LOGFILE         Dump debug logs to a file (default:
+                                        None)
   --debug-log-filter DEBUG_LOG_FILTER   Filter debug log types (default: None)
 ```
 <!-- end runcmd -->
@@ -169,7 +181,7 @@ checks and type checks.
 
 ### Keep the readme updated
 
-This readme contains a few automatically generated bits. To keep them up to date, simply run the following command:
+This readme contains a few automatically generated bits. To keep them up to date, simply run the following command: (Never start it from an activated venv!)
 
 ```console
 $ uvx mksync@0.1.5 -i README.md
