@@ -550,7 +550,7 @@ def main():
         check_version(installed_version)
     else:
         if hasattr(args, "for_readme") and args.for_readme:
-            parser.formatter_class = lambda prog: argparse.ArgumentDefaultsHelpFormatter("pytr", max_help_position=40)
+            parser.formatter_class = lambda prog: argparse.ArgumentDefaultsHelpFormatter("pytr", max_help_position=40, width=120)
         parser.print_help()
 
 
