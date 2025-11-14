@@ -64,12 +64,13 @@ def get_main_parser():
     parser_cmd = parser.add_subparsers(help="Desired action to perform", dest="command")
 
     # help
-    parser_cmd.add_parser(
+    parser_help = parser_cmd.add_parser(
         "help",
         help="Print this help message",
         description="Print help message",
         add_help=False,
     )
+    parser_help.add_argument("--for-readme", action="store_true", help=argparse.SUPPRESS)
 
     # parent subparser with common login arguments
     parser_login_args = argparse.ArgumentParser(add_help=False)
@@ -548,6 +549,10 @@ def main():
         print(installed_version)
         check_version(installed_version)
     else:
+        if hasattr(args, "for_readme") and args.for_readme:
+            parser.formatter_class = lambda prog: argparse.ArgumentDefaultsHelpFormatter(
+                "pytr", max_help_position=40, width=120
+            )
         parser.print_help()
 
 
