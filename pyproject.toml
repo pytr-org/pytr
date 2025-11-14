@@ -25,7 +25,7 @@ dependencies = [
     "babel",
     "certifi",
     "coloredlogs",
-    "ecdsa",
+    "cryptography",
     "packaging",
     "pathvalidate",
     "pygments",
