@@ -200,8 +200,7 @@ class Timeline:
 
             self.requested_detail += 1
             if msg is None:
-                subscription_id = await self.tr.timeline_detail_v2(event["id"])
-                event["timeline_detail_subscription_id"] = subscription_id
+                await self.tr.timeline_detail_v2(event["id"])
             else:
                 self.received_detail += 1
                 self.events.append(event)
@@ -234,7 +233,7 @@ class Timeline:
         process timeline details response
         """
 
-        event = self.timeline_details.get(subscription_id, None)
+        event = self.timeline_details.get(subscription_id)
 
         if event is None:
             self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
