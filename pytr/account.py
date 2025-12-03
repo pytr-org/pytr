@@ -68,7 +68,7 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
                 countdown = tr.initiate_weblogin()
             except ValueError as e:
                 log.fatal(str(e))
-                exit(1)
+                sys.exit(1)
             request_time = time.time()
             print("Enter the code you received to your mobile app as a notification.")
             print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
@@ -101,7 +101,7 @@ def login(phone_no=None, pin=None, web=True, store_credentials=False):
                 print("Reset done")
             else:
                 print("Cancelling reset")
-                exit(1)
+                sys.exit(1)
 
     log.info("Logged in")
     # log.debug(get_settings(tr))
