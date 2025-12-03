@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import shutil
 import signal
+import sys
 from datetime import datetime, timedelta
 from importlib.metadata import version
 from pathlib import Path
@@ -384,12 +385,11 @@ def exit_gracefully(signum, frame):
 
     try:
         if input("\nReally quit? (y/n)> ").lower().startswith("y"):
-            exit(1)
+            sys.exit(1)
 
     except KeyboardInterrupt:
         print("Ok ok, quitting")
-        exit(1)
-
+        sys.exit(1)
     # restore the exit gracefully handler here
     signal.signal(signal.SIGINT, exit_gracefully)
 
