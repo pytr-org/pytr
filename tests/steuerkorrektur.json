@@ -1,0 +1,101 @@
+  {
+    "id": "8a39d3f4-90bc-39ad-8a11-694308472b62",
+    "timestamp": "2025-10-28T00:00:16.000+0000",
+    "title": "Steuerkorrektur",
+    "icon": "logos/timeline_person/v2",
+    "avatar": {
+      "asset": "logos/timeline_person/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+      "currency": "EUR",
+      "value": 2.87,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "8a39d3f4-90bc-39ad-8a11-694308472b62"
+    },
+    "eventType": "ssp_tax_correction_invoice",
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "8a39d3f4-90bc-39ad-8a11-694308472b62",
+      "sections": [
+        {
+          "title": "Du hast 2,87 € erhalten",
+          "data": {
+            "icon": "logos/timeline_person/v2",
+            "timestamp": "2025-10-28T00:00:16Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Steuerkorrektur",
+                "displayValue": {
+                  "text": "Steuerkorrektur"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "2,87 €",
+                "displayValue": {
+                  "text": "2,87 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Steuerabrechnung",
+              "detail": "28.10.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "8bdb11ab-9406-4d11-845f-81e2371d87a0",
+              "postboxType": "TAX_OPTIMIZATION_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

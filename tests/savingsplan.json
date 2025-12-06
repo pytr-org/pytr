@@ -1,44 +1,42 @@
-{
-    "id": "9fcaac4e-7675-4121-ab6d-2bf583798ba1",
-    "timestamp": "2025-09-18T07:14:56.652+0000",
-    "title": "Private Equity",
-    "icon": "logos/LU3170240538/v2",
+  {
+    "id": "8bd087f0-0091-4791-bff5-d47d8196aee4",
+    "timestamp": "2025-10-23T08:26:13.657+0000",
+    "title": "DroneShield",
+    "icon": "logos/AU000000DRO2/v2",
     "avatar": {
-      "asset": "logos/LU3170240538/v2",
-      "badge": {
-        "asset": "logos/timeline_one_percent/v2",
-        "type": "icon"
-      }
+      "asset": "logos/AU000000DRO2/v2",
+      "badge": null
     },
     "badge": null,
-    "subtitle": "1 % Bonus",
+    "subtitle": "Sparplan ausgeführt",
     "amount": {
       "currency": "EUR",
-      "value": -1.0,
+      "value": -19.0,
       "fractionDigits": 2
     },
     "subAmount": null,
     "status": "EXECUTED",
     "action": {
       "type": "timelineDetail",
-      "payload": "9fcaac4e-7675-4121-ab6d-2bf583798ba1"
+      "payload": "8bd087f0-0091-4791-bff5-d47d8196aee4"
     },
-    "cashAccountNumber": "12345678",
+    "eventType": "trading_savingsplan_executed",
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
     "details": {
-      "id": "9fcaac4e-7675-4121-ab6d-2bf583798ba1",
+      "id": "8bd087f0-0091-4791-bff5-d47d8196aee4",
       "sections": [
         {
-          "title": "Du hast 1,00 € erhalten",
+          "title": "Du hast 19,00 € gespart",
           "data": {
-            "icon": "logos/LU3170240538/v2",
-            "timestamp": "2025-09-18T07:14:56.636046Z",
+            "icon": "logos/AU000000DRO2/v2",
+            "timestamp": "2025-10-23T08:26:13.65787Z",
             "status": "executed"
           },
           "action": {
-            "payload": "LU3170240538",
+            "payload": "AU000000DRO2",
             "type": "instrumentDetail"
           },
           "type": "header"
@@ -47,7 +45,7 @@
           "title": "Übersicht",
           "data": [
             {
-              "title": "1% Bonus",
+              "title": "Sparplan",
               "detail": {
                 "text": "Ausgeführt",
                 "functionalStyle": "EXECUTED",
@@ -56,11 +54,20 @@
               "style": "plain"
             },
             {
+              "title": "Zahlung",
+              "detail": {
+                "text": "Cash",
+                "icon": "logos/bank_traderepublic/v2",
+                "type": "iconWithText"
+              },
+              "style": "plain"
+            },
+            {
               "title": "Asset",
               "detail": {
-                "text": "Private Equity",
+                "text": "DroneShield",
                 "displayValue": {
-                  "text": "Private Equity"
+                  "text": "DroneShield"
                 },
                 "type": "text"
               },
@@ -69,7 +76,7 @@
             {
               "title": "Transaktion",
               "detail": {
-                "text": "0,01 ×  100,00 €",
+                "text": "6,921675 ×  2,75 €",
                 "action": {
                   "payload": {
                     "id": "00000000-0000-0000-0000-000000000000",
@@ -83,9 +90,9 @@
                           {
                             "title": "Aktien",
                             "detail": {
-                              "text": "0,01",
+                              "text": "6,921675",
                               "displayValue": {
-                                "text": "0,01"
+                                "text": "6,921675"
                               },
                               "type": "text"
                             },
@@ -94,9 +101,9 @@
                           {
                             "title": "Aktienkurs",
                             "detail": {
-                              "text": "100,00 €",
+                              "text": "2,75 €",
                               "displayValue": {
-                                "text": "100,00 €"
+                                "text": "2,75 €"
                               },
                               "type": "text"
                             },
@@ -105,9 +112,9 @@
                           {
                             "title": "Summe",
                             "detail": {
-                              "text": "1,00 €",
+                              "text": "19,00 €",
                               "displayValue": {
-                                "text": "1,00 €"
+                                "text": "19,00 €"
                               },
                               "type": "text"
                             },
@@ -121,8 +128,8 @@
                   "type": "infoPage"
                 },
                 "displayValue": {
-                  "text": "100,00 €",
-                  "prefix": "0,01 × "
+                  "text": "2,75 €",
+                  "prefix": "6,921675 × "
                 },
                 "type": "text"
               },
@@ -131,9 +138,9 @@
             {
               "title": "Gebühr",
               "detail": {
-                "text": "0,00 €",
+                "text": "Kostenlos",
                 "displayValue": {
-                  "text": "0,00 €"
+                  "text": "Kostenlos"
                 },
                 "type": "text"
               },
@@ -142,11 +149,36 @@
             {
               "title": "Summe",
               "detail": {
-                "text": "1,00 €",
+                "text": "19,00 €",
                 "displayValue": {
-                  "text": "1,00 €"
+                  "text": "19,00 €"
                 },
                 "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Sparplan",
+          "data": [
+            {
+              "title": "",
+              "detail": {
+                "title": "DroneShield",
+                "timestamp": "2025-10-23T08:26:13.65787Z",
+                "amount": "19,00 €",
+                "icon": "logos/AU000000DRO2/v2",
+                "status": "executed",
+                "action": {
+                  "payload": {
+                    "savingsPlanId": "31e81415-c9ed-48b2-996b-5f3a2a6c32b1"
+                  },
+                  "type": "openSavingsPlanOverview"
+                },
+                "subtitle": "Wöchentlich",
+                "type": "embeddedTimelineItem"
               },
               "style": "plain"
             }
@@ -157,22 +189,13 @@
           "title": "Dokumente",
           "data": [
             {
-              "title": "Abrechnung",
+              "title": "Abrechnungsausführung",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "f8c6da6f-7885-450c-a27b-eb972ac3468b",
-              "postboxType": "SECURITIES_SETTLEMENT"
-            },
-            {
-              "title": "Kosteninformation",
-              "action": {
-                "payload": "",
-                "type": "browserModal"
-              },
-              "id": "fd93fc58-7179-4092-9466-655c58386513",
-              "postboxType": "EQUITIES_BUY_EX_ANTE"
+              "id": "f58e3844-a6f9-4f81-9bd0-8b49d8e5984e",
+              "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
             }
           ],
           "type": "documents"

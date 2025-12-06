@@ -108,6 +108,8 @@ timeline_legacy_migrated_events_subtitle_type_mapping = {
 }
 
 title_event_type_mapping = {
+    # Deposits
+    "Einzahlung": PPEventType.DEPOSIT,
     # Saveback
     "Aktien-Bonus": ConditionalEventType.SAVEBACK,
     # Interests
@@ -125,6 +127,7 @@ subtitle_event_type_mapping = {
     "Bardividende korrigiert": PPEventType.DIVIDEND,
     "Dividende": PPEventType.DIVIDEND,
     "Dividende Wahlweise": PPEventType.DIVIDEND,
+    "Tilgung": PPEventType.DIVIDEND,
     "Vorabpauschale": PPEventType.DIVIDEND,
     # Saveback
     "Saveback": ConditionalEventType.SAVEBACK,
@@ -279,25 +282,21 @@ class Event:
         event_type: Optional[EventType] = None
         eventTypeStr = event_dict.get("eventType", "")
         if eventTypeStr == "timeline_legacy_migrated_events":
-            event_type = timeline_legacy_migrated_events_title_type_mapping.get(event_dict.get("title", ""), None)
+            event_type = timeline_legacy_migrated_events_title_type_mapping.get(title)
             if event_type is None:
-                event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(
-                    event_dict.get("subtitle", ""), None
-                )
+                event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(subtitle)
             if event_type is None:
                 for item in event_dict.get("details", {}).get("sections", []):
-                    title = item.get("title", "")
-                    if title.startswith("Du hast "):
-                        if title.endswith(" erhalten"):
+                    ititle = item.get("title", "")
+                    if ititle.startswith("Du hast "):
+                        if ititle.endswith(" erhalten"):
                             event_type = PPEventType.DEPOSIT
                             break
-                        elif title.endswith(" gesendet"):
+                        elif ititle.endswith(" gesendet"):
                             event_type = PPEventType.REMOVAL
                             break
             if event_type is None:
-                print(
-                    f"unmatched timeline_legacy_migrated_events: title={event_dict.get('title', '')} subtitle={event_dict.get('subtitle', '')}"
-                )
+                print(f"unmatched timeline_legacy_migrated_events: {eventdesc}")
         elif eventTypeStr == "ssp_corporate_action_invoice_shares":
             subtitle = event_dict.get("subtitle", "")
             if subtitle in [
@@ -624,6 +623,7 @@ class Event:
                 "private_markets_order_created",
                 "private_markets_trade_executed",
             ]
+            and title != "Private Equity"
             and subtitle != "Aktienprämiendividende"
             and event_type != PPEventType.DIVIDEND
         ):

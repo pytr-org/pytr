@@ -1,44 +1,42 @@
-{
-    "id": "9fcaac4e-7675-4121-ab6d-2bf583798ba1",
-    "timestamp": "2025-09-18T07:14:56.652+0000",
-    "title": "Private Equity",
-    "icon": "logos/LU3170240538/v2",
+  {
+    "id": "986af7e0-f0c1-4fac-8d24-b334ce51275a",
+    "timestamp": "2025-05-12T18:38:36.065+0000",
+    "title": "Tencent Holdings (ADR)",
+    "icon": "logos/US88032Q1094/v2",
     "avatar": {
-      "asset": "logos/LU3170240538/v2",
-      "badge": {
-        "asset": "logos/timeline_one_percent/v2",
-        "type": "icon"
-      }
+      "asset": "logos/US88032Q1094/v2",
+      "badge": null
     },
     "badge": null,
-    "subtitle": "1 % Bonus",
+    "subtitle": "Verkaufsorder",
     "amount": {
       "currency": "EUR",
-      "value": -1.0,
+      "value": 200.93,
       "fractionDigits": 2
     },
     "subAmount": null,
     "status": "EXECUTED",
     "action": {
       "type": "timelineDetail",
-      "payload": "9fcaac4e-7675-4121-ab6d-2bf583798ba1"
+      "payload": "986af7e0-f0c1-4fac-8d24-b334ce51275a"
     },
-    "cashAccountNumber": "12345678",
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
     "details": {
-      "id": "9fcaac4e-7675-4121-ab6d-2bf583798ba1",
+      "id": "986af7e0-f0c1-4fac-8d24-b334ce51275a",
       "sections": [
         {
-          "title": "Du hast 1,00 € erhalten",
+          "title": "Du hast 200,93 € erhalten",
           "data": {
-            "icon": "logos/LU3170240538/v2",
-            "timestamp": "2025-09-18T07:14:56.636046Z",
+            "icon": "logos/US88032Q1094/v2",
+            "timestamp": "2025-05-12T18:38:36.065535045Z",
             "status": "executed"
           },
           "action": {
-            "payload": "LU3170240538",
+            "payload": "US88032Q1094",
             "type": "instrumentDetail"
           },
           "type": "header"
@@ -47,7 +45,18 @@
           "title": "Übersicht",
           "data": [
             {
-              "title": "1% Bonus",
+              "title": "Portfolio",
+              "detail": {
+                "text": "Brokerage",
+                "displayValue": {
+                  "text": "Brokerage"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Verkaufen",
               "detail": {
                 "text": "Ausgeführt",
                 "functionalStyle": "EXECUTED",
@@ -58,9 +67,9 @@
             {
               "title": "Asset",
               "detail": {
-                "text": "Private Equity",
+                "text": "Tencent Holdings (ADR)",
                 "displayValue": {
-                  "text": "Private Equity"
+                  "text": "Tencent Holdings (ADR)"
                 },
                 "type": "text"
               },
@@ -69,7 +78,7 @@
             {
               "title": "Transaktion",
               "detail": {
-                "text": "0,01 ×  100,00 €",
+                "text": "3,454506 ×  58,50 €",
                 "action": {
                   "payload": {
                     "id": "00000000-0000-0000-0000-000000000000",
@@ -83,9 +92,9 @@
                           {
                             "title": "Aktien",
                             "detail": {
-                              "text": "0,01",
+                              "text": "3,454506",
                               "displayValue": {
-                                "text": "0,01"
+                                "text": "3,454506"
                               },
                               "type": "text"
                             },
@@ -94,9 +103,9 @@
                           {
                             "title": "Aktienkurs",
                             "detail": {
-                              "text": "100,00 €",
+                              "text": "58,50 €",
                               "displayValue": {
-                                "text": "100,00 €"
+                                "text": "58,50 €"
                               },
                               "type": "text"
                             },
@@ -105,9 +114,9 @@
                           {
                             "title": "Summe",
                             "detail": {
-                              "text": "1,00 €",
+                              "text": "202,09 €",
                               "displayValue": {
-                                "text": "1,00 €"
+                                "text": "202,09 €"
                               },
                               "type": "text"
                             },
@@ -121,8 +130,19 @@
                   "type": "infoPage"
                 },
                 "displayValue": {
-                  "text": "100,00 €",
-                  "prefix": "0,01 × "
+                  "text": "58,50 €",
+                  "prefix": "3,454506 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "0,16 €",
+                "displayValue": {
+                  "text": "0,16 €"
                 },
                 "type": "text"
               },
@@ -131,9 +151,9 @@
             {
               "title": "Gebühr",
               "detail": {
-                "text": "0,00 €",
+                "text": "1,00 €",
                 "displayValue": {
-                  "text": "0,00 €"
+                  "text": "1,00 €"
                 },
                 "type": "text"
               },
@@ -142,9 +162,9 @@
             {
               "title": "Summe",
               "detail": {
-                "text": "1,00 €",
+                "text": "200,93 €",
                 "displayValue": {
-                  "text": "1,00 €"
+                  "text": "200,93 €"
                 },
                 "type": "text"
               },
@@ -154,25 +174,73 @@
           "type": "table"
         },
         {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "0,31 %",
+                "trend": "positive",
+                "displayValue": {
+                  "text": "0,31 %"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gewinn",
+              "detail": {
+                "text": "0,62 €",
+                "trend": "positive",
+                "displayValue": {
+                  "text": "0,62 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "horizontalTable"
+        },
+        {
           "title": "Dokumente",
           "data": [
             {
-              "title": "Abrechnung",
+              "title": "Kosteninformation 1",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "f8c6da6f-7885-450c-a27b-eb972ac3468b",
+              "id": "8b7b76a5-32f6-4243-ae06-d0002bc549d4",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            },
+            {
+              "title": "Kosteninformation 2",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "cbb6b836-d19a-4760-88a5-b33ec707431c",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            },
+            {
+              "title": "Abrechnung 1",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "4b15144e-0886-4114-9d01-d95f064f950d",
               "postboxType": "SECURITIES_SETTLEMENT"
             },
             {
-              "title": "Kosteninformation",
+              "title": "Abrechnung 2",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "fd93fc58-7179-4092-9466-655c58386513",
-              "postboxType": "EQUITIES_BUY_EX_ANTE"
+              "id": "74f4790f-2f36-484f-ba06-7d4df50f1f32",
+              "postboxType": "SECURITIES_SETTLEMENT"
             }
           ],
           "type": "documents"

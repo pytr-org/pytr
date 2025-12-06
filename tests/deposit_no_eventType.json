@@ -1,0 +1,106 @@
+{
+    "id": "...",
+    "timestamp": "2024-06-03T17:07:26.374+0000",
+    "title": "My Name",
+    "icon": "logos/timeline_plus_circle/v2",
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+        "currency": "EUR",
+        "value": 200.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "..."
+    },
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "...",
+        "sections": [
+            {
+                "title": "Du hast 200,00 € erhalten",
+                "data": {
+                    "icon": "logos/timeline_plus_circle/v2",
+                    "subtitleText": null,
+                    "timestamp": "2024-06-03T17:07:26.374+0000",
+                    "status": "executed"
+                },
+                "action": null,
+                "type": "header"
+            },
+            {
+                "title": "Übersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "detail": {
+                            "text": "Abgeschlossen",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "Von",
+                        "detail": {
+                            "text": "My Name",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "IBAN",
+                        "detail": {
+                            "text": "...",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            },
+            {
+                "title": "",
+                "data": [
+                    {
+                        "title": "",
+                        "detail": {
+                            "icon": "",
+                            "action": {
+                                "type": "customerSupportChat",
+                                "payload": {
+                                    "contextParams": {
+                                        "chat_flow_key": "NHC_0024_deposit_report_an_issue",
+                                        "timelineEventId": "...",
+                                        "createdAt": "2024-06-03T17:07:26.459880Z",
+                                        "amount": "200.000000",
+                                        "iban": "..."
+                                    },
+                                    "contextCategory": "NHC"
+                                }
+                            },
+                            "style": "highlighted",
+                            "type": "listItemAvatarDefault"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            }
+        ]
+    }
+}
