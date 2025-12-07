@@ -38,16 +38,23 @@ class Timeline:
         tr,
         output_path,
         not_before=float(0),
-        not_after=float(0),
+        not_after=float("inf"),
         store_event_database=True,
+        scan_for_duplicates=False,
         dump_raw_data=False,
         event_callback=lambda *a, **kw: None,
     ):
         self.tr = tr
         self.output_path = output_path
-        self.not_before = not_before
+        if not_before == -1:
+            self.fetch_from_tr = False
+            self.not_before = float(0)
+        else:
+            self.fetch_from_tr = True
+            self.not_before = not_before
         self.not_after = not_after
         self.store_event_database = store_event_database
+        self.scan_for_duplicates = scan_for_duplicates
         self.dump_raw_data = dump_raw_data
         self.event_callback = event_callback
         self.log = get_logger(__name__)
@@ -68,6 +75,10 @@ class Timeline:
 
     async def tl_loop(self):
         await self.get_next_timeline_transactions(None)
+
+        # We might not want to download anything from TR but just create/update account_transactions.csv from available data
+        if not self.fetch_from_tr:
+            self.finish_timeline_details()
 
         while not self.dl_done:
             try:
@@ -112,8 +123,8 @@ class Timeline:
             added_last_event = False
             for event in response["items"]:
                 event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                if self.not_before == 0 or event_timestamp >= self.not_before:
-                    if self.not_after == 0 or event_timestamp <= self.not_after:
+                if event_timestamp > self.not_before:
+                    if event_timestamp < self.not_after:
                         event["source"] = "timelineTransaction"
                         self.timeline_transactions[event["id"]] = event
                     added_last_event = True
@@ -148,8 +159,8 @@ class Timeline:
             added_last_event = False
             for event in response["items"]:
                 event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
-                if self.not_before == 0 or event_timestamp >= self.not_before:
-                    if self.not_after == 0 or event_timestamp <= self.not_after:
+                if event_timestamp > self.not_before:
+                    if event_timestamp < self.not_after:
                         event["source"] = "timelineActivity"
                         self.timeline_activities[event["id"]] = event
                     added_last_event = True
@@ -261,9 +272,12 @@ class Timeline:
             self.finish_timeline_details()
 
     def finish_timeline_details(self):
-        self.log.info("Received all event details.")
-        if self.skipped_detail > 0:
-            self.log.warning(f"Skipped {self.skipped_detail} unsupported events")
+        if self.fetch_from_tr:
+            self.log.info("Received all event details.")
+            if self.skipped_detail > 0:
+                self.log.warning(f"Skipped {self.skipped_detail} unsupported events")
+        else:
+            self.log.info("Skip fetching data from TR.")
 
         if self.store_event_database:
             self.log.info("Updating event database...")
@@ -271,56 +285,76 @@ class Timeline:
             # read old events from all_events.json
             old_events = []
             all_events_path = self.output_path / "all_events.json"
-            if (self.not_before != 0 or self.not_after != 0) and all_events_path.exists():
+            if all_events_path.exists():
+                self.log.info("Reading event database...")
                 with open(all_events_path, "r", encoding="utf-8") as f:
                     old_events = json.load(f)
-                    for i in range(len(old_events) - 1, -1, -1):
-                        ts = datetime.fromisoformat(old_events[i]["timestamp"][:19]).timestamp()
-                        if (self.not_before == 0 or ts > self.not_before) and (
-                            self.not_after == 0 or ts < self.not_after
-                        ):
-                            del old_events[i]
+
+            # if we have new data from a certain period, throw out old data
+            if self.fetch_from_tr and (self.not_before != 0 or self.not_after != float("inf")):
+                self.log.info("Throwing away outdated events...")
+                for i in range(len(old_events) - 1, -1, -1):
+                    ts = datetime.fromisoformat(old_events[i]["timestamp"][:19]).timestamp()
+                    if ts > self.not_before and ts < self.not_after:
+                        del old_events[i]
 
             # merge new and old events
             if old_events:
                 cur_events = {}
 
                 # drop duplicates in old events
-                for event in old_events:
-                    idtodel = None
-                    for id in cur_events:
-                        cur_event = cur_events[id]
-                        if is_likely_same_but_newer(event, cur_event):
-                            self.log.warning(
-                                f"Dropping potential duplicate event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
-                            )
-                            idtodel = id
-                            break
-                    if idtodel is not None:
-                        cur_events.pop(idtodel)
-                    cur_events[event["id"]] = event
+                if old_events:
+                    if self.scan_for_duplicates:
+                        self.log.info("Adding old events (scanning for duplicates)...")
+                        for event in old_events:
+                            idtodel = None
+                            for id in cur_events:
+                                cur_event = cur_events[id]
+                                if is_likely_same_but_newer(event, cur_event):
+                                    self.log.warning(
+                                        f"Dropping potential duplicate event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
+                                    )
+                                    idtodel = id
+                                    break
+                            if idtodel is not None:
+                                cur_events.pop(idtodel)
+                            cur_events[event["id"]] = event
+                    else:
+                        self.log.info("Adding old events...")
+                        for event in old_events:
+                            cur_events[event["id"]] = event
 
                 # add new events
-                for event in self.events:
-                    idtodel = None
-                    for id in cur_events:
-                        cur_event = cur_events[id]
-                        if event["id"] != id and is_likely_same_but_newer(event, cur_event):
-                            self.log.warning(
-                                f"Dropping existing event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
-                            )
-                            idtodel = id
-                            break
-                    if idtodel is not None:
-                        cur_events.pop(idtodel)
-                    cur_events[event["id"]] = event
+                if self.events:
+                    if self.scan_for_duplicates:
+                        self.log.info("Adding new events (scanning for duplicates)...")
+                        for event in self.events:
+                            idtodel = None
+                            for id in cur_events:
+                                cur_event = cur_events[id]
+                                if event["id"] != id and is_likely_same_but_newer(event, cur_event):
+                                    self.log.warning(
+                                        f"Dropping existing event {id} from {cur_event['timestamp']} due to newer event {event['id']} from {event['timestamp']}."
+                                    )
+                                    idtodel = id
+                                    break
+                            if idtodel is not None:
+                                cur_events.pop(idtodel)
+                            cur_events[event["id"]] = event
+                    else:
+                        self.log.info("Adding new events...")
+                        for event in self.events:
+                            cur_events[event["id"]] = event
 
                 self.events = list(cur_events.values())
 
+            self.log.info("Sorting events...")
             self.events.sort(key=lambda value: datetime.fromisoformat(value["timestamp"][:19]))
 
-            with open(all_events_path, "w", encoding="utf-8") as f:
-                json.dump(self.events, f, ensure_ascii=False, indent=2, default=str)
+            if self.fetch_from_tr:
+                self.log.info(f"Writing {all_events_path}...")
+                with open(all_events_path, "w", encoding="utf-8") as f:
+                    json.dump(self.events, f, ensure_ascii=False, indent=2, default=str)
 
             self.log.info("Updated event database.")
 

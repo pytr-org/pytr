@@ -115,8 +115,9 @@ class DL:
         output_path,
         filename_fmt,
         not_before=float(0),
-        not_after=float(0),
+        not_after=float("inf"),
         store_event_database=True,
+        scan_for_duplicates=False,
         dump_raw_data=False,
         export_transactions=True,
         history_file="pytr_history",
@@ -149,7 +150,14 @@ class DL:
         self.flat = flat
 
         self.tl = Timeline(
-            self.tr, self.output_path, not_before, not_after, store_event_database, dump_raw_data, self.dl_callback
+            self.tr,
+            self.output_path,
+            not_before,
+            not_after,
+            store_event_database,
+            scan_for_duplicates,
+            dump_raw_data,
+            self.dl_callback,
         )
 
         self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
