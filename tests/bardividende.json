@@ -1,0 +1,145 @@
+{
+    "id": "88008da6-da94-3e0e-8ea5-e3878643f5ab",
+    "timestamp": "2025-10-23T14:19:56.295+0000",
+    "title": "Comcast (A)",
+    "icon": "logos/US20030N1019/v2",
+    "avatar": {
+      "asset": "logos/US20030N1019/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Bardividende",
+    "amount": {
+      "currency": "EUR",
+      "value": 2.24,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "88008da6-da94-3e0e-8ea5-e3878643f5ab"
+    },
+    "eventType": "ssp_corporate_action_invoice_cash",
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "88008da6-da94-3e0e-8ea5-e3878643f5ab",
+      "sections": [
+        {
+          "title": "Du hast 2,24 € erhalten",
+          "data": {
+            "icon": "logos/US20030N1019/v2",
+            "timestamp": "2025-10-23T14:19:56.295Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Bardividende",
+                "displayValue": {
+                  "text": "Bardividende"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Comcast (A)",
+                "displayValue": {
+                  "text": "Comcast (A)"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Aktien",
+              "detail": {
+                "text": "10.640298",
+                "displayValue": {
+                  "text": "10.640298"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Dividende pro Aktie",
+              "detail": {
+                "text": "0,33 $",
+                "displayValue": {
+                  "text": "0,33 $"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-0,78 €",
+                "displayValue": {
+                  "text": "-0,78 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "2,24 €",
+                "displayValue": {
+                  "text": "2,24 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "23.10.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "974b4871-2481-4751-b183-c36c2f960e4a",
+              "postboxType": "CA_INCOME_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

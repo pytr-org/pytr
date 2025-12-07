@@ -16,7 +16,6 @@
         "type": "timelineDetail",
         "payload": "..."
     },
-    "eventType": "timeline_legacy_migrated_events",
     "cashAccountNumber": null,
     "hidden": false,
     "deleted": false,
@@ -66,34 +65,6 @@
                             "action": null,
                             "displayValue": null,
                             "type": "text"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "action": null,
-                "type": "table"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "",
-                            "action": {
-                                "type": "customerSupportChat",
-                                "payload": {
-                                    "contextParams": {
-                                        "chat_flow_key": "NHC_0025_withdrawal_report_an_issue",
-                                        "timelineEventId": "...",
-                                        "createdAt": "2025-04-11T06:44:52.462592Z",
-                                        "amount": "-750.000000"
-                                    },
-                                    "contextCategory": "NHC"
-                                }
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
                         },
                         "style": "plain"
                     }

@@ -1,0 +1,78 @@
+{
+    "id": "...",
+    "timestamp": "2025-04-11T06:44:43.596+0000",
+    "title": "My Name",
+    "icon": "logos/timeline_minus_circle/v2",
+    "badge": null,
+    "subtitle": null,
+    "amount": {
+        "currency": "EUR",
+        "value": -750.0,
+        "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+        "type": "timelineDetail",
+        "payload": "..."
+    },
+    "eventType": "timeline_legacy_migrated_events",
+    "cashAccountNumber": null,
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineTransaction",
+    "details": {
+        "id": "...",
+        "sections": [
+            {
+                "title": "Du hast 750,00\u00a0\u20ac gesendet",
+                "data": {
+                    "icon": "logos/timeline_minus_circle/v2",
+                    "subtitleText": null,
+                    "timestamp": "2025-04-11T06:44:43.596+0000",
+                    "status": "executed"
+                },
+                "action": null,
+                "type": "header"
+            },
+            {
+                "title": "\u00dcbersicht",
+                "data": [
+                    {
+                        "title": "Status",
+                        "detail": {
+                            "text": "Abgeschlossen",
+                            "functionalStyle": "EXECUTED",
+                            "type": "status"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "An",
+                        "detail": {
+                            "text": "My Name",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    },
+                    {
+                        "title": "IBAN",
+                        "detail": {
+                            "text": "...",
+                            "trend": null,
+                            "action": null,
+                            "displayValue": null,
+                            "type": "text"
+                        },
+                        "style": "plain"
+                    }
+                ],
+                "action": null,
+                "type": "table"
+            }
+        ]
+    }
+}
