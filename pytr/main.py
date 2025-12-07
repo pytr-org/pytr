@@ -205,7 +205,7 @@ def get_main_parser():
     )
     parser_dl_docs.add_argument(
         "--last_days",
-        help="Include data from the last N days (0 = include all days)",
+        help="Include data from the last N days (0 = include all days, -1 = no update)",
         metavar="DAYS",
         default=0,
         type=int,
@@ -228,6 +228,12 @@ def get_main_parser():
         "--store-event-database",
         default=True,
         help="Write and maintain an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_dl_docs.add_argument(
+        "--scan-for-duplicates",
+        default=False,
+        help="Scan for duplicate events",
         action=argparse.BooleanOptionalAction,
     )
     parser_dl_docs.add_argument(
@@ -274,7 +280,7 @@ def get_main_parser():
     )
     parser_export_transactions.add_argument(
         "--last_days",
-        help="Include data from the last N days (0 = include all days)",
+        help="Include data from the last N days (0 = include all days, -1 = no update)",
         metavar="DAYS",
         default=0,
         type=int,
@@ -290,6 +296,12 @@ def get_main_parser():
         "--store-event-database",
         default=True,
         help="Write and maintain an event database file (all_events.json)",
+        action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--scan-for-duplicates",
+        default=False,
+        help="Scan for duplicate events",
         action=argparse.BooleanOptionalAction,
     )
     parser_export_transactions.add_argument(
@@ -409,15 +421,18 @@ def main():
         log.debug("logging is set to debug")
 
     # Compute the timestamp range to get data for
-    not_before = (
-        (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
-        if hasattr(args, "last_days") and args.last_days > 0
-        else float(0)
-    )
+    not_before = 0
+    if hasattr(args, "last_days"):
+        if args.last_days < 0:
+            not_before = float(-1)
+        elif args.last_days == 0:
+            not_before = float(0)
+        else:
+            not_before = (datetime.now().astimezone() - timedelta(days=args.last_days)).timestamp()
     not_after = (
         (datetime.now().astimezone() - timedelta(days=args.days_until)).timestamp()
         if hasattr(args, "days_until") and args.days_until > 0
-        else float(0)
+        else float("inf")
     )
 
     if args.command == "login":
@@ -466,6 +481,7 @@ def main():
             not_before,
             not_after,
             args.store_event_database,
+            args.scan_for_duplicates,
             args.dump_raw_data,
             args.export_transactions,
             max_workers=args.workers,
@@ -493,6 +509,7 @@ def main():
             not_before,
             not_after,
             args.store_event_database,
+            args.scan_for_duplicates,
             args.dump_raw_data,
         )
         asyncio.run(tl.tl_loop())
