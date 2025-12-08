@@ -267,7 +267,7 @@ class TradeRepublicApi:
         if self._ws and self._ws.close_code is None:
             return self._ws
 
-        self.log.info("Connecting to websocket ...")
+        self.log.info("Connecting to websocket...")
         ssl_context = ssl.create_default_context(cafile=certifi.where())
         extra_headers = None
         connection_message = {"locale": self._locale}
@@ -299,7 +299,7 @@ class TradeRepublicApi:
         if not response == "connected":
             raise ValueError(f"Connection Error: {response}")
 
-        self.log.info("Connected to websocket ...")
+        self.log.info("Connected to websocket...")
 
         return self._ws
 
