@@ -141,6 +141,7 @@ class Portfolio:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
         # Get tickers and populate netValue for each ISIN
+        self._log.info("Subscribing to tickers...")
         subscriptions = {}
         for pos in self.portfolio:
             isin = pos["instrumentId"]
@@ -148,6 +149,7 @@ class Portfolio:
                 subscription_id = await self.tr.ticker(isin, exchange=pos["exchangeIds"][0])
                 subscriptions[subscription_id] = pos
 
+        self._log.info("Waiting for tickers...")
         while len(subscriptions) > 0:
             subscription_id, subscription, response = await self.tr.recv()
 

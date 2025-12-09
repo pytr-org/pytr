@@ -166,6 +166,8 @@ class TransactionExporter:
                 kwargs["isin"] = "US36467W1172"
             elif event.isin2 == "GLOBALSTAR INC. O.N.":
                 kwargs["isin"] = "US3789735079"
+            elif event.isin2 == "Magnum Ice Cream":
+                kwargs["isin"] = "NL0015002MS2"
             elif event.isin2 == "Netflix":
                 kwargs["isin"] = "US64110L1061"
             elif event.isin2 == "NVIDIA":
