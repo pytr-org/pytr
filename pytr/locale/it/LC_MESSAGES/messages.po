@@ -82,6 +82,9 @@ msgstr "Importo Lordo"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Trasferimento in entrata"
 
@@ -108,6 +111,9 @@ msgstr "Nome Titolo"
 
 msgid "CSVColumn_Shares"
 msgstr "Azioni"
+
+msgid "CSVColumn_Shares2"
+msgstr "Azioni2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Tasse"

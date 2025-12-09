@@ -82,6 +82,9 @@ msgstr "Bruttobeløb"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Indgående overførsler"
 
@@ -108,6 +111,9 @@ msgstr "Værdipapirnavn"
 
 msgid "CSVColumn_Shares"
 msgstr "Aktier"
+
+msgid "CSVColumn_Shares2"
+msgstr "Aktier2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Skatter"

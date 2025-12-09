@@ -15,7 +15,10 @@
         {
           "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
           "data": {
-            "icon": "logos/US3789734080/v2",
+            "icon": {
+              "asset": "logos/US3789734080/v2",
+              "badge": null
+            },
             "timestamp": "2025-02-11T08:13:48.877Z",
             "status": "executed"
           },
