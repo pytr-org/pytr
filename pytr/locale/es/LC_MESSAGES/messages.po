@@ -82,6 +82,9 @@ msgstr "Valor bruto"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Traspasos entrantes"
 
@@ -108,6 +111,9 @@ msgstr "Nombre del valor"
 
 msgid "CSVColumn_Shares"
 msgstr "Cantidad"
+
+msgid "CSVColumn_Shares2"
+msgstr "Cantidad2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Impuestos"

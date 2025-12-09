@@ -35,6 +35,8 @@ CSVCOLUMN_TO_TRANSLATION_KEY = {
     "shares": "CSVColumn_Shares",
     "fees": "CSVColumn_Fees",
     "taxes": "CSVColumn_Taxes",
+    "isin2": "CSVColumn_ISIN2",
+    "shares2": "CSVColumn_Shares2",
 }
 
 
@@ -42,11 +44,13 @@ class _SimpleTransaction(TypedDict):
     date: str
     type: Union[str, None]
     value: Union[str, float, None]
-    note: Union[str, float, None]
-    isin: Union[str, float, None]
+    note: Union[str, None]
+    isin: Union[str, None]
     shares: Union[str, float, None]
     fees: Union[str, float, None]
     taxes: Union[str, float, None]
+    isin2: Union[str, None]
+    shares2: Union[str, float, None]
 
 
 @dataclass
@@ -111,6 +115,8 @@ class TransactionExporter:
         - `shares`
         - `fees`
         - `taxes`
+        - `isin2`
+        - `shares2`
         """
 
         if event.event_type is None:
@@ -125,6 +131,8 @@ class TransactionExporter:
             "shares": self._decimal_format(event.shares, False),
             "fees": self._decimal_format(-event.fees) if event.fees is not None else None,
             "taxes": self._decimal_format(-event.taxes) if event.taxes is not None else None,
+            "isin2": event.isin2,
+            "shares2": self._decimal_format(event.shares2, False),
         }
 
         if event.event_type == ConditionalEventType.TRADE_INVOICE:
@@ -144,48 +152,49 @@ class TransactionExporter:
                 ev_value = 0
 
             kwargs["type"] = self._translate((PPEventType.BUY if ev_value < 0 else PPEventType.SELL).value)
-        elif event.event_type == ConditionalEventType.SPINOFF:
+        elif event.event_type == PPEventType.SPINOFF:
             if event.shares2:
                 kwargs2 = kwargs.copy()
                 kwargs2["type"] = self._translate(PPEventType.SELL.value)
                 yield self._localize_keys(kwargs2)
 
-            kwargs["type"] = self._translate(PPEventType.BUY.value)
-            kwargs["note"] = event.isin2
-            if event.isin2 == "BlackRock Funding":
+            # kwargs["type"] = self._translate(PPEventType.BUY.value)
+            kwargs["isin2"] = event.isin
+            if event.note == "BlackRock Funding":
                 kwargs["isin"] = "US09290D1019"
-            elif event.isin2 == "BYD":
+            elif event.note == "BYD":
                 kwargs["isin"] = "CNE100000296"
-            elif event.isin2 == "Chipotle":
+            elif event.note == "Chipotle":
                 kwargs["isin"] = "US1696561059"
-            elif event.isin2 == "Eckert & Ziegler":
+            elif event.note == "Eckert & Ziegler":
                 kwargs["isin"] = "DE0005659700"
-            elif event.isin2 == "Enovix Corp. WTS 01.10.26":
+            elif event.note == "Enovix Corp. WTS 01.10.26":
                 kwargs["isin"] = "US2935941318"
-            elif event.isin2 == "Gamestop Corp. WTS 30.10.26":
+            elif event.note == "Gamestop Corp. WTS 30.10.26":
                 kwargs["isin"] = "US36467W1172"
-            elif event.isin2 == "GLOBALSTAR INC. O.N.":
+            elif event.note == "GLOBALSTAR INC. O.N.":
                 kwargs["isin"] = "US3789735079"
-            elif event.isin2 == "Magnum Ice Cream":
+            elif event.note == "Magnum Ice Cream":
                 kwargs["isin"] = "NL0015002MS2"
-            elif event.isin2 == "Netflix":
+            elif event.note == "Netflix":
                 kwargs["isin"] = "US64110L1061"
-            elif event.isin2 == "NVIDIA":
+            elif event.note == "NVIDIA":
                 kwargs["isin"] = "US67066G1040"
-            elif event.isin2 == "Orsted":
+            elif event.note == "Orsted":
                 kwargs["isin"] = "DK0060094928"
-            elif event.isin2 == "ORSTED A/S   -ANR-":
+            elif event.note == "ORSTED A/S   -ANR-":
                 kwargs["isin"] = "DK0064307839"
-            elif event.isin2 == "ROCKET LAB CORP. O.N.":
+            elif event.note == "ROCKET LAB CORP. O.N.":
                 kwargs["isin"] = "US7731211089"
-            elif event.isin2 == "TKMS":
+            elif event.note == "TKMS":
                 kwargs["isin"] = "DE000TKMS001"
-            elif event.isin2 == "Unilever":
+            elif event.note == "Unilever":
                 kwargs["isin"] = "GB00BVZK7T90"
             else:
                 kwargs["isin"] = event.isin2
             if event.shares2:
                 kwargs["shares"] = self._decimal_format(event.shares2, False)
+            kwargs["note"] = event.note
         # Special case for saveback events. Example payload: https://github.com/pytr-org/pytr/issues/116#issuecomment-2377491990
         # With saveback, a small amount already invested into a savings plans is invested again, effectively representing
         # a deposit (you get money from Trade Republic) and then a buy of the related asset.
@@ -215,6 +224,42 @@ class TransactionExporter:
                 kwargs["value"] = self._decimal_format(-event.value)
                 kwargs["isin"] = None
                 kwargs["shares"] = None
+        elif event.event_type == PPEventType.SWAP:
+            if event.note == "BlackRock Funding":
+                kwargs["isin2"] = "US09290D1019"
+            elif event.note == "BYD":
+                kwargs["isin2"] = "CNE100000296"
+            elif event.note == "Chipotle":
+                kwargs["isin2"] = "US1696561059"
+            elif event.note == "Eckert & Ziegler":
+                kwargs["isin2"] = "DE0005659700"
+            elif event.note == "Enovix Corp. WTS 01.10.26":
+                kwargs["isin2"] = "US2935941318"
+            elif event.note == "Gamestop Corp. WTS 30.10.26":
+                kwargs["isin2"] = "US36467W1172"
+            elif event.note == "GLOBALSTAR INC. O.N.":
+                kwargs["isin2"] = "US3789735079"
+            elif event.note == "Magnum Ice Cream":
+                kwargs["isin2"] = "NL0015002MS2"
+            elif event.note == "Netflix":
+                kwargs["isin2"] = "US64110L1061"
+            elif event.note == "NVIDIA":
+                kwargs["isin2"] = "US67066G1040"
+            elif event.note == "Orsted":
+                kwargs["isin2"] = "DK0060094928"
+            elif event.note == "ORSTED A/S   -ANR-":
+                kwargs["isin2"] = "DK0064307839"
+            elif event.note == "ORSTED A/S EM.09/25 DK 10":
+                kwargs["isin2"] = "DK0064307755"
+            elif event.note == "ROCKET LAB CORP. O.N.":
+                kwargs["isin2"] = "US7731211089"
+            elif event.note == "TKMS":
+                kwargs["isin2"] = "DE000TKMS001"
+            elif event.note == "Unilever":
+                kwargs["isin2"] = "GB00BVZK7T90"
+            else:
+                kwargs["isin2"] = event.note
+            kwargs["note"] = event.title
 
         yield self._localize_keys(kwargs)
 

@@ -82,6 +82,9 @@ msgstr "总额"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "总转入"
 
@@ -108,6 +111,9 @@ msgstr "证券名称"
 
 msgid "CSVColumn_Shares"
 msgstr "份额"
+
+msgid "CSVColumn_Shares"
+msgstr "份额2"
 
 msgid "CSVColumn_Taxes"
 msgstr "税款"

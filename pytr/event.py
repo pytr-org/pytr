@@ -20,7 +20,6 @@ class ConditionalEventType(EventType):
 
     PRIVATE_MARKETS_ORDER = auto()
     SAVEBACK = auto()
-    SPINOFF = auto()
     TRADE_INVOICE = auto()
 
 
@@ -36,7 +35,10 @@ class PPEventType(EventType):
     INTEREST_CHARGE = "INTEREST_CHARGE"  # Currently not mapped to
     REMOVAL = "REMOVAL"
     SELL = "SELL"
-    TAXES = "TAXES"  # Currently not mapped to
+    SPINOFF = "SPINOFF"
+    SPLIT = "SPLIT"
+    SWAP = "SWAP"
+    TAXES = "TAXES"
     TAX_REFUND = "TAX_REFUND"
     TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
     TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
@@ -128,19 +130,23 @@ subtitle_event_type_mapping = {
     "Dividende": PPEventType.DIVIDEND,
     "Dividende Wahlweise": PPEventType.DIVIDEND,
     "Tilgung": PPEventType.DIVIDEND,
-    "Vorabpauschale": PPEventType.DIVIDEND,
     # Saveback
     "Saveback": ConditionalEventType.SAVEBACK,
+    # Spinoff
+    "Aktiendividende": PPEventType.SPINOFF,
+    "Spin-off": PPEventType.SPINOFF,
+    "Zwischenvertrieb von Wertpapieren": PPEventType.SPINOFF,
     # Split
-    "Aktiendividende": ConditionalEventType.SPINOFF,
-    "Aktiensplit": ConditionalEventType.SPINOFF,
-    "Reverse Split": ConditionalEventType.SPINOFF,
-    "Spin-off": ConditionalEventType.SPINOFF,
-    "Teilrückzahlung ohne Reduzierung des Poolfaktors": ConditionalEventType.SPINOFF,
-    "Zusammenschluss": ConditionalEventType.SPINOFF,
-    "Zwischenvertrieb von Wertpapieren": ConditionalEventType.SPINOFF,
+    "Aktiensplit": PPEventType.SPLIT,
+    "Bonusaktien": PPEventType.SPLIT,
+    # Swap
+    "Aufruf von Zwischenpapieren": PPEventType.SWAP,
+    "Reverse Split": PPEventType.SWAP,
+    "Teilrückzahlung ohne Reduzierung des Poolfaktors": PPEventType.SWAP,
+    "Zusammenschluss": PPEventType.SWAP,
+    # Taxes
+    "Vorabpauschale": PPEventType.TAXES,
     # Trade invoices
-    "Aufruf von Zwischenpapieren": ConditionalEventType.TRADE_INVOICE,
     "Kauforder": ConditionalEventType.TRADE_INVOICE,
     "Limit-Buy-Order": ConditionalEventType.TRADE_INVOICE,
     "Limit-Sell-Order": ConditionalEventType.TRADE_INVOICE,
@@ -251,9 +257,9 @@ def get_event_logger():
 
 @dataclass
 class Event:
+    event_type: Optional[EventType]
     date: datetime
     title: str
-    event_type: Optional[EventType]
     isin: Optional[str]
     isin2: Optional[str]
     shares: Optional[float]
@@ -275,6 +281,7 @@ class Event:
         """
         date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
         title: str = event_dict["title"]
+        isin2: Optional[str] = None
         subtitle = event_dict["subtitle"]
         eventdesc = f"{title} {subtitle} ({event_dict['id']})"
         sections = event_dict.get("details", {}).get("sections", [{}])
@@ -298,63 +305,70 @@ class Event:
             if event_type is None:
                 print(f"unmatched timeline_legacy_migrated_events: {eventdesc}")
         elif eventTypeStr == "ssp_corporate_action_invoice_shares":
-            subtitle = event_dict.get("subtitle", "")
             if subtitle in [
-                "Spin-off",
-                "Teilrückzahlung ohne Reduzierung des Poolfaktors",
-                "Reverse Split",
-                "Zusammenschluss",
                 "Aktiendividende",
+                "Spin-off",
                 "Zwischenvertrieb von Wertpapieren",
-                "Bonusaktien",
-                "Aktiensplit",
             ]:
-                event_type = ConditionalEventType.SPINOFF
+                event_type = PPEventType.SPINOFF
+            elif subtitle == "Bonusaktien":
+                event_type = PPEventType.SPLIT
+            elif subtitle in ["Reverse Split", "Teilrückzahlung ohne Reduzierung des Poolfaktors", "Zusammenschluss"]:
+                event_type = PPEventType.SWAP
             elif subtitle == "Wertlos":
                 event_type = ConditionalEventType.TRADE_INVOICE
         elif eventTypeStr == "ssp_corporate_action_invoice_cash":
-            if event_dict.get("subtitle", "") == "Aufruf von Zwischenpapieren":
-                event_type = ConditionalEventType.TRADE_INVOICE
-            else:
+            if subtitle == "Aufruf von Zwischenpapieren":
+                event_type = PPEventType.SWAP
+            elif subtitle in [
+                "Aktienprämiendividende",
+                "Bardividende",
+                "Bardividende korrigiert",
+                "Dividende Wahlweise",
+                "Tilgung",
+            ]:
                 event_type = PPEventType.DIVIDEND
+            else:
+                event_type = PPEventType.TAXES
         else:
             event_type = tr_event_type_mapping.get(eventTypeStr, None)
         if event_type is None:
             event_type = title_event_type_mapping.get(title, None)
         if event_type is None:
             event_type = subtitle_event_type_mapping.get(subtitle, None)
-        if event_type is None:
-            if uebersicht_dict:
-                for item in uebersicht_dict.get("data", []):
-                    ititle = item.get("title")
-                    if ititle == "Kartenzahlung":
-                        event_type = PPEventType.REMOVAL
-                    elif ititle in ["Überweisung", "Kartenerstattung", "Überweisen"]:
-                        if sections:
-                            for item in sections:
-                                ititle = item.get("title")
-                                if ititle is None:
-                                    continue
-                                if "gesendet" in ititle:
-                                    event_type = PPEventType.REMOVAL
-                                elif "erhalten" in ititle:
-                                    event_type = PPEventType.DEPOSIT
-                    elif ititle == "Event":
-                        if item.get("detail", {}).get("text", "") == "Bonusaktien":
-                            event_type = PPEventType.DIVIDEND
+        if event_type is None and uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                ititle = item.get("title")
+                if ititle == "Kartenzahlung":
+                    event_type = PPEventType.REMOVAL
+                elif ititle in ["Überweisung", "Kartenerstattung", "Überweisen"]:
+                    if sections:
+                        for item in sections:
+                            ititle = item.get("title")
+                            if ititle is None:
+                                continue
+                            if "gesendet" in ititle:
+                                event_type = PPEventType.REMOVAL
+                            elif "erhalten" in ititle:
+                                event_type = PPEventType.DEPOSIT
+                elif ititle == "Event":
+                    if item.get("detail", {}).get("text", "") == "Bonusaktien":
+                        event_type = PPEventType.DIVIDEND
 
-            if event_type is None and sections:
-                for item in sections:
-                    ititle = item.get("title")
-                    if ititle is None:
-                        continue
-                    elif "Du hast" in ititle and "€" in ititle and "erhalten" in ititle:
-                        event_type = PPEventType.DEPOSIT
-                    elif "Du hast" in ititle and "€" in ititle and "gesendet" in ititle:
-                        event_type = PPEventType.REMOVAL
+        if event_type is None and sections:
+            for item in sections:
+                ititle = item.get("title")
+                if ititle is None:
+                    continue
+                elif "Du hast" in ititle and "€" in ititle and "erhalten" in ititle:
+                    event_type = PPEventType.DEPOSIT
+                elif "Du hast" in ititle and "€" in ititle and "gesendet" in ititle:
+                    event_type = PPEventType.REMOVAL
 
-            if event_type is None and subtitle == "Bonusaktien":
-                event_type = ConditionalEventType.SPINOFF
+        if event_type is PPEventType.SPLIT and subtitle == "Bonusaktien" and uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                if item.get("title") == "Event" and item.get("detail", {}).get("text", "") == "Bonusaktien":
+                    event_type = PPEventType.TAXES
 
         ignoreEvent = False
         if sections:
@@ -400,16 +414,13 @@ class Event:
             get_event_logger().warning(f'Ignoring unknown event "{eventdesc}"')
             get_event_logger().debug("Unknown event %s: %s", eventdesc, json.dumps(event_dict, indent=4))
 
-        isin, isin2, shares, shares2, value, fees, taxes, note = cls._parse_type_dependent_params(
-            event_type, event_dict
-        )
-        return cls(date, title, event_type, isin, isin2, shares, shares2, value, fees, taxes, note)
+        isin, shares, shares2, value, fees, taxes, note = cls._parse_type_dependent_params(event_type, event_dict)
+        return cls(event_type, date, title, isin, isin2, shares, shares2, value, fees, taxes, note)
 
     @classmethod
     def _parse_type_dependent_params(
         cls, event_type: Optional[EventType], event_dict: Dict[Any, Any]
     ) -> Tuple[
-        Optional[str],
         Optional[str],
         Optional[float],
         Optional[float],
@@ -425,15 +436,19 @@ class Event:
             event_dict (Dict[Any, Any]): _description_
 
         Returns:
-            Tuple[Optional[Union[str, float]]]]: fees, isin, note, shares, taxes
+            Tuple[Optional[Union[str, float]]]]: isin, shares, shares2, value, fees, taxes, note
         """
-        isin, isin2, shares, shares2, value, fees, taxes, note = (None,) * 8
+        isin, shares, shares2, value, fees, taxes, note = (None,) * 7
 
-        if isinstance(event_type, ConditionalEventType) or event_type is PPEventType.DIVIDEND:
+        if isinstance(event_type, ConditionalEventType) or event_type in [
+            PPEventType.DIVIDEND,
+            PPEventType.SPINOFF,
+            PPEventType.SPLIT,
+            PPEventType.SWAP,
+            PPEventType.TAXES,
+        ]:
             isin = cls._parse_isin(event_dict)
-            isin2, shares, shares2, value, fees, taxes, note = cls._parse_shares_value_fees_taxes_note(
-                event_type, event_dict
-            )
+            shares, shares2, value, fees, taxes, note = cls._parse_shares_value_fees_taxes_note(event_type, event_dict)
         else:
             value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
 
@@ -442,7 +457,7 @@ class Event:
             elif event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
                 note = cls._parse_card_note(event_dict)
 
-        return isin, isin2, shares, shares2, value, fees, taxes, note
+        return isin, shares, shares2, value, fees, taxes, note
 
     @staticmethod
     def _parse_isin(event_dict: Dict[Any, Any]) -> str:
@@ -477,7 +492,6 @@ class Event:
     def _parse_shares_value_fees_taxes_note(
         cls, event_type: Optional[EventType], event_dict: Dict[Any, Any]
     ) -> Tuple[
-        Optional[str],
         Optional[float],
         Optional[float],
         Optional[float],
@@ -494,7 +508,6 @@ class Event:
             Tuple[Optional[float]]: shares, fees, taxes
         """
         (
-            isin2,
             shares,
             shares2,
             fees,
@@ -510,7 +523,7 @@ class Event:
             wertpapier_dict2,
             quotation_dict,
             order_dict,
-        ) = (None,) * 16
+        ) = (None,) * 15
 
         value: Optional[float] = (
             v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
@@ -575,12 +588,22 @@ class Event:
             pref_locale = (
                 "en"
                 if (
-                    event_type in [PPEventType.DIVIDEND, ConditionalEventType.SAVEBACK, ConditionalEventType.SPINOFF]
+                    event_type in [PPEventType.DIVIDEND, ConditionalEventType.SAVEBACK, PPEventType.SPINOFF]
                     or eventTypeStr
                     in [
                         "benefits_spare_change_execution",
                     ]
-                    or subtitle in ["Wertlos", "Aufruf von Zwischenpapieren", "Round up"]
+                    or subtitle
+                    in [
+                        "Wertlos",
+                        "Aufruf von Zwischenpapieren",
+                        "Round up",
+                        "Aktiensplit",
+                        "Bonusaktien",
+                        "Reverse Split",
+                        "Teilrückzahlung ohne Reduzierung des Poolfaktors",
+                        "Zusammenschluss",
+                    ]
                 )
                 and shares_dict["title"] in ["Aktien", "Aktien hinzugefügt", "Aktien entfernt"]
                 else "de"
@@ -627,7 +650,7 @@ class Event:
             ]
             and title != "Private Equity"
             and subtitle != "Aktienprämiendividende"
-            and event_type != PPEventType.DIVIDEND
+            and event_type not in [PPEventType.DIVIDEND, PPEventType.TAXES]
         ):
             get_event_logger().warning("Could not parse shares from %s", eventdesc)
             get_event_logger().debug("Failed to parse shares from: %s", json.dumps(event_dict, indent=4))
@@ -640,7 +663,7 @@ class Event:
             dump_dict["type"] = "fees"
             fees = cls._parse_float_from_text_value(fees_dict.get("detail", {}).get("text", ""), dump_dict)
         elif (
-            event_type not in [PPEventType.DIVIDEND, ConditionalEventType.SPINOFF]
+            event_type not in [PPEventType.DIVIDEND, PPEventType.SPINOFF]
             and eventTypeStr
             not in [
                 "ssp_corporate_action_invoice_cash",
@@ -648,7 +671,17 @@ class Event:
                 "ACQUISITION_TRADE_PERK",
             ]
             and title not in ["Aktien-Bonus"]
-            and subtitle not in ["Wertlos", "Aufruf von Zwischenpapieren"]
+            and subtitle
+            not in [
+                "Wertlos",
+                "Aufruf von Zwischenpapieren",
+                "Aktiensplit",
+                "Bonusaktien",
+                "Reverse Split",
+                "Teilrückzahlung ohne Reduzierung des Poolfaktors",
+                "Vorabpauschale",
+                "Zusammenschluss",
+            ]
         ):
             get_event_logger().warning("Could not parse fees from %s", eventdesc)
             get_event_logger().debug("Failed to parse fees from %s", json.dumps(event_dict, indent=4))
@@ -671,17 +704,19 @@ class Event:
                 shares = shares - (abs(fees) / 100)
             note = event_dict["subtitle"]
 
-        if (event_type == ConditionalEventType.SPINOFF or subtitle == "Wertlos") and value is None:
+        if (event_type == PPEventType.SPINOFF or subtitle == "Wertlos") and value is None:
             value = 0
 
-        if subtitle == "Aktiensplit":
+        if event_type in [PPEventType.SPLIT, PPEventType.SWAP] and value is None:
             value = 0
 
-        if wertpapier_dict2:
-            isin2 = wertpapier_dict2["detail"]["text"]
-        elif wertpapier_dict:
-            isin2 = wertpapier_dict["detail"]["text"]
-        return isin2, shares, shares2, value, fees, taxes, note
+        if event_type in [PPEventType.SPINOFF, PPEventType.SWAP]:
+            if wertpapier_dict2:
+                note = wertpapier_dict2["detail"]["text"]
+            elif wertpapier_dict:
+                note = wertpapier_dict["detail"]["text"]
+
+        return shares, shares2, value, fees, taxes, note
 
     @classmethod
     def _parse_taxes(cls, event_dict: Dict[Any, Any]) -> Optional[float]:

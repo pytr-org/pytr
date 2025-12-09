@@ -82,6 +82,9 @@ msgstr "Hrubá suma"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Prichádzajúce prevod"
 
@@ -108,6 +111,9 @@ msgstr "Názov cenného papiera"
 
 msgid "CSVColumn_Shares"
 msgstr "Akcie"
+
+msgid "CSVColumn_Shares"
+msgstr "Akcie2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Daň"

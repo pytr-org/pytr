@@ -82,6 +82,9 @@ msgstr "Kwota brutto"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Przelewy przychodzące"
 
@@ -108,6 +111,9 @@ msgstr "Nazwa waloru"
 
 msgid "CSVColumn_Shares"
 msgstr "Akcje"
+
+msgid "CSVColumn_Shares2"
+msgstr "Akcje2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Podatki"

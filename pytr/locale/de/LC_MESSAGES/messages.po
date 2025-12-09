@@ -31,6 +31,15 @@ msgstr "Entnahme"
 msgid "SELL"
 msgstr "Verkauf"
 
+msgid "SPINOFF"
+msgstr "Spinoff"
+
+msgid "SPLIT"
+msgstr "Split"
+
+msgid "SWAP"
+msgstr "Swap"
+
 msgid "TAXES"
 msgstr "Steuern"
 
@@ -82,6 +91,9 @@ msgstr "Bruttobetrag"
 msgid "CSVColumn_ISIN"
 msgstr "ISIN"
 
+msgid "CSVColumn_ISIN2"
+msgstr "ISIN2"
+
 msgid "CSVColumn_InboundTransferals"
 msgstr "Zugänge"
 
@@ -108,6 +120,9 @@ msgstr "Wertpapiername"
 
 msgid "CSVColumn_Shares"
 msgstr "Stück"
+
+msgid "CSVColumn_Shares2"
+msgstr "Stück2"
 
 msgid "CSVColumn_Taxes"
 msgstr "Steuern"

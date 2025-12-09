@@ -109,6 +109,9 @@ msgstr "Имя ценной бумаги"
 msgid "CSVColumn_Shares"
 msgstr "Акций"
 
+msgid "CSVColumn_Shares2"
+msgstr "Акций2"
+
 msgid "CSVColumn_Taxes"
 msgstr "Налоги"
 
