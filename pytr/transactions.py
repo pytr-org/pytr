@@ -180,6 +180,8 @@ class TransactionExporter:
                 kwargs["isin"] = "US7731211089"
             elif event.isin2 == "TKMS":
                 kwargs["isin"] = "DE000TKMS001"
+            elif event.isin2 == "Unilever":
+                kwargs["isin"] = "GB00BVZK7T90"
             else:
                 kwargs["isin"] = event.isin2
             if event.shares2:
