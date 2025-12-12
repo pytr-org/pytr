@@ -466,6 +466,8 @@ class Event:
                 break
             if section.get("type", {}) == "header":
                 isin2 = section.get("data", {}).get("icon")
+                if isinstance(isin2, dict):
+                    isin2 = isin2.get("asset", "")
                 isin2 = isin2[isin2.find("/") + 1 :]
                 isin2 = isin2[: isin2.find("/")]
                 break
