@@ -1407,6 +1407,24 @@ def test_events():
             ],
         },
         {
+            "filename": "spinoff_only_taxes.json",
+            "event_type": PPEventType.TAXES,
+            "title": "Gamestop Corp. WTS 30.10.26",
+            "isin": "US36467W1172",
+            "value": -0.56,
+            "taxes": -0.56,
+            "transactions": [
+                {
+                    "Datum": "2025-12-19T15:24:37",
+                    "Typ": "Steuern",
+                    "Wert": -0.56,
+                    "Notiz": "Gamestop Corp. WTS 30.10.26",
+                    "ISIN": "US36467W1172",
+                    "Steuern": 0.56,
+                }
+            ],
+        },
+        {
             "filename": "steuerkorrektur.json",
             "event_type": PPEventType.TAX_REFUND,
             "title": "Steuerkorrektur",
