@@ -369,6 +369,10 @@ class Event:
             for item in uebersicht_dict.get("data", []):
                 if item.get("title") == "Event" and item.get("detail", {}).get("text", "") == "Bonusaktien":
                     event_type = PPEventType.TAXES
+        if event_type is PPEventType.SPINOFF and subtitle == "Spin-off" and uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                if item.get("title") == "Event" and item.get("detail", {}).get("text", "") == "Spin-off":
+                    event_type = PPEventType.TAXES
 
         ignoreEvent = False
         if sections:
@@ -666,20 +670,21 @@ class Event:
             event_type not in [PPEventType.DIVIDEND, PPEventType.SPINOFF]
             and eventTypeStr
             not in [
+                "ACQUISITION_TRADE_PERK",
                 "ssp_corporate_action_invoice_cash",
                 "ssp_corporate_action_invoice_shares",
-                "ACQUISITION_TRADE_PERK",
             ]
             and title not in ["Aktien-Bonus"]
             and subtitle
             not in [
-                "Wertlos",
-                "Aufruf von Zwischenpapieren",
                 "Aktiensplit",
+                "Aufruf von Zwischenpapieren",
                 "Bonusaktien",
                 "Reverse Split",
+                "Spin-off",
                 "Teilrückzahlung ohne Reduzierung des Poolfaktors",
                 "Vorabpauschale",
+                "Wertlos",
                 "Zusammenschluss",
             ]
         ):
