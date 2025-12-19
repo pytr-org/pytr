@@ -151,7 +151,12 @@ class Portfolio:
 
         self._log.info("Waiting for tickers...")
         while len(subscriptions) > 0:
-            subscription_id, subscription, response = await self.tr.recv()
+            try:
+                subscription_id, subscription, response = await asyncio.wait_for(self.tr.recv(), 5)
+            except asyncio.TimeoutError:
+                print("Timed out waiting for tickers")
+                print(f"Remaining subscriptions: {subscriptions}")
+                break
 
             if subscription["type"] == "ticker":
                 await self.tr.unsubscribe(subscription_id)
@@ -173,12 +178,15 @@ class Portfolio:
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
-        # sanitize - saw this happen e.g. during capital measures when some instrument is not actively listed
+        # sanitize - it can happen that we get no price, e.g. we ran into a timeout above or some instrument
+        # does not deliver a price. Then we kick it out of the list and log this.
+        portfolionew = []
         for pos in self.portfolio:
             if "price" not in pos:
-                print(f"Missing price for {pos['name']} ({pos['instrumentId']}), setting to 0.")
-                pos["price"] = 0.0
-                pos["netValue"] = Decimal("0.0")
+                print(f"Missing price for {pos['name']} ({pos['instrumentId']}), removing from result.")
+            else:
+                portfolionew.append(pos)
+        self.portfolio = portfolionew
 
     def _get_sort_func(self):
         if self.sort_by_column:
