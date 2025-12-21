@@ -142,7 +142,7 @@ class Timeline:
                 self.log.info(f"Timeline transactions: Received #{self.num_timelines} (last relevant).")
                 if self.dump_raw_data:
                     with (self.output_path / "timeline_transactions.json").open("w") as f:
-                        json.dump(self.timeline_transactions, f, indent=4)
+                        json.dump(list(self.timeline_transactions.values()), f, indent=2)
                 await self.get_next_timeline_activity_log(None)
 
     async def get_next_timeline_activity_log(self, response):
@@ -177,7 +177,7 @@ class Timeline:
                 self.log.info(f"Timeline activity log: Received #{self.num_timelines} (last relevant).")
                 if self.dump_raw_data:
                     with (self.output_path / "timeline_activities.json").open("w") as f:
-                        json.dump(self.timeline_activities, f, indent=4)
+                        json.dump(list(self.timeline_activities.values()), f, indent=2)
 
                 duplicates = set(self.timeline_transactions) & set(self.timeline_activities)
                 if duplicates:
@@ -219,7 +219,7 @@ class Timeline:
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
                     + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]} {msg}"
                 )
-                self.log.debug("%s: %s", msg, json.dumps(event, indent=4))
+                self.log.debug("%s: %s", msg, json.dumps(event, indent=2))
 
             if self.requested_detail % MAX_EVENT_REQUEST_BATCH == 0 and (
                 (self.received_detail + self.skipped_detail) < self.requested_detail
@@ -247,7 +247,7 @@ class Timeline:
         event = self.timeline_details.get(subscription_id)
 
         if event is None:
-            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=4)}")
+            self.log.warning(f"Ignoring unrequested event response {json.dumps(response, indent=2)}")
             self.skipped_detail += 1
             self.finish_if_done()
             return
