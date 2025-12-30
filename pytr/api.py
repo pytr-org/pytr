@@ -696,7 +696,7 @@ class TradeRepublicApi:
     ):
         parameters = {
             "id": savings_plan_id,
-            "type": "createSavingsPlan",
+            "type": "changeSavingsPlan",
             "warningsShown": warnings_shown if warnings_shown else [],
             "parameters": {
                 "amount": amount,
