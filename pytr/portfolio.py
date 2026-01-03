@@ -200,18 +200,18 @@ class Portfolio:
                         locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                     return lambda x: locale.strxfrm(x["instrumentId"].lower())
                 case "quantity":
-                    return lambda x: x["netSize"]
+                    return lambda x: Decimal(x["netSize"])
                 case "price":
-                    return lambda x: x["price"]
+                    return lambda x: Decimal(x["price"])
                 case "avgCost":
-                    return lambda x: x["averageBuyIn"]
+                    return lambda x: Decimal(x["averageBuyIn"])
                 case "netValue":
-                    return lambda x: x["netValue"]
+                    return lambda x: Decimal(x["netValue"])
                 case _ as m:
                     print(f"Column {m} does not exist for portfolio list, reverting to default sorting by netValue.")
-                    return lambda x: x["netValue"]
+                    return lambda x: Decimal(x["netValue"])
         else:
-            return lambda x: x["netValue"]
+            return lambda x: Decimal(x["netValue"])
 
     def portfolio_to_csv(self):
         if self.output is None:
