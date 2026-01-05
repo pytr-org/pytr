@@ -36,25 +36,25 @@ you if you don't already have one.
 To install uv on OSX/Linux, run:
 
 ```console
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
+ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 On Windows, run:
 
 ```console
-> powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 Then, to run the latest released version of pytr:
 
 ```console
-$ uvx pytr@latest
+ uvx pytr@latest
 ```
 
 If you want to use the cutting-edge version, use this command instead:
 
 ```console
-$ uvx --with git+https://github.com/pytr-org/pytr.git pytr
+ uvx --with git+https://github.com/pytr-org/pytr.git pytr
 ```
 
 ## Usage
@@ -109,9 +109,9 @@ device reset - a private key will be generated that pins your "device". The priv
 procedure will log you out from your mobile device.
 
 ```sh
-$ pytr login
-$ # or
-$ pytr login --phone_no +49123456789 --pin 1234
+ pytr login
+ # or
+ pytr login --phone_no +49123456789 --pin 1234
 ```
 
 If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain
@@ -124,19 +124,19 @@ the phone number, the second line the pin). If the file doesn't exist pytr will 
 Clone the repository:
 
 ```console
-$ git clone https://github.com/pytr-org/pytr.git
+ git clone https://github.com/pytr-org/pytr.git
 ```
 
 Install dependencies:
 
 ```console
-$ uv sync
+ uv sync
 ```
 
 Run the tests to ensure everything is set up correctly:
 
 ```console
-$ uv run pytest
+ uv run pytest
 ```
 
 ### Linting and Code Formatting
@@ -172,7 +172,7 @@ checks and type checks.
 This readme contains a few automatically generated bits. To keep them up to date, simply run the following command: (Never start it from an activated venv!)
 
 ```console
-$ uvx mksync@0.1.5 -i README.md
+ uvx mksync@0.1.5 -i README.md
 ```
 
 ## License
