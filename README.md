@@ -35,32 +35,32 @@ you if you don't already have one.
 
 To install uv on OSX/Linux, run:
 
-```console
+```sh
  curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 On Windows, run:
 
-```console
+```sh
  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 Then, to run the latest released version of pytr:
 
-```console
+```sh
  uvx pytr@latest
 ```
 
 If you want to use the cutting-edge version, use this command instead:
 
-```console
+```sh
  uvx --with git+https://github.com/pytr-org/pytr.git pytr
 ```
 
 ## Usage
 
 <!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
-```console
+```sh
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
             {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,completion} ...
 
@@ -123,19 +123,19 @@ the phone number, the second line the pin). If the file doesn't exist pytr will 
 
 Clone the repository:
 
-```console
+```sh
  git clone https://github.com/pytr-org/pytr.git
 ```
 
 Install dependencies:
 
-```console
+```sh
  uv sync
 ```
 
 Run the tests to ensure everything is set up correctly:
 
-```console
+```sh
  uv run pytest
 ```
 
@@ -171,7 +171,7 @@ checks and type checks.
 
 This readme contains a few automatically generated bits. To keep them up to date, simply run the following command: (Never start it from an activated venv!)
 
-```console
+```sh
  uvx mksync@0.1.5 -i README.md
 ```
 
