@@ -67,6 +67,8 @@ event_subfolder_mapping = {
     "ORDER_REJECTED": "Trades",
     "TRADE_CORRECTED": "Trades",
     "TRADE_INVOICE": "Trades",
+    "TRADING_ORDER_CANCELLED": "Trades",
+    "TRADING_ORDER_CREATED": "Trades",
     "private_markets_order_created": "Trades",
     "trading_order_cancelled": "Trades",
     "trading_order_created": "Trades",
@@ -241,8 +243,6 @@ class DL:
             if section["type"] != "documents":
                 continue
 
-            has_docs = True
-
             subfolder = None
             eventType = event.get("eventType", None)
             title = event.get("title", "")
@@ -283,6 +283,12 @@ class DL:
                 self.log.warning(f"no subfolder mapping for {eventdesc}")
 
             for doc in section["data"]:
+                if isinstance(doc["action"]["payload"], dict):
+                    self.log.warning(
+                        f'Download of document with new API-Path URL "{doc["action"]["payload"]["path"]}" is not possible. (yet?)'
+                    )
+                    continue
+                has_docs = True
                 timestamp_str = event["timestamp"]
                 if timestamp_str[-3] != ":":
                     timestamp_str = timestamp_str[:-2] + ":" + timestamp_str[-2:]

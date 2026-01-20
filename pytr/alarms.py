@@ -135,6 +135,7 @@ class Alarms:
             writer.writerows(
                 [alarms_dict_from_alarms_row(key, value, max_values) for key, value in alarms_per_ISIN.items()]
             )
+            self.fp.close()
 
     def get(self):
         cur_isin = None

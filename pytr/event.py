@@ -283,7 +283,9 @@ class Event:
         Returns:
             Event: Event object
         """
-        date: datetime = datetime.fromisoformat(event_dict["timestamp"][:19])
+        ts = event_dict["timestamp"]
+        ts = ts[:-2] + ":" + ts[-2:]
+        date: datetime = datetime.fromisoformat(ts)
         title: str = event_dict["title"]
         isin2: Optional[str] = None
         subtitle = event_dict["subtitle"]
@@ -373,9 +375,12 @@ class Event:
             for item in uebersicht_dict.get("data", []):
                 if item.get("title") == "Event" and item.get("detail", {}).get("text", "") == "Bonusaktien":
                     event_type = PPEventType.TAXES
-        if event_type is PPEventType.SPINOFF and subtitle == "Spin-off" and uebersicht_dict:
+        if event_type is PPEventType.SPINOFF and subtitle in ["Aktiendividende", "Spin-off"] and uebersicht_dict:
             for item in uebersicht_dict.get("data", []):
-                if item.get("title") == "Event" and item.get("detail", {}).get("text", "") == "Spin-off":
+                if item.get("title") == "Event" and item.get("detail", {}).get("text", "") in [
+                    "Aktiendividende",
+                    "Spin-off",
+                ]:
                     event_type = PPEventType.TAXES
 
         ignoreEvent = False
@@ -681,6 +686,7 @@ class Event:
             and title not in ["Aktien-Bonus"]
             and subtitle
             not in [
+                "Aktiendividende",
                 "Aktiensplit",
                 "Aufruf von Zwischenpapieren",
                 "Bonusaktien",
