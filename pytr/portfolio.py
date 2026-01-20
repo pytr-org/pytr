@@ -110,17 +110,27 @@ class Portfolio:
 
             await self.tr.unsubscribe(subscription_id)
 
+        # a way to ignore instruments from portfolio
+        # e.g. set to ["US30303M1027"] if you want to exclude Meta Platforms (A)
+        # this should be exposed as a parameter...
+        instruments_to_ignore = []
+
         isins = set()
+        portfolio = list()
         for pos in self.portfolio:
-            isins.add(pos["instrumentId"])
+            if pos["instrumentId"] not in instruments_to_ignore:
+                portfolio.append(pos)
+                isins.add(pos["instrumentId"])
+        self.portfolio = portfolio
 
         # extend portfolio with watchlist elements
         if self.watchlist:
             for pos in self.watchlist:
-                isin = pos["instrumentId"]
-                if isin not in isins:
-                    isins.add(isin)
-                    self.portfolio.append(pos)
+                if pos["instrumentId"] not in instruments_to_ignore:
+                    isin = pos["instrumentId"]
+                    if isin not in isins:
+                        isins.add(isin)
+                        self.portfolio.append(pos)
 
         # Populate name for each ISIN
         subscriptions = {}

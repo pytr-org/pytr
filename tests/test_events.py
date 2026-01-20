@@ -43,6 +43,24 @@ def test_events():
             ],
         },
         {
+            "filename": "aktien_entfernt2.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "WORLDLINE S.A. ANR",
+            "isin": "FR0014015MS9",
+            "shares": 0.299376,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2026-04-03T10:48:40",
+                    "Typ": "Verkauf",
+                    "Wert": 0,
+                    "Notiz": "WORLDLINE S.A. ANR",
+                    "ISIN": "FR0014015MS9",
+                    "Stück": 0.299376,
+                }
+            ],
+        },
+        {
             "filename": "aktienbonus.json",
             "event_type": ConditionalEventType.SAVEBACK,
             "title": "Aktien-Bonus",
@@ -405,6 +423,46 @@ def test_events():
                     "Notiz": "BYD",
                     "ISIN": "CNE100000296",
                     "Steuern": 8.67,
+                }
+            ],
+        },
+        {
+            "filename": "bond_kauf.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "Juli 2040",
+            "isin": "DE0001135366",
+            "shares": 82.27,
+            "value": -100.99,
+            "fees": 1.0,
+            "transactions": [
+                {
+                    "Datum": "2025-07-18T08:04:42",
+                    "Typ": "Kauf",
+                    "Wert": -100.99,
+                    "Notiz": "Juli 2040",
+                    "ISIN": "DE0001135366",
+                    "Stück": 82.27,
+                    "Gebühren": -1.0,
+                }
+            ],
+        },
+        {
+            "filename": "bond_verkauf.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "Juli 2040",
+            "isin": "DE0001135366",
+            "shares": 82.27,
+            "value": 98.21,
+            "fees": 1.0,
+            "transactions": [
+                {
+                    "Datum": "2026-03-26T06:48:09",
+                    "Typ": "Verkauf",
+                    "Wert": 98.21,
+                    "Notiz": "Juli 2040",
+                    "ISIN": "DE0001135366",
+                    "Stück": 82.27,
+                    "Gebühren": -1.0,
                 }
             ],
         },
@@ -1213,6 +1271,9 @@ def test_events():
             ],
         },
         {
+            "filename": "private_markets_verkaufs_order_erstellt.json",
+        },
+        {
             "filename": "reverse_split.json",
             "event_type": PPEventType.SWAP,
             "title": "Globalstar",
@@ -1779,6 +1840,46 @@ def test_events():
             ],
         },
         {
+            "filename": "zwischenpapiere2.json",
+            "event_type": PPEventType.SWAP,
+            "title": "WORLDLINE S.A. ANR",
+            "isin": "FR0014015MS9",
+            "shares": 1,
+            "shares2": 6,
+            "value": -1.21,
+            "note": "Worldline",
+            "transactions": [
+                {
+                    "Datum": "2026-04-03T09:37:06",
+                    "Typ": "Swap",
+                    "Wert": -1.21,
+                    "ISIN": "FR0014015MS9",
+                    "Notiz": "WORLDLINE S.A. ANR",
+                    "Stück": 1.0,
+                    "ISIN2": "FR0011981968",
+                    "Stück2": 6.0,
+                },
+            ],
+        },
+        {
+            "filename": "zwischenpapiere3.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "Worldline",
+            "isin": "FR0011981968",
+            "shares": 1294,
+            "value": -261.39,
+            "transactions": [
+                {
+                    "Datum": "2026-04-03T10:38:58",
+                    "Typ": "Kauf",
+                    "Wert": -261.39,
+                    "ISIN": "FR0011981968",
+                    "Notiz": "Worldline",
+                    "Stück": 1294.0,
+                },
+            ],
+        },
+        {
             "filename": "zwischenpapiere_no_eventType.json",
             "event_type": PPEventType.SWAP,
             "title": "ORSTED A/S   -ANR-",
@@ -1840,6 +1941,26 @@ def test_events():
                 }
             ],
         },
+        {
+            "filename": "zwischenvertrieb2.json",
+            "event_type": PPEventType.SPINOFF,
+            "title": "Worldline",
+            "isin": "FR0011981968",
+            "shares": 1.299376,
+            "value": 0,
+            "note": "Worldline",
+            "transactions": [
+                {
+                    "Datum": "2026-03-17T10:45:33",
+                    "Typ": "Spinoff",
+                    "Wert": 0,
+                    "Notiz": "Worldline",
+                    "ISIN": "FR0014015MS9",
+                    "Stück": 1.299376,
+                    "ISIN2": "FR0011981968",
+                }
+            ],
+        },
     ]
 
     # Create an instance of EventCsvFormatter
@@ -1853,8 +1974,14 @@ def test_events():
         # Parse the JSON data using the from_dict function
         event = Event.from_dict(sample_data)
 
-        # Assert the expected values
+        # Assert event type
         assert event.event_type == row.get("event_type")
+
+        # if event type is none, nothing else is to check, results will be discarded
+        if row.get("event_type") is None:
+            continue
+
+        # Assert the expected values
         assert event.title == row.get("title")
         assert event.isin == row.get("isin")
         assert event.isin2 == row.get("isin2")

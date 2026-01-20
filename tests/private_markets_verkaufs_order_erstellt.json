@@ -1,0 +1,183 @@
+{
+    "id": "86417e07-754d-45a6-a429-72c1437bc159",
+    "timestamp": "2026-03-26T06:48:51.517+0000",
+    "title": "Private Equity",
+    "icon": "logos/LU3176111881/v2",
+    "subtitle": "Verkaufsorder",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "86417e07-754d-45a6-a429-72c1437bc159"
+    },
+    "eventType": "PRIVATE_MARKET_FUND_ORDER_RECEIVED",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineActivity",
+    "details": {
+      "id": "86417e07-754d-45a6-a429-72c1437bc159",
+      "sections": [
+        {
+          "title": "Du erhältst 104,10 €",
+          "data": {
+            "icon": {
+              "asset": "logos/LU3176111881/v2",
+              "badge": null
+            },
+            "timestamp": "2026-03-26T06:48:51.517335Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "LU3176111881",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Order erstellt",
+          "description": "Ausführung bis 9 Juni geplant. Der Betrag ist abhängig vom Fondskurs zum Ausführungszeitpunkt. Eine Ausführung kann nicht garantiert werden.",
+          "type": "banner"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Verkaufen",
+              "detail": {
+                "text": "Erstellt",
+                "functionalStyle": "CREATED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Private Equity",
+                "displayValue": {
+                  "text": "Private Equity"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "106,10 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "106,10 €",
+                              "displayValue": {
+                                "text": "106,10 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "106,10 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Abzug für 1 %-Bonus",
+              "detail": {
+                "text": "1,00 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Abzug für 1 %-Bonus",
+                        "type": "title"
+                      },
+                      {
+                        "text": "Du hast einen Bonus erhalten, der abgezogen werden muss, da du vor 18 Sept. 2027 verkaufst.",
+                        "type": "text"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "104,10 €",
+                "displayValue": {
+                  "text": "104,10 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Löschen",
+          "data": {
+            "title": "Löschen",
+            "action": {
+              "payload": "b7a2dcd2-daf5-4c4b-9f05-7f8b36a54136",
+              "type": "deletePrivateMarketsOrder"
+            }
+          },
+          "type": "actionButtons"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "b5ac9e63-b975-4a94-93dc-5652c0333522",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}
