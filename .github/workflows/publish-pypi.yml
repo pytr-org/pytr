@@ -37,9 +37,9 @@ jobs:
       - name: Mypy type check
         run: uv run mypy .
       - name: Print README.md
-        run: echo "\"$(cat README.md)"\""
+        run: echo "\"$(cat README.md)\""
       - name: Print uvx
-        run: echo "\"$(uvx mksync@0.1.5 README.md)"\""
+        run: echo "\"$(uvx mksync@0.1.5 README.md)\""
       - name: Check if README.md automatically generated content is up to date
         run: diff -u -Z README.md <(uvx mksync@0.1.5 README.md | sed -e '$a\')
 
