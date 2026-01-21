@@ -178,4 +178,3 @@ $ uvx mksync@0.1.5 -i README.md
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
