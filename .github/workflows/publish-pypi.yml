@@ -36,12 +36,8 @@ jobs:
         run: uv run ruff format --check --diff
       - name: Mypy type check
         run: uv run mypy .
-      - name: Print README.md
-        run: echo "\"$(cat README.md)\""
-      - name: Print uvx
-        run: echo "\"$(uvx mksync@0.1.5 README.md | sed -e '$a\')\""
       - name: Check if README.md automatically generated content is up to date
-        run: diff -u -Z README.md <(uvx mksync@0.1.5 README.md | sed -e '$a\')
+        run: diff -u -Z README.md <(uvx mksync@0.1.5 README.md)
 
   build-n-publish:
     name: Build and publish Python distributions to PyPI
