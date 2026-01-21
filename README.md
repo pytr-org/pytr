@@ -60,7 +60,7 @@ If you want to use the cutting-edge version, use this command instead:
 ## Usage
 
 <!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
-```sh
+```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
             {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,completion} ...
 
