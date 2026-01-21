@@ -78,7 +78,7 @@ Commands:
                                         export account transactions (account_transactions.csv) and JSON files with all
                                         events (events_with_documents.json and other_events.json)
     export_transactions                 Read data from the TR timeline and export transactions into a file, e.g. as csv
-                                        into account_transactions.csv.
+                                        into account_transactions.csv.df
     get_price_alarms                    Get current price alarms
     set_price_alarms                    Set new price alarms
     completion                          Print shell tab completion
