@@ -37,7 +37,7 @@ jobs:
       - name: Mypy type check
         run: uv run mypy .
       - name: Check if README.md automatically generated content is up to date
-        run: diff -u -Z <(cat README.md | sed -z '$s/\n*$//') <(uvx mksync@0.1.5 README.md | sed -z '$s/\n*$//')
+        run: diff -u <(cat README.md | sed -z '$s/\n*$//') <(uvx mksync@0.1.5 README.md | sed -z '$s/\n*$//')
 
   build-n-publish:
     name: Build and publish Python distributions to PyPI
