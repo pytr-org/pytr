@@ -257,6 +257,8 @@ class TransactionExporter:
                 kwargs["isin2"] = "DE000TKMS001"
             elif event.note == "Unilever":
                 kwargs["isin2"] = "GB00BVZK7T90"
+            elif event.note == "MSCI World USD (Acc)" and event.isin == "LU1781541179":
+                kwargs["isin2"] = "IE000BI8OT95"
             else:
                 kwargs["isin2"] = event.note
             kwargs["note"] = event.title
