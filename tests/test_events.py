@@ -1894,6 +1894,15 @@ def test_events():
                 }
             ],
         },
+        {
+            "filename": "transfer_out_canceled.json",
+            "event_type": None,  # Canceled transfers are ignored
+            "title": "MSCI World USD (Dist)",
+            "isin": None,
+            "shares": None,
+            "value": None,
+            "transactions": [],  # No transactions for canceled events
+        },
     ]
 
     # Create an instance of EventCsvFormatter

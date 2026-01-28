@@ -423,6 +423,13 @@ class Event:
 
         if event_type is not None and event_dict.get("status", "").lower() == "canceled":
             event_type = None
+        elif event_type is not None and sections:
+            for section in sections:
+                if section.get("type") == "header":
+                    header_status = section.get("data", {}).get("status", "").lower()
+                    if header_status == "canceled":
+                        event_type = None
+                    break
         elif (
             event_type is None
             and eventTypeStr not in events_known_ignored
