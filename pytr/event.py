@@ -40,8 +40,8 @@ class PPEventType(EventType):
     SWAP = "SWAP"
     TAXES = "TAXES"
     TAX_REFUND = "TAX_REFUND"
-    TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
-    TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
+    TRANSFER_IN = "TRANSFER_IN"
+    TRANSFER_OUT = "TRANSFER_OUT"
 
 
 tr_event_type_mapping = {
@@ -156,6 +156,9 @@ subtitle_event_type_mapping = {
     "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
     "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
     "Wertlos": ConditionalEventType.TRADE_INVOICE,
+    # Transfers
+    "Aktien erhalten": PPEventType.TRANSFER_IN,
+    "Aktien übertragen": PPEventType.TRANSFER_OUT,
 }
 
 events_known_ignored = [
@@ -336,6 +339,18 @@ class Event:
             event_type = title_event_type_mapping.get(title, None)
         if event_type is None:
             event_type = subtitle_event_type_mapping.get(subtitle, None)
+        # Handle "Wertpapiertransfer" which can be either TRANSFER_IN or TRANSFER_OUT
+        if event_type is None and subtitle == "Wertpapiertransfer" and sections:
+            for item in sections:
+                ititle = item.get("title")
+                if ititle is None:
+                    continue
+                if "Aktien erhalten" in ititle or "erhalten" in ititle:
+                    event_type = PPEventType.TRANSFER_IN
+                    break
+                elif "Aktien gesendet" in ititle or "gesendet" in ititle:
+                    event_type = PPEventType.TRANSFER_OUT
+                    break
         if event_type is None and uebersicht_dict:
             for item in uebersicht_dict.get("data", []):
                 ititle = item.get("title")
@@ -453,6 +468,10 @@ class Event:
         ]:
             isin = cls._parse_isin(event_dict)
             shares, shares2, value, fees, taxes, note = cls._parse_shares_value_fees_taxes_note(event_type, event_dict)
+        elif event_type in [PPEventType.TRANSFER_IN, PPEventType.TRANSFER_OUT]:
+            isin = cls._parse_isin(event_dict)
+            shares = cls._parse_transfer_shares(event_dict)
+            value = 0  # Transfers have no monetary value
         else:
             value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
 
@@ -793,6 +812,35 @@ class Event:
                     return "card_successful_transaction"
                 elif item.get("title") == "Kartenerstattung":
                     return "card_refund"
+
+        return None
+
+    @classmethod
+    def _parse_transfer_shares(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
+        """Parses the number of shares from a transfer event
+
+        Args:
+            event_dict (Dict[Any, Any]): The event dictionary
+
+        Returns:
+            Optional[float]: The number of shares transferred
+        """
+        sections = event_dict.get("details", {}).get("sections", [{}])
+
+        # Try to find shares in "Transaction" / "Transaktion" section (for TRANSFER_OUT)
+        transaction_dict = next(filter(lambda x: x.get("title") in ["Transaction", "Transaktion"], sections), None)
+        if transaction_dict:
+            for item in transaction_dict.get("data", []):
+                if item.get("title") in ["Shares", "Aktien"]:
+                    return cls._parse_float_from_text_value(item.get("detail", {}).get("text", ""), {}, "en")
+
+        # Try to find shares in "Übersicht" / "Overview" section (for TRANSFER_IN and Wertpapiertransfer)
+        uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht", "Overview"], sections), None)
+        if uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                # "Aktien" for newer events, "Anteile" for older Wertpapiertransfer events
+                if item.get("title") in ["Aktien", "Shares", "Anteile"]:
+                    return cls._parse_float_from_text_value(item.get("detail", {}).get("text", ""), {}, "en")
 
         return None
 
