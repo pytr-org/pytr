@@ -50,6 +50,7 @@ class Details:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response, num_lines=30)}")
 
             if recv == 6:
+                await self.tr.close()
                 return
 
     def print_instrument(self):

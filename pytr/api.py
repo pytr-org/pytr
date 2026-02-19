@@ -365,6 +365,13 @@ class TradeRepublicApi:
 
         return self._ws
 
+    async def close(self):
+        """Close the websocket connection gracefully."""
+        if self._ws is not None:
+            self.log.info("Closing websocket connection...")
+            await self._ws.close()
+            self._ws = None
+
     async def _next_subscription_id(self):
         async with self._lock:
             subscription_id = self._subscription_id_counter

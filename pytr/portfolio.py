@@ -188,6 +188,8 @@ class Portfolio:
                 portfolionew.append(pos)
         self.portfolio = portfolionew
 
+        await self.tr.close()
+
     def _get_sort_func(self):
         if self.sort_by_column:
             match self.sort_by_column.lower():
