@@ -66,6 +66,7 @@ class TradeRepublicApi:
     _subscription_id_counter = 1
     _previous_responses: Dict[str, str] = {}
     subscriptions: Dict[str, Dict[str, Any]] = {}
+    subscriptions_futures: Dict[str, asyncio.Queue] = {}
 
     _credentials_file = CREDENTIALS_FILE
     _cookies_file = COOKIES_FILE
@@ -322,6 +323,16 @@ class TradeRepublicApi:
         await ws.send(f"sub {subscription_id} {json.dumps(payload_with_token)}")
         return subscription_id
 
+    async def subscribe2(self, **kwargs):
+        subscription_id = await self._next_subscription_id()
+        ws = await self._get_ws()
+        fut: asyncio.Queue = asyncio.Queue()
+        self.subscriptions_futures[subscription_id] = fut
+        payload = json.dumps(kwargs)
+        self.log.debug(f"Subscribing: 'sub {subscription_id} {payload}'")
+        await ws.send(f"sub {subscription_id} {payload}")
+        return fut
+
     async def unsubscribe(self, subscription_id):
         ws = await self._get_ws()
 
@@ -371,6 +382,24 @@ class TradeRepublicApi:
 
                 payload = json.loads(payload_str) if payload_str else {}
                 raise TradeRepublicError(subscription_id, subscription, payload)
+
+    async def recv2(self):
+        ws = await self._get_ws()
+        async for response in ws:
+            self.log.debug(f"Received message: {response!r}")
+
+            subscription_id = response[: response.find(" ")]
+            code = response[response.find(" ") + 1 : response.find(" ") + 2]
+            payload_str = response[response.find(" ") + 2 :].lstrip()
+
+            if subscription_id not in self.subscriptions_futures:
+                if code != "C":
+                    self.log.debug(f"No active subscription for id {subscription_id}, dropping message")
+                continue
+            queue = self.subscriptions_futures[subscription_id]
+            match code:
+                case "A":
+                    queue.put_nowait(json.loads(payload_str))
 
     def _calculate_delta(self, subscription_id, delta_payload):
         previous_response = self._previous_responses[subscription_id]
@@ -426,11 +455,20 @@ class TradeRepublicApi:
     async def instrument_details(self, isin):
         return await self.subscribe({"type": "instrument", "id": isin})
 
+    async def instrument_details2(self, isin):
+        return await self.subscribe2(type="instrument", id=isin)
+
     async def instrument_suitability(self, isin):
         return await self.subscribe({"type": "instrumentSuitability", "instrumentId": isin})
 
+    async def instrument_suitability2(self, isin):
+        return await self.subscribe2(type="instrumentSuitability", instrumentId=isin)
+
     async def stock_details(self, isin):
         return await self.subscribe({"type": "stockDetails", "id": isin})
+
+    async def stock_details2(self, isin):
+        return await self.subscribe2(type="stockDetails", id=isin)
 
     async def add_watchlist(self, isin):
         return await self.subscribe({"type": "addToWatchlist", "instrumentId": isin})
@@ -443,6 +481,9 @@ class TradeRepublicApi:
 
     async def performance(self, isin, exchange="LSX"):
         return await self.subscribe({"type": "performance", "id": f"{isin}.{exchange}"})
+
+    async def performance2(self, isin, exchange="LSX"):
+        return await self.subscribe2(type="performance", id=f"{isin}.{exchange}")
 
     async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):
         parameters = {
@@ -725,6 +766,9 @@ class TradeRepublicApi:
 
     async def news(self, isin):
         return await self.subscribe({"type": "neonNews", "isin": isin})
+
+    async def news2(self, isin):
+        return await self.subscribe2(type="neonNews", isin=isin)
 
     async def news_subscriptions(self):
         return await self.subscribe({"type": "newsSubscriptions"})
