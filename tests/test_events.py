@@ -593,7 +593,7 @@ def test_events():
             "isin": "LU0392494562",
             "shares": 32,
             "value": 30.21,
-            "taxes": 6.83,
+            "taxes": -6.83,
             "transactions": [
                 {
                     "Datum": "2024-12-31T23:59:59",
@@ -602,7 +602,7 @@ def test_events():
                     "Notiz": "MSCI World USD (Dist)",
                     "ISIN": "LU0392494562",
                     "Stück": 32.0,
-                    "Steuern": -6.83,
+                    "Steuern": 6.83,
                 }
             ],
         },
