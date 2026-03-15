@@ -801,14 +801,14 @@ def test_events():
             "event_type": PPEventType.INTEREST,
             "title": "Zinsen",
             "value": 11.76,
-            "taxes": 4.51,
+            "taxes": -4.51,
             "transactions": [
                 {
                     "Datum": "2024-09-01T16:39:48",
                     "Typ": "Zinsen",
                     "Wert": 11.76,
                     "Notiz": "Zinsen",
-                    "Steuern": -4.51,
+                    "Steuern": 4.51,
                 }
             ],
         },
@@ -817,14 +817,14 @@ def test_events():
             "event_type": PPEventType.INTEREST,
             "title": "Zinsen",
             "value": 11.76,
-            "taxes": 4.51,
+            "taxes": -4.51,
             "transactions": [
                 {
                     "Datum": "2024-09-01T16:39:48",
                     "Typ": "Zinsen",
                     "Wert": 11.76,
                     "Notiz": "Zinsen",
-                    "Steuern": -4.51,
+                    "Steuern": 4.51,
                 }
             ],
         },
@@ -1685,14 +1685,14 @@ def test_events():
             "event_type": PPEventType.INTEREST,
             "title": "Zinsen",
             "value": 4.87,
-            "taxes": 1.87,
+            "taxes": -1.87,
             "transactions": [
                 {
                     "Datum": "2025-07-01T06:46:37",
                     "Typ": "Zinsen",
                     "Wert": 4.87,
                     "Notiz": "Zinsen",
-                    "Steuern": -1.87,
+                    "Steuern": 1.87,
                 }
             ],
         },
@@ -1701,14 +1701,14 @@ def test_events():
             "event_type": PPEventType.INTEREST,
             "title": "Zinsen",
             "value": 4.87,
-            "taxes": 1.87,
+            "taxes": -1.87,
             "transactions": [
                 {
                     "Datum": "2025-07-01T06:46:37",
                     "Typ": "Zinsen",
                     "Wert": 4.87,
                     "Notiz": "Zinsen",
-                    "Steuern": -1.87,
+                    "Steuern": 1.87,
                 }
             ],
         },
