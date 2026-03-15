@@ -704,7 +704,6 @@ class Event:
             dump_dict["type"] = "taxes"
             taxes = cls._parse_float_from_text_value(taxes_dict.get("detail", {}).get("text", ""), dump_dict)
             if taxes_dict.get("title") == "Steuern":
-                get_event_logger().info(f"Flip tax sign. {dump_dict}: {taxes} -> {-taxes}")
                 taxes = -taxes
         # no logging here because events may or may not have taxes
 
@@ -778,7 +777,6 @@ class Event:
                 taxes_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
             )
             if taxes_dict.get("title") == "Steuern":
-                get_event_logger().info(f"Flip tax sign. {dump_dict}: {taxes} -> {-taxes}")
                 taxes = -taxes
         # no logging here because events may or may not have taxes
 
