@@ -29,7 +29,7 @@ import ssl
 import time
 import urllib.parse
 import uuid
-from http.cookiejar import MozillaCookieJar
+from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
 
 import certifi
@@ -92,6 +92,7 @@ class TradeRepublicApi:
         save_cookies=False,
         credentials_file=None,
         cookies_file=None,
+        waf_token=None,
     ):
         self.log = get_logger(__name__)
         self._locale = locale
@@ -120,10 +121,16 @@ class TradeRepublicApi:
         except FileNotFoundError:
             pass
 
+        self._waf_token = waf_token
+
         self._websession = requests.Session()
         self._websession.headers = self._default_headers_web
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
+
+        if self._waf_token:
+            self.log.info("Using manually provided AWS WAF token")
+            self._set_waf_cookie(self._waf_token)
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -190,12 +197,37 @@ class TradeRepublicApi:
         elif self.session_token:
             headers["Authorization"] = f"Bearer {self.session_token}"
 
+        if self._waf_token and url_path.startswith("/api/v1/auth/"):
+            headers["Cookie"] = f"aws-waf-token={self._waf_token}"
+
         return requests.request(
             method=method,
             url=f"{self._host}{url_path}",
             data=payload_string,
             headers=headers,
         )
+
+    def _set_waf_cookie(self, token: str):
+        """Set the aws-waf-token cookie on the web session."""
+        cookie = Cookie(
+            version=0,
+            name="aws-waf-token",
+            value=token,
+            port=None,
+            port_specified=False,
+            domain=".traderepublic.com",
+            domain_specified=True,
+            domain_initial_dot=True,
+            path="/",
+            path_specified=True,
+            secure=True,
+            expires=int(time.time()) + 3600,
+            discard=False,
+            comment=None,
+            comment_url=None,
+            rest={"HttpOnly": None},
+        )
+        self._websession.cookies.set_cookie(cookie)
 
     def initiate_weblogin(self):
         r = self._websession.post(

@@ -79,6 +79,11 @@ def get_main_parser():
     parser_login_args.add_argument("-n", "--phone_no", help="TradeRepublic phone number (international format)")
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
     parser_login_args.add_argument(
+        "--waf-token",
+        help="Manually provide an aws-waf-token cookie value (copy from browser session)",
+        default=None,
+    )
+    parser_login_args.add_argument(
         "--store_credentials",
         help="Store credentials (Phone number, pin, cookies) for next usage",
         action="store_true",
@@ -441,6 +446,7 @@ def main():
             pin=args.pin,
             web=not args.applogin,
             store_credentials=args.store_credentials,
+            waf_token=args.waf_token,
         )
     elif args.command == "portfolio":
         p = Portfolio(
@@ -449,6 +455,7 @@ def main():
                 pin=args.pin,
                 web=not args.applogin,
                 store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
             ),
             args.include_watchlist,
             lang=args.lang,
@@ -465,6 +472,7 @@ def main():
                 pin=args.pin,
                 web=not args.applogin,
                 store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
             ),
             args.isin,
         ).get()
@@ -475,6 +483,7 @@ def main():
                 pin=args.pin,
                 web=not args.applogin,
                 store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
             ),
             args.output,
             args.format,
@@ -504,6 +513,7 @@ def main():
                 pin=args.pin,
                 web=not args.applogin,
                 store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
             ),
             args.outputdir,
             not_before,
@@ -538,6 +548,7 @@ def main():
                     pin=args.pin,
                     web=not args.applogin,
                     store_credentials=args.store_credentials,
+                    waf_token=args.waf_token,
                 ),
                 args.input,
                 args.outputfile,
@@ -553,6 +564,7 @@ def main():
                     pin=args.pin,
                     web=not args.applogin,
                     store_credentials=args.store_credentials,
+                    waf_token=args.waf_token,
                 ),
                 args.input,
                 args.inputfile,
