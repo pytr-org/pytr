@@ -121,15 +121,13 @@ class TradeRepublicApi:
         except FileNotFoundError:
             pass
 
-        self._waf_token = waf_token
-
         self._websession = requests.Session()
         self._websession.headers = self._default_headers_web
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
 
+        self._waf_token = waf_token or self._fetch_waf_token()
         if self._waf_token:
-            self.log.info("Using manually provided AWS WAF token")
             self._set_waf_cookie(self._waf_token)
 
     def initiate_device_reset(self):
@@ -206,6 +204,29 @@ class TradeRepublicApi:
             data=payload_string,
             headers=headers,
         )
+
+    _waf_login_url = "https://app.traderepublic.com/login"
+
+    def _fetch_waf_token(self):
+        """Fetch AWS WAF token by solving the challenge. Requires pytr[waf] extras."""
+        try:
+            from curl_cffi import requests as cffi_requests
+
+            from pytr.awswaf.aws import AwsWaf
+        except ImportError:
+            self.log.info("Optional WAF solver not installed. Install with: pip install pytr[waf]")
+            return None
+
+        try:
+            session = cffi_requests.Session(impersonate="chrome")
+            response = session.get(self._waf_login_url)
+            host = response.text.split('src="https://')[1].split("/challenge.js")[0]
+            token = AwsWaf({}, host, "app.traderepublic.com")()
+            self.log.info("AWS WAF token obtained automatically")
+            return token
+        except Exception as e:
+            self.log.warning(f"Failed to fetch WAF token automatically: {e}")
+            return None
 
     def _set_waf_cookie(self, token: str):
         """Set the aws-waf-token cookie on the web session."""
