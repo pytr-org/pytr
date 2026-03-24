@@ -221,7 +221,8 @@ class TradeRepublicApi:
             session = cffi_requests.Session(impersonate="chrome")
             response = session.get(self._waf_login_url)
             host = response.text.split('src="https://')[1].split("/challenge.js")[0]
-            token = AwsWaf({}, host, "app.traderepublic.com")()
+            challenge_js = session.get(f"https://{host}/challenge.js").text
+            token = AwsWaf(host, "app.traderepublic.com", challenge_js)()
             self.log.info("AWS WAF token obtained automatically")
             return token
         except Exception as e:
@@ -246,7 +247,7 @@ class TradeRepublicApi:
             discard=False,
             comment=None,
             comment_url=None,
-            rest={"HttpOnly": None},
+            rest={"HttpOnly": ""},
         )
         self._websession.cookies.set_cookie(cookie)
 
