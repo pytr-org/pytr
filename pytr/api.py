@@ -36,9 +36,11 @@ from typing import Any, Dict
 import certifi
 import requests
 import websockets
+from curl_cffi import requests as cffi_requests
 from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
 from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
 
+from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
 
 home = pathlib.Path.home()
@@ -54,6 +56,7 @@ class TradeRepublicApi:
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"
     }
     _host = "https://api.traderepublic.com"
+    _waf_login_url = "https://app.traderepublic.com/login"
     _weblogin = False
 
     _refresh_token = None
@@ -206,17 +209,8 @@ class TradeRepublicApi:
             headers=headers,
         )
 
-    _waf_login_url = "https://app.traderepublic.com/login"
-
     def _fetch_waf_token(self):
         """Fetch AWS WAF token by solving the challenge. Requires pytr[waf] extras."""
-        try:
-            from curl_cffi import requests as cffi_requests
-
-            from pytr.awswaf.aws import AwsWaf
-        except ImportError:
-            self.log.info("Optional WAF solver not installed. Install with: pip install pytr[waf]")
-            return None
 
         try:
             session = cffi_requests.Session(impersonate="chrome")
