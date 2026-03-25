@@ -286,7 +286,12 @@ class TradeRepublicApi:
     def save_websession(self):
         # Saves session cookies too (expirydate=0).
         if self._save_cookies:
-            self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
+            # Save a copy without the WAF token - it's fetched fresh on every startup
+            save_jar = MozillaCookieJar(self._cookies_file)
+            for cookie in self._websession.cookies:
+                if cookie.name != "aws-waf-token":
+                    save_jar.set_cookie(cookie)
+            save_jar.save(ignore_discard=True, ignore_expires=True)
 
     def resume_websession(self):
         """
@@ -301,11 +306,14 @@ class TradeRepublicApi:
             # Loads session cookies too (expirydate=0).
             self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
             self._weblogin = True
+            # Re-apply fresh WAF token over any stale one from the cookie file
+            if self._waf_token:
+                self._set_waf_cookie(self._waf_token)
             try:
                 self.settings()
             except requests.exceptions.HTTPError:
-                return False
                 self._weblogin = False
+                return False
             else:
                 return True
         return False
