@@ -25,6 +25,7 @@ import base64
 import hashlib
 import json
 import pathlib
+import re
 import ssl
 import time
 import urllib.parse
@@ -220,9 +221,14 @@ class TradeRepublicApi:
         try:
             session = cffi_requests.Session(impersonate="chrome")
             response = session.get(self._waf_login_url)
-            host = response.text.split('src="https://')[1].split("/challenge.js")[0]
-            challenge_js = session.get(f"https://{host}/challenge.js").text
-            token = AwsWaf(host, "app.traderepublic.com", challenge_js)()
+            m = re.search(r'src="(https://[^"]+/challenge\.js)"', response.text)
+            if not m:
+                self.log.warning("challenge.js URL not found in login page")
+                return None
+            challenge_js_url = m.group(1)
+            waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
+            challenge_js = session.get(challenge_js_url).text
+            token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
             self.log.info("AWS WAF token obtained automatically")
             return token
         except Exception as e:
