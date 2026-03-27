@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pytr"
-version = "0.4.5"
+version = "0.4.6"
 description = "Use TradeRepublic in terminal"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -25,6 +25,8 @@ dependencies = [
     "babel",
     "certifi",
     "coloredlogs",
+    "cryptography",
+    "curl_cffi",
     "ecdsa",
     "packaging",
     "pathvalidate",

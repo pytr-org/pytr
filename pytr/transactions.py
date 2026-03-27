@@ -123,7 +123,9 @@ class TransactionExporter:
             return
 
         kwargs: _SimpleTransaction = {
-            "date": event.date.isoformat() if self.date_with_time else event.date.date().isoformat(),
+            "date": event.date.replace(microsecond=0, tzinfo=None).isoformat()
+            if self.date_with_time
+            else event.date.date().isoformat(),
             "type": self._translate(event.event_type.value) if isinstance(event.event_type, PPEventType) else None,
             "value": self._decimal_format(event.value),
             "note": self._translate(event.note) + " - " + event.title if event.note is not None else event.title,
@@ -166,6 +168,8 @@ class TransactionExporter:
                 kwargs["isin"] = "CNE100000296"
             elif event.note == "Chipotle":
                 kwargs["isin"] = "US1696561059"
+            elif event.note == "VERSANT MEDIA GRP A O.N.":
+                kwargs["isin"] = "US9252831030"
             elif event.note == "Eckert & Ziegler":
                 kwargs["isin"] = "DE0005659700"
             elif event.note == "Enovix Corp. WTS 01.10.26":
@@ -257,6 +261,8 @@ class TransactionExporter:
                 kwargs["isin2"] = "DE000TKMS001"
             elif event.note == "Unilever":
                 kwargs["isin2"] = "GB00BVZK7T90"
+            elif event.note == "MSCI World USD (Acc)" and event.isin == "LU1781541179":
+                kwargs["isin2"] = "IE000BI8OT95"
             else:
                 kwargs["isin2"] = event.note
             kwargs["note"] = event.title

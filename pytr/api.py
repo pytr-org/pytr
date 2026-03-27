@@ -25,19 +25,22 @@ import base64
 import hashlib
 import json
 import pathlib
+import re
 import ssl
 import time
 import urllib.parse
 import uuid
-from http.cookiejar import MozillaCookieJar
+from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
 
 import certifi
 import requests
 import websockets
+from curl_cffi import requests as cffi_requests
 from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
 from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
 
+from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
 
 home = pathlib.Path.home()
@@ -53,6 +56,7 @@ class TradeRepublicApi:
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"
     }
     _host = "https://api.traderepublic.com"
+    _waf_login_url = "https://app.traderepublic.com/login"
     _weblogin = False
 
     _refresh_token = None
@@ -92,6 +96,7 @@ class TradeRepublicApi:
         save_cookies=False,
         credentials_file=None,
         cookies_file=None,
+        waf_token=None,
     ):
         self.log = get_logger(__name__)
         self._locale = locale
@@ -124,6 +129,10 @@ class TradeRepublicApi:
         self._websession.headers = self._default_headers_web
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
+
+        self._waf_token = waf_token or self._fetch_waf_token()
+        if self._waf_token:
+            self._set_waf_cookie(self._waf_token)
 
     def initiate_device_reset(self):
         self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
@@ -190,12 +199,57 @@ class TradeRepublicApi:
         elif self.session_token:
             headers["Authorization"] = f"Bearer {self.session_token}"
 
+        if self._waf_token and url_path.startswith("/api/v1/auth/"):
+            headers["Cookie"] = f"aws-waf-token={self._waf_token}"
+
         return requests.request(
             method=method,
             url=f"{self._host}{url_path}",
             data=payload_string,
             headers=headers,
         )
+
+    def _fetch_waf_token(self):
+        """Fetch AWS WAF token by solving the challenge. Requires pytr[waf] extras."""
+
+        try:
+            session = cffi_requests.Session(impersonate="chrome")
+            response = session.get(self._waf_login_url)
+            m = re.search(r'src="(https://[^"]+/challenge\.js)"', response.text)
+            if not m:
+                self.log.warning("challenge.js URL not found in login page")
+                return None
+            challenge_js_url = m.group(1)
+            waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
+            challenge_js = session.get(challenge_js_url).text
+            token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
+            self.log.info("AWS WAF token obtained automatically")
+            return token
+        except Exception as e:
+            self.log.warning(f"Failed to fetch WAF token automatically: {e}")
+            return None
+
+    def _set_waf_cookie(self, token: str):
+        """Set the aws-waf-token cookie on the web session."""
+        cookie = Cookie(
+            version=0,
+            name="aws-waf-token",
+            value=token,
+            port=None,
+            port_specified=False,
+            domain=".traderepublic.com",
+            domain_specified=True,
+            domain_initial_dot=True,
+            path="/",
+            path_specified=True,
+            secure=True,
+            expires=int(time.time()) + 3600,
+            discard=False,
+            comment=None,
+            comment_url=None,
+            rest={"HttpOnly": ""},
+        )
+        self._websession.cookies.set_cookie(cookie)
 
     def initiate_weblogin(self):
         r = self._websession.post(
@@ -232,7 +286,12 @@ class TradeRepublicApi:
     def save_websession(self):
         # Saves session cookies too (expirydate=0).
         if self._save_cookies:
-            self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
+            # Save a copy without the WAF token - it's fetched fresh on every startup
+            save_jar = MozillaCookieJar(self._cookies_file)
+            for cookie in self._websession.cookies:
+                if cookie.name != "aws-waf-token":
+                    save_jar.set_cookie(cookie)
+            save_jar.save(ignore_discard=True, ignore_expires=True)
 
     def resume_websession(self):
         """
@@ -247,11 +306,14 @@ class TradeRepublicApi:
             # Loads session cookies too (expirydate=0).
             self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
             self._weblogin = True
+            # Re-apply fresh WAF token over any stale one from the cookie file
+            if self._waf_token:
+                self._set_waf_cookie(self._waf_token)
             try:
                 self.settings()
             except requests.exceptions.HTTPError:
-                return False
                 self._weblogin = False
+                return False
             else:
                 return True
         return False

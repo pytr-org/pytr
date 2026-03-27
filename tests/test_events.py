@@ -131,6 +131,24 @@ def test_events():
             ],
         },
         {
+            "filename": "aktiendividende_only_taxes.json",
+            "event_type": PPEventType.TAXES,
+            "title": "Enovix Corp. WTS 01.10.26",
+            "isin": "US2935941318",
+            "value": -0.57,
+            "taxes": -0.57,
+            "transactions": [
+                {
+                    "Datum": "2026-01-06T16:14:51",
+                    "Typ": "Steuern",
+                    "Wert": -0.57,
+                    "Notiz": "Enovix Corp. WTS 01.10.26",
+                    "ISIN": "US2935941318",
+                    "Steuern": 0.57,
+                }
+            ],
+        },
+        {
             "filename": "aktienpraemiendividende.json",
             "event_type": PPEventType.DIVIDEND,
             "title": "Glencore",
