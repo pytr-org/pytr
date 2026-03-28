@@ -1,9 +1,5 @@
 [
   {
-    "note": "Vendored from https://github.com/xKiian/awswaf",
-    "license": "MIT"
-  },
-  {
     "webgl_unmasked_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M2 Pro, Unspecified Version)",
     "webgl": [
       {

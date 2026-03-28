@@ -27,7 +27,6 @@ dependencies = [
     "coloredlogs",
     "cryptography",
     "curl_cffi",
-    "ecdsa",
     "packaging",
     "pathvalidate",
     "pygments",
