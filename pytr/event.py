@@ -195,6 +195,7 @@ events_known_ignored = [
     "SHAREBOOKING_TRANSACTIONAL",
     "STOCK_PERK_REFUNDED",
     "TAX_YEAR_END_REPORT",
+    "TAX_YEAR_END_REPORT_CREATED",
     "VERIFICATION_TRANSFER_ACCEPTED",
     "YEAR_END_TAX_REPORT",
     "card_failed_verification",
