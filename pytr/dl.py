@@ -43,6 +43,7 @@ event_subfolder_mapping = {
     "SHAREBOOKING_TRANSACTIONAL": "Misc",
     "STOCK_PERK_REFUNDED": "Misc",
     "TAX_YEAR_END_REPORT": "Misc",
+    "TAX_YEAR_END_REPORT_CREATED": "Misc",
     "YEAR_END_TAX_REPORT": "Misc",
     "crypto_annual_statement": "Misc",
     "private_markets_suitability_quiz_completed": "Misc",
