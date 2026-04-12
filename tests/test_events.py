@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 
 from pytr.event import ConditionalEventType, Event, PPEventType
 from pytr.transactions import TransactionExporter
@@ -1882,3 +1883,22 @@ def test_events():
             entry.setdefault("ISIN2", None)
             entry.setdefault("Stück2", None)
         assert transactions == rowtransactions
+
+
+def test_private_markets_order_without_value_is_skipped():
+    formatter = TransactionExporter(lang="de")
+    event = Event(
+        event_type=ConditionalEventType.PRIVATE_MARKETS_ORDER,
+        date=datetime(2026, 3, 9, 7, 56, 12, tzinfo=timezone.utc),
+        title="Private Equity",
+        isin="LU3176111881",
+        isin2=None,
+        shares=0,
+        shares2=None,
+        value=None,
+        fees=None,
+        taxes=None,
+        note="Vorabpauschale",
+    )
+
+    assert list(formatter.from_event(event)) == []
