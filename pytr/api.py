@@ -54,7 +54,7 @@ class TradeRepublicApi:
     _waf_login_url = "https://app.traderepublic.com/login"
 
     _process_id = None
-    _session_token_expires_at = 0
+    _session_expires_at = 0
 
     _ws = None
     _lock = asyncio.Lock()
@@ -276,10 +276,10 @@ class TradeRepublicApi:
         return True
 
     def _web_request(self, url_path, payload=None, method="GET"):
-        if self._session_token_expires_at < time.time():
+        if self._session_expires_at < time.time():
             r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
             r.raise_for_status()
-            self._session_token_expires_at = time.time() + 290
+            self._session_expires_at = time.time() + 290
         return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
 
     async def _get_ws(self):
