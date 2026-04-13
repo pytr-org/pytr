@@ -339,10 +339,7 @@ class TradeRepublicApi:
         ws = await self._get_ws()
         self.log.debug(f"Subscribing: 'sub {subscription_id} {json.dumps(payload)}'")
         self.subscriptions[subscription_id] = payload
-
-        payload_with_token = payload.copy()
-
-        await ws.send(f"sub {subscription_id} {json.dumps(payload_with_token)}")
+        await ws.send(f"sub {subscription_id} {json.dumps(payload)}")
         return subscription_id
 
     async def unsubscribe(self, subscription_id):
