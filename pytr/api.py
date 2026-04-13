@@ -30,12 +30,12 @@ import urllib.parse
 import uuid
 from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
-from playwright.sync_api import sync_playwright
 
 import certifi
 import requests
 import websockets
 from curl_cffi import requests as cffi_requests
+from playwright.sync_api import sync_playwright
 
 from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
@@ -106,34 +106,35 @@ class TradeRepublicApi:
         Get the AWS WAF token, using the awswaf library.
         """
 
+        self.log.info("Retrieving AWS WAF token using awswaf...")
         try:
-            self.log.info("Retrieving AWS WAF token...")
             session = cffi_requests.Session(impersonate="chrome")
             response = session.get(self._waf_login_url)
             m = re.search(r'src="(https://[^"]+/challenge\.js)"', response.text)
             if not m:
-                self.log.warning("challenge.js URL not found in login page")
+                self.log.warning("AWS WAF token not acquired. challenge.js URL not found in login page.")
                 return None
             challenge_js_url = m.group(1)
             waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
             challenge_js = session.get(challenge_js_url).text
             token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
-            self.log.info("AWS WAF token obtained.")
-            return token
         except Exception:
-            self.log.warning("Failed to get AWS WAF token", exc_info=True)
-            return None
+            self.log.error("Failed to get AWS WAF token.")
+            raise
+
+        if not token:
+            self.log.warning("AWS WAF token not acquired. Value is None.")
+        return token
 
     def _fetch_waf_token_playwright(self, timeout_ms: int = 30000):
         """
-        Get the AWS WAF token from app.traderepublic.com, using a headless
-        Chromium browser via Playwright.
+        Get the AWS WAF token, using a Playwright browser session.
 
         One-time setup needed:
             playwright install chromium
         """
 
-        self.log.info("Fetching WAF token using Playwright...")
+        self.log.info("Retrieving AWS WAF token using Playwright...")
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch(
@@ -158,14 +159,13 @@ class TradeRepublicApi:
                         break
                     time.sleep(0.5)
                 browser.close()
+        except Exception:
+            self.log.error('Failed to get AWS WAF token. Try running "playwright install chromium"')
+            raise
 
-            if token:
-                self.log.info("WAF token acquired from Playwright session.")
-                return token
-            self.log.warning("Aws-Waf-Token not found, WAF challenge may not have completed.")
-        except Exception as e:
-            self.log.warning("Failed to get AWS WAF token", exc_info=True)
-        return None
+        if not token:
+            self.log.warning("AWS WAF token not acquired. Value is None.")
+        return token
 
     def _set_waf_cookie(self, token: str):
         """Set the aws-waf-token cookie on the web session."""
