@@ -30,6 +30,7 @@ import urllib.parse
 import uuid
 from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
+from playwright.sync_api import sync_playwright
 
 import certifi
 import requests
@@ -47,7 +48,7 @@ COOKIES_FILE = BASE_DIR / "cookies.txt"
 
 class TradeRepublicApi:
     _default_headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
     }
     _host = "https://api.traderepublic.com"
     _waf_login_url = "https://app.traderepublic.com/login"
@@ -72,7 +73,7 @@ class TradeRepublicApi:
         save_cookies=False,
         credentials_file=None,
         cookies_file=None,
-        waf_token=None,
+        waf_token="playwright",
     ):
         self.log = get_logger(__name__)
         self._locale = locale
@@ -100,8 +101,10 @@ class TradeRepublicApi:
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
 
-    def _fetch_waf_token(self):
-        """Get AWS WAF token by solving the challenge."""
+    def _fetch_waf_token_awswaf(self):
+        """
+        Get the AWS WAF token, using the awswaf library.
+        """
 
         try:
             self.log.info("Retrieving AWS WAF token...")
@@ -120,6 +123,49 @@ class TradeRepublicApi:
         except Exception:
             self.log.warning("Failed to get AWS WAF token", exc_info=True)
             return None
+
+    def _fetch_waf_token_playwright(self, timeout_ms: int = 30000):
+        """
+        Get the AWS WAF token from app.traderepublic.com, using a headless
+        Chromium browser via Playwright.
+
+        One-time setup needed:
+            playwright install chromium
+        """
+
+        self.log.info("Fetching WAF token using Playwright...")
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=["--no-sandbox", "--disable-setuid-sandbox"],
+                )
+                context = browser.new_context()
+                page = context.new_page()
+                page.goto(
+                    "https://app.traderepublic.com/login",
+                    wait_until="domcontentloaded",
+                    timeout=timeout_ms,
+                )
+                deadline = time.time() + timeout_ms / 1000
+                token = None
+                while time.time() < deadline:
+                    for c in context.cookies():
+                        if c["name"] == "aws-waf-token":
+                            token = c["value"]
+                            break
+                    if token:
+                        break
+                    time.sleep(0.5)
+                browser.close()
+
+            if token:
+                self.log.info("WAF token acquired from Playwright session.")
+                return token
+            self.log.warning("Aws-Waf-Token not found, WAF challenge may not have completed.")
+        except Exception as e:
+            self.log.warning("Failed to get AWS WAF token", exc_info=True)
+        return None
 
     def _set_waf_cookie(self, token: str):
         """Set the aws-waf-token cookie on the web session."""
@@ -146,9 +192,18 @@ class TradeRepublicApi:
     def initiate_weblogin(self):
         self.log.info("Initiating web login...")
 
-        if not self._waf_token:
-            self._waf_token = self._fetch_waf_token()
-        self._set_waf_cookie(self._waf_token)
+        if self._waf_token == "awswaf":
+            self._waf_token = self._fetch_waf_token_awswaf()
+        elif self._waf_token == "playwright":
+            self._waf_token = self._fetch_waf_token_playwright()
+        elif self._waf_token:
+            self.log.info("Using WAF token from arguments.")
+
+        if self._waf_token:
+            self.log.debug(f"WAF Token: {self._waf_token}")
+            self._set_waf_cookie(self._waf_token)
+        else:
+            self.log.warning("No WAF token available.")
 
         r = self._websession.post(
             f"{self._host}/api/v1/auth/web/login",

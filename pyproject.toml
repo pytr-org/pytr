@@ -29,6 +29,7 @@ dependencies = [
     "curl_cffi",
     "packaging",
     "pathvalidate",
+    "playwright",
     "pygments",
     "requests_futures",
     "shtab",

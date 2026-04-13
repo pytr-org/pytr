@@ -18,7 +18,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, store_credentials=False, waf_token=None):
+def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright"):
     """
     Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input

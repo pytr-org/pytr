@@ -79,8 +79,8 @@ def get_main_parser():
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
     parser_login_args.add_argument(
         "--waf-token",
-        help="Manually provide an aws-waf-token cookie value (copy from browser session)",
-        default=None,
+        help="The method to obtain the AWS WAF token. \"playwright\", \"awswaf\" or a manually provided value (e.g. aws-waf-token cookie copied from browser session). The default currently is \"playwright\".",
+        default="playwright",
     )
     parser_login_args.add_argument(
         "--store_credentials",
