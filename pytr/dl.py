@@ -283,7 +283,7 @@ class DL:
             if subfolder is None:
                 self.log.warning(f"no subfolder mapping for {eventdesc}")
 
-            for doc in section["data"]:
+            for idx, doc in enumerate(section["data"]):
                 if isinstance(doc["action"]["payload"], dict):
                     self.log.warning(
                         f'Download of document with new API-Path URL "{doc["action"]["payload"]["path"]}" is not possible. (yet?)'
@@ -299,7 +299,9 @@ class DL:
                     self.log.warning(f"no timestamp parseable from {timestamp_str}")
                     docdate = datetime.now()
 
-                title = f"{doc['title']} - {event['title']} - {event['subtitle']}"
+                suffix = f" - {idx}" if idx > 0 else ""
+                title = f"{doc['title']} - {event['title']} - {event['subtitle']}{suffix}"
+
                 self.dl_doc(doc, title, subfolder, docdate)
 
         if has_docs:
