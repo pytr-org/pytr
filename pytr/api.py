@@ -25,6 +25,7 @@ import json
 import pathlib
 import re
 import ssl
+import subprocess
 import time
 import urllib.parse
 import uuid
@@ -135,33 +136,47 @@ class TradeRepublicApi:
         """
 
         self.log.info("Retrieving AWS WAF token using Playwright...")
-        try:
-            with sync_playwright() as p:
-                browser = p.chromium.launch(
-                    headless=True,
-                    args=["--no-sandbox", "--disable-setuid-sandbox"],
-                )
-                context = browser.new_context()
-                page = context.new_page()
-                page.goto(
-                    "https://app.traderepublic.com/login",
-                    wait_until="domcontentloaded",
-                    timeout=timeout_ms,
-                )
-                deadline = time.time() + timeout_ms / 1000
-                token = None
-                while time.time() < deadline:
-                    for c in context.cookies():
-                        if c["name"] == "aws-waf-token":
-                            token = c["value"]
+
+        called_playwright_install = False
+        while True:
+            try:
+                with sync_playwright() as p:
+                    browser = p.chromium.launch(
+                        headless=True,
+                        args=["--no-sandbox", "--disable-setuid-sandbox"],
+                    )
+                    context = browser.new_context()
+                    page = context.new_page()
+                    page.goto(
+                        "https://app.traderepublic.com/login",
+                        wait_until="domcontentloaded",
+                        timeout=timeout_ms,
+                    )
+                    deadline = time.time() + timeout_ms / 1000
+                    token = None
+                    while time.time() < deadline:
+                        for c in context.cookies():
+                            if c["name"] == "aws-waf-token":
+                                token = c["value"]
+                                break
+                        if token:
                             break
-                    if token:
-                        break
-                    time.sleep(0.5)
-                browser.close()
-        except Exception:
-            self.log.error('Failed to get AWS WAF token. Try running "playwright install chromium"')
-            raise
+                        time.sleep(0.5)
+                    browser.close()
+                done = True
+            except Exception as e:
+                if called_playwright_install:
+                    self.log.error("Failed to get AWS WAF token.")
+                    raise
+                else:
+                    self.log.warning("%s", e)
+                    self.log.info('Running "playwright install chromium"...')
+                    called_playwright_install = True
+                    done = False
+                    subprocess.run(["playwright", "install", "chromium"], check=True)
+                    self.log.info("Calling Playwright once more...")
+            if done:
+                break
 
         if not token:
             self.log.warning("AWS WAF token not acquired. Value is None.")
@@ -239,14 +254,9 @@ class TradeRepublicApi:
         self.save_websession()
 
     def save_websession(self):
-        # Saves session cookies too (expirydate=0).
         if self._save_cookies:
-            # Save a copy without the WAF token - it's fetched fresh on every startup
-            save_jar = MozillaCookieJar(self._cookies_file)
-            for cookie in self._websession.cookies:
-                if cookie.name != "aws-waf-token":
-                    save_jar.set_cookie(cookie)
-            save_jar.save(ignore_discard=True, ignore_expires=True)
+            # Saves session cookies too (expirydate=0).
+            self._websession.cookies.save(ignore_discard=True)
 
     def resume_websession(self):
         """
@@ -262,7 +272,7 @@ class TradeRepublicApi:
         self.log.info("Trying to resume websession...")
 
         # Loads session cookies too (expirydate=0).
-        self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
+        self._websession.cookies.load(ignore_discard=True)
 
         try:
             self.log.debug("Calling settings...")
@@ -270,6 +280,8 @@ class TradeRepublicApi:
         except requests.exceptions.HTTPError:
             self.log.info("Resuming websession failed.")
             self.log.debug("Error calling tr.settings().", exc_info=True)
+            # in case the websession can not be resumed, start with a fresh set of cookies
+            self._websession.cookies.clear()
             return False
 
         self.log.info("Websession resumed.")
