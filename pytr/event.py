@@ -351,6 +351,8 @@ class Event:
             event_type = title_event_type_mapping.get(title, None)
         if event_type is None:
             event_type = subtitle_event_type_mapping.get(subtitle, None)
+        if event_type == ConditionalEventType.PRIVATE_MARKETS_ORDER and subtitle == "Vorabpauschale":
+            event_type = PPEventType.TAXES
         if event_type is None and uebersicht_dict:
             for item in uebersicht_dict.get("data", []):
                 ititle = item.get("title")
@@ -704,10 +706,7 @@ class Event:
             taxes = cls._parse_float_from_text_value(taxes_dict.get("detail", {}).get("text", ""), dump_dict)
         # no logging here because events may or may not have taxes
 
-        if (
-            eventTypeStr in ["private_markets_order_created", "private_markets_trade_executed"]
-            or title == "Private Equity"
-        ):
+        if event_type == ConditionalEventType.PRIVATE_MARKETS_ORDER:
             if value is None:
                 shares = 0
             else:

@@ -1274,6 +1274,24 @@ def test_events():
             "filename": "private_markets_verkaufs_order_erstellt.json",
         },
         {
+            "filename": "private_markets_vorabpauschale.json",
+            "event_type": PPEventType.TAXES,
+            "title": "Private Equity",
+            "isin": "LU3176111881",
+            "value": -0.07,
+            "taxes": -0.07,
+            "transactions": [
+                {
+                    "Datum": "2026-03-09T07:56:12",
+                    "Typ": "Steuern",
+                    "Wert": -0.07,
+                    "Notiz": "EQT",
+                    "ISIN": "LU3176111881",
+                    "Steuern": 0.07,
+                }
+            ],
+        },
+        {
             "filename": "reverse_split.json",
             "event_type": PPEventType.SWAP,
             "title": "Globalstar",

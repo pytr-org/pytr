@@ -1,0 +1,137 @@
+  {
+    "id": "0319ae86-b98e-388d-9dd6-5a64b5373388",
+    "timestamp": "2026-03-09T07:56:12.429+0000",
+    "title": "Private Equity",
+    "icon": "logos/LU3176111881/v2",
+    "avatar": {
+      "asset": "logos/LU3176111881/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Vorabpauschale",
+    "amount": {
+      "currency": "EUR",
+      "value": -0.07,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "0319ae86-b98e-388d-9dd6-5a64b5373388"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "SSP_CORPORATE_ACTION_CASH_NON_DIVIDEND",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "0319ae86-b98e-388d-9dd6-5a64b5373388",
+      "sections": [
+        {
+          "title": "Du hast 0,07 € bezahlt",
+          "data": {
+            "icon": {
+              "asset": "logos/LU3176111881/v2",
+              "badge": null
+            },
+            "timestamp": "2026-03-09T07:56:12.429Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Vorabpauschale",
+                "displayValue": {
+                  "text": "Vorabpauschale"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Private Equity",
+                "displayValue": {
+                  "text": "Private Equity"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bruttoertrag",
+              "detail": {
+                "text": "0,00 €",
+                "displayValue": {
+                  "text": "0,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "-0,07 €",
+                "displayValue": {
+                  "text": "-0,07 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "-0,07 €",
+                "displayValue": {
+                  "text": "-0,07 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Vorabpauschale",
+              "detail": "09.03.2026",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "a1f523f2-c944-4617-bfe1-316a77226331",
+              "postboxType": "CA_VOPA_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

@@ -230,6 +230,11 @@ class TransactionExporter:
                 kwargs["value"] = self._decimal_format(-event.value)
                 kwargs["isin"] = None
                 kwargs["shares"] = None
+        elif event.event_type == PPEventType.TAXES:
+            if event.isin == "LU3176111881":
+                kwargs["note"] = "EQT"
+            elif event.isin == "LU3170240538":
+                kwargs["note"] = "Apollo"
         elif event.event_type == PPEventType.SWAP:
             if event.note == "BlackRock Funding":
                 kwargs["isin2"] = "US09290D1019"
