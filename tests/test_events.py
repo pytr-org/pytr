@@ -154,7 +154,7 @@ def test_events():
             "title": "Enovix Corp. WTS 01.10.26",
             "isin": "US2935941318",
             "value": -0.57,
-            "taxes": -0.57,
+            "taxes": 0.57,
             "transactions": [
                 {
                     "Datum": "2026-01-06T16:14:51",
@@ -172,7 +172,7 @@ def test_events():
             "title": "Glencore",
             "isin": "JE00B4T3BW64",
             "value": 3,
-            "taxes": -1.15,
+            "taxes": 1.15,
             "transactions": [
                 {
                     "Datum": "2025-09-22T11:20:31",
@@ -190,7 +190,7 @@ def test_events():
             "title": "Glencore",
             "isin": "JE00B4T3BW64",
             "value": 3,
-            "taxes": -1.15,
+            "taxes": 1.15,
             "transactions": [
                 {
                     "Datum": "2025-09-22T11:20:31",
@@ -245,7 +245,7 @@ def test_events():
             "isin": "US20030N1019",
             "shares": 10.640298,
             "value": 2.24,
-            "taxes": -0.78,
+            "taxes": 0.78,
             "transactions": [
                 {
                     "Datum": "2025-10-23T14:19:56",
@@ -265,7 +265,7 @@ def test_events():
             "isin": "US5486611073",
             "shares": 1.189904,
             "value": 0.92,
-            "taxes": -0.32,
+            "taxes": 0.32,
             "transactions": [
                 {
                     "Datum": "2025-11-05T18:31:19",
@@ -285,7 +285,7 @@ def test_events():
             "isin": "US58463J3041",
             "shares": 40,
             "value": 4.01,
-            "taxes": -1.53,
+            "taxes": 1.53,
             "transactions": [
                 {
                     "Datum": "2025-03-20T15:04:31",
@@ -305,7 +305,7 @@ def test_events():
             "isin": "US58463J3041",
             "shares": 40,
             "value": 4.01,
-            "taxes": -1.53,
+            "taxes": 1.53,
             "transactions": [
                 {
                     "Datum": "2025-03-20T15:04:31",
@@ -396,7 +396,7 @@ def test_events():
             "title": "BYD",
             "isin": "CNE100000296",
             "value": -8.67,
-            "taxes": -8.67,
+            "taxes": 8.67,
             "transactions": [
                 {
                     "Datum": "2025-08-15T14:53:09",
@@ -414,7 +414,7 @@ def test_events():
             "title": "BYD",
             "isin": "CNE100000296",
             "value": -8.67,
-            "taxes": -8.67,
+            "taxes": 8.67,
             "transactions": [
                 {
                     "Datum": "2025-08-15T14:53:09",
@@ -442,7 +442,7 @@ def test_events():
                     "Notiz": "Juli 2040",
                     "ISIN": "DE0001135366",
                     "Stück": 82.27,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -462,7 +462,7 @@ def test_events():
                     "Notiz": "Juli 2040",
                     "ISIN": "DE0001135366",
                     "Stück": 82.27,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -482,7 +482,7 @@ def test_events():
                     "Notiz": "Euro Stoxx 50 EUR (Dist)",
                     "ISIN": "IE00B4K6B022",
                     "Stück": 60.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -502,7 +502,7 @@ def test_events():
                     "Notiz": "Euro Stoxx 50 EUR (Dist)",
                     "ISIN": "IE00B4K6B022",
                     "Stück": 60.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -522,7 +522,7 @@ def test_events():
                     "Notiz": "NVIDIA",
                     "ISIN": "US67066G1040",
                     "Stück": 0.685102,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -542,7 +542,7 @@ def test_events():
                     "Notiz": "NVIDIA",
                     "ISIN": "US67066G1040",
                     "Stück": 0.685102,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -562,7 +562,7 @@ def test_events():
                     "Notiz": "Rocket Lab Corp. Registered Shares DL-,0001",
                     "ISIN": "US7731211089",
                     "Stück": 2,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -582,7 +582,7 @@ def test_events():
                     "Notiz": "Rocket Lab Corp. Registered Shares DL-,0001",
                     "ISIN": "US7731211089",
                     "Stück": 2,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -660,7 +660,7 @@ def test_events():
                     "Notiz": "MSCI World USD (Dist)",
                     "ISIN": "LU0392494562",
                     "Stück": 32.0,
-                    "Steuern": -6.83,
+                    "Steuern": 6.83,
                 }
             ],
         },
@@ -670,7 +670,7 @@ def test_events():
             "title": "National Grid",
             "isin": "GB00BDR05C01",
             "value": 3.37,
-            "taxes": -1.28,
+            "taxes": 1.28,
             "transactions": [
                 {
                     "Datum": "2024-07-19T13:28:04",
@@ -688,7 +688,7 @@ def test_events():
             "title": "National Grid",
             "isin": "GB00BDR05C01",
             "value": 3.37,
-            "taxes": -1.28,
+            "taxes": 1.28,
             "transactions": [
                 {
                     "Datum": "2024-07-19T13:28:04",
@@ -830,7 +830,7 @@ def test_events():
                     "Notiz": "Marie Brizard Wine and Spirits",
                     "ISIN": "FR0000060873",
                     "Stück": 27.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -850,7 +850,7 @@ def test_events():
                     "Notiz": "Marie Brizard Wine and Spirits",
                     "ISIN": "FR0000060873",
                     "Stück": 27.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -866,7 +866,7 @@ def test_events():
                     "Typ": "Zinsen",
                     "Wert": 11.76,
                     "Notiz": "Zinsen",
-                    "Steuern": -4.51,
+                    "Steuern": 4.51,
                 }
             ],
         },
@@ -882,7 +882,7 @@ def test_events():
                     "Typ": "Zinsen",
                     "Wert": 11.76,
                     "Notiz": "Zinsen",
-                    "Steuern": -4.51,
+                    "Steuern": 4.51,
                 }
             ],
         },
@@ -903,8 +903,8 @@ def test_events():
                     "Notiz": "D-Wave Quantum",
                     "ISIN": "US26740W1099",
                     "Stück": 11.0,
-                    "Gebühren": -1.0,
-                    "Steuern": -17.36,
+                    "Gebühren": 1.0,
+                    "Steuern": 17.36,
                 }
             ],
         },
@@ -925,8 +925,8 @@ def test_events():
                     "Notiz": "Teva Pharmaceutical Industries (ADR)",
                     "ISIN": "US8816242098",
                     "Stück": 8.0,
-                    "Gebühren": -1.0,
-                    "Steuern": -7.66,
+                    "Gebühren": 1.0,
+                    "Steuern": 7.66,
                 }
             ],
         },
@@ -947,8 +947,8 @@ def test_events():
                     "Notiz": "Daimler Truck Holding",
                     "ISIN": "DE000DTR0CK8",
                     "Stück": 3.0,
-                    "Gebühren": -1.0,
-                    "Steuern": -0.14,
+                    "Gebühren": 1.0,
+                    "Steuern": 0.14,
                 }
             ],
         },
@@ -969,8 +969,8 @@ def test_events():
                     "Notiz": "Daimler Truck Holding",
                     "ISIN": "DE000DTR0CK8",
                     "Stück": 3.0,
-                    "Gebühren": -1.0,
-                    "Steuern": -0.14,
+                    "Gebühren": 1.0,
+                    "Steuern": 0.14,
                 }
             ],
         },
@@ -1063,12 +1063,14 @@ def test_events():
             "event_type": PPEventType.DEPOSIT,
             "title": "Einzahlung",
             "value": 1000,
+            "fees": 7,
             "transactions": [
                 {
                     "Datum": "2022-08-27T05:06:30",
                     "Typ": "Einlage",
                     "Wert": 1000.0,
                     "Notiz": "Einzahlung",
+                    "Gebühren": 7.0,
                 }
             ],
         },
@@ -1077,12 +1079,14 @@ def test_events():
             "event_type": PPEventType.DEPOSIT,
             "title": "Einzahlung",
             "value": 1000,
+            "fees": 7,
             "transactions": [
                 {
                     "Datum": "2022-08-27T05:06:30",
                     "Typ": "Einlage",
                     "Wert": 1000.0,
                     "Notiz": "Einzahlung",
+                    "Gebühren": 7.0,
                 }
             ],
         },
@@ -1103,7 +1107,7 @@ def test_events():
                     "Notiz": "EQT",
                     "ISIN": "LU3176111881",
                     "Stück": 1.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 },
             ],
         },
@@ -1124,7 +1128,7 @@ def test_events():
                     "Notiz": "EQT",
                     "ISIN": "LU3176111881",
                     "Stück": 1.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 },
             ],
         },
@@ -1195,7 +1199,7 @@ def test_events():
                     "Notiz": "Apollo",
                     "ISIN": "LU3170240538",
                     "Stück": 1.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 },
             ],
         },
@@ -1216,7 +1220,7 @@ def test_events():
                     "Notiz": "Apollo",
                     "ISIN": "LU3170240538",
                     "Stück": 1.0,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 },
             ],
         },
@@ -1279,7 +1283,7 @@ def test_events():
             "title": "Private Equity",
             "isin": "LU3176111881",
             "value": -0.07,
-            "taxes": -0.07,
+            "taxes": 0.07,
             "transactions": [
                 {
                     "Datum": "2026-03-09T07:56:12",
@@ -1435,8 +1439,8 @@ def test_events():
                     "Wert": 94.76,
                     "Notiz": "D-Wave Quantum",
                     "ISIN": "US26740W1099",
-                    "Gebühren": -1.0,
-                    "Steuern": -3.18,
+                    "Gebühren": 1.0,
+                    "Steuern": 3.18,
                     "Stück": 17.0,
                 }
             ],
@@ -1457,8 +1461,8 @@ def test_events():
                     "Wert": 94.76,
                     "Notiz": "D-Wave Quantum",
                     "ISIN": "US26740W1099",
-                    "Gebühren": -1.0,
-                    "Steuern": -3.18,
+                    "Gebühren": 1.0,
+                    "Steuern": 3.18,
                     "Stück": 17.0,
                 }
             ],
@@ -1509,7 +1513,7 @@ def test_events():
             "title": "Gamestop Corp. WTS 30.10.26",
             "isin": "US36467W1172",
             "value": -0.56,
-            "taxes": -0.56,
+            "taxes": 0.56,
             "transactions": [
                 {
                     "Datum": "2025-12-19T15:24:37",
@@ -1698,8 +1702,8 @@ def test_events():
                     "Notiz": "Tencent Holdings (ADR)",
                     "ISIN": "US88032Q1094",
                     "Stück": 3.454506,
-                    "Gebühren": -1.0,
-                    "Steuern": -0.16,
+                    "Gebühren": 1.0,
+                    "Steuern": 0.16,
                 }
             ],
         },
@@ -1719,7 +1723,7 @@ def test_events():
                     "Notiz": "Home Depot",
                     "ISIN": "US4370761029",
                     "Stück": 0.305182,
-                    "Gebühren": -1.0,
+                    "Gebühren": 1.0,
                 }
             ],
         },
@@ -1729,7 +1733,7 @@ def test_events():
             "title": "MSCI China USD (Acc)",
             "isin": "IE00BJ5JPG56",
             "value": -0.19,
-            "taxes": -0.19,
+            "taxes": 0.19,
             "transactions": [
                 {
                     "Datum": "2025-01-28T14:54:28",
@@ -1747,7 +1751,7 @@ def test_events():
             "title": "MSCI China USD (Acc)",
             "isin": "IE00BJ5JPG56",
             "value": -0.19,
-            "taxes": -0.19,
+            "taxes": 0.19,
             "transactions": [
                 {
                     "Datum": "2025-01-28T14:54:28",
@@ -1771,7 +1775,7 @@ def test_events():
                     "Typ": "Zinsen",
                     "Wert": 4.87,
                     "Notiz": "Zinsen",
-                    "Steuern": -1.87,
+                    "Steuern": 1.87,
                 }
             ],
         },
@@ -1787,7 +1791,7 @@ def test_events():
                     "Typ": "Zinsen",
                     "Wert": 4.87,
                     "Notiz": "Zinsen",
-                    "Steuern": -1.87,
+                    "Steuern": 1.87,
                 }
             ],
         },
