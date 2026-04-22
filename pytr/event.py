@@ -304,7 +304,8 @@ class Event:
         (
             fees_dict,
             taxes_dict,
-        ) = (None,) * 2
+            wertpapier_dict,
+        ) = (None,) * 3
 
         sections = event_dict.get("details", {}).get("sections", [{}])
 
@@ -325,6 +326,8 @@ class Event:
                     fees_dict = item
                 elif ititle == "Steuer" and not taxes_dict:
                     taxes_dict = item
+                elif ititle in ["Wertpapier", "Asset"] and not wertpapier_dict:
+                    wertpapier_dict = item
 
         event_type: Optional[EventType] = None
         eventTypeStr = event_dict.get("eventType", "")
@@ -509,7 +512,22 @@ class Event:
             PPEventType.SWAP,
             PPEventType.TAXES,
         ]:
-            isin = cls._parse_isin(event_dict)
+            # Parse ISIN
+            for section in sections:
+                action = section.get("action", None)
+                if action and action.get("type", {}) == "instrumentDetail":
+                    isin = section.get("action", {}).get("payload")
+                    break
+                if section.get("type", {}) == "header":
+                    isin = section.get("data", {}).get("icon")
+                    if isinstance(isin, dict):
+                        isin = isin.get("asset", "")
+                    break
+            if isin is None:
+                isin = event_dict.get("icon", "")
+            isin = isin[isin.find("/") + 1 :]
+            isin = isin.split("/", 1)[0]
+
             shares, shares2, value, note = cls._parse_shares_value_note(event_type, event_dict)
         else:
             value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
@@ -539,36 +557,14 @@ class Event:
                     isin = "FR0011981968"
                     note = None
 
+        if (
+            subtitle == "Zusammenschluss"
+            and title == "Deine Aktien waren von einer Kapitalmaßnahme betroffen"
+            and wertpapier_dict
+        ):
+            title = wertpapier_dict["detail"]["text"]
+
         return cls(event_type, date, title, isin, isin2, shares, shares2, value, fees, taxes, note)
-
-    @staticmethod
-    def _parse_isin(event_dict: Dict[Any, Any]) -> str:
-        """Parses the isin
-
-        Args:
-            event_dict (Dict[Any, Any]): _description_
-
-        Returns:
-            str: isin
-        """
-        sections = event_dict.get("details", {}).get("sections", [{}])
-        isin = event_dict.get("icon", "")
-        isin = isin[isin.find("/") + 1 :]
-        isin = isin[: isin.find("/")]
-        isin2 = None
-        for section in sections:
-            action = section.get("action", None)
-            if action and action.get("type", {}) == "instrumentDetail":
-                isin2 = section.get("action", {}).get("payload")
-                break
-            if section.get("type", {}) == "header":
-                isin2 = section.get("data", {}).get("icon")
-                if isinstance(isin2, dict):
-                    isin2 = isin2.get("asset", "")
-                isin2 = isin2[isin2.find("/") + 1 :]
-                isin2 = isin2[: isin2.find("/")]
-                break
-        return isin2 if isin2 else isin
 
     @classmethod
     def _parse_shares_value_note(

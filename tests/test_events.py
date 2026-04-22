@@ -1840,6 +1840,28 @@ def test_events():
             ],
         },
         {
+            "filename": "zusammenschluss2.json",
+            "event_type": PPEventType.SWAP,
+            "title": "Rocket Lab USA",
+            "isin": "US7731221062",
+            "shares": 5.943100,
+            "shares2": 5.943100,
+            "value": 0,
+            "note": "ROCKET LAB CORP. O.N.",
+            "transactions": [
+                {
+                    "Datum": "2025-05-29T13:04:58",
+                    "Typ": "Swap",
+                    "Wert": 0,
+                    "Notiz": "Rocket Lab USA",
+                    "ISIN": "US7731221062",
+                    "Stück": 5.9431,
+                    "ISIN2": "US7731211089",
+                    "Stück2": 5.9431,
+                },
+            ],
+        },
+        {
             "filename": "zwischenpapiere.json",
             "event_type": PPEventType.SWAP,
             "title": "ORSTED A/S   -ANR-",
