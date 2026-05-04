@@ -109,6 +109,8 @@ class Timeline:
             else:
                 self.log.warning(f"unmatched subscription of type '{subscription['type']}':\n{preview(response)}")
 
+        await self.tr.close()
+
     async def get_next_timeline_transactions(self, response):
         """
         Get timeline transactions and store them in list timeline_transactions

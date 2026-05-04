@@ -131,8 +131,8 @@ class TransactionExporter:
             "note": self._translate(event.note) + " - " + event.title if event.note is not None else event.title,
             "isin": event.isin,
             "shares": self._decimal_format(event.shares, False),
-            "fees": self._decimal_format(-event.fees) if event.fees is not None else None,
-            "taxes": self._decimal_format(-event.taxes) if event.taxes is not None else None,
+            "fees": self._decimal_format(event.fees) if event.fees is not None else None,
+            "taxes": self._decimal_format(event.taxes) if event.taxes is not None else None,
             "isin2": event.isin2,
             "shares2": self._decimal_format(event.shares2, False),
         }
@@ -194,6 +194,8 @@ class TransactionExporter:
                 kwargs["isin"] = "DE000TKMS001"
             elif event.note == "Unilever":
                 kwargs["isin"] = "GB00BVZK7T90"
+            elif event.note == "Worldline":
+                kwargs["isin"] = "FR0014015MS9"
             else:
                 kwargs["isin"] = event.isin2
             if event.shares2:
@@ -228,6 +230,11 @@ class TransactionExporter:
                 kwargs["value"] = self._decimal_format(-event.value)
                 kwargs["isin"] = None
                 kwargs["shares"] = None
+        elif event.event_type == PPEventType.TAXES:
+            if event.isin == "LU3176111881":
+                kwargs["note"] = "EQT"
+            elif event.isin == "LU3170240538":
+                kwargs["note"] = "Apollo"
         elif event.event_type == PPEventType.SWAP:
             if event.note == "BlackRock Funding":
                 kwargs["isin2"] = "US09290D1019"
@@ -263,6 +270,8 @@ class TransactionExporter:
                 kwargs["isin2"] = "GB00BVZK7T90"
             elif event.note == "MSCI World USD (Acc)" and event.isin == "LU1781541179":
                 kwargs["isin2"] = "IE000BI8OT95"
+            elif event.note == "Worldline":
+                kwargs["isin2"] = "FR0011981968"
             else:
                 kwargs["isin2"] = event.note
             kwargs["note"] = event.title

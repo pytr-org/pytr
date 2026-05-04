@@ -1,0 +1,83 @@
+{
+    "id": "11eb2e1f-e50c-3bb3-900d-d03028fed19d",
+    "timestamp": "2026-03-17T10:45:33.497+0000",
+    "title": "Worldline",
+    "icon": "logos/FR0011981968/v2",
+    "subtitle": "Zwischenvertrieb von Wertpapieren",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "11eb2e1f-e50c-3bb3-900d-d03028fed19d"
+    },
+    "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineActivity",
+    "details": {
+      "id": "11eb2e1f-e50c-3bb3-900d-d03028fed19d",
+      "sections": [
+        {
+          "type": "header",
+          "title": "You received shares",
+          "data": {
+            "status": "executed",
+            "icon": "logos/FR0011981968/v2",
+            "timestamp": "2026-03-17T10:45:33.497510Z"
+          }
+        },
+        {
+          "type": "table",
+          "title": "Overview",
+          "data": [
+            {
+              "title": "Status",
+              "style": "plain",
+              "detail": {
+                "type": "status",
+                "text": "Completed",
+                "functionalStyle": "EXECUTED"
+              }
+            },
+            {
+              "title": "Event",
+              "style": "plain",
+              "detail": {
+                "type": "text",
+                "text": "Intermediate securities distribution"
+              }
+            },
+            {
+              "title": "Asset",
+              "style": "plain",
+              "detail": {
+                "type": "text",
+                "text": "Worldline"
+              }
+            },
+            {
+              "title": "Shares",
+              "style": "plain",
+              "detail": {
+                "type": "text",
+                "text": "1.299376"
+              }
+            }
+          ]
+        },
+        {
+          "type": "documents",
+          "title": "Documents",
+          "data": [
+            {
+              "id": "17d6cca1-9c15-4817-b865-fc119780e7ae",
+              "title": "Intermediate securities distribution",
+              "action": {
+                "type": "browserModal",
+                "payload": ""
+              },
+              "postboxType": "INTERMEDIATE_SECURITIES_DISTRIBUTION"
+            }
+          ]
+        }
+      ]
+    }
+}

@@ -1,0 +1,170 @@
+  {
+    "id": "6e123939-427f-3a4b-ba6a-ea4621ec4287",
+    "timestamp": "2026-04-03T09:37:06.806+0000",
+    "title": "WORLDLINE S.A. ANR",
+    "icon": "logos/FR0014015MS9/v2",
+    "avatar": {
+      "asset": "logos/FR0014015MS9/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Aufruf von Zwischenpapieren",
+    "amount": {
+      "currency": "EUR",
+      "value": -1.21,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "6e123939-427f-3a4b-ba6a-ea4621ec4287"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "SSP_CORPORATE_ACTION_CASH_AND_STOCK",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "6e123939-427f-3a4b-ba6a-ea4621ec4287",
+      "sections": [
+        {
+          "title": "Du hast 1,21 € bezahlt",
+          "data": {
+            "icon": {
+              "asset": "logos/FR0014015MS9/v2",
+              "badge": null
+            },
+            "timestamp": "2026-04-03T09:37:06.806Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Event",
+              "detail": {
+                "text": "Aufruf von Zwischenpapieren",
+                "displayValue": {
+                  "text": "Aufruf von Zwischenpapieren"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "WORLDLINE S.A. ANR",
+                "displayValue": {
+                  "text": "WORLDLINE S.A. ANR"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "1.000000",
+                "displayValue": {
+                  "text": "1.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "Worldline",
+                "displayValue": {
+                  "text": "Worldline"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "6.000000",
+                "displayValue": {
+                  "text": "6.000000"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {
+              "title": "Bezugspreis",
+              "detail": {
+                "text": "-1,21 €",
+                "displayValue": {
+                  "text": "-1,21 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "0,00 €",
+                "displayValue": {
+                  "text": "0,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gesamt",
+              "detail": {
+                "text": "-1,21 €",
+                "displayValue": {
+                  "text": "-1,21 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "03.04.2026",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "a3753865-4171-46f8-95b1-c31d2f67ac3c",
+              "postboxType": "CA_INCOME_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

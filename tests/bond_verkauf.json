@@ -1,0 +1,323 @@
+  {
+    "id": "e45b8873-16ce-440d-ae96-a4586cfdf9ca",
+    "timestamp": "2026-03-26T06:48:09.708+0000",
+    "title": "Juli 2040",
+    "icon": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+    "avatar": {
+      "asset": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Verkaufsorder",
+    "amount": {
+      "currency": "EUR",
+      "value": 98.21,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "e45b8873-16ce-440d-ae96-a4586cfdf9ca"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "TRADING_TRADE_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "e45b8873-16ce-440d-ae96-a4586cfdf9ca",
+      "sections": [
+        {
+          "title": "Du hast 98,21 € erhalten",
+          "data": {
+            "icon": {
+              "asset": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+              "badge": null
+            },
+            "timestamp": "2026-03-26T06:48:09.708126976Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "DE0001135366",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Verkaufen",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Juli 2040",
+                "displayValue": {
+                  "text": "Juli 2040"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "96,33 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Nennwert",
+                            "detail": {
+                              "text": "0,27 €",
+                              "displayValue": {
+                                "text": "0,27 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Quotation",
+                            "detail": {
+                              "text": "117,09 %",
+                              "displayValue": {
+                                "text": "117,09 %"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Stückzinsen",
+                            "detail": {
+                              "text": "+ 2,88 €",
+                              "displayValue": {
+                                "text": "+ 2,88 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "+ 98,21 €",
+                              "displayValue": {
+                                "text": "+ 98,21 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "highlighted"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "96,33 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "0,00 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Gezahlte Steuern 0,00 €",
+                        "data": {
+                          "icon": {
+                            "asset": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+                            "badge": null
+                          },
+                          "timestamp": "2026-03-26T06:48:09.708126976Z",
+                          "status": "executed"
+                        },
+                        "action": {
+                          "payload": "DE0001135366",
+                          "type": "instrumentDetail"
+                        },
+                        "type": "header"
+                      },
+                      {
+                        "title": "Steuerbemessungsgrundlage",
+                        "data": [
+                          {
+                            "title": "Bruttogewinn",
+                            "detail": {
+                              "text": "0,00 €",
+                              "displayValue": {
+                                "text": "0,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "0,00 €",
+                              "displayValue": {
+                                "text": "0,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "highlighted"
+                          }
+                        ],
+                        "type": "table"
+                      },
+                      {
+                        "title": "Steuern",
+                        "data": [
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "0,00 €",
+                              "displayValue": {
+                                "text": "0,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "highlighted"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "modal",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "0,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "98,21 €",
+                "displayValue": {
+                  "text": "98,21 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "2,65 %",
+                "trend": "negative",
+                "displayValue": {
+                  "text": "2,65 %"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Verlust",
+              "detail": {
+                "text": "-2,59 €",
+                "trend": "negative",
+                "displayValue": {
+                  "text": "-2,59 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "horizontalTable"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung 1",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "3713df09-15f0-49ac-859b-da60279ffdb9",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Abrechnung 2",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "e71c5516-f6dc-495b-9666-b54b6e618cf4",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Kosteninformation 1",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "15ae9c44-e002-495e-9c21-93e07ede2a64",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            },
+            {
+              "title": "Kosteninformation 2",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "d616495a-e777-4e72-877d-4663b9b52cbf",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

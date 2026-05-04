@@ -21,45 +21,41 @@
 # SOFTWARE.
 
 import asyncio
-import base64
-import hashlib
 import json
 import pathlib
+import re
 import ssl
+import subprocess
 import time
 import urllib.parse
 import uuid
-from http.cookiejar import MozillaCookieJar
+from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
 
 import certifi
 import requests
 import websockets
-from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
-from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
+from curl_cffi import requests as cffi_requests
+from playwright.sync_api import sync_playwright
 
+from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"
 CREDENTIALS_FILE = BASE_DIR / "credentials"
-KEY_FILE = BASE_DIR / "keyfile.pem"
 COOKIES_FILE = BASE_DIR / "cookies.txt"
 
 
 class TradeRepublicApi:
-    _default_headers = {"User-Agent": "TradeRepublic/Android 30/App Version 1.1.5534"}
-    _default_headers_web = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36"
+    _default_headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
     }
     _host = "https://api.traderepublic.com"
-    _weblogin = False
+    _waf_login_url = "https://app.traderepublic.com/login"
 
-    _refresh_token = None
-    _session_token = None
-    _session_token_expires_at = None
     _process_id = None
-    _web_session_token_expires_at = 0
+    _session_expires_at = 0
 
     _ws = None
     _lock = asyncio.Lock()
@@ -70,32 +66,20 @@ class TradeRepublicApi:
     _credentials_file = CREDENTIALS_FILE
     _cookies_file = COOKIES_FILE
 
-    @property
-    def session_token(self):
-        if not self._refresh_token:
-            self.login()
-        elif self._refresh_token and time.time() > self._session_token_expires_at:
-            self.refresh_access_token()
-        return self._session_token
-
-    @session_token.setter
-    def session_token(self, val):
-        self._session_token_expires_at = time.time() + 290
-        self._session_token = val
-
     def __init__(
         self,
         phone_no=None,
         pin=None,
-        keyfile=None,
         locale="de",
         save_cookies=False,
         credentials_file=None,
         cookies_file=None,
+        waf_token="playwright",
     ):
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
+        self._waf_token = waf_token
 
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
@@ -113,97 +97,138 @@ class TradeRepublicApi:
 
         self._cookies_file = pathlib.Path(cookies_file) if cookies_file else BASE_DIR / f"cookies.{self.phone_no}.txt"
 
-        self.keyfile = keyfile if keyfile else KEY_FILE
-        try:
-            with open(self.keyfile, "rb") as f:
-                self.sk = SigningKey.from_pem(f.read(), hashfunc=hashlib.sha512)
-        except FileNotFoundError:
-            pass
-
         self._websession = requests.Session()
-        self._websession.headers = self._default_headers_web
+        self._websession.headers = self._default_headers
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
         self._sec_acc_no: str | None = None
 
-    def initiate_device_reset(self):
-        self.sk = SigningKey.generate(curve=NIST256p, hashfunc=hashlib.sha512)
+    def _fetch_waf_token_awswaf(self):
+        """
+        Get the AWS WAF token, using the awswaf library.
+        """
 
-        r = requests.post(
-            f"{self._host}/api/v1/auth/account/reset/device",
-            json={"phoneNumber": self.phone_no, "pin": self.pin},
-            headers=self._default_headers,
+        self.log.info("Retrieving AWS WAF token using awswaf...")
+        try:
+            session = cffi_requests.Session(impersonate="chrome")
+            response = session.get(self._waf_login_url)
+            m = re.search(r'src="(https://[^"]+/challenge\.js)"', response.text)
+            if not m:
+                self.log.warning("AWS WAF token not acquired. challenge.js URL not found in login page.")
+                return None
+            challenge_js_url = m.group(1)
+            waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
+            challenge_js = session.get(challenge_js_url).text
+            token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
+        except Exception:
+            self.log.error("Failed to get AWS WAF token.")
+            raise
+
+        if not token:
+            self.log.warning("AWS WAF token not acquired. Value is None.")
+        return token
+
+    def _fetch_waf_token_playwright(self, timeout_ms: int = 30000):
+        """
+        Get the AWS WAF token, using a Playwright browser session.
+
+        One-time setup needed:
+            playwright install chromium
+        """
+
+        self.log.info("Retrieving AWS WAF token using Playwright...")
+
+        called_playwright_install = False
+        while True:
+            try:
+                with sync_playwright() as p:
+                    browser = p.chromium.launch(
+                        headless=True,
+                        args=["--no-sandbox", "--disable-setuid-sandbox"],
+                    )
+                    context = browser.new_context()
+                    page = context.new_page()
+                    page.goto(
+                        "https://app.traderepublic.com/login",
+                        wait_until="domcontentloaded",
+                        timeout=timeout_ms,
+                    )
+                    deadline = time.time() + timeout_ms / 1000
+                    token = None
+                    while time.time() < deadline:
+                        for c in context.cookies():
+                            if c["name"] == "aws-waf-token":
+                                token = c["value"]
+                                break
+                        if token:
+                            break
+                        time.sleep(0.5)
+                    browser.close()
+                done = True
+            except Exception as e:
+                if called_playwright_install:
+                    self.log.error("Failed to get AWS WAF token.")
+                    raise
+                else:
+                    self.log.warning("%s", e)
+                    self.log.info('Running "playwright install chromium"...')
+                    called_playwright_install = True
+                    done = False
+                    subprocess.run(["playwright", "install", "chromium"], check=True)
+                    self.log.info("Calling Playwright once more...")
+            if done:
+                break
+
+        if not token:
+            self.log.warning("AWS WAF token not acquired. Value is None.")
+        return token
+
+    def _set_waf_cookie(self, token: str):
+        """Set the aws-waf-token cookie on the web session."""
+        cookie = Cookie(
+            version=0,
+            name="aws-waf-token",
+            value=token,
+            port=None,
+            port_specified=False,
+            domain=".traderepublic.com",
+            domain_specified=True,
+            domain_initial_dot=True,
+            path="/",
+            path_specified=True,
+            secure=True,
+            expires=int(time.time()) + 3600,
+            discard=False,
+            comment=None,
+            comment_url=None,
+            rest={"HttpOnly": ""},
         )
-
-        self._process_id = r.json()["processId"]
-
-    def complete_device_reset(self, token):
-        if not self._process_id and not self.sk:
-            raise ValueError("Initiate Device Reset first.")
-
-        pubkey_bytes = self.sk.get_verifying_key().to_string("uncompressed")
-        pubkey_string = base64.b64encode(pubkey_bytes).decode("ascii")
-
-        r = requests.post(
-            f"{self._host}/api/v1/auth/account/reset/device/{self._process_id}/key",
-            json={"code": token, "deviceKey": pubkey_string},
-            headers=self._default_headers,
-        )
-        if r.status_code == 200:
-            with open(self.keyfile, "wb") as f:
-                f.write(self.sk.to_pem())
-
-    def login(self):
-        self.log.info("Logging in")
-        r = self._sign_request(
-            "/api/v1/auth/login",
-            payload={"phoneNumber": self.phone_no, "pin": self.pin},
-        )
-        self._refresh_token = r.json()["refreshToken"]
-        self.session_token = r.json()["sessionToken"]
-
-    def refresh_access_token(self):
-        self.log.info("Refreshing access token")
-        r = self._sign_request("/api/v1/auth/session", method="GET")
-        self.session_token = r.json()["sessionToken"]
-        self.save_websession()
-
-    def _sign_request(self, url_path, payload=None, method="POST"):
-        ts = int(time.time() * 1000)
-        payload_string = json.dumps(payload) if payload else ""
-        signature_payload = f"{ts}.{payload_string}"
-        signature = self.sk.sign(
-            bytes(signature_payload, "utf-8"),
-            hashfunc=hashlib.sha512,
-            sigencode=sigencode_der,
-        )
-        signature_string = base64.b64encode(signature).decode("ascii")
-
-        headers = self._default_headers.copy()
-        headers["X-Zeta-Timestamp"] = str(ts)
-        headers["X-Zeta-Signature"] = signature_string
-        headers["Content-Type"] = "application/json"
-
-        if url_path == "/api/v1/auth/login":
-            pass
-        elif url_path == "/api/v1/auth/session":
-            headers["Authorization"] = f"Bearer {self._refresh_token}"
-        elif self.session_token:
-            headers["Authorization"] = f"Bearer {self.session_token}"
-
-        return requests.request(
-            method=method,
-            url=f"{self._host}{url_path}",
-            data=payload_string,
-            headers=headers,
-        )
+        self._websession.cookies.set_cookie(cookie)
 
     def initiate_weblogin(self):
+        self.log.info("Initiating web login...")
+
+        if self._waf_token == "awswaf":
+            self._waf_token = self._fetch_waf_token_awswaf()
+        elif self._waf_token == "playwright":
+            self._waf_token = self._fetch_waf_token_playwright()
+        elif self._waf_token:
+            self.log.info("Using WAF token from arguments.")
+
+        if self._waf_token:
+            self.log.debug(f"WAF Token: {self._waf_token}")
+            self._set_waf_cookie(self._waf_token)
+        else:
+            self.log.warning("No WAF token available.")
+
         r = self._websession.post(
             f"{self._host}/api/v1/auth/web/login",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
         )
+        self.log.debug(f"Web login returned: {r.status_code}")
+        r.raise_for_status()
         j = r.json()
+        self.log.debug(f"Web login data: {json.dumps(j, indent=4)}")
         try:
             self._process_id = j["processId"]
         except KeyError:
@@ -228,40 +253,46 @@ class TradeRepublicApi:
         r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
         r.raise_for_status()
         self.save_websession()
-        self._weblogin = True
 
     def save_websession(self):
-        # Saves session cookies too (expirydate=0).
         if self._save_cookies:
-            self._websession.cookies.save(ignore_discard=True, ignore_expires=True)
+            # Saves session cookies too (expirydate=0).
+            self._websession.cookies.save(ignore_discard=True)
 
     def resume_websession(self):
         """
         Use saved cookie file to resume web session
         return success
         """
-        if self._save_cookies is False:
+        self.log.debug("Called resume_websession.")
+
+        # Only attempt to resume if cookies are used and a cookie file exists.
+        if self._save_cookies is False or not self._cookies_file.exists():
             return False
 
-        # Only attempt to load if the cookie file exists.
-        if self._cookies_file.exists():
-            # Loads session cookies too (expirydate=0).
-            self._websession.cookies.load(ignore_discard=True, ignore_expires=True)
-            self._weblogin = True
-            try:
-                self.settings()
-            except requests.exceptions.HTTPError:
-                return False
-                self._weblogin = False
-            else:
-                return True
-        return False
+        self.log.info("Trying to resume websession...")
+
+        # Loads session cookies too (expirydate=0).
+        self._websession.cookies.load(ignore_discard=True)
+
+        try:
+            self.log.debug("Calling settings...")
+            self.settings()
+        except requests.exceptions.HTTPError:
+            self.log.info("Resuming websession failed.")
+            self.log.debug("Error calling tr.settings().", exc_info=True)
+            # in case the websession can not be resumed, start with a fresh set of cookies
+            self._websession.cookies.clear()
+            return False
+
+        self.log.info("Websession resumed.")
+        return True
 
     def _web_request(self, url_path, payload=None, method="GET"):
-        if self._web_session_token_expires_at < time.time():
+        if self._session_expires_at < time.time():
             r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
             r.raise_for_status()
-            self._web_session_token_expires_at = time.time() + 290
+            self._session_expires_at = time.time() + 290
         return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
 
     async def _get_ws(self):
@@ -274,22 +305,21 @@ class TradeRepublicApi:
         connection_message = {"locale": self._locale}
         connect_id = 21
 
-        if self._weblogin:
-            # authenticate with cookies, set different connection message and connect ID
-            cookie_str = ""
-            for cookie in self._websession.cookies:
-                if cookie.domain.endswith("traderepublic.com"):
-                    cookie_str += f"{cookie.name}={cookie.value}; "
-            extra_headers = {"Cookie": cookie_str.rstrip("; ")}
+        # authenticate with cookies, set different connection message and connect ID
+        cookie_str = ""
+        for cookie in self._websession.cookies:
+            if cookie.domain.endswith("traderepublic.com"):
+                cookie_str += f"{cookie.name}={cookie.value}; "
+        extra_headers = {"Cookie": cookie_str.rstrip("; ")}
 
-            connection_message = {
-                "locale": self._locale,
-                "platformId": "webtrading",
-                "platformVersion": "chrome - 94.0.4606",
-                "clientId": "app.traderepublic.com",
-                "clientVersion": "5582",
-            }
-            connect_id = 31
+        connection_message = {
+            "locale": self._locale,
+            "platformId": "webtrading",
+            "platformVersion": "chrome - 94.0.4606",
+            "clientId": "app.traderepublic.com",
+            "clientVersion": "5582",
+        }
+        connect_id = 31
 
         self._ws = await websockets.connect(
             "wss://api.traderepublic.com", ssl=ssl_context, additional_headers=extra_headers
@@ -300,9 +330,16 @@ class TradeRepublicApi:
         if not response == "connected":
             raise ValueError(f"Connection Error: {response}")
 
-        self.log.info("Connected to websocket...")
+        self.log.info("Connected.")
 
         return self._ws
+
+    async def close(self):
+        """Close the websocket connection gracefully."""
+        if self._ws is not None:
+            self.log.info("Closing websocket connection...")
+            await self._ws.close()
+            self._ws = None
 
     async def _next_subscription_id(self):
         async with self._lock:
@@ -315,12 +352,7 @@ class TradeRepublicApi:
         ws = await self._get_ws()
         self.log.debug(f"Subscribing: 'sub {subscription_id} {json.dumps(payload)}'")
         self.subscriptions[subscription_id] = payload
-
-        payload_with_token = payload.copy()
-        if not self._weblogin:
-            payload_with_token["token"] = self.session_token
-
-        await ws.send(f"sub {subscription_id} {json.dumps(payload_with_token)}")
+        await ws.send(f"sub {subscription_id} {json.dumps(payload)}")
         return subscription_id
 
     async def unsubscribe(self, subscription_id):
@@ -701,7 +733,7 @@ class TradeRepublicApi:
     ):
         parameters = {
             "id": savings_plan_id,
-            "type": "createSavingsPlan",
+            "type": "changeSavingsPlan",
             "warningsShown": warnings_shown if warnings_shown else [],
             "parameters": {
                 "amount": amount,
@@ -741,18 +773,26 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "unsubscribeNews", "instrumentId": isin})
 
     def payout(self, amount):
-        return self._sign_request("/api/v1/payout", {"amount": amount}).json()
+        return requests.request(
+            method="POST",
+            url=f"{self._host}/api/v1/payout",
+            data={"amount": amount},
+            headers=self._default_headers,
+        ).json()
 
     def confirm_payout(self, process_id, code):
-        r = self._sign_request(f"/api/v1/payout/{process_id}/code", {"code": code})
+        r = requests.request(
+            method="POST",
+            url=f"{self._host}/api/v1/payout/{process_id}/code",
+            data={"code": code},
+            headers=self._default_headers,
+        )
+
         if r.status_code != 200:
             raise ValueError(f"Payout failed with response {r.text!r}")
 
     def settings(self):
-        if self._weblogin:
-            r = self._web_request("/api/v2/auth/account")
-        else:
-            r = self._sign_request("/api/v1/auth/account", method="GET")
+        r = self._web_request("/api/v2/auth/account")
         r.raise_for_status()
         data = r.json()
         if self._sec_acc_no is None and "securitiesAccountNumber" in data:
@@ -760,15 +800,20 @@ class TradeRepublicApi:
         return data
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
-        url = (
-            f"/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}"
-            f"&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}"
-        )
-        return self._sign_request(url, method="GET").text
+        return requests.request(
+            method="GET",
+            url=f"{self._host}/api/v1/user/costtransparency?instrumentId={isin}&exchangeId={exchange}&mode={order_mode}&type={order_type}&size={size}&sellFractions={sell_fractions}",
+            data=None,
+            headers=self._default_headers,
+        ).text
 
     def savings_plan_cost(self, isin, amount, interval):
-        url = f"/api/v1/user/savingsplancosttransparency?instrumentId={isin}&amount={amount}&interval={interval}"
-        return self._sign_request(url, method="GET").text
+        return requests.request(
+            method="GET",
+            url=f"{self._host}/api/v1/user/savingsplancosttransparency?instrumentId={isin}&amount={amount}&interval={interval}",
+            data=None,
+            headers=self._default_headers,
+        ).text
 
     def __getattr__(self, name):
         if name[:9] == "blocking_":

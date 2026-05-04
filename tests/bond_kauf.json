@@ -1,0 +1,242 @@
+  {
+    "id": "6c7755f0-0943-422b-b9ba-bfd9c105584a",
+    "timestamp": "2025-07-18T08:04:42.708+0000",
+    "title": "Juli 2040",
+    "icon": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+    "avatar": {
+      "asset": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Kauforder",
+    "amount": {
+      "currency": "EUR",
+      "value": -100.99,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "6c7755f0-0943-422b-b9ba-bfd9c105584a"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "TRADING_TRADE_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "6c7755f0-0943-422b-b9ba-bfd9c105584a",
+      "sections": [
+        {
+          "title": "Du hast 100,99 € investiert",
+          "data": {
+            "icon": {
+              "asset": "logos/bondissuer-529900AQBND3S6YJLY83/v2",
+              "badge": null
+            },
+            "timestamp": "2025-07-18T08:04:42.70813202Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "DE0001135366",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Kauf",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Juli 2040",
+                "displayValue": {
+                  "text": "Juli 2040"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "99,80 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Nennwert",
+                            "detail": {
+                              "text": "82,00 €",
+                              "displayValue": {
+                                "text": "82,00 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Quotation",
+                            "detail": {
+                              "text": "121,31 %",
+                              "displayValue": {
+                                "text": "121,31 %"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Stückzinsen",
+                            "detail": {
+                              "text": "0,19 €",
+                              "displayValue": {
+                                "text": "0,19 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "100,99 €",
+                              "displayValue": {
+                                "text": "100,99 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "highlighted"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "99,80 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "100,99 €",
+                "displayValue": {
+                  "text": "100,99 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Performance",
+          "data": [
+            {
+              "title": "Rendite",
+              "detail": {
+                "text": "0,19 %",
+                "trend": "negative",
+                "displayValue": {
+                  "text": "0,19 %"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Verlust",
+              "detail": {
+                "text": "-0,19 €",
+                "trend": "negative",
+                "displayValue": {
+                  "text": "-0,19 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "horizontalTable"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Kosteninformation 1",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "705597e0-f359-4f1e-bd46-ed128d12d620",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            },
+            {
+              "title": "Kosteninformation 2",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "ca3d15ea-d560-4bc8-85a8-73dd81ef7579",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            },
+            {
+              "title": "Abrechnung 1",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "e337f3cc-2cc4-446b-99ce-7ab1b41f66a9",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Abrechnung 2",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "1ef2976f-118e-4c79-8cb0-3da858fb291d",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}

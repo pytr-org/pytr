@@ -101,6 +101,7 @@ class Alarms:
         while action_count > 0:
             await self.tr.recv()
             action_count -= 1
+        await self.tr.close()
         return
 
     def overview(self):
@@ -151,7 +152,11 @@ class Alarms:
                 except InvalidOperation:
                     raise ValueError(f"{token} is no valid ISIN or decimal value that could represent an alarm.")
 
-        asyncio.run(self.alarms_loop())
+        async def get_alarms_and_close():
+            await self.alarms_loop()
+            await self.tr.close()
+
+        asyncio.run(get_alarms_and_close())
 
         self.overview()
 

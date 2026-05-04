@@ -1,0 +1,96 @@
+  {
+    "id": "6919f8d9-e168-321f-b276-8766ce50f319",
+    "timestamp": "2026-04-03T10:48:40.913+0000",
+    "title": "WORLDLINE S.A. ANR",
+    "icon": "logos/FR0014015MS9/v2",
+    "subtitle": "Wertlos",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "6919f8d9-e168-321f-b276-8766ce50f319"
+    },
+    "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+    "hidden": false,
+    "deleted": false,
+    "source": "timelineActivity",
+    "details": {
+      "id": "6919f8d9-e168-321f-b276-8766ce50f319",
+      "sections": [
+        {
+          "title": "Aktien wurden im Rahmen einer Kapitalmaßnahme entfernt",
+          "data": {
+            "icon": {
+              "asset": "logos/FR0014015MS9/v2",
+              "badge": null
+            },
+            "timestamp": "2026-04-03T10:48:40.913Z",
+            "status": "executed"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Status",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Orderart",
+              "detail": {
+                "text": "Wertlos",
+                "displayValue": {
+                  "text": "Wertlos"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Wertpapier",
+              "detail": {
+                "text": "WORLDLINE S.A. ANR",
+                "displayValue": {
+                  "text": "WORLDLINE S.A. ANR"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien entfernt",
+              "detail": {
+                "text": "0.299376",
+                "displayValue": {
+                  "text": "0.299376"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Dokumente",
+              "detail": "03.04.2026",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "806617db-1080-4301-8768-a87bf909f896",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+}
