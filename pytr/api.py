@@ -101,6 +101,7 @@ class TradeRepublicApi:
         self._websession.headers = self._default_headers
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
+        self._sec_acc_no: str | None = None
 
     def _fetch_waf_token_awswaf(self):
         """
@@ -441,7 +442,11 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "portfolioStatus"})
 
     async def compact_portfolio(self):
-        return await self.subscribe({"type": "compactPortfolio"})
+        if self._sec_acc_no is None:
+            self.settings()
+        if self._sec_acc_no is None:
+            raise ValueError("Could not retrieve securities account number from account settings.")
+        return await self.subscribe({"type": "compactPortfolio", "secAccNo": self._sec_acc_no})
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})
@@ -789,7 +794,10 @@ class TradeRepublicApi:
     def settings(self):
         r = self._web_request("/api/v2/auth/account")
         r.raise_for_status()
-        return r.json()
+        data = r.json()
+        if self._sec_acc_no is None and "securitiesAccountNumber" in data:
+            self._sec_acc_no = data["securitiesAccountNumber"]
+        return data
 
     def order_cost(self, isin, exchange, order_mode, order_type, size, sell_fractions):
         return requests.request(
