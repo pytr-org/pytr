@@ -75,11 +75,8 @@ class TransactionExporter:
         self._log = get_logger(__name__)
 
         if self.lang == "auto":
-            locale = getdefaultlocale()[0]
-            if locale is None:
-                self.lang = "en"
-            else:
-                self.lang = locale.split("_")[0]
+            default_locale = getdefaultlocale()[0]
+            self.lang = default_locale.split("_")[0] if default_locale else "en"
 
         if self.lang not in SUPPORTED_LANGUAGES:
             self._log.info(f'Language not yet supported "{self.lang}", defaulting to "en"')
