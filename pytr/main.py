@@ -17,6 +17,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
+from pytr.savings_plans import SavingsPlans
 from pytr.timeline import Timeline
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
 from pytr.utils import check_version, get_logger
@@ -381,6 +382,23 @@ def get_main_parser():
         nargs="?",
     )
 
+    # get_savings_plans
+    info = "Get current savings plans"
+    parser_get_savings_plans = parser_cmd.add_parser(
+        "get_savings_plans",
+        formatter_class=formatter,
+        parents=[parser_login_args, parser_lang, parser_decimal_localization],
+        help=info,
+        description=info,
+    )
+    parser_get_savings_plans.add_argument(
+        "--outputfile",
+        help="Output file path",
+        type=argparse.FileType("w", encoding="utf-8"),
+        default="-",
+        nargs="?",
+    )
+
     # completion
     info = "Print shell tab completion"
     parser_completion = parser_cmd.add_parser(
@@ -447,7 +465,7 @@ def main():
             waf_token=args.waf_token,
         )
     elif args.command == "portfolio":
-        p = Portfolio(
+        Portfolio(
             login(
                 phone_no=args.phone_no,
                 pin=args.pin,
@@ -460,8 +478,7 @@ def main():
             output=args.output,
             sort_by_column=args.sort_by_column,
             sort_descending=not args.sort_ascending,
-        )
-        p.get()
+        ).get()
     elif args.command == "details":
         Details(
             login(
@@ -565,6 +582,18 @@ def main():
         except ValueError as e:
             print(e)
             return -1
+    elif args.command == "get_savings_plans":
+        SavingsPlans(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
+            ),
+            args.outputfile,
+            decimal_localization=args.decimal_localization,
+            lang=args.lang,
+        ).get()
     elif args.version:
         installed_version = version("pytr")
         print(installed_version)
