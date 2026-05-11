@@ -743,7 +743,11 @@ class Event:
         Returns:
             Optional[str]: note
         """
-        eventTypeStr = event_dict.get("eventType", "")
+        # `dict.get(k, default)` only returns the default when the key is
+        # absent; if the API explicitly sets eventType=None (observed on
+        # "Aktien erhalten" / shares-received events) the default is bypassed
+        # and `.startswith` then nil-derefs (#350).
+        eventTypeStr = event_dict.get("eventType") or ""
         if eventTypeStr.startswith("card_"):
             return eventTypeStr
 
