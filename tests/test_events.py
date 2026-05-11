@@ -2063,7 +2063,7 @@ def test_parse_card_note_returns_none_when_event_type_is_null():
     # eventType key is explicitly null
     assert Event._parse_card_note({"eventType": None}) is None
 
-    # eventType key absent — already covered by `.get(..., "")` default but
+    # eventType key absent, already covered by `.get(..., "")` default but
     # double-check we do not regress this safe path
     assert Event._parse_card_note({}) is None
 
