@@ -2056,16 +2056,7 @@ def test_events():
 
 
 def test_parse_card_note_returns_none_when_event_type_is_null():
-    """Regression test for #350: an event_dict with explicit ``eventType: None``
-    (e.g. the "Aktien erhalten" / shares-received timeline entry) used to
-    crash ``_parse_card_note`` with
-    ``AttributeError: 'NoneType' object has no attribute 'startswith'``."""
-    # eventType key is explicitly null
+    """Regression for #350."""
     assert Event._parse_card_note({"eventType": None}) is None
-
-    # eventType key absent, already covered by `.get(..., "")` default but
-    # double-check we do not regress this safe path
     assert Event._parse_card_note({}) is None
-
-    # Existing happy path: card_ prefix remains recognised
     assert Event._parse_card_note({"eventType": "card_refund"}) == "card_refund"
