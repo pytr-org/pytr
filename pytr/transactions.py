@@ -217,7 +217,10 @@ class TransactionExporter:
             elif event.isin == "LU3170240538":
                 kwargs["note"] = "Apollo"
 
-            assert event.value is not None, event
+            if event.value is None:
+                self._log.warning("Skipping private markets event without value: %s", event)
+                return
+
             kwargs["type"] = self._translate((PPEventType.BUY if event.value < 0 else PPEventType.SELL).value)
             if event.note == "1 % Bonus":
                 yield self._localize_keys(kwargs)
