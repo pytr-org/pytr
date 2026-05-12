@@ -2053,3 +2053,10 @@ def test_events():
             entry.setdefault("ISIN2", None)
             entry.setdefault("Stück2", None)
         assert transactions == rowtransactions
+
+
+def test_parse_card_note_returns_none_when_event_type_is_null():
+    """Regression for #350."""
+    assert Event._parse_card_note({"eventType": None}) is None
+    assert Event._parse_card_note({}) is None
+    assert Event._parse_card_note({"eventType": "card_refund"}) == "card_refund"
