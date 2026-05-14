@@ -1,0 +1,82 @@
+{
+  "id": "6471c9c6-445d-4309-bb41-a29d8b3d24ba",
+  "timestamp": "2023-06-13T20:38:45.991+0000",
+  "title": "Metro",
+  "icon": "logos/DE000BFB0019/v2",
+  "subtitle": "Wertpapiertransfer",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "6471c9c6-445d-4309-bb41-a29d8b3d24ba"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "6471c9c6-445d-4309-bb41-a29d8b3d24ba",
+    "sections": [
+      {
+        "title": "Du hast 76 Aktien erhalten",
+        "data": {
+          "icon": "logos/DE000BFB0019/v2",
+          "subtitleText": null,
+          "timestamp": "2023-06-13T20:38:45.991+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "DE000BFB0019"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Completed",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Wertpapiertransfer",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "76",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteil",
+            "detail": {
+              "text": "Metro",
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "detail": "13.06.2023",
+            "id": "3f4fcb77-fe00-45f6-bd03-23621e27a1f6",
+            "postboxType": "SHAREBOOKING"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": "9cadff27-504a-3326-9102-cfd67a0ac5c2",
+  "timestamp": "2025-09-18T17:03:45.166+0000",
+  "title": "Novo-Nordisk (B)",
+  "icon": "logos/DK0062498333/v2",
+  "subtitle": "Aktien übertragen",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "9cadff27-504a-3326-9102-cfd67a0ac5c2"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "9cadff27-504a-3326-9102-cfd67a0ac5c2",
+    "sections": [
+      {
+        "type": "header",
+        "title": "You transferred 42 shares",
+        "data": {
+          "status": "executed",
+          "icon": "logos/DK0062498333/v2",
+          "timestamp": "2025-09-18T17:03:45.166804327Z"
+        }
+      },
+      {
+        "type": "table",
+        "title": "Overview",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Completed",
+              "functionalStyle": "EXECUTED"
+            }
+          },
+          {
+            "title": "Asset",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Novo-Nordisk (B)"
+            }
+          },
+          {
+            "title": "Action",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Securities transfer"
+            }
+          },
+          {
+            "title": "Transfer to",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "BAADER BANK AKTIENGESELLSCHAFT"
+            }
+          },
+          {
+            "title": "BIC",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "BDWBDEMMXXX"
+            }
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Transaction",
+        "data": [
+          {
+            "title": "Shares",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "42"
+            }
+          },
+          {
+            "title": "Fee",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Free"
+            }
+          }
+        ]
+      },
+      {
+        "type": "documents",
+        "title": "Documents",
+        "data": [
+          {
+            "id": "d7b428e6-218d-3197-8d8b-57a22d164ce8",
+            "title": "Execution Notice",
+            "postboxType": "TRANSFER_INVOICE_TYPE"
+          }
+        ]
+      }
+    ]
+  }
+}

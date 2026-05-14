@@ -40,8 +40,8 @@ class PPEventType(EventType):
     SWAP = "SWAP"
     TAXES = "TAXES"
     TAX_REFUND = "TAX_REFUND"
-    TRANSFER_IN = "TRANSFER_IN"  # Currently not mapped to
-    TRANSFER_OUT = "TRANSFER_OUT"  # Currently not mapped to
+    TRANSFER_IN = "TRANSFER_IN"
+    TRANSFER_OUT = "TRANSFER_OUT"
 
 
 tr_event_type_mapping = {
@@ -107,6 +107,9 @@ timeline_legacy_migrated_events_subtitle_type_mapping = {
     "Sparplan ausgeführt": ConditionalEventType.TRADE_INVOICE,
     "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
     "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
+    # Transfers
+    "Aktien erhalten": PPEventType.TRANSFER_IN,
+    "Aktien übertragen": PPEventType.TRANSFER_OUT,
 }
 
 title_event_type_mapping = {
@@ -156,6 +159,9 @@ subtitle_event_type_mapping = {
     "Stop-Sell-Order": ConditionalEventType.TRADE_INVOICE,
     "Verkaufsorder": ConditionalEventType.TRADE_INVOICE,
     "Wertlos": ConditionalEventType.TRADE_INVOICE,
+    # Transfers
+    "Aktien erhalten": PPEventType.TRANSFER_IN,
+    "Aktien übertragen": PPEventType.TRANSFER_OUT,
 }
 
 events_known_ignored = [
@@ -335,7 +341,7 @@ class Event:
             event_type = timeline_legacy_migrated_events_title_type_mapping.get(title)
             if event_type is None:
                 event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(subtitle)
-            if event_type is None:
+            if event_type is None and subtitle != "Wertpapiertransfer":
                 for item in event_dict.get("details", {}).get("sections", []):
                     ititle = item.get("title", "")
                     if ititle.startswith("Du hast "):
@@ -379,6 +385,18 @@ class Event:
             event_type = title_event_type_mapping.get(title, None)
         if event_type is None:
             event_type = subtitle_event_type_mapping.get(subtitle, None)
+        # Handle "Wertpapiertransfer" which can be either TRANSFER_IN or TRANSFER_OUT
+        if event_type is None and subtitle == "Wertpapiertransfer" and sections:
+            for item in sections:
+                ititle = item.get("title")
+                if ititle is None:
+                    continue
+                if "Aktien erhalten" in ititle or "erhalten" in ititle:
+                    event_type = PPEventType.TRANSFER_IN
+                    break
+                elif "Aktien gesendet" in ititle or "gesendet" in ititle:
+                    event_type = PPEventType.TRANSFER_OUT
+                    break
         if event_type == ConditionalEventType.PRIVATE_MARKETS_ORDER and subtitle == "Vorabpauschale":
             event_type = PPEventType.TAXES
         if event_type is None and uebersicht_dict:
@@ -459,6 +477,13 @@ class Event:
 
         if event_type is not None and event_dict.get("status", "").lower() == "canceled":
             event_type = None
+        elif event_type is not None and sections:
+            for section in sections:
+                if section.get("type") == "header":
+                    header_status = section.get("data", {}).get("status", "").lower()
+                    if header_status == "canceled":
+                        event_type = None
+                    break
         elif (
             event_type is None
             and eventTypeStr not in events_known_ignored
@@ -512,23 +537,13 @@ class Event:
             PPEventType.SWAP,
             PPEventType.TAXES,
         ]:
-            # Parse ISIN
-            for section in sections:
-                action = section.get("action", None)
-                if action and action.get("type", {}) == "instrumentDetail":
-                    isin = section.get("action", {}).get("payload")
-                    break
-                if section.get("type", {}) == "header":
-                    isin = section.get("data", {}).get("icon")
-                    if isinstance(isin, dict):
-                        isin = isin.get("asset", "")
-                    break
-            if isin is None:
-                isin = event_dict.get("icon", "")
-            isin = isin[isin.find("/") + 1 :]
-            isin = isin.split("/", 1)[0]
+            isin = cls._parse_isin(event_dict)
 
             shares, shares2, value, note = cls._parse_shares_value_note(event_type, event_dict)
+        elif event_type in [PPEventType.TRANSFER_IN, PPEventType.TRANSFER_OUT]:
+            isin = cls._parse_isin(event_dict)
+            shares = cls._parse_transfer_shares(event_dict)
+            value = 0  # Transfers have no monetary value
         else:
             value = v if (v := event_dict.get("amount", {}).get("value", None)) is not None and v != 0.0 else None
 
@@ -607,12 +622,14 @@ class Event:
 
         sections = event_dict.get("details", {}).get("sections", [{}])
 
-        transaction_dict = next(filter(lambda x: x.get("title") in ["Transaktion", "Geschäft"], sections), None)
+        transaction_dict = next(
+            filter(lambda x: x.get("title") in ["Transaktion", "Geschäft", "Transaction"], sections), None
+        )
         if transaction_dict:
             # old style event
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
-            shares_dict = next(filter(lambda x: x["title"] in ["Aktien", "Anteile"], data), None)
+            shares_dict = next(filter(lambda x: x["title"] in ["Aktien", "Anteile", "Shares"], data), None)
 
         uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht", "Overview"], sections), None)
         if uebersicht_dict:
@@ -756,6 +773,59 @@ class Event:
                     return "card_successful_transaction"
                 elif item.get("title") == "Kartenerstattung":
                     return "card_refund"
+
+        return None
+
+    @staticmethod
+    def _parse_isin(event_dict: Dict[Any, Any]) -> Optional[str]:
+        """Parses the ISIN from a transfer or corporate-action event"""
+        sections = event_dict.get("details", {}).get("sections", [{}])
+
+        for section in sections:
+            action = section.get("action", None)
+            if action and action.get("type", {}) == "instrumentDetail":
+                isin = action.get("payload")
+                break
+            if section.get("type", {}) == "header":
+                isin = section.get("data", {}).get("icon")
+                if isinstance(isin, dict):
+                    isin = isin.get("asset", "")
+                break
+        else:
+            isin = event_dict.get("icon", "")
+
+        if not isin:
+            return None
+
+        isin = isin[isin.find("/") + 1 :]
+        return isin.split("/", 1)[0]
+
+    @classmethod
+    def _parse_transfer_shares(cls, event_dict: Dict[Any, Any]) -> Optional[float]:
+        """Parses the number of shares from a transfer event
+
+        Args:
+            event_dict (Dict[Any, Any]): The event dictionary
+
+        Returns:
+            Optional[float]: The number of shares transferred
+        """
+        sections = event_dict.get("details", {}).get("sections", [{}])
+
+        # Try to find shares in "Transaction" / "Transaktion" section (for TRANSFER_OUT)
+        transaction_dict = next(filter(lambda x: x.get("title") in ["Transaction", "Transaktion"], sections), None)
+        if transaction_dict:
+            for item in transaction_dict.get("data", []):
+                if item.get("title") in ["Shares", "Aktien"]:
+                    return cls._parse_float_from_text_value(item.get("detail", {}).get("text", ""), {}, "en")
+
+        # Try to find shares in "Übersicht" / "Overview" section (for TRANSFER_IN and Wertpapiertransfer)
+        uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht", "Overview"], sections), None)
+        if uebersicht_dict:
+            for item in uebersicht_dict.get("data", []):
+                # "Aktien" for newer events, "Anteile" for older Wertpapiertransfer events
+                if item.get("title") in ["Aktien", "Shares", "Anteile"]:
+                    return cls._parse_float_from_text_value(item.get("detail", {}).get("text", ""), {}, "en")
 
         return None
 
