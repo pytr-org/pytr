@@ -47,10 +47,10 @@ msgid "TAX_REFUND"
 msgstr "Steuerrückerstattung"
 
 msgid "TRANSFER_IN"
-msgstr "Wertpapierübertrag (Eingang)"
+msgstr "Umbuchung (Eingang)"
 
 msgid "TRANSFER_OUT"
-msgstr "Wertpapierübertrag (Ausgang)"
+msgstr "Umbuchung (Ausgang)"
 
 msgid "CSVColumn_AccountName"
 msgstr "Konto"
