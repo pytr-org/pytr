@@ -1131,6 +1131,42 @@ def test_events():
             ],
         },
         {
+            "filename": "wertpapiertransfer_in_legacy.json",
+            "event_type": PPEventType.TRANSFER_IN,
+            "title": "Metro",
+            "isin": "DE000BFB0019",
+            "shares": 76.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2022-04-10T10:15:30",
+                    "Typ": "Umbuchung (Eingang)",
+                    "Wert": 0,
+                    "Notiz": "Metro",
+                    "ISIN": "DE000BFB0019",
+                    "Stück": 76.0,
+                }
+            ],
+        },
+        {
+            "filename": "wertpapiertransfer_out_legacy.json",
+            "event_type": PPEventType.TRANSFER_OUT,
+            "title": "Netflix",
+            "isin": "US64110L1061",
+            "shares": 4.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2022-05-20T16:45:00",
+                    "Typ": "Umbuchung (Ausgang)",
+                    "Wert": 0,
+                    "Notiz": "Netflix",
+                    "ISIN": "US64110L1061",
+                    "Stück": 4.0,
+                }
+            ],
+        },
+        {
             "filename": "transfer_out_cancelled.json",
             "event_type": None,
             "title": "MSCI World USD (Dist)",

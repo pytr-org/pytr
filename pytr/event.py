@@ -341,7 +341,7 @@ class Event:
             event_type = timeline_legacy_migrated_events_title_type_mapping.get(title)
             if event_type is None:
                 event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(subtitle)
-            if event_type is None:
+            if event_type is None and subtitle != "Wertpapiertransfer":
                 for item in event_dict.get("details", {}).get("sections", []):
                     ititle = item.get("title", "")
                     if ititle.startswith("Du hast "):
