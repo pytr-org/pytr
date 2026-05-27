@@ -2005,6 +2005,9 @@ def test_events():
                 }
             ],
         },
+        {
+            "filename": "aktien_erhalten_null_eventType.json",
+        },
     ]
 
     # Create an instance of EventCsvFormatter
