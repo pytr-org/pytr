@@ -61,23 +61,28 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         except ValueError as e:
             log.fatal(str(e))
             sys.exit(1)
-        request_time = time.time()
-        print("Enter the code you received to your mobile app as a notification.")
-        print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
-        code = input("Code: ")
-        if code == "":
-            countdown = countdown - (time.time() - request_time)
-            for remaining in range(int(countdown)):
-                print(
-                    f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
-                    end="\r",
-                )
-                time.sleep(1)
-            print()
-            tr.resend_weblogin()
-            code = input("SMS requested. Enter the confirmation code:")
-        tr.complete_weblogin(code)
-        log.info("Logged in.")
+        if countdown == 0:
+            # v2 push-approve flow: initiate_weblogin() already polled and got approval.
+            tr.complete_weblogin("")
+            log.info("Logged in.")
+        else:
+            request_time = time.time()
+            print("Enter the code you received to your mobile app as a notification.")
+            print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
+            code = input("Code: ")
+            if code == "":
+                countdown = countdown - (time.time() - request_time)
+                for remaining in range(int(countdown)):
+                    print(
+                        f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
+                        end="\r",
+                    )
+                    time.sleep(1)
+                print()
+                tr.resend_weblogin()
+                code = input("SMS requested. Enter the confirmation code:")
+            tr.complete_weblogin(code)
+            log.info("Logged in.")
 
     log.debug(get_settings(tr))
     return tr
