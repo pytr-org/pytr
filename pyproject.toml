@@ -30,6 +30,7 @@ dependencies = [
     "packaging",
     "pathvalidate",
     "pygments",
+    "reportlab",
     "requests_futures",
     "shtab",
     "websockets>=14",
@@ -47,6 +48,7 @@ playwright = [
 
 [project.scripts]
 pytr = "pytr.main:main"
+pytr-gui = "pytr.gui:main"
 
 [tool.hatch.build.hooks.babel]
 locale_dir = "pytr/locale"
