@@ -102,9 +102,7 @@ class _GUIDetails(Details):
         # it, and the loop stalls forever waiting for a response that never arrives.
         exchange = "LSX"
         inst = getattr(self, "instrument", None) or {}
-        eids = inst.get("exchangeIds") or [
-            ex.get("id") for ex in (inst.get("exchanges") or []) if ex.get("id")
-        ]
+        eids = inst.get("exchangeIds") or [ex.get("id") for ex in (inst.get("exchanges") or []) if ex.get("id")]
         if eids:
             exchange = eids[0]
 
@@ -154,9 +152,15 @@ def _print_details(d: _GUIDetails) -> None:
     if perf:
         section("PERFORMANCE")
         labels = [
-            ("since1d", "1 Day"), ("since1w", "1 Week"), ("since1m", "1 Month"),
-            ("since3m", "3 Months"), ("since6m", "6 Months"), ("since1y", "1 Year"),
-            ("since3y", "3 Years"), ("since5y", "5 Years"), ("sinceIpo", "Since IPO"),
+            ("since1d", "1 Day"),
+            ("since1w", "1 Week"),
+            ("since1m", "1 Month"),
+            ("since3m", "3 Months"),
+            ("since6m", "6 Months"),
+            ("since1y", "1 Year"),
+            ("since3y", "3 Years"),
+            ("since5y", "5 Years"),
+            ("sinceIpo", "Since IPO"),
         ]
         for key, label in labels:
             v = perf.get(key)
@@ -180,7 +184,7 @@ def _print_details(d: _GUIDetails) -> None:
     if tags:
         section("TAGS / CATEGORIES")
         for tag in tags:
-            print(f"  {tag.get('type','?'):<20}: {tag.get('name','?')}")
+            print(f"  {tag.get('type', '?'):<20}: {tag.get('name', '?')}")
 
     # Stock / company details
     sd = getattr(d, "stockDetails", {}) or {}
@@ -196,9 +200,9 @@ def _print_details(d: _GUIDetails) -> None:
 
     # Other stock detail scalars
     scalar_sd = {
-        k: v for k, v in sd.items()
-        if k != "company" and v not in (None, [], "", {})
-        and not isinstance(v, (dict, list))
+        k: v
+        for k, v in sd.items()
+        if k != "company" and v not in (None, [], "", {}) and not isinstance(v, (dict, list))
     }
     if scalar_sd:
         section("STOCK DETAILS")
@@ -236,6 +240,7 @@ def _print_details(d: _GUIDetails) -> None:
 # PDF generation
 # ---------------------------------------------------------------------------
 
+
 def _generate_pdf(d: _GUIDetails) -> Path:
     """Build a formatted PDF from a Details object, save to a temp file, return path."""
     import io as _io
@@ -264,18 +269,20 @@ def _generate_pdf(d: _GUIDetails) -> Path:
 
     buf = _io.BytesIO()
     doc = SimpleDocTemplate(
-        buf, pagesize=A4,
-        leftMargin=2 * cm, rightMargin=2 * cm,
-        topMargin=2 * cm, bottomMargin=2 * cm,
-        title=f"Details: {name}", author="pytr",
+        buf,
+        pagesize=A4,
+        leftMargin=2 * cm,
+        rightMargin=2 * cm,
+        topMargin=2 * cm,
+        bottomMargin=2 * cm,
+        title=f"Details: {name}",
+        author="pytr",
     )
 
     styles = getSampleStyleSheet()
     H1 = ParagraphStyle("H1", parent=styles["Title"], fontSize=18, spaceAfter=2)
-    H2 = ParagraphStyle("H2", parent=styles["Heading2"], fontSize=11,
-                        textColor=BLUE, spaceBefore=12, spaceAfter=3)
-    GREY = ParagraphStyle("Grey", parent=styles["Normal"], fontSize=9,
-                          textColor=colors.grey, spaceAfter=8)
+    H2 = ParagraphStyle("H2", parent=styles["Heading2"], fontSize=11, textColor=BLUE, spaceBefore=12, spaceAfter=3)
+    GREY = ParagraphStyle("Grey", parent=styles["Normal"], fontSize=9, textColor=colors.grey, spaceAfter=8)
     SMALL = ParagraphStyle("Small", parent=styles["Normal"], fontSize=9, spaceAfter=1)
 
     def tbl(data, col_widths, header=True):
@@ -285,8 +292,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ("TOPPADDING", (0, 0), (-1, -1), 3),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-            ("ROWBACKGROUNDS", (0, 1 if header else 0), (-1, -1),
-             [colors.white, STRIPE]),
+            ("ROWBACKGROUNDS", (0, 1 if header else 0), (-1, -1), [colors.white, STRIPE]),
             ("GRID", (0, 0), (-1, -1), 0.4, HexColor("#d0d8e0")),
         ]
         if header:
@@ -306,11 +312,13 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     story.append(Paragraph(name, H1))
     if short and short != name:
         story.append(Paragraph(f"({short})", GREY))
-    story.append(Paragraph(
-        f"ISIN: {d.isin} &nbsp;&nbsp; Type: {typ} &nbsp;&nbsp; "
-        f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-        GREY,
-    ))
+    story.append(
+        Paragraph(
+            f"ISIN: {d.isin} &nbsp;&nbsp; Type: {typ} &nbsp;&nbsp; "
+            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+            GREY,
+        )
+    )
     story.append(HRFlowable(width="100%", thickness=1.5, color=BLUE, spaceAfter=6))
 
     # ── Price ─────────────────────────────────────────────────────────────
@@ -331,16 +339,22 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     if perf:
         story.append(Paragraph("Performance", H2))
         labels = [
-            ("since1d", "1 Day"), ("since1w", "1 Week"), ("since1m", "1 Month"),
-            ("since3m", "3 Months"), ("since6m", "6 Months"), ("since1y", "1 Year"),
-            ("since3y", "3 Years"), ("since5y", "5 Years"), ("sinceIpo", "Since IPO"),
+            ("since1d", "1 Day"),
+            ("since1w", "1 Week"),
+            ("since1m", "1 Month"),
+            ("since3m", "3 Months"),
+            ("since6m", "6 Months"),
+            ("since1y", "1 Year"),
+            ("since3y", "3 Years"),
+            ("since5y", "5 Years"),
+            ("sinceIpo", "Since IPO"),
         ]
         rows = [["Period", "Return"]]
         for key, label in labels:
             v = perf.get(key)
             if v is not None:
                 pct = float(v) * 100
-                rows.append([label, f"{'+'if pct>=0 else ''}{pct:.2f}%"])
+                rows.append([label, f"{'+' if pct >= 0 else ''}{pct:.2f}%"])
         if len(rows) > 1:
             story.append(tbl(rows, [5 * cm, 4 * cm]))
 
@@ -350,8 +364,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
         story.append(Paragraph("Exchanges", H2))
         rows = [["Exchange", "Symbol", "Name"]]
         for ex in exchanges[:12]:
-            rows.append([ex.get("slug", ""), ex.get("symbolAtExchange", ""),
-                         ex.get("nameAtExchange", "")])
+            rows.append([ex.get("slug", ""), ex.get("symbolAtExchange", ""), ex.get("nameAtExchange", "")])
         story.append(tbl(rows, [3 * cm, 4 * cm, None]))
 
     # ── Tags ─────────────────────────────────────────────────────────────
@@ -363,8 +376,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
 
     # ── Company ───────────────────────────────────────────────────────────
     sd = getattr(d, "stockDetails", {}) or {}
-    company = {k: v for k, v in (sd.get("company") or {}).items()
-               if v not in (None, "", [], {})}
+    company = {k: v for k, v in (sd.get("company") or {}).items() if v not in (None, "", [], {})}
     if company:
         story.append(Paragraph("Company", H2))
         rows = []
@@ -375,9 +387,9 @@ def _generate_pdf(d: _GUIDetails) -> Path:
 
     # ── Stock Details ─────────────────────────────────────────────────────
     scalar_sd = {
-        k: v for k, v in sd.items()
-        if k != "company" and v not in (None, [], "", {})
-        and not isinstance(v, (dict, list))
+        k: v
+        for k, v in sd.items()
+        if k != "company" and v not in (None, [], "", {}) and not isinstance(v, (dict, list))
     }
     if scalar_sd:
         story.append(Paragraph("Stock Details", H2))
@@ -388,8 +400,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
         story.append(tbl(rows, [5 * cm, None], header=False))
 
     # ── Suitability ───────────────────────────────────────────────────────
-    suit = {k: v for k, v in (getattr(d, "instrumentSuitability", {}) or {}).items()
-            if v not in (None, [], "", {})}
+    suit = {k: v for k, v in (getattr(d, "instrumentSuitability", {}) or {}).items() if v not in (None, [], "", {})}
     if suit:
         story.append(Paragraph("Suitability", H2))
         rows = [[k, str(v)] for k, v in suit.items()]
@@ -399,17 +410,18 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     news_items = getattr(d, "neonNews", []) or []
     since = datetime.now() - timedelta(days=30)
     recent = sorted(
-        [(datetime.fromtimestamp(n["createdAt"] / 1000.0), n.get("headline", ""))
-         for n in news_items
-         if datetime.fromtimestamp(n["createdAt"] / 1000.0) > since],
+        [
+            (datetime.fromtimestamp(n["createdAt"] / 1000.0), n.get("headline", ""))
+            for n in news_items
+            if datetime.fromtimestamp(n["createdAt"] / 1000.0) > since
+        ],
         reverse=True,
     )[:20]
     if recent:
         story.append(Paragraph("Recent News  (last 30 days)", H2))
         rows = [["Date", "Headline"]]
         for dt, headline in recent:
-            rows.append([dt.strftime("%Y-%m-%d %H:%M"),
-                         Paragraph(headline, SMALL)])
+            rows.append([dt.strftime("%Y-%m-%d %H:%M"), Paragraph(headline, SMALL)])
         story.append(tbl(rows, [3.8 * cm, None]))
 
     doc.build(story)
@@ -423,6 +435,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
 # ---------------------------------------------------------------------------
 # Instrument search
 # ---------------------------------------------------------------------------
+
 
 async def _search_async(
     tr: TradeRepublicApi,
@@ -443,9 +456,7 @@ async def _search_async(
             if remaining <= 0:
                 raise asyncio.TimeoutError()
             try:
-                recv_id, _, response = await asyncio.wait_for(
-                    tr.recv(), timeout=min(2.0, remaining)
-                )
+                recv_id, _, response = await asyncio.wait_for(tr.recv(), timeout=min(2.0, remaining))
             except asyncio.TimeoutError:
                 if asyncio.get_event_loop().time() >= deadline:
                     raise RuntimeError(
@@ -496,15 +507,15 @@ class _SearchDialog(tk.Toplevel):
         f.rowconfigure(1, weight=1)
 
         ttk.Label(f, text="Select an instrument:", font=("Segoe UI", 10)).grid(
-            row=0, column=0, sticky=tk.W, pady=(0, 6))
+            row=0, column=0, sticky=tk.W, pady=(0, 6)
+        )
 
         lf = ttk.Frame(f)
         lf.grid(row=1, column=0, sticky="nsew", pady=(0, 10))
         lf.columnconfigure(0, weight=1)
         lf.rowconfigure(0, weight=1)
 
-        self._lb = tk.Listbox(lf, font=("Consolas", 9), width=70, height=14,
-                               selectmode=tk.SINGLE, activestyle="dotbox")
+        self._lb = tk.Listbox(lf, font=("Consolas", 9), width=70, height=14, selectmode=tk.SINGLE, activestyle="dotbox")
         self._lb.grid(row=0, column=0, sticky="nsew")
         sb = ttk.Scrollbar(lf, command=self._lb.yview)
         sb.grid(row=0, column=1, sticky="ns")
@@ -513,7 +524,7 @@ class _SearchDialog(tk.Toplevel):
         for item in self._items:
             isin = item.get("isin") or item.get("instrumentId", "?")
             name = item.get("shortName") or item.get("name", "?")
-            typ  = item.get("typeId", "")
+            typ = item.get("typeId", "")
             self._lb.insert(tk.END, f"  {isin}  {name:<40} {typ}")
 
         self._lb.bind("<Double-Button-1>", lambda _: self._select())
@@ -555,6 +566,7 @@ class _QueueWriter(io.TextIOBase):
 # Auth dialogs
 # ---------------------------------------------------------------------------
 
+
 class _OTPDialog(tk.Toplevel):
     def __init__(self, parent: tk.Tk, countdown: int) -> None:
         super().__init__(parent)
@@ -576,8 +588,12 @@ class _OTPDialog(tk.Toplevel):
     def _build(self) -> None:
         f = ttk.Frame(self, padding=24)
         f.pack(fill=tk.BOTH, expand=True)
-        ttk.Label(f, text="Enter the code from the\nTrade Republic app notification:",
-                  justify=tk.CENTER, font=("Segoe UI", 10)).pack(pady=(0, 8))
+        ttk.Label(
+            f,
+            text="Enter the code from the\nTrade Republic app notification:",
+            justify=tk.CENTER,
+            font=("Segoe UI", 10),
+        ).pack(pady=(0, 8))
         self._timer_var = tk.StringVar()
         ttk.Label(f, textvariable=self._timer_var, foreground="#888").pack(pady=(0, 10))
         self.code_entry = ttk.Entry(f, width=14, font=("Segoe UI", 16), justify=tk.CENTER)
@@ -640,8 +656,12 @@ class _SMSDialog(tk.Toplevel):
     def _build(self) -> None:
         f = ttk.Frame(self, padding=24)
         f.pack(fill=tk.BOTH, expand=True)
-        ttk.Label(f, text="An SMS was sent to your number.\nEnter the code from the SMS:",
-                  justify=tk.CENTER, font=("Segoe UI", 10)).pack(pady=(0, 12))
+        ttk.Label(
+            f,
+            text="An SMS was sent to your number.\nEnter the code from the SMS:",
+            justify=tk.CENTER,
+            font=("Segoe UI", 10),
+        ).pack(pady=(0, 12))
         self.code_entry = ttk.Entry(f, width=14, font=("Segoe UI", 16), justify=tk.CENTER)
         self.code_entry.pack(pady=(0, 16))
         self.code_entry.bind("<Return>", lambda _: self._submit())
@@ -671,6 +691,7 @@ class _SMSDialog(tk.Toplevel):
 # ---------------------------------------------------------------------------
 # Scrollable frame helper
 # ---------------------------------------------------------------------------
+
 
 class _ScrollFrame(ttk.Frame):
     """A frame with a vertical scrollbar."""
@@ -704,6 +725,7 @@ class _ScrollFrame(ttk.Frame):
 # Main window
 # ---------------------------------------------------------------------------
 
+
 class PytrGUI(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
@@ -733,6 +755,7 @@ class PytrGUI(tk.Tk):
 
     def _redirect_output(self) -> None:
         import sys
+
         writer = _QueueWriter(self._out_q)
         sys.stdout = writer  # type: ignore[assignment]
         sys.stderr = writer  # type: ignore[assignment]
@@ -780,8 +803,9 @@ class PytrGUI(tk.Tk):
         self._pin_entry.bind("<Return>", lambda _: self._start_login())
 
         self._show_pin = tk.BooleanVar()
-        ttk.Checkbutton(f, text="Show", variable=self._show_pin,
-                        command=self._toggle_pin).grid(row=0, column=4, padx=(0, 8))
+        ttk.Checkbutton(f, text="Show", variable=self._show_pin, command=self._toggle_pin).grid(
+            row=0, column=4, padx=(0, 8)
+        )
 
         self._store_var = tk.BooleanVar()
         ttk.Checkbutton(f, text="Remember", variable=self._store_var).grid(row=0, column=5, padx=(0, 10))
@@ -803,11 +827,9 @@ class PytrGUI(tk.Tk):
         f = ttk.LabelFrame(self, text="Output", padding=6)
         f.grid(row=2, column=0, sticky="ew", padx=8, pady=(0, 8))
         f.columnconfigure(0, weight=1)
-        self._log = scrolledtext.ScrolledText(f, state=tk.DISABLED, height=10,
-                                               font=("Consolas", 9), wrap=tk.WORD)
+        self._log = scrolledtext.ScrolledText(f, state=tk.DISABLED, height=10, font=("Consolas", 9), wrap=tk.WORD)
         self._log.grid(row=0, column=0, sticky="ew")
-        ttk.Button(f, text="Clear", command=self._clear_log, width=7).grid(
-            row=1, column=0, sticky=tk.E, pady=(4, 0))
+        ttk.Button(f, text="Clear", command=self._clear_log, width=7).grid(row=1, column=0, sticky=tk.E, pady=(4, 0))
 
     def _clear_log(self) -> None:
         self._log.configure(state=tk.NORMAL)
@@ -838,40 +860,45 @@ class PytrGUI(tk.Tk):
         ttk.Label(f, text="Output CSV (optional):").grid(row=r, column=0, sticky=tk.W, pady=4)
         self._pf_out = tk.StringVar()
         ttk.Entry(f, textvariable=self._pf_out).grid(row=r, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(f, text="…", width=3,
-                   command=lambda: self._save_file(self._pf_out, ".csv")).grid(row=r, column=2)
+        ttk.Button(f, text="…", width=3, command=lambda: self._save_file(self._pf_out, ".csv")).grid(row=r, column=2)
         r += 1
 
         ttk.Label(f, text="Sort by column:").grid(row=r, column=0, sticky=tk.W, pady=4)
         self._pf_sort_col = tk.StringVar(value="(none)")
-        ttk.Combobox(f, textvariable=self._pf_sort_col, width=18,
-                     values=["(none)"] + [c.lower() for c in PORTFOLIO_COLUMNS],
-                     state="readonly").grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(
+            f,
+            textvariable=self._pf_sort_col,
+            width=18,
+            values=["(none)"] + [c.lower() for c in PORTFOLIO_COLUMNS],
+            state="readonly",
+        ).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
 
         self._pf_sort_asc = tk.BooleanVar()
-        ttk.Checkbutton(f, text="Sort ascending", variable=self._pf_sort_asc).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Checkbutton(f, text="Sort ascending", variable=self._pf_sort_asc).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
         self._pf_watchlist = tk.BooleanVar()
         ttk.Checkbutton(f, text="Include watchlist", variable=self._pf_watchlist).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Label(f, text="Language:").grid(row=r, column=0, sticky=tk.W, pady=4)
         self._pf_lang = tk.StringVar(value="auto")
-        ttk.Combobox(f, textvariable=self._pf_lang, width=10,
-                     values=["auto", *sorted(SUPPORTED_LANGUAGES)],
-                     state="readonly").grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(
+            f, textvariable=self._pf_lang, width=10, values=["auto", *sorted(SUPPORTED_LANGUAGES)], state="readonly"
+        ).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
 
         self._pf_decimal = tk.BooleanVar()
         ttk.Checkbutton(f, text="Localize decimals", variable=self._pf_decimal).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Button(f, text="▶  Run Portfolio", command=self._run_portfolio).grid(
-            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0))
+            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0)
+        )
         return sf
 
     # --- Details ---
@@ -888,14 +915,17 @@ class PytrGUI(tk.Tk):
 
         ttk.Label(f, text="Asset type:").grid(row=1, column=0, sticky=tk.W, pady=4)
         self._det_asset_type = tk.StringVar(value="stock")
-        ttk.Combobox(f, textvariable=self._det_asset_type, values=_ASSET_TYPES,
-                     state="readonly", width=14).grid(row=1, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(f, textvariable=self._det_asset_type, values=_ASSET_TYPES, state="readonly", width=14).grid(
+            row=1, column=1, sticky=tk.W, padx=6
+        )
 
-        ttk.Label(f, text="(Enter a 12-char ISIN to look up directly,\nor a name to search and select)",
-                  foreground="#888").grid(row=2, column=1, sticky=tk.W, padx=6, pady=(2, 0))
+        ttk.Label(
+            f, text="(Enter a 12-char ISIN to look up directly,\nor a name to search and select)", foreground="#888"
+        ).grid(row=2, column=1, sticky=tk.W, padx=6, pady=(2, 0))
 
         ttk.Button(f, text="▶  Run Details", command=self._run_details).grid(
-            row=3, column=1, sticky=tk.W, padx=6, pady=(14, 0))
+            row=3, column=1, sticky=tk.W, padx=6, pady=(14, 0)
+        )
         return f
 
     # --- Download Docs ---
@@ -917,22 +947,19 @@ class PytrGUI(tk.Tk):
             nonlocal r
             ttk.Label(f, text=label).grid(row=r, column=0, sticky=tk.W, pady=3)
             var.set(str(default))
-            ttk.Spinbox(f, textvariable=var, from_=from_, to=to, width=8).grid(
-                row=r, column=1, sticky=tk.W, padx=6)
+            ttk.Spinbox(f, textvariable=var, from_=from_, to=to, width=8).grid(row=r, column=1, sticky=tk.W, padx=6)
             r += 1
 
         def row_check(label, var, default=False):
             nonlocal r
             var.set(default)
-            ttk.Checkbutton(f, text=label, variable=var).grid(
-                row=r, column=1, sticky=tk.W, padx=6)
+            ttk.Checkbutton(f, text=label, variable=var).grid(row=r, column=1, sticky=tk.W, padx=6)
             r += 1
 
         ttk.Label(f, text="Output directory:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._dl_out = tk.StringVar()
         ttk.Entry(f, textvariable=self._dl_out).grid(row=r, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(f, text="…", width=3,
-                   command=lambda: self._open_dir(self._dl_out)).grid(row=r, column=2)
+        ttk.Button(f, text="…", width=3, command=lambda: self._open_dir(self._dl_out)).grid(row=r, column=2)
         r += 1
 
         self._dl_format = tk.StringVar()
@@ -946,15 +973,16 @@ class PytrGUI(tk.Tk):
 
         ttk.Label(f, text="Export format:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._dl_export_fmt = tk.StringVar(value="csv")
-        ttk.Combobox(f, textvariable=self._dl_export_fmt, values=["csv", "json"],
-                     state="readonly", width=8).grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(f, textvariable=self._dl_export_fmt, values=["csv", "json"], state="readonly", width=8).grid(
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Label(f, text="Language:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._dl_lang = tk.StringVar(value="auto")
-        ttk.Combobox(f, textvariable=self._dl_lang,
-                     values=["auto", *sorted(SUPPORTED_LANGUAGES)],
-                     state="readonly", width=10).grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(
+            f, textvariable=self._dl_lang, values=["auto", *sorted(SUPPORTED_LANGUAGES)], state="readonly", width=10
+        ).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
 
         self._dl_export_tx = tk.BooleanVar()
@@ -977,7 +1005,8 @@ class PytrGUI(tk.Tk):
         row_check("Sort chronologically", self._dl_sort)
 
         ttk.Button(f, text="▶  Run Download Docs", command=self._run_dl_docs).grid(
-            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0))
+            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0)
+        )
         return sf
 
     # --- Export Transactions ---
@@ -991,69 +1020,75 @@ class PytrGUI(tk.Tk):
         ttk.Label(f, text="Output directory:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_dir = tk.StringVar(value=".")
         ttk.Entry(f, textvariable=self._ex_dir).grid(row=r, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(f, text="…", width=3,
-                   command=lambda: self._open_dir(self._ex_dir)).grid(row=r, column=2)
+        ttk.Button(f, text="…", width=3, command=lambda: self._open_dir(self._ex_dir)).grid(row=r, column=2)
         r += 1
 
         ttk.Label(f, text="Output file (optional):").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_file = tk.StringVar()
         ttk.Entry(f, textvariable=self._ex_file).grid(row=r, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(f, text="…", width=3,
-                   command=lambda: self._save_file(self._ex_file, ".csv")).grid(row=r, column=2)
+        ttk.Button(f, text="…", width=3, command=lambda: self._save_file(self._ex_file, ".csv")).grid(row=r, column=2)
         r += 1
 
         ttk.Label(f, text="Last N days (0=all):").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_last_days = tk.StringVar(value="0")
         ttk.Spinbox(f, textvariable=self._ex_last_days, from_=-1, to=9999, width=8).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Label(f, text="Days until (0=all):").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_days_until = tk.StringVar(value="0")
         ttk.Spinbox(f, textvariable=self._ex_days_until, from_=0, to=9999, width=8).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Label(f, text="Export format:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_fmt = tk.StringVar(value="csv")
-        ttk.Combobox(f, textvariable=self._ex_fmt, values=["csv", "json"],
-                     state="readonly", width=8).grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(f, textvariable=self._ex_fmt, values=["csv", "json"], state="readonly", width=8).grid(
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Label(f, text="Language:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_lang = tk.StringVar(value="auto")
-        ttk.Combobox(f, textvariable=self._ex_lang,
-                     values=["auto", *sorted(SUPPORTED_LANGUAGES)],
-                     state="readonly", width=10).grid(row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(
+            f, textvariable=self._ex_lang, values=["auto", *sorted(SUPPORTED_LANGUAGES)], state="readonly", width=10
+        ).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
 
         self._ex_store_db = tk.BooleanVar(value=True)
         ttk.Checkbutton(f, text="Store event database", variable=self._ex_store_db).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
         self._ex_scan_dup = tk.BooleanVar()
         ttk.Checkbutton(f, text="Scan for duplicates", variable=self._ex_scan_dup).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
         self._ex_dump_raw = tk.BooleanVar()
-        ttk.Checkbutton(f, text="Dump raw data", variable=self._ex_dump_raw).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+        ttk.Checkbutton(f, text="Dump raw data", variable=self._ex_dump_raw).grid(row=r, column=1, sticky=tk.W, padx=6)
         r += 1
         self._ex_date_time = tk.BooleanVar(value=True)
         ttk.Checkbutton(f, text="Date with time", variable=self._ex_date_time).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
         self._ex_decimal = tk.BooleanVar()
         ttk.Checkbutton(f, text="Localize decimals", variable=self._ex_decimal).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
         self._ex_sort = tk.BooleanVar()
         ttk.Checkbutton(f, text="Sort chronologically", variable=self._ex_sort).grid(
-            row=r, column=1, sticky=tk.W, padx=6)
+            row=r, column=1, sticky=tk.W, padx=6
+        )
         r += 1
 
         ttk.Button(f, text="▶  Run Export Transactions", command=self._run_export_tx).grid(
-            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0))
+            row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0)
+        )
         return sf
 
     # --- Price Alarms ---
@@ -1073,11 +1108,11 @@ class PytrGUI(tk.Tk):
         ttk.Label(get, text="Save to file (empty=log):").grid(row=1, column=0, sticky=tk.W, pady=3)
         self._ga_out = tk.StringVar()
         ttk.Entry(get, textvariable=self._ga_out).grid(row=1, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(get, text="…", width=3,
-                   command=lambda: self._save_file(self._ga_out, ".json")).grid(row=1, column=2)
+        ttk.Button(get, text="…", width=3, command=lambda: self._save_file(self._ga_out, ".json")).grid(row=1, column=2)
 
         ttk.Button(get, text="▶  Get Price Alarms", command=self._run_get_alarms).grid(
-            row=2, column=1, sticky=tk.W, padx=6, pady=(10, 0))
+            row=2, column=1, sticky=tk.W, padx=6, pady=(10, 0)
+        )
 
         set_ = ttk.LabelFrame(f, text="Set Price Alarms", padding=10)
         set_.grid(row=1, column=0, columnspan=3, sticky=tk.EW)
@@ -1090,15 +1125,16 @@ class PytrGUI(tk.Tk):
         ttk.Label(set_, text="Input file (optional):").grid(row=1, column=0, sticky=tk.W, pady=3)
         self._sa_infile = tk.StringVar()
         ttk.Entry(set_, textvariable=self._sa_infile).grid(row=1, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(set_, text="…", width=3,
-                   command=lambda: self._open_file(self._sa_infile)).grid(row=1, column=2)
+        ttk.Button(set_, text="…", width=3, command=lambda: self._open_file(self._sa_infile)).grid(row=1, column=2)
 
         self._sa_remove = tk.BooleanVar(value=True)
-        ttk.Checkbutton(set_, text="Remove current alarms first",
-                        variable=self._sa_remove).grid(row=2, column=1, sticky=tk.W, padx=6)
+        ttk.Checkbutton(set_, text="Remove current alarms first", variable=self._sa_remove).grid(
+            row=2, column=1, sticky=tk.W, padx=6
+        )
 
         ttk.Button(set_, text="▶  Set Price Alarms", command=self._run_set_alarms).grid(
-            row=3, column=1, sticky=tk.W, padx=6, pady=(10, 0))
+            row=3, column=1, sticky=tk.W, padx=6, pady=(10, 0)
+        )
         return f
 
     # --- Savings Plans ---
@@ -1110,21 +1146,22 @@ class PytrGUI(tk.Tk):
         ttk.Label(f, text="Save to file (empty=log):").grid(row=0, column=0, sticky=tk.W, pady=4)
         self._sp_out = tk.StringVar()
         ttk.Entry(f, textvariable=self._sp_out).grid(row=0, column=1, sticky=tk.EW, padx=6)
-        ttk.Button(f, text="…", width=3,
-                   command=lambda: self._save_file(self._sp_out, ".json")).grid(row=0, column=2)
+        ttk.Button(f, text="…", width=3, command=lambda: self._save_file(self._sp_out, ".json")).grid(row=0, column=2)
 
         ttk.Label(f, text="Language:").grid(row=1, column=0, sticky=tk.W, pady=4)
         self._sp_lang = tk.StringVar(value="auto")
-        ttk.Combobox(f, textvariable=self._sp_lang,
-                     values=["auto", *sorted(SUPPORTED_LANGUAGES)],
-                     state="readonly", width=10).grid(row=1, column=1, sticky=tk.W, padx=6)
+        ttk.Combobox(
+            f, textvariable=self._sp_lang, values=["auto", *sorted(SUPPORTED_LANGUAGES)], state="readonly", width=10
+        ).grid(row=1, column=1, sticky=tk.W, padx=6)
 
         self._sp_decimal = tk.BooleanVar()
         ttk.Checkbutton(f, text="Localize decimals", variable=self._sp_decimal).grid(
-            row=2, column=1, sticky=tk.W, padx=6)
+            row=2, column=1, sticky=tk.W, padx=6
+        )
 
         ttk.Button(f, text="▶  Run Savings Plans", command=self._run_savings).grid(
-            row=3, column=1, sticky=tk.W, padx=6, pady=(14, 0))
+            row=3, column=1, sticky=tk.W, padx=6, pady=(14, 0)
+        )
         return f
 
     # ------------------------------------------------------------------
@@ -1197,10 +1234,7 @@ class PytrGUI(tk.Tk):
             nb = float(0)
         else:
             nb = (datetime.now().astimezone() - timedelta(days=ld)).timestamp()
-        na = (
-            (datetime.now().astimezone() - timedelta(days=du)).timestamp()
-            if du > 0 else float("inf")
-        )
+        na = (datetime.now().astimezone() - timedelta(days=du)).timestamp() if du > 0 else float("inf")
         return nb, na
 
     # ------------------------------------------------------------------
@@ -1227,8 +1261,7 @@ class PytrGUI(tk.Tk):
         phone = self._phone_var.get().strip()
         pin = self._pin_var.get().strip()
         if not phone or not pin:
-            messagebox.showwarning("Not logged in",
-                                   "Fill in phone number and PIN, then log in first.")
+            messagebox.showwarning("Not logged in", "Fill in phone number and PIN, then log in first.")
             return
         self._set_busy(True)
         self._set_status("Logging in…")
@@ -1336,10 +1369,15 @@ class PytrGUI(tk.Tk):
 
         def w():
             try:
-                Portfolio(tr, self._pf_watchlist.get(), lang=self._pf_lang.get(),
-                          decimal_localization=self._pf_decimal.get(), output=out,
-                          sort_by_column=None if col == "(none)" else col,
-                          sort_descending=not self._pf_sort_asc.get()).get()
+                Portfolio(
+                    tr,
+                    self._pf_watchlist.get(),
+                    lang=self._pf_lang.get(),
+                    decimal_localization=self._pf_decimal.get(),
+                    output=out,
+                    sort_by_column=None if col == "(none)" else col,
+                    sort_descending=not self._pf_sort_asc.get(),
+                ).get()
                 self.after(0, self._set_status, "Done ✓", "#2a7a2a")
             except Exception as exc:
                 self.after(0, self._on_error, str(exc))
@@ -1369,8 +1407,7 @@ class PytrGUI(tk.Tk):
             try:
                 results = asyncio.run(_search_async(tr, query, asset_type, stop))
                 if not results:
-                    self.after(0, messagebox.showinfo, "No results",
-                               f"No instruments found for '{query}'.")
+                    self.after(0, messagebox.showinfo, "No results", f"No instruments found for '{query}'.")
                     self.after(0, self._set_busy, False)
                     self.after(0, self._set_status, "No results.")
                     return
@@ -1430,17 +1467,25 @@ class PytrGUI(tk.Tk):
 
         def w():
             try:
-                DL(tr, out, self._dl_format.get(), nb, na,
-                   self._dl_store_db.get(), self._dl_scan_dup.get(),
-                   self._dl_dump_raw.get(), self._dl_export_tx.get(),
-                   max_workers=int(self._dl_workers.get()),
-                   universal_filepath=self._dl_universal.get(),
-                   lang=self._dl_lang.get(),
-                   date_with_time=self._dl_date_time.get(),
-                   decimal_localization=self._dl_decimal.get(),
-                   sort_export=self._dl_sort.get(),
-                   format_export=self._dl_export_fmt.get(),
-                   flat=self._dl_flat.get()).do_dl()
+                DL(
+                    tr,
+                    out,
+                    self._dl_format.get(),
+                    nb,
+                    na,
+                    self._dl_store_db.get(),
+                    self._dl_scan_dup.get(),
+                    self._dl_dump_raw.get(),
+                    self._dl_export_tx.get(),
+                    max_workers=int(self._dl_workers.get()),
+                    universal_filepath=self._dl_universal.get(),
+                    lang=self._dl_lang.get(),
+                    date_with_time=self._dl_date_time.get(),
+                    decimal_localization=self._dl_decimal.get(),
+                    sort_export=self._dl_sort.get(),
+                    format_export=self._dl_export_fmt.get(),
+                    flat=self._dl_flat.get(),
+                ).do_dl()
                 self.after(0, self._set_status, "Done ✓", "#2a7a2a")
             except Exception as exc:
                 self.after(0, self._on_error, str(exc))
@@ -1462,17 +1507,17 @@ class PytrGUI(tk.Tk):
 
         def w():
             try:
-                tl = Timeline(tr, outdir, nb, na,
-                              self._ex_store_db.get(), self._ex_scan_dup.get(),
-                              self._ex_dump_raw.get())
+                tl = Timeline(
+                    tr, outdir, nb, na, self._ex_store_db.get(), self._ex_scan_dup.get(), self._ex_dump_raw.get()
+                )
                 asyncio.run(tl.tl_loop())
                 path = Path(out_file_str) if out_file_str else outdir / f"account_transactions.{fmt}"
                 with path.open("w", encoding="utf-8") as fh:
-                    TransactionExporter(lang=self._ex_lang.get(),
-                                        date_with_time=self._ex_date_time.get(),
-                                        decimal_localization=self._ex_decimal.get()).export(
-                        fh, [Event.from_dict(i) for i in tl.events],
-                        sort=self._ex_sort.get(), format=fmt)
+                    TransactionExporter(
+                        lang=self._ex_lang.get(),
+                        date_with_time=self._ex_date_time.get(),
+                        decimal_localization=self._ex_decimal.get(),
+                    ).export(fh, [Event.from_dict(i) for i in tl.events], sort=self._ex_sort.get(), format=fmt)
                 self.after(0, self._set_status, "Done ✓", "#2a7a2a")
             except Exception as exc:
                 self.after(0, self._on_error, str(exc))
@@ -1492,6 +1537,7 @@ class PytrGUI(tk.Tk):
 
         def w():
             import sys
+
             try:
                 fh = open(out_path, "w", encoding="utf-8") if out_path else sys.stdout
                 try:
@@ -1518,6 +1564,7 @@ class PytrGUI(tk.Tk):
 
         def w():
             import sys
+
             try:
                 fh = open(in_path, "r", encoding="utf-8") if in_path else sys.stdin
                 try:
@@ -1543,11 +1590,11 @@ class PytrGUI(tk.Tk):
 
         def w():
             import sys
+
             try:
                 fh = open(out_path, "w", encoding="utf-8") if out_path else sys.stdout
                 try:
-                    SavingsPlans(tr, fh, decimal_localization=self._sp_decimal.get(),
-                                 lang=self._sp_lang.get()).get()
+                    SavingsPlans(tr, fh, decimal_localization=self._sp_decimal.get(), lang=self._sp_lang.get()).get()
                 finally:
                     if out_path:
                         fh.close()
