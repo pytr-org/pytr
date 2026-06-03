@@ -10,6 +10,7 @@ import threading
 import time
 import tkinter as tk
 from datetime import datetime, timedelta
+from typing import Any
 from pathlib import Path
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 
@@ -306,7 +307,7 @@ def _generate_pdf(d: _GUIDetails) -> Path:
         t.setStyle(TableStyle(cmds))
         return t
 
-    story = []
+    story: list[Any] = []
 
     # ── Header ───────────────────────────────────────────────────────────
     story.append(Paragraph(name, H1))
@@ -379,11 +380,11 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     company = {k: v for k, v in (sd.get("company") or {}).items() if v not in (None, "", [], {})}
     if company:
         story.append(Paragraph("Company", H2))
-        rows = []
+        rows1: list[list[Any]] = []
         for k, v in company.items():
             vs = str(v)
-            rows.append([k, Paragraph(vs[:300] + ("…" if len(vs) > 300 else ""), SMALL)])
-        story.append(tbl(rows, [5 * cm, None], header=False))
+            rows1.append([k, Paragraph(vs[:300] + ("…" if len(vs) > 300 else ""), SMALL)])
+        story.append(tbl(rows1, [5 * cm, None], header=False))
 
     # ── Stock Details ─────────────────────────────────────────────────────
     scalar_sd = {
@@ -393,11 +394,11 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     }
     if scalar_sd:
         story.append(Paragraph("Stock Details", H2))
-        rows = []
+        rows2: list[list[Any]] = []
         for k, v in scalar_sd.items():
             vs = str(v)
-            rows.append([k, Paragraph(vs[:300] + ("…" if len(vs) > 300 else ""), SMALL)])
-        story.append(tbl(rows, [5 * cm, None], header=False))
+            rows2.append([k, Paragraph(vs[:300] + ("…" if len(vs) > 300 else ""), SMALL)])
+        story.append(tbl(rows2, [5 * cm, None], header=False))
 
     # ── Suitability ───────────────────────────────────────────────────────
     suit = {k: v for k, v in (getattr(d, "instrumentSuitability", {}) or {}).items() if v not in (None, [], "", {})}
@@ -419,10 +420,10 @@ def _generate_pdf(d: _GUIDetails) -> Path:
     )[:20]
     if recent:
         story.append(Paragraph("Recent News  (last 30 days)", H2))
-        rows = [["Date", "Headline"]]
+        rows3: list[list[Any]] = [["Date", "Headline"]]
         for dt, headline in recent:
-            rows.append([dt.strftime("%Y-%m-%d %H:%M"), Paragraph(headline, SMALL)])
-        story.append(tbl(rows, [3.8 * cm, None]))
+            rows3.append([dt.strftime("%Y-%m-%d %H:%M"), Paragraph(headline, SMALL)])
+        story.append(tbl(rows3, [3.8 * cm, None]))
 
     doc.build(story)
 
@@ -1352,7 +1353,7 @@ class PytrGUI(tk.Tk):
         messagebox.showerror("Error", msg)
 
     def _open_pdf(self, path: str) -> None:
-        os.startfile(path)
+        os.startfile(path)  # type: ignore[attr-defined]
 
     # ------------------------------------------------------------------
     # Command runners

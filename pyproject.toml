@@ -50,8 +50,9 @@ dev = [
     "pytest>=8.3.4",
     "mypy>=1.15.0",
     "types-babel>=2.11.0.15",
-    "types-requests>=2.32.0.20241016",
     "types-pygments>=2.19.0.20250107",
+    "types-reportlab",
+    "types-requests>=2.32.0.20241016",
 ]
 
 [tool.ruff]
