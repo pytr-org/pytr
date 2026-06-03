@@ -13,8 +13,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 
-from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
 from .alarms import Alarms
+from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
 from .details import Details
 from .dl import DL
 from .event import Event
@@ -238,15 +238,21 @@ def _print_details(d: _GUIDetails) -> None:
 
 def _generate_pdf(d: _GUIDetails) -> Path:
     """Build a formatted PDF from a Details object, save to a temp file, return path."""
+    import io as _io
+
     from reportlab.lib import colors
     from reportlab.lib.colors import HexColor
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
     from reportlab.lib.units import cm
     from reportlab.platypus import (
-        HRFlowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+        HRFlowable,
+        Paragraph,
+        SimpleDocTemplate,
+        Spacer,
+        Table,
+        TableStyle,
     )
-    import io as _io
 
     BLUE = HexColor("#1a6e9a")
     STRIPE = HexColor("#f0f5fa")
@@ -845,10 +851,12 @@ class PytrGUI(tk.Tk):
 
         self._pf_sort_asc = tk.BooleanVar()
         ttk.Checkbutton(f, text="Sort ascending", variable=self._pf_sort_asc).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._pf_watchlist = tk.BooleanVar()
         ttk.Checkbutton(f, text="Include watchlist", variable=self._pf_watchlist).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
 
         ttk.Label(f, text="Language:").grid(row=r, column=0, sticky=tk.W, pady=4)
         self._pf_lang = tk.StringVar(value="auto")
@@ -859,7 +867,8 @@ class PytrGUI(tk.Tk):
 
         self._pf_decimal = tk.BooleanVar()
         ttk.Checkbutton(f, text="Localize decimals", variable=self._pf_decimal).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
 
         ttk.Button(f, text="▶  Run Portfolio", command=self._run_portfolio).grid(
             row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0))
@@ -916,7 +925,8 @@ class PytrGUI(tk.Tk):
             nonlocal r
             var.set(default)
             ttk.Checkbutton(f, text=label, variable=var).grid(
-                row=r, column=1, sticky=tk.W, padx=6); r += 1
+                row=r, column=1, sticky=tk.W, padx=6)
+            r += 1
 
         ttk.Label(f, text="Output directory:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._dl_out = tk.StringVar()
@@ -995,12 +1005,14 @@ class PytrGUI(tk.Tk):
         ttk.Label(f, text="Last N days (0=all):").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_last_days = tk.StringVar(value="0")
         ttk.Spinbox(f, textvariable=self._ex_last_days, from_=-1, to=9999, width=8).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
 
         ttk.Label(f, text="Days until (0=all):").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_days_until = tk.StringVar(value="0")
         ttk.Spinbox(f, textvariable=self._ex_days_until, from_=0, to=9999, width=8).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
 
         ttk.Label(f, text="Export format:").grid(row=r, column=0, sticky=tk.W, pady=3)
         self._ex_fmt = tk.StringVar(value="csv")
@@ -1017,22 +1029,28 @@ class PytrGUI(tk.Tk):
 
         self._ex_store_db = tk.BooleanVar(value=True)
         ttk.Checkbutton(f, text="Store event database", variable=self._ex_store_db).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._ex_scan_dup = tk.BooleanVar()
         ttk.Checkbutton(f, text="Scan for duplicates", variable=self._ex_scan_dup).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._ex_dump_raw = tk.BooleanVar()
         ttk.Checkbutton(f, text="Dump raw data", variable=self._ex_dump_raw).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._ex_date_time = tk.BooleanVar(value=True)
         ttk.Checkbutton(f, text="Date with time", variable=self._ex_date_time).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._ex_decimal = tk.BooleanVar()
         ttk.Checkbutton(f, text="Localize decimals", variable=self._ex_decimal).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
         self._ex_sort = tk.BooleanVar()
         ttk.Checkbutton(f, text="Sort chronologically", variable=self._ex_sort).grid(
-            row=r, column=1, sticky=tk.W, padx=6); r += 1
+            row=r, column=1, sticky=tk.W, padx=6)
+        r += 1
 
         ttk.Button(f, text="▶  Run Export Transactions", command=self._run_export_tx).grid(
             row=r, column=1, sticky=tk.W, padx=6, pady=(14, 0))
