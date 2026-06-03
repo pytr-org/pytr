@@ -10,9 +10,9 @@ import threading
 import time
 import tkinter as tk
 from datetime import datetime, timedelta
-from typing import Any
 from pathlib import Path
 from tkinter import filedialog, messagebox, scrolledtext, ttk
+from typing import Any
 
 from .alarms import Alarms
 from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
