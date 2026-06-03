@@ -12,6 +12,7 @@ __Table of Contents__
 <!-- toc -->
 * [Quickstart](#quickstart)
 * [Usage](#usage)
+* [GUI (Windows)](#gui-windows)
 * [Authentication](#authentication)
   * [Web login (default)](#web-login-default)
   * [App login](#app-login)
@@ -92,6 +93,17 @@ Options:
   --debug-log-filter DEBUG_LOG_FILTER   Filter debug log types (default: None)
 ```
 <!-- end runcmd -->
+
+## GUI (Windows)
+
+A Windows desktop interface that exposes all pytr functionality without the command line.
+It requires the same Python installation and dependencies as the CLI.
+
+After installing (see [Quickstart](#quickstart)), run:
+
+```sh
+pytr-gui
+```
 
 ## Authentication
 
