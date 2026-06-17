@@ -18,7 +18,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright"):
+def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False):
     """
     Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
@@ -52,7 +52,13 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         else:
             save_cookies = False
 
-    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies, waf_token=waf_token)
+    tr = TradeRepublicApi(
+        phone_no=phone_no,
+        pin=pin,
+        save_cookies=save_cookies,
+        waf_token=waf_token,
+        use_v2_login=v2,
+    )
 
     # Use same login as app.traderepublic.com
     if not tr.resume_websession():
@@ -61,7 +67,7 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         except ValueError as e:
             log.fatal(str(e))
             sys.exit(1)
-        if countdown == 0:
+        if v2:
             # v2 push-approve flow: initiate_weblogin() already polled and got approval.
             tr.complete_weblogin("")
             log.info("Logged in.")
