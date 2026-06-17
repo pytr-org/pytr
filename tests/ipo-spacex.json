@@ -1,0 +1,198 @@
+  {
+    "id": "e742c3cb-c17c-4905-845c-ab42189da291",
+    "timestamp": "2026-06-06T04:20:02.120+0000",
+    "title": "SpaceX",
+    "icon": "logos/US84615Q1031/v2",
+    "avatar": {
+      "asset": "logos/US84615Q1031/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "IPO",
+    "amount": {
+      "currency": "EUR",
+      "value": -33.33,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "e742c3cb-c17c-4905-845c-ab42189da291"
+    },
+    "cashAccountNumber": "123456789",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "IPO_TRADE_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "e742c3cb-c17c-4905-845c-ab42189da291",
+      "sections": [
+        {
+          "title": "Du hast 33,33 € investiert",
+          "data": {
+            "icon": {
+              "asset": "logos/US84615Q1031/v2",
+              "badge": null
+            },
+            "timestamp": "2026-06-06T04:20:02.081244Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "US84615Q1031",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Deine Zuteilung für SpaceX",
+          "description": "Du hast SpaceX Aktien im Wert von 32,33 € erhalten. Nicht investiertes Geld wurde erstattet.",
+          "type": "banner"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "IPO",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "SpaceX",
+                "displayValue": {
+                  "text": "SpaceX"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "0,276891 ×  116,762806 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "116,762806 €",
+                              "displayValue": {
+                                "text": "116,762806 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "0,276891",
+                              "displayValue": {
+                                "text": "0,276891"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "32,33 €",
+                              "displayValue": {
+                                "text": "32,33 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "116,762806 €",
+                  "prefix": "0,276891 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "33,33 €",
+                "displayValue": {
+                  "text": "33,33 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "1ae44e9f-08ae-46a4-80da-19e6c84f6a1c",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "a1566adc-c184-40f3-8062-87b3cf60197d",
+              "postboxType": "EQUITIES_BUY_EX_ANTE"
+            },
+            {
+              "title": "Prospekt",
+              "action": {
+                "payload": "https://assets.traderepublic.com/assets/files/TR_EU_Prospectus_yD8uWbXoKs2.pdf",
+                "type": "browserModal"
+              },
+              "id": "4b3b1e09-fd8d-38d7-9291-00de9b6a2cd1",
+              "postboxType": ""
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+  }

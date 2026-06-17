@@ -80,6 +80,7 @@ tr_event_type_mapping = {
     "TAX_REFUND": PPEventType.TAX_REFUND,
     "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
     # Trade invoices
+    "IPO_TRADE_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
@@ -164,6 +165,7 @@ events_known_ignored = [
     "CREDIT_CANCELED",
     "CUSTOMER_CREATED",
     "CRYPTO_ANNUAL_STATEMENT",
+    "CSX_CHAT_ACTIVITY",
     "DEVICE_RESET",
     "DOCUMENTS_ACCEPTED",
     "DOCUMENTS_CHANGED",
@@ -231,6 +233,7 @@ events_known_ignored_title = [
 events_known_ignored_subtitle = [
     "Cash oder Aktie",
     "Erteilt",
+    "Fall abgeschlossen",
     "Jährliche Hauptversammlung",
     "Kartenprüfung",
     "Kauf-Abrechnung storniert",
@@ -536,12 +539,13 @@ class Event:
                 note = cls._parse_card_note(event_dict)
 
         if event_type == ConditionalEventType.PRIVATE_MARKETS_ORDER:
-            if value is None:
-                shares = 0
-            else:
-                shares = abs(value) / 100
-            if fees is not None:
-                shares = shares - (abs(fees) / 100)
+            if shares is None:
+                if value is None:
+                    shares = 0
+                elif fees is not None:
+                    shares = (abs(value) - abs(fees)) / 100
+                else:
+                    shares = abs(value) / 100
             note = event_dict["subtitle"]
 
         if event_type is PPEventType.SWAP and uebersicht_dict:
