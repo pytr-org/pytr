@@ -1,0 +1,223 @@
+  {
+    "id": "86417e07-754d-45a6-a429-72c1437bc159",
+    "timestamp": "2026-06-08T14:15:00.000+0000",
+    "title": "Private Equity",
+    "icon": "logos/LU3176111881/v2",
+    "avatar": {
+      "asset": "logos/LU3176111881/v2",
+      "badge": null
+    },
+    "badge": null,
+    "subtitle": "Verkaufsorder",
+    "amount": {
+      "currency": "EUR",
+      "value": 103.54,
+      "fractionDigits": 2
+    },
+    "subAmount": null,
+    "status": "EXECUTED",
+    "action": {
+      "type": "timelineDetail",
+      "payload": "86417e07-754d-45a6-a429-72c1437bc159"
+    },
+    "cashAccountNumber": "12345678",
+    "hidden": false,
+    "deleted": false,
+    "eventType": "PRIVATE_MARKET_FUND_TRADE_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "86417e07-754d-45a6-a429-72c1437bc159",
+      "sections": [
+        {
+          "title": "Du hast 103,54 € erhalten",
+          "data": {
+            "icon": {
+              "asset": "logos/LU3176111881/v2",
+              "badge": null
+            },
+            "timestamp": "2026-06-08T14:15:00Z",
+            "status": "executed"
+          },
+          "action": {
+            "payload": "LU3176111881",
+            "type": "instrumentDetail"
+          },
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {
+              "title": "Verkaufen",
+              "detail": {
+                "text": "Ausgeführt",
+                "functionalStyle": "EXECUTED",
+                "type": "status"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Asset",
+              "detail": {
+                "text": "Private Equity",
+                "displayValue": {
+                  "text": "Private Equity"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "1,01 ×  105,7252 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Transaktion",
+                        "type": "title"
+                      },
+                      {
+                        "data": [
+                          {
+                            "title": "Aktienkurs",
+                            "detail": {
+                              "text": "105,7252 €",
+                              "displayValue": {
+                                "text": "105,7252 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Aktien",
+                            "detail": {
+                              "text": "1,01",
+                              "displayValue": {
+                                "text": "1,01"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          },
+                          {
+                            "title": "Summe",
+                            "detail": {
+                              "text": "103,54 €",
+                              "displayValue": {
+                                "text": "103,54 €"
+                              },
+                              "type": "text"
+                            },
+                            "style": "plain"
+                          }
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "105,7252 €",
+                  "prefix": "1,01 × "
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Abzug für 1 %-Bonus",
+              "detail": {
+                "text": "1,00 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {
+                        "title": "Abzug für 1 %-Bonus",
+                        "type": "title"
+                      },
+                      {
+                        "text": "Du hast einen Bonus erhalten, der abgezogen werden muss, da du vor 18 Sept. 2027 verkaufst.",
+                        "type": "text"
+                      }
+                    ]
+                  },
+                  "displayMode": "bottomSheet",
+                  "type": "infoPage"
+                },
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Steuer",
+              "detail": {
+                "text": "1,24 €",
+                "displayValue": {
+                  "text": "1,24 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Gebühr",
+              "detail": {
+                "text": "1,00 €",
+                "displayValue": {
+                  "text": "1,00 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Summe",
+              "detail": {
+                "text": "103,54 €",
+                "displayValue": {
+                  "text": "103,54 €"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Dokumente",
+          "data": [
+            {
+              "title": "Abrechnung",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "7d8b50fe-e2fe-4d8a-859a-58e0d5354e82",
+              "postboxType": "SECURITIES_SETTLEMENT"
+            },
+            {
+              "title": "Kosteninformation",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "b5ac9e63-b975-4a94-93dc-5652c0333522",
+              "postboxType": "EQUITIES_SELL_EX_ANTE"
+            }
+          ],
+          "type": "documents"
+        }
+      ]
+    }
+  }
