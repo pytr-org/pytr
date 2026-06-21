@@ -96,9 +96,18 @@ class Portfolio:
         while recv > 0:
             subscription_id, subscription, response = await self.tr.recv()
 
-            if subscription["type"] == "compactPortfolio":
+            if subscription["type"] == "compactPortfolioByType":
                 recv -= 1
-                self.portfolio = response["positions"]
+                # New format: positions are grouped in categories[].positions
+                # Flatten all categories and normalize the field name: new API uses
+                # "isin" where the old "compactPortfolio" used "instrumentId".
+                positions = []
+                for cat in response.get("categories", []):
+                    for pos in cat.get("positions", []):
+                        if "isin" in pos and "instrumentId" not in pos:
+                            pos["instrumentId"] = pos["isin"]
+                        positions.append(pos)
+                self.portfolio = positions
             elif subscription["type"] == "cash":
                 recv -= 1
                 self.cash = response
