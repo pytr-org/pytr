@@ -2,6 +2,7 @@
 
 import argparse
 import asyncio
+import re
 import shutil
 import signal
 import sys
@@ -17,6 +18,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
+from pytr.rates import Rates, read_isins_from_csv
 from pytr.savings_plans import SavingsPlans
 from pytr.timeline import Timeline
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
@@ -155,18 +157,70 @@ def get_main_parser():
         default=False,
         help="Include watchlist.",
     )
+    parser_portfolio.add_argument(
+        "--ignore",
+        default=None,
+        metavar="ISINS",
+        help="Semicolon-separated list of ISINs to exclude from the portfolio, e.g. --ignore US30303M1027;DE0005140008",
+    )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
     parser_portfolio.add_argument(
         "--sort-by-column",
-        type=str.lower,
-        choices=[col.lower() for col in PORTFOLIO_COLUMNS],
-        default=None,
-        help="Sort results by column.",
+        type=str,
+        choices=list(PORTFOLIO_COLUMNS),
+        default="netValue",
+        help="Sort results by column (default: netValue).",
     )
     parser_portfolio.add_argument(
         "--sort-ascending",
         action=argparse.BooleanOptionalAction,
         default=False,
+        help="Whether to sort in ascending order.",
+    )
+
+    # rates
+    info = "Fetch current prices for a list of ISINs given as direct list or CSV input"
+    parser_rates = parser_cmd.add_parser(
+        "rates",
+        formatter_class=formatter,
+        parents=[parser_login_args, parser_lang, parser_decimal_localization],
+        help=info,
+        description=info,
+    )
+    parser_rates.add_argument(
+        "input", nargs="*", help="ISINs to fetch prices for, e.g. DE0005140008 US0378331005", default=[]
+    )
+    parser_rates.add_argument(
+        "-i",
+        "--inputfile",
+        help="CSV input file containing ISINs (used when no ISINs given as positional args; default: stdin). Semicolon or comma delimited.",
+        type=argparse.FileType("r", encoding="utf-8"),
+        default="-",
+        nargs="?",
+    )
+    parser_rates.add_argument(
+        "--isin-column",
+        help='Column name in the input CSV that contains ISINs (default: auto-detect "ISIN" or first column).',
+        default=None,
+    )
+    parser_rates.add_argument(
+        "-o",
+        "--output",
+        help="Output path for CSV file (default: stdout).",
+        type=Path,
+        default=None,
+    )
+    parser_rates.add_argument(
+        "--sort-by-column",
+        type=str,
+        choices=["name", "isin", "price", "ask"],
+        default="name",
+        help="Sort results by column (default: name).",
+    )
+    parser_rates.add_argument(
+        "--sort-ascending",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help="Whether to sort in ascending order.",
     )
 
@@ -473,9 +527,34 @@ def main():
                 waf_token=args.waf_token,
             ),
             args.include_watchlist,
+            instruments_to_ignore=args.ignore.split(";") if args.ignore else [],
             lang=args.lang,
             decimal_localization=args.decimal_localization,
             output=args.output,
+            sort_by_column=args.sort_by_column,
+            sort_descending=not args.sort_ascending,
+        ).get()
+    elif args.command == "rates":
+        if args.input:
+            isin_re = re.compile(r"^[A-Z]{2}[A-Z0-9]{10}$")
+            isins = [s for s in args.input if isin_re.match(s)]
+        else:
+            isins = read_isins_from_csv(args.inputfile, args.isin_column)
+        if not isins:
+            print("No valid ISINs found in input.")
+            return -1
+        Rates(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
+            ),
+            isins,
+            output=args.output,
+            isin_column=args.isin_column,
+            decimal_localization=args.decimal_localization,
+            lang=args.lang,
             sort_by_column=args.sort_by_column,
             sort_descending=not args.sort_ascending,
         ).get()
