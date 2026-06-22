@@ -446,7 +446,7 @@ class TradeRepublicApi:
             self.settings()
         if self._sec_acc_no is None:
             raise ValueError("Could not retrieve securities account number from account settings.")
-        return await self.subscribe({"type": "compactPortfolio", "secAccNo": self._sec_acc_no})
+        return await self.subscribe({"type": "compactPortfolioByType", "secAccNo": self._sec_acc_no})
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})

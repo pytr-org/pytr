@@ -757,6 +757,26 @@ def test_events():
             ],
         },
         {
+            "filename": "ipo-spacex.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "SpaceX",
+            "isin": "US84615Q1031",
+            "shares": 0.276891,
+            "value": -33.33,
+            "fees": 1.0,
+            "transactions": [
+                {
+                    "Datum": "2026-06-06T04:20:02",
+                    "Typ": "Kauf",
+                    "Wert": -33.33,
+                    "Notiz": "SpaceX",
+                    "ISIN": "US84615Q1031",
+                    "Stück": 0.276891,
+                    "Gebühren": 1.0,
+                }
+            ],
+        },
+        {
             "filename": "junior_p2p_transfer.json",
             "event_type": PPEventType.REMOVAL,
             "title": "Maria Mueller",
@@ -1392,7 +1412,30 @@ def test_events():
             ],
         },
         {
-            "filename": "private_markets_verkaufs_order_erstellt.json",
+            "filename": "private_markets_verkaufsorder_erstellt.json",
+        },
+        {
+            "filename": "private_markets_verkaufsorder.json",
+            "event_type": ConditionalEventType.PRIVATE_MARKETS_ORDER,
+            "title": "Private Equity",
+            "isin": "LU3176111881",
+            "shares": 1.01,
+            "value": 103.54,
+            "fees": 1,
+            "taxes": 1.24,
+            "note": "Verkaufsorder",
+            "transactions": [
+                {
+                    "Datum": "2026-06-08T14:15:00",
+                    "Typ": "Verkauf",
+                    "Wert": 103.54,
+                    "Notiz": "EQT",
+                    "ISIN": "LU3176111881",
+                    "Stück": 1.01,
+                    "Gebühren": 1.0,
+                    "Steuern": 1.24,
+                },
+            ],
         },
         {
             "filename": "private_markets_vorabpauschale.json",
