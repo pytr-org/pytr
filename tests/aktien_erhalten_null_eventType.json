@@ -1,0 +1,27 @@
+{
+    "id": "9e81acd0-3fe1-409b-abfd-96f26088eeb0",
+    "timestamp": "2025-03-15T10:00:00.000+0000",
+    "title": "AI & Big Data USD (Acc)",
+    "icon": "logos/IE000716YHJ7/v2",
+    "subtitle": "Aktien erhalten",
+    "eventType": null,
+    "action": {
+        "type": "timelineDetail",
+        "payload": "9e81acd0-3fe1-409b-abfd-96f26088eeb0"
+    },
+    "source": "timelineActivity",
+    "details": {
+        "id": "9e81acd0-3fe1-409b-abfd-96f26088eeb0",
+        "sections": [
+            {
+                "title": "Du hast Aktien erhalten",
+                "data": {
+                    "icon": "logos/IE000716YHJ7/v2",
+                    "timestamp": "2025-03-15T10:00:00.000Z",
+                    "status": "executed"
+                },
+                "type": "header"
+            }
+        ]
+    }
+}

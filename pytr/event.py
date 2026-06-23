@@ -747,7 +747,7 @@ class Event:
         Returns:
             Optional[str]: note
         """
-        eventTypeStr = event_dict.get("eventType", "")
+        eventTypeStr = event_dict.get("eventType") or ""
         if eventTypeStr.startswith("card_"):
             return eventTypeStr
 
