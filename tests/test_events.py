@@ -279,6 +279,24 @@ def test_events():
             ],
         },
         {
+            "filename": "bardividende_zero.json",
+            "event_type": PPEventType.DIVIDEND,
+            "title": "L'Oreal",
+            "isin": "FR0000120321",
+            "shares": 0.000125,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2025-05-07T15:32:27",
+                    "Typ": "Dividende",
+                    "Wert": 0.0,
+                    "Notiz": "L'Oreal",
+                    "ISIN": "FR0000120321",
+                    "Stück": 0.000125,
+                }
+            ],
+        },
+        {
             "filename": "bardividende_korrigiert.json",
             "event_type": PPEventType.DIVIDEND,
             "title": "Medical Properties Trust",
@@ -391,7 +409,7 @@ def test_events():
             ],
         },
         {
-            "filename": "bonusaktien2.json",
+            "filename": "bonusaktien_tax_only.json",
             "event_type": PPEventType.TAXES,
             "title": "BYD",
             "isin": "CNE100000296",
@@ -409,7 +427,34 @@ def test_events():
             ],
         },
         {
-            "filename": "bonusaktien2_no_eventType.json",
+            "filename": "bonusaktien2.json",
+            "event_type": PPEventType.SPLIT,
+            "title": "BYD",
+            "isin": "CNE100000296",
+            "shares": 2.149301,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2025-08-13T05:22:45",
+                    "Typ": "Split",
+                    "Wert": 0,
+                    "Notiz": "BYD",
+                    "ISIN": "CNE100000296",
+                    "Stück": 2.149301,
+                }
+            ],
+        },
+        {
+            "filename": "bonusaktien_canceled.json",
+            "event_type": None,
+            "title": "BYD",
+            "isin": None,
+            "shares": None,
+            "value": None,
+            "transactions": [],
+        },
+        {
+            "filename": "bonusaktien_tax_only_no_eventType.json",
             "event_type": PPEventType.TAXES,
             "title": "BYD",
             "isin": "CNE100000296",
@@ -1515,6 +1560,50 @@ def test_events():
             ],
         },
         {
+            "filename": "reverse_split2.json",
+            "event_type": PPEventType.SWAP,
+            "title": "Honeywell International",
+            "isin": "US4385162056",
+            "shares": 0.966682,
+            "shares2": 0.483341,
+            "value": 0,
+            "note": "Honeywell International",
+            "transactions": [
+                {
+                    "Datum": "2026-06-30T16:46:52",
+                    "Typ": "Swap",
+                    "Wert": 0,
+                    "Notiz": "Honeywell International",
+                    "ISIN": "US4385161066",
+                    "Stück": 0.966682,
+                    "ISIN2": "US4385162056",
+                    "Stück2": 0.483341,
+                },
+            ],
+        },
+        {
+            "filename": "reverse_split3.json",
+            "event_type": PPEventType.SWAP,
+            "title": "Honeywell International",
+            "isin": "US4385161066",
+            "shares": 0.966682,
+            "shares2": 0.483341,
+            "value": 0,
+            "note": "Honeywell International",
+            "transactions": [
+                {
+                    "Datum": "2026-06-30T16:46:52",
+                    "Typ": "Swap",
+                    "Wert": 0,
+                    "Notiz": "Honeywell International",
+                    "ISIN": "US4385161066",
+                    "Stück": 0.966682,
+                    "ISIN2": "US4385161066",
+                    "Stück2": 0.483341,
+                },
+            ],
+        },
+        {
             "filename": "saveback.json",
             "event_type": ConditionalEventType.SAVEBACK,
             "title": "S&P 500 Information Tech USD (Acc)",
@@ -2177,6 +2266,26 @@ def test_events():
                     "ISIN": "FR0014015MS9",
                     "Stück": 1.299376,
                     "ISIN2": "FR0011981968",
+                }
+            ],
+        },
+        {
+            "filename": "zwischenvertrieb3.json",
+            "event_type": PPEventType.SPINOFF,
+            "title": "OHB",
+            "isin": "DE0005936124",
+            "shares": 1.026415,
+            "value": 0,
+            "note": "OHB",
+            "transactions": [
+                {
+                    "Datum": "2026-06-29T09:09:14",
+                    "Typ": "Spinoff",
+                    "Wert": 0,
+                    "Notiz": "OHB",
+                    "ISIN": "DE000A41YFG5",
+                    "Stück": 1.026415,
+                    "ISIN2": "DE0005936124",
                 }
             ],
         },

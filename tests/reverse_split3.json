@@ -1,38 +1,29 @@
-{
-    "id": "ba69948e-fd42-30d0-924f-f94241ee3fbc",
-    "timestamp": "2024-07-19T13:28:04.386+0000",
-    "title": "National Grid",
-    "icon": "logos/GB00BDR05C01/v2",
-    "avatar": {
-      "asset": "logos/GB00BDR05C01/v2",
-      "badge": null
-    },
-    "badge": null,
-    "subtitle": "Dividende Wahlweise",
-    "amount": {
-      "currency": "EUR",
-      "value": 3.37,
-      "fractionDigits": 2
-    },
-    "subAmount": null,
-    "status": "EXECUTED",
+  {
+    "id": "8ffd17fe-afc2-3520-8eea-28828c8a8168",
+    "timestamp": "2026-06-30T16:46:52.404+0000",
+    "title": "Honeywell International",
+    "icon": "logos/US4385161066/v2",
+    "subtitle": "Reverse Split",
     "action": {
       "type": "timelineDetail",
-      "payload": "ba69948e-fd42-30d0-924f-f94241ee3fbc"
+      "payload": "8ffd17fe-afc2-3520-8eea-28828c8a8168"
     },
-    "eventType": "ssp_corporate_action_invoice_cash",
-    "cashAccountNumber": "123456789",
+    "trailing": null,
+    "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
     "hidden": false,
     "deleted": false,
-    "source": "timelineTransaction",
+    "source": "timelineActivity",
     "details": {
-      "id": "ba69948e-fd42-30d0-924f-f94241ee3fbc",
+      "id": "8ffd17fe-afc2-3520-8eea-28828c8a8168",
       "sections": [
         {
-          "title": "Du hast 3,37 € erhalten",
+          "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
           "data": {
-            "icon": "logos/GB00BDR05C01/v2",
-            "timestamp": "2024-07-19T13:28:04.386Z",
+            "icon": {
+              "asset": "logos/US4385161066/v2",
+              "badge": null
+            },
+            "timestamp": "2026-06-30T16:46:52.404Z",
             "status": "executed"
           },
           "type": "header"
@@ -50,11 +41,12 @@
               "style": "plain"
             },
             {
-              "title": "Event",
+              "title": "Orderart",
               "detail": {
-                "text": "Dividende Wahlweise",
+                "text": "Reverse Split",
                 "displayValue": {
-                  "text": "Dividende Wahlweise"
+                  "text": "Reverse Split",
+                  "textDataSensitivity": "PUBLIC"
                 },
                 "type": "text"
               },
@@ -63,48 +55,46 @@
             {
               "title": "Wertpapier",
               "detail": {
-                "text": "National Grid",
+                "text": "Honeywell International",
                 "displayValue": {
-                  "text": "National Grid"
-                },
-                "type": "text"
-              },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Geschäft",
-          "data": [
-            {
-              "title": "Bruttoertrag",
-              "detail": {
-                "text": "4,65 €",
-                "displayValue": {
-                  "text": "4,65 €"
+                  "text": "Honeywell International",
+                  "textDataSensitivity": "PUBLIC"
                 },
                 "type": "text"
               },
               "style": "plain"
             },
             {
-              "title": "Steuer",
+              "title": "Aktien entfernt",
               "detail": {
-                "text": "-1,28 €",
+                "text": "0.966682",
                 "displayValue": {
-                  "text": "-1,28 €"
+                  "text": "0.966682",
+                  "textDataSensitivity": "PUBLIC"
                 },
                 "type": "text"
               },
               "style": "plain"
             },
             {
-              "title": "Gesamt",
+              "title": "Wertpapier",
               "detail": {
-                "text": "3,37 €",
+                "text": "Honeywell International",
                 "displayValue": {
-                  "text": "3,37 €"
+                  "text": "Honeywell International",
+                  "textDataSensitivity": "PUBLIC"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {
+              "title": "Aktien hinzugefügt",
+              "detail": {
+                "text": "0.483341",
+                "displayValue": {
+                  "text": "0.483341",
+                  "textDataSensitivity": "PUBLIC"
                 },
                 "type": "text"
               },
@@ -118,13 +108,13 @@
           "data": [
             {
               "title": "Dokumente",
-              "detail": "19.07.2024",
+              "detail": "30.06.2026",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "60f383fd-f2b0-4f2f-8639-ba41a4559926",
-              "postboxType": "CA_INCOME_INVOICE"
+              "id": "873a5c81-5f95-4d44-a8c7-f475fba6dd4c",
+              "postboxType": "CA_SECURITIES_INVOICE"
             }
           ],
           "type": "documents"

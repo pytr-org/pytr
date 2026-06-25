@@ -17,7 +17,7 @@
     "payload": "32a408dd-5d8e-4991-a7c3-0b2fd1dc062c"
   },
   "eventType": "ssp_corporate_action_invoice_cash",
-  "cashAccountNumber": "0123456789",
+  "cashAccountNumber": "123456789",
   "hidden": false,
   "deleted": false,
   "source": "timelineTransaction",

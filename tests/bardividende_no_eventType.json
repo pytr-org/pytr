@@ -28,7 +28,7 @@
         "id": "de17e7cb-49cd-322f-8345-1b265dc9730d",
         "sections": [
             {
-                "title": "Du hast 0,92\u00a0\u20ac erhalten",
+                "title": "Du hast 0,92 € erhalten",
                 "data": {
                     "icon": "logos/US5486611073/v2",
                     "timestamp": "2025-11-05T18:31:19.339Z",
@@ -37,12 +37,12 @@
                 "type": "header"
             },
             {
-                "title": "\u00dcbersicht",
+                "title": "Übersicht",
                 "data": [
                     {
                         "title": "Status",
                         "detail": {
-                            "text": "Ausgef\u00fchrt",
+                            "text": "Ausgeführt",
                             "functionalStyle": "EXECUTED",
                             "type": "status"
                         },
@@ -74,7 +74,7 @@
                 "type": "table"
             },
             {
-                "title": "Gesch\u00e4ft",
+                "title": "Geschäft",
                 "data": [
                     {
                         "title": "Aktien",
@@ -90,9 +90,9 @@
                     {
                         "title": "Dividende pro Aktie",
                         "detail": {
-                            "text": "1,20\u00a0$",
+                            "text": "1,20 $",
                             "displayValue": {
-                                "text": "1,20\u00a0$"
+                                "text": "1,20 $"
                             },
                             "type": "text"
                         },
@@ -101,9 +101,9 @@
                     {
                         "title": "Steuer",
                         "detail": {
-                            "text": "-0,32\u00a0\u20ac",
+                            "text": "-0,32 €",
                             "displayValue": {
-                                "text": "-0,32\u00a0\u20ac"
+                                "text": "-0,32 €"
                             },
                             "type": "text"
                         },
@@ -112,9 +112,9 @@
                     {
                         "title": "Gesamt",
                         "detail": {
-                            "text": "0,92\u00a0\u20ac",
+                            "text": "0,92 €",
                             "displayValue": {
-                                "text": "0,92\u00a0\u20ac"
+                                "text": "0,92 €"
                             },
                             "type": "text"
                         },
@@ -138,31 +138,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "common_empty_string",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "timelineEventId": "de17e7cb-49cd-322f-8345-1b265dc9730d",
-                                        "chat_flow_key": "NHC_0029_wealth_general_question_dividends"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "highlighted"
-                    }
-                ],
-                "type": "table"
             }
         ]
     }

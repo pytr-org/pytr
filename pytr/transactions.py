@@ -175,12 +175,16 @@ class TransactionExporter:
                 kwargs["isin"] = "US36467W1172"
             elif event.note == "GLOBALSTAR INC. O.N.":
                 kwargs["isin"] = "US3789735079"
+            elif event.note == "HONEYWELL AEROSPACE INC.":
+                kwargs["isin"] = "US43849R1059"
             elif event.note == "Magnum Ice Cream":
                 kwargs["isin"] = "NL0015002MS2"
             elif event.note == "Netflix":
                 kwargs["isin"] = "US64110L1061"
             elif event.note == "NVIDIA":
                 kwargs["isin"] = "US67066G1040"
+            elif event.note == "OHB":
+                kwargs["isin"] = "DE000A41YFG5"
             elif event.note == "Orsted":
                 kwargs["isin"] = "DK0060094928"
             elif event.note == "ORSTED A/S   -ANR-":
@@ -265,6 +269,9 @@ class TransactionExporter:
                 kwargs["isin2"] = "DE000TKMS001"
             elif event.note == "Unilever":
                 kwargs["isin2"] = "GB00BVZK7T90"
+            elif event.note == "Honeywell International":
+                kwargs["isin2"] = kwargs["isin"]
+                kwargs["isin"] = "US4385161066"
             elif event.note == "MSCI World USD (Acc)" and event.isin == "LU1781541179":
                 kwargs["isin2"] = "IE000BI8OT95"
             elif event.note == "Worldline":
