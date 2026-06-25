@@ -1079,6 +1079,123 @@ def test_events():
             ],
         },
         {
+            "filename": "transfer_out.json",
+            "event_type": PPEventType.TRANSFER_OUT,
+            "title": "Novo-Nordisk (B)",
+            "isin": "DK0062498333",
+            "shares": 42.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2025-09-18T17:03:45",
+                    "Typ": "Umbuchung (Ausgang)",
+                    "Wert": 0,
+                    "Notiz": "Novo-Nordisk (B)",
+                    "ISIN": "DK0062498333",
+                    "Stück": 42.0,
+                }
+            ],
+        },
+        {
+            "filename": "transfer_in.json",
+            "event_type": PPEventType.TRANSFER_IN,
+            "title": "British American Tobacco",
+            "isin": "GB0002875804",
+            "shares": 1.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2024-06-14T16:40:07",
+                    "Typ": "Umbuchung (Eingang)",
+                    "Wert": 0,
+                    "Notiz": "British American Tobacco",
+                    "ISIN": "GB0002875804",
+                    "Stück": 1.0,
+                }
+            ],
+        },
+        {
+            "filename": "wertpapiertransfer_in.json",
+            "event_type": PPEventType.TRANSFER_IN,
+            "title": "Metro",
+            "isin": "DE000BFB0019",
+            "shares": 76.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2023-06-13T20:38:45",
+                    "Typ": "Umbuchung (Eingang)",
+                    "Wert": 0,
+                    "Notiz": "Metro",
+                    "ISIN": "DE000BFB0019",
+                    "Stück": 76.0,
+                }
+            ],
+        },
+        {
+            "filename": "wertpapiertransfer_out.json",
+            "event_type": PPEventType.TRANSFER_OUT,
+            "title": "Netflix",
+            "isin": "US64110L1061",
+            "shares": 4.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2024-03-15T14:22:33",
+                    "Typ": "Umbuchung (Ausgang)",
+                    "Wert": 0,
+                    "Notiz": "Netflix",
+                    "ISIN": "US64110L1061",
+                    "Stück": 4.0,
+                }
+            ],
+        },
+        {
+            "filename": "wertpapiertransfer_in_legacy.json",
+            "event_type": PPEventType.TRANSFER_IN,
+            "title": "Metro",
+            "isin": "DE000BFB0019",
+            "shares": 76.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2022-04-10T10:15:30",
+                    "Typ": "Umbuchung (Eingang)",
+                    "Wert": 0,
+                    "Notiz": "Metro",
+                    "ISIN": "DE000BFB0019",
+                    "Stück": 76.0,
+                }
+            ],
+        },
+        {
+            "filename": "wertpapiertransfer_out_legacy.json",
+            "event_type": PPEventType.TRANSFER_OUT,
+            "title": "Netflix",
+            "isin": "US64110L1061",
+            "shares": 4.0,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2022-05-20T16:45:00",
+                    "Typ": "Umbuchung (Ausgang)",
+                    "Wert": 0,
+                    "Notiz": "Netflix",
+                    "ISIN": "US64110L1061",
+                    "Stück": 4.0,
+                }
+            ],
+        },
+        {
+            "filename": "transfer_out_cancelled.json",
+            "event_type": None,
+            "title": "MSCI World USD (Dist)",
+            "isin": None,
+            "shares": None,
+            "value": None,
+            "transactions": [],
+        },
+        {
             "filename": "payment_inbound_credit_card.json",
             "event_type": PPEventType.DEPOSIT,
             "title": "Einzahlung",
