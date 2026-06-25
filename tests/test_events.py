@@ -7,6 +7,10 @@ from pytr.transactions import TransactionExporter
 def test_events():
     test_data = [
         {
+            "filename": "address_changed.json",
+            "event_type": None,
+        },
+        {
             "filename": "aktien_entfernt.json",
             "event_type": ConditionalEventType.TRADE_INVOICE,
             "title": "ORSTED A/S   -ANR-",
@@ -835,6 +839,10 @@ def test_events():
             ],
         },
         {
+            "filename": "kauforder_abgelehnt.json",
+            "event_type": None,
+        },
+        {
             "filename": "legacy_verkauforder_neu_abgerechnet.json",
             "event_type": ConditionalEventType.TRADE_INVOICE,
             "title": "Marie Brizard Wine and Spirits",
@@ -993,6 +1001,10 @@ def test_events():
                     "Steuern": 0.14,
                 }
             ],
+        },
+        {
+            "filename": "neues_geraet.json",
+            "event_type": None,
         },
         {
             "filename": "outgoing_transfer.json",
@@ -1580,6 +1592,24 @@ def test_events():
                     "Notiz": "TSMC (ADR)",
                     "ISIN": "US8740391003",
                     "Stück": 0.037523,
+                }
+            ],
+        },
+        {
+            "filename": "securities_transfer_incoming.json",
+            "event_type": PPEventType.TRANSFER_IN,
+            "title": "MSCI EM USD (Acc)",
+            "isin": "IE00BTJRMP35",
+            "shares": 7,
+            "value": 0,
+            "transactions": [
+                {
+                    "Datum": "2025-10-13T12:43:03",
+                    "Typ": "Umbuchung (Eingang)",
+                    "Wert": 0,
+                    "Notiz": "MSCI EM USD (Acc)",
+                    "ISIN": "IE00BTJRMP35",
+                    "Stück": 7,
                 }
             ],
         },

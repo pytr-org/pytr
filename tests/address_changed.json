@@ -1,0 +1,12 @@
+{
+  "id": "059ce705-3c54-4019-b008-79946d835a37",
+  "timestamp": "2024-09-13T14:58:01.873+0000",
+  "title": "Adresse",
+  "icon": "logos/timeline_flag/v2",
+  "subtitle": "Geändert",
+  "action": null,
+  "eventType": "ADDRESS_CHANGED",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity"
+}

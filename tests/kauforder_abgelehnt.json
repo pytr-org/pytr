@@ -1,0 +1,99 @@
+{
+  "id": "7385dbae-c8c4-4e59-bc40-da708a074e96",
+  "timestamp": "2026-03-03T11:35:17.995+0000",
+  "title": "Silver 3x Lev USD (Acc)",
+  "icon": "logos/IE00B7XD2195/v2",
+  "subtitle": "Kauforder abgelehnt",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "7385dbae-c8c4-4e59-bc40-da708a074e96"
+  },
+  "eventType": "TRADING_ORDER_REJECTED",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "7385dbae-c8c4-4e59-bc40-da708a074e96",
+    "sections": [
+      {
+        "title": "Deine Kauforder wurde abgelehnt",
+        "data": {
+          "icon": "logos/IE00B7XD2195/v2",
+          "timestamp": "2026-03-03T11:34:47.966Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "IE00B7XD2195",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Kauf",
+            "detail": {
+              "text": "Abgelehnt",
+              "functionalStyle": "CANCELED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Silver 3x Lev USD (Acc)",
+              "displayValue": {
+                "text": "Silver 3x Lev USD (Acc)"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "0,505689 ×  --",
+              "action": {
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
+                    {
+                      "title": "Transaktion",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Aktien",
+                          "detail": {
+                            "text": "0,505689",
+                            "displayValue": {
+                              "text": "0,505689"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    }
+                  ]
+                },
+                "type": "infoPage"
+              },
+              "displayValue": {
+                "text": "--",
+                "prefix": "0,505689 × "
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      }
+    ]
+  }
+}

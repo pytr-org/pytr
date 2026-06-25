@@ -79,6 +79,8 @@ tr_event_type_mapping = {
     "TAX_CORRECTION": PPEventType.TAX_REFUND,
     "TAX_REFUND": PPEventType.TAX_REFUND,
     "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
+    # Transfers
+    "SSP_SECURITIES_TRANSFER_INCOMING": PPEventType.TRANSFER_IN,
     # Trade invoices
     "IPO_TRADE_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
@@ -166,6 +168,7 @@ subtitle_event_type_mapping = {
 }
 
 events_known_ignored = [
+    "ADDRESS_CHANGED",
     "AML_SOURCE_OF_WEALTH_RESPONSE_EXECUTED",
     "CASH_ACCOUNT_CHANGED",
     "CREDIT_CANCELED",
@@ -204,6 +207,7 @@ events_known_ignored = [
     "STOCK_PERK_REFUNDED",
     "TAX_YEAR_END_REPORT",
     "TAX_YEAR_END_REPORT_CREATED",
+    "TRADING_ORDER_REJECTED",
     "VERIFICATION_TRANSFER_ACCEPTED",
     "YEAR_END_TAX_REPORT",
     "card_failed_verification",
@@ -230,6 +234,7 @@ events_known_ignored_title = [
     "Ex-Post Kosteninformation",
     "Jährlicher Steuerreport",
     "Neue IBAN",
+    "Neues Gerät",
     "Persönliche Daten",
     "PUK versendet",
     "Rechtliche Dokumente",
@@ -238,11 +243,13 @@ events_known_ignored_title = [
 
 events_known_ignored_subtitle = [
     "Cash oder Aktie",
+    "Dividende. Cash oder Stockdividende?",
     "Erteilt",
     "Fall abgeschlossen",
     "Jährliche Hauptversammlung",
     "Kartenprüfung",
     "Kauf-Abrechnung storniert",
+    "Kauforder abgelehnt",
     "Kauforder storniert",
     "Limit-Buy-Order abgelaufen",
     "Limit-Buy-Order erstellt",
@@ -318,12 +325,14 @@ class Event:
 
         sections = event_dict.get("details", {}).get("sections", [{}])
 
-        transaction_dict = next(filter(lambda x: x.get("title") in ["Transaktion", "Geschäft"], sections), None)
+        transaction_dict = next(
+            filter(lambda x: x.get("title") in ["Transaktion", "Geschäft", "Transaction"], sections), None
+        )
         if transaction_dict:
             # old style event
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
-            fees_dict = next(filter(lambda x: x["title"] == "Gebühr", data), None)
+            fees_dict = next(filter(lambda x: x["title"] in ["Gebühr", "Fee"], data), None)
             taxes_dict = next(filter(lambda x: x["title"] in ["Steuer", "Steuern"], data), None)
 
         uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht", "Overview"], sections), None)
@@ -466,8 +475,6 @@ class Event:
 
         if title == "Auszahlungskonto" and subtitle == "Geändert":
             ignoreEvent = True
-        if title == "Neues Gerät" and subtitle == "Gekoppelt":
-            ignoreEvent = True
         if title == "Wertpapierdepot" and subtitle == "Eröffnet":
             ignoreEvent = True
         if title == "Basisinformationen" and subtitle == "Erhalten":
@@ -516,6 +523,7 @@ class Event:
             PPEventType.SWAP,
             PPEventType.TAX_REFUND,
             PPEventType.TAXES,
+            PPEventType.TRANSFER_IN,
         ] and subtitle not in [
             "Aufruf von Zwischenpapieren",
             "Wertlos",
@@ -539,6 +547,7 @@ class Event:
             PPEventType.SPLIT,
             PPEventType.SWAP,
             PPEventType.TAXES,
+            PPEventType.TRANSFER_IN,
         ]:
             isin = cls._parse_isin(event_dict)
 
@@ -743,7 +752,7 @@ class Event:
         if (event_type == PPEventType.SPINOFF or subtitle == "Wertlos") and value is None:
             value = 0
 
-        if event_type in [PPEventType.SPLIT, PPEventType.SWAP] and value is None:
+        if event_type in [PPEventType.SPLIT, PPEventType.SWAP, PPEventType.TRANSFER_IN] and value is None:
             value = 0
 
         if event_type in [PPEventType.SPINOFF, PPEventType.SWAP]:

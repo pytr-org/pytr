@@ -1,0 +1,117 @@
+{
+  "id": "756ce232-a67d-4d85-a431-57483426450a",
+  "timestamp": "2025-10-13T12:43:03.988+0000",
+  "title": "MSCI EM USD (Acc)",
+  "icon": "logos/IE00BTJRMP35/v2",
+  "subtitle": "Aktien erhalten",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "756ce232-a67d-4d85-a431-57483426450a"
+  },
+  "eventType": "SSP_SECURITIES_TRANSFER_INCOMING",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "756ce232-a67d-4d85-a431-57483426450a",
+    "sections": [
+      {
+        "type": "header",
+        "title": "You received 7 shares",
+        "data": {
+          "status": "executed",
+          "icon": "logos/IE00BTJRMP35/v2",
+          "timestamp": "2025-10-13T12:43:03.988647Z"
+        }
+      },
+      {
+        "type": "table",
+        "title": "Overview",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Completed",
+              "functionalStyle": "EXECUTED"
+            }
+          },
+          {
+            "title": "Asset",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "MSCI EM USD (Acc)"
+            }
+          },
+          {
+            "title": "Action",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Securities transfer"
+            }
+          }
+        ]
+      },
+      {
+        "type": "steps",
+        "title": "Status",
+        "steps": [
+          {
+            "leading": {
+              "avatar": {
+                "type": "bullet",
+                "status": "completed"
+              },
+              "connection": {
+                "order": "first"
+              }
+            },
+            "content": {
+              "title": "Securities received by Trade Republic",
+              "timestamp": "2025-10-13T12:43:03.988647Z"
+            }
+          },
+          {
+            "leading": {
+              "avatar": {
+                "type": "bullet",
+                "status": "completed"
+              },
+              "connection": {
+                "order": "last"
+              }
+            },
+            "content": {
+              "title": "Transfer complete"
+            }
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Transaction",
+        "data": [
+          {
+            "title": "Shares",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "7"
+            }
+          },
+          {
+            "title": "Fee",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Free"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
