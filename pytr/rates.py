@@ -66,10 +66,6 @@ class Rates:
 
     def _get_sort_func(self):
         match self.sort_by_column:
-            case "Name":
-                if self.lang == "de":
-                    locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
-                return lambda x: locale.strxfrm(x["name"].lower())
             case "ISIN":
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
@@ -79,7 +75,8 @@ class Rates:
             case "price":
                 return lambda x: Decimal(x["price"])
             case _ as m:
-                print(f"Column {m} does not exist for rates list, reverting to default sorting by Name.")
+                if m != "Name":
+                    print(f"Column {m} does not exist for rates list, reverting to default sorting by Name.")
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                 return lambda x: locale.strxfrm(x["name"].lower())

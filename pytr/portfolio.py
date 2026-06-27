@@ -138,10 +138,9 @@ class Portfolio:
                 return lambda x: Decimal(x["price"])
             case "avgCost":
                 return lambda x: Decimal(x["averageBuyIn"])
-            case "netValue":
-                return lambda x: Decimal(x["netValue"])
             case _ as m:
-                print(f"Column {m} does not exist for portfolio list, reverting to default sorting by netValue.")
+                if m != "netValue":
+                    print(f"Column {m} does not exist for portfolio list, reverting to default sorting by netValue.")
                 return lambda x: Decimal(x["netValue"])
 
     def write_csv(self):
