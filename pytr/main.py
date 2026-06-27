@@ -2,6 +2,7 @@
 
 import argparse
 import asyncio
+import re
 import shutil
 import signal
 import sys
@@ -17,7 +18,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
-from pytr.rates import Rates, parse_isin_input
+from pytr.rates import RATE_COLUMNS, Rates, parse_isin_input
 from pytr.savings_plans import SavingsPlans
 from pytr.timeline import Timeline
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
@@ -160,7 +161,7 @@ def get_main_parser():
         "--ignore",
         default=None,
         metavar="ISINS",
-        help="Semicolon-separated list of ISINs to exclude from the portfolio, e.g. --ignore US30303M1027;DE0005140008",
+        help="Semicolon or comma separated list of ISINs to exclude from the portfolio, e.g. --ignore US30303M1027;DE0005140008",
     )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
     parser_portfolio.add_argument(
@@ -195,9 +196,9 @@ def get_main_parser():
     parser_rates.add_argument(
         "-i",
         "--inputfile",
-        help="Input file containing ISINs — comma, semicolon, whitespace or newline separated. Used when no ISINs given as positional args; default: stdin.",
+        help="Input file containing ISINs — comma, semicolon, whitespace or newline separated. Used when no ISINs given as positional args. Use '-' for stdin.",
         type=argparse.FileType("r", encoding="utf-8"),
-        default="-",
+        default=None,
         nargs="?",
     )
     parser_rates.add_argument(
@@ -210,9 +211,9 @@ def get_main_parser():
     parser_rates.add_argument(
         "--sort-by-column",
         type=str,
-        choices=["name", "isin", "price", "ask"],
-        default="name",
-        help="Sort results by column (default: name).",
+        choices=list(RATE_COLUMNS),
+        default="Name",
+        help="Sort results by column (default: Name).",
     )
     parser_rates.add_argument(
         "--sort-ascending",
@@ -524,7 +525,7 @@ def main():
                 waf_token=args.waf_token,
             ),
             args.include_watchlist,
-            instruments_to_ignore=args.ignore.split(";") if args.ignore else [],
+            instruments_to_ignore=re.split(r"[,;]", args.ignore) if args.ignore else [],
             lang=args.lang,
             decimal_localization=args.decimal_localization,
             output=args.output,

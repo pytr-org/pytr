@@ -12,14 +12,14 @@ from .tickers import (
 )
 from .utils import get_logger, preview
 
-PORTFOLIO_COLUMNS = {
+PORTFOLIO_COLUMNS = [
     "Name",
     "ISIN",
     "quantity",
     "price",
     "avgCost",
     "netValue",
-}
+]
 
 
 class Portfolio:
@@ -124,11 +124,11 @@ class Portfolio:
 
     def _get_sort_func(self):
         match self.sort_by_column:
-            case "name":
+            case "Name":
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                 return lambda x: locale.strxfrm(x["name"].lower())
-            case "isin":
+            case "ISIN":
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                 return lambda x: locale.strxfrm(x["instrumentId"].lower())
@@ -161,7 +161,7 @@ class Portfolio:
 
         Path(self.output).parent.mkdir(parents=True, exist_ok=True)
         with open(self.output, "w", encoding="utf-8") as f:
-            f.write("Name;ISIN;quantity;price;avgCost;netValue\n")
+            f.write(";".join(PORTFOLIO_COLUMNS) + "\n")
             f.write("\n".join(csv_lines) + ("\n" if csv_lines else ""))
 
         print(f"Wrote {len(csv_lines) + 1} lines to {self.output}")

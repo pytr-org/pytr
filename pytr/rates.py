@@ -13,6 +13,13 @@ from .tickers import (
 )
 from .utils import get_logger
 
+RATE_COLUMNS = [
+    "Name",
+    "ISIN",
+    "price",
+    "ask",
+]
+
 
 class Rates:
     def __init__(
@@ -59,11 +66,11 @@ class Rates:
 
     def _get_sort_func(self):
         match self.sort_by_column:
-            case "name":
+            case "Name":
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                 return lambda x: locale.strxfrm(x["name"].lower())
-            case "isin":
+            case "ISIN":
                 if self.lang == "de":
                     locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
                 return lambda x: locale.strxfrm(x["instrumentId"].lower())
@@ -72,8 +79,10 @@ class Rates:
             case "price":
                 return lambda x: Decimal(x["price"])
             case _ as m:
-                print(f"Column {m} does not exist for portfolio list, reverting to default sorting by price.")
-                return lambda x: Decimal(x["price"])
+                print(f"Column {m} does not exist for rates list, reverting to default sorting by Name.")
+                if self.lang == "de":
+                    locale.setlocale(locale.LC_COLLATE, "de_DE.UTF-8")
+                return lambda x: locale.strxfrm(x["name"].lower())
 
     def overview(self):
         print(f"{'Name':<30.30} {'ISIN':<12}  {'price':>10}  {'ask':>10}")
@@ -90,7 +99,7 @@ class Rates:
             f"{p['name']};{p['instrumentId']};{self._decimal_format(p['price'])};{self._decimal_format(p.get('ask'))}"
             for p in sorted(self.positions, key=self._get_sort_func(), reverse=self.sort_descending)
         ]
-        header = "name;ISIN;price;ask"
+        header = ";".join(RATE_COLUMNS)
         content = header + "\n" + "\n".join(lines) + ("\n" if lines else "")
         Path(self.output).parent.mkdir(parents=True, exist_ok=True)
         with open(self.output, "w", encoding="utf-8") as f:
