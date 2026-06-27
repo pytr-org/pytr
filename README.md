@@ -62,17 +62,18 @@ If you want to use the cutting-edge version, use this command instead:
 <!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
+            {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,portfolio,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
+  {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
                                         login. Ask for device reset if needed
     portfolio                           Show current portfolio
+    rates                               Fetch current prices for a list of ISINs given as direct list or CSV input
     details                             Get details for an ISIN
     dl_docs                             Download all pdf documents from the timeline and sort them into folders. Also
                                         export account transactions (account_transactions.csv) and JSON files with all
