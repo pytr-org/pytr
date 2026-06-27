@@ -1,5 +1,4 @@
 import asyncio
-import csv
 import locale
 import re
 from decimal import Decimal
@@ -21,7 +20,6 @@ class Rates:
         tr,
         isins: list[str],
         output=None,
-        isin_column: Optional[str] = None,
         lang: str = "en",
         decimal_localization: bool = False,
         sort_by_column: Optional[str] = "name",
@@ -30,7 +28,6 @@ class Rates:
         self.tr = tr
         self.isins = isins
         self.output = output
-        self.isin_column = isin_column
         self.lang = normalize_lang(lang)
         self.decimal_localization = decimal_localization
         self.sort_by_column = sort_by_column
@@ -108,32 +105,32 @@ class Rates:
             self.write_csv()
 
 
-def read_isins_from_csv(fileobj, isin_column: Optional[str]) -> list[str]:
-    """Read ISINs from a CSV file (semicolon or comma delimited).
+ISIN_RE = re.compile(r"^[A-Z]{2}[A-Z0-9]{10}$")
 
-    If isin_column is given, use that column header; otherwise try 'ISIN', then fall back
-    to the first column that looks like ISINs (12-char alphanumeric starting with two letters).
+
+def _extract_isins(tokens: list[str]) -> list[str]:
+    return [t for t in tokens if ISIN_RE.match(t)]
+
+
+def _split_isin_text(text: str) -> list[str]:
+    """Split text on commas, semicolons, or whitespace and return non-empty tokens."""
+    return [t.strip() for t in re.split(r"[,;\s]+", text) if t.strip()]
+
+
+def parse_isin_input(input_list: list[str], fileobj) -> list[str]:
+    """Return ISINs from input_list (preferred) or from a file/stdin.
+
+    Tokens may be comma, semicolon, or whitespace/newline separated.
     """
-    content = fileobj.read()
-    delimiter = ";" if content.count(";") >= content.count(",") else ","
-    reader = csv.DictReader(content.splitlines(), delimiter=delimiter)
+    if input_list:
+        tokens = _split_isin_text(" ".join(input_list))
+        return _extract_isins(tokens)
 
-    if reader.fieldnames is None:
+    if fileobj is None:
         return []
 
-    col = isin_column
-    if col is None:
-        for candidate in ["ISIN", "isin"]:
-            if candidate in reader.fieldnames:
-                col = candidate
-                break
-        if col is None:
-            col = reader.fieldnames[0]
+    content = fileobj.read()
+    if not content.strip():
+        return []
 
-    isins = []
-    isin_re = re.compile(r"^[A-Z]{2}[A-Z0-9]{10}$")
-    for row in reader:
-        value = row.get(col, "").strip()
-        if isin_re.match(value):
-            isins.append(value)
-    return isins
+    return _extract_isins(_split_isin_text(content))

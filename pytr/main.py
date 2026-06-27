@@ -2,7 +2,6 @@
 
 import argparse
 import asyncio
-import re
 import shutil
 import signal
 import sys
@@ -18,7 +17,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
-from pytr.rates import Rates, read_isins_from_csv
+from pytr.rates import Rates, parse_isin_input
 from pytr.savings_plans import SavingsPlans
 from pytr.timeline import Timeline
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
@@ -188,20 +187,18 @@ def get_main_parser():
         description=info,
     )
     parser_rates.add_argument(
-        "input", nargs="*", help="ISINs to fetch prices for, e.g. DE0005140008 US0378331005", default=[]
+        "input",
+        nargs="*",
+        help="ISINs to fetch prices for; comma, semicolon or space separated, e.g. DE0005140008,US0378331005",
+        default=[],
     )
     parser_rates.add_argument(
         "-i",
         "--inputfile",
-        help="CSV input file containing ISINs (used when no ISINs given as positional args; default: stdin). Semicolon or comma delimited.",
+        help="Input file containing ISINs — comma, semicolon, whitespace or newline separated. Used when no ISINs given as positional args; default: stdin.",
         type=argparse.FileType("r", encoding="utf-8"),
         default="-",
         nargs="?",
-    )
-    parser_rates.add_argument(
-        "--isin-column",
-        help='Column name in the input CSV that contains ISINs (default: auto-detect "ISIN" or first column).',
-        default=None,
     )
     parser_rates.add_argument(
         "-o",
@@ -535,11 +532,7 @@ def main():
             sort_descending=not args.sort_ascending,
         ).get()
     elif args.command == "rates":
-        if args.input:
-            isin_re = re.compile(r"^[A-Z]{2}[A-Z0-9]{10}$")
-            isins = [s for s in args.input if isin_re.match(s)]
-        else:
-            isins = read_isins_from_csv(args.inputfile, args.isin_column)
+        isins = parse_isin_input(args.input, args.inputfile)
         if not isins:
             print("No valid ISINs found in input.")
             return -1
@@ -552,7 +545,6 @@ def main():
             ),
             isins,
             output=args.output,
-            isin_column=args.isin_column,
             decimal_localization=args.decimal_localization,
             lang=args.lang,
             sort_by_column=args.sort_by_column,
