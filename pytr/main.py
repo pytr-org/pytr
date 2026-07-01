@@ -91,6 +91,15 @@ def get_main_parser():
         action="store_true",
         default=False,
     )
+    parser_login_args.add_argument(
+        "--v2",
+        help=(
+            "Use the v2 web-login flow (push approval via the Trade Republic "
+            "mobile app). Default is the legacy v1 flow with an SMS/notification code."
+        ),
+        action="store_true",
+        default=False,
+    )
 
     # parent subparser for lang option
     parser_lang = argparse.ArgumentParser(add_help=False)
@@ -515,6 +524,7 @@ def main():
             pin=args.pin,
             store_credentials=args.store_credentials,
             waf_token=args.waf_token,
+            v2=args.v2,
         )
     elif args.command == "portfolio":
         Portfolio(
@@ -523,6 +533,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.include_watchlist,
             instruments_to_ignore=re.split(r"[,;]", args.ignore) if args.ignore else [],
@@ -558,6 +569,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.isin,
         ).get()
@@ -568,6 +580,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.output,
             args.format,
@@ -597,6 +610,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.outputdir,
             not_before,
@@ -631,6 +645,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    v2=args.v2,
                 ),
                 args.input,
                 args.outputfile,
@@ -646,6 +661,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    v2=args.v2,
                 ),
                 args.input,
                 args.inputfile,
@@ -661,6 +677,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.outputfile,
             decimal_localization=args.decimal_localization,

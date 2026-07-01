@@ -21,7 +21,9 @@
 # SOFTWARE.
 
 import asyncio
+import base64
 import json
+import os
 import pathlib
 import re
 import ssl
@@ -45,6 +47,19 @@ home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"
 CREDENTIALS_FILE = BASE_DIR / "credentials"
 COOKIES_FILE = BASE_DIR / "cookies.txt"
+DEVICE_ID_FILE = BASE_DIR / "device_id"
+
+# v2 web-login values captured from app.traderepublic.com on 2026-05-29.
+# Only used when the caller opts into the v2 push-approval flow.
+# Overridable via env vars in case Trade Republic bumps them.
+TR_WEB_APP_VERSION = os.environ.get("PYTR_TR_APP_VERSION", "15.7.0")
+TR_WEB_USER_AGENT_V2 = os.environ.get(
+    "PYTR_TR_USER_AGENT",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+)
+TR_V1_LOGIN_PATH = "/api/v1/auth/web/login"
+TR_V2_LOGIN_PATH = "/api/v2/auth/web/login"
 
 
 class TradeRepublicApi:
@@ -75,11 +90,13 @@ class TradeRepublicApi:
         credentials_file=None,
         cookies_file=None,
         waf_token="playwright",
+        use_v2_login=False,
     ):
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
         self._waf_token = waf_token
+        self._use_v2_login = use_v2_login
 
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
@@ -183,6 +200,49 @@ class TradeRepublicApi:
             self.log.warning("AWS WAF token not acquired. Value is None.")
         return token
 
+    def _get_device_id(self) -> str:
+        """Return a stable per-install device UUID, creating it on first use."""
+        try:
+            return DEVICE_ID_FILE.read_text().strip()
+        except FileNotFoundError:
+            BASE_DIR.mkdir(parents=True, exist_ok=True)
+            device_id = uuid.uuid4().hex + uuid.uuid4().hex  # 64 hex chars, matches web app
+            DEVICE_ID_FILE.write_text(device_id)
+            return device_id
+
+    def _build_device_info_header(self) -> str:
+        """Build the base64(JSON) x-tr-device-info payload the web app sends."""
+        payload = {
+            "stableDeviceId": self._get_device_id(),
+            "model": "Apple Macintosh",
+            "browser": "Chrome",
+            "browserVersion": "148.0.0.0",
+            "os": "Mac OS",
+            "osVersion": "10.15.7",
+            "timezone": "Europe/Amsterdam",
+            "timezoneOffset": -120,
+            "screen": "1800x1169x30",
+            "preferredLanguages": ["en", "en-US"],
+            "numberOfCores": 12,
+            "deviceMemory": 16,
+        }
+        raw = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+        return base64.b64encode(raw).decode("ascii")
+
+    def _auth_headers(self) -> Dict[str, str]:
+        """Headers required by /api/v2/auth/web/login (v2 push-approval flow)."""
+        headers = {
+            "User-Agent": TR_WEB_USER_AGENT_V2,
+            "Origin": "https://app.traderepublic.com",
+            "Referer": "https://app.traderepublic.com/",
+            "x-tr-platform": "web",
+            "x-tr-app-version": TR_WEB_APP_VERSION,
+            "x-tr-device-info": self._build_device_info_header(),
+        }
+        if self._waf_token:
+            headers["x-aws-waf-token"] = self._waf_token
+        return headers
+
     def _set_waf_cookie(self, token: str):
         """Set the aws-waf-token cookie on the web session."""
         cookie = Cookie(
@@ -221,9 +281,13 @@ class TradeRepublicApi:
         else:
             self.log.warning("No WAF token available.")
 
+        login_path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
+        extra_headers = self._auth_headers() if self._use_v2_login else None
+
         r = self._websession.post(
-            f"{self._host}/api/v1/auth/web/login",
+            f"{self._host}{login_path}",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
+            headers=extra_headers,
         )
         self.log.debug(f"Web login returned: {r.status_code}")
         r.raise_for_status()
@@ -237,12 +301,58 @@ class TradeRepublicApi:
                 raise ValueError(str(err))
             else:
                 raise ValueError("processId not in reponse")
-        return int(j["countdownInSeconds"]) + 1
+
+        if not self._use_v2_login:
+            return int(j["countdownInSeconds"]) + 1
+
+        # v2 web login uses push-to-approve in the TR mobile app: no SMS/code.
+        # Poll the process endpoint until the push is approved (or rejected/expired).
+        self.await_web_login_approval()
+        return 0
+
+    def await_web_login_approval(self, timeout_s: int = 180, interval_s: float = 2.0):
+        """Block until the TR mobile-app push for this login process is approved."""
+        if not self._process_id:
+            raise ValueError("Initiate web login first.")
+        url = f"{self._host}{TR_V2_LOGIN_PATH}/processes/{self._process_id}"
+        deadline = time.time() + timeout_s
+        print(
+            f"Approve the login in your Trade Republic mobile app (waiting up to {timeout_s}s)...",
+            flush=True,
+        )
+        while time.time() < deadline:
+            r = self._websession.get(url, headers=self._auth_headers())
+            if r.status_code == 200:
+                try:
+                    j = r.json()
+                except ValueError:
+                    j = {}
+                state = str(j.get("state") or j.get("status") or "").upper()
+                if state in ("APPROVED", "COMPLETED", "SUCCESS", "OK", "DONE"):
+                    self.save_websession()
+                    self.log.info("Push approved.")
+                    return
+                if state in ("REJECTED", "DECLINED", "FAILED", "EXPIRED"):
+                    raise ValueError(f"Login process {state.lower()}: {j}")
+                # State unknown but session cookie present? Treat as approved.
+                for c in self._websession.cookies:
+                    if c.name in ("tr_session",) and c.value:
+                        self.save_websession()
+                        self.log.info("Session cookie detected, login complete.")
+                        return
+            elif r.status_code in (401, 403, 404, 410):
+                raise ValueError(f"Login process rejected or expired ({r.status_code}): {r.text[:200]}")
+            else:
+                self.log.warning("Login poll %s: %s", r.status_code, r.text[:200])
+            time.sleep(interval_s)
+        raise TimeoutError("Push approval not received within timeout.")
 
     def resend_weblogin(self):
+        path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
+        headers = self._auth_headers() if self._use_v2_login else self._default_headers
         r = self._websession.post(
-            f"{self._host}/api/v1/auth/web/login/{self._process_id}/resend",
-            headers=self._default_headers,
+            f"{self._host}{path}/{self._process_id}/resend",
+            headers=headers,
         )
         r.raise_for_status()
 
@@ -250,7 +360,18 @@ class TradeRepublicApi:
         if not self._process_id and not self._websession:
             raise ValueError("Initiate web login first.")
 
-        r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
+        # v2 push flow: approval already happened during initiate_weblogin().
+        # An empty verify_code signals nothing left to do.
+        if self._use_v2_login and not verify_code:
+            self.save_websession()
+            return
+
+        path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
+        headers = self._auth_headers() if self._use_v2_login else None
+        r = self._websession.post(
+            f"{self._host}{path}/{self._process_id}/{verify_code}",
+            headers=headers,
+        )
         r.raise_for_status()
         self.save_websession()
 

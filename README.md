@@ -100,9 +100,18 @@ There are two authentication methods:
 
 ### Web login (default)
 
-Web login is the newer method that uses the same login method as [app.traderepublic.com](https://app.traderepublic.com/),
-meaning you receive a four-digit code in the TradeRepublic app or via SMS. This will keep you logged in your primary
-device, but means that you may need to repeat entering a new four-digit code ever so often when runnnig `pytr`.
+Web login uses the public web-login endpoints at `api.traderepublic.com`. Two variants are available:
+
+- **v1 (default)**: `pytr login`. You receive a four-digit code in the TradeRepublic app (or via SMS as a
+  fallback) and enter it in the terminal. This is the original behavior; nothing changes for existing users.
+- **v2 push approval (opt-in)**: `pytr login --v2`. Mirrors what
+  [app.traderepublic.com](https://app.traderepublic.com/) currently does: no numeric code, you approve the login from
+  a push notification in the Trade Republic mobile app. Useful if your account no longer issues a code via the app or
+  SMS. The `--v2` flag is available on every subcommand that performs a login, e.g. `pytr portfolio --v2`,
+  `pytr dl_docs --v2`.
+
+Both variants keep you logged in on your primary device, but you may need to re-authenticate every so often when
+running `pytr`.
 
 ### App login
 
