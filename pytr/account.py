@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 from getpass import getpass
@@ -24,38 +25,45 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
     If no parameters are set but are needed then ask for input
     """
     log = get_logger(__name__)
-    save_cookies = True
+    using_stored_phone = phone_no is None and CREDENTIALS_FILE.is_file()
+    save_cookies = using_stored_phone or store_credentials
 
     if phone_no is None and CREDENTIALS_FILE.is_file():
         with open(CREDENTIALS_FILE) as f:
             lines = f.readlines()
         phone_no = lines[0].strip()
-        pin = lines[1].strip()
+        if len(lines) > 1:
+            fd = os.open(CREDENTIALS_FILE, os.O_WRONLY | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, "w") as f:
+                f.write(phone_no + "\n")
+            os.chmod(CREDENTIALS_FILE, 0o600)
+            log.info("Removed the legacy stored PIN from the credentials file.")
         phone_no_masked = phone_no[:-8] + "********"
-        pin_masked = len(pin) * "*"
-        log.info(f"Using credentials from file {CREDENTIALS_FILE}. Phone: {phone_no_masked}, PIN: {pin_masked}")
+        log.info(f"Using phone number from file {CREDENTIALS_FILE}: {phone_no_masked}")
     else:
         BASE_DIR.mkdir(parents=True, exist_ok=True)
         if phone_no is None:
             print("Please enter your TradeRepublic phone number in the format +4912345678:")
             phone_no = input()
 
-        if pin is None:
-            print("Please enter your TradeRepublic pin:")
-            pin = getpass(prompt="Pin (Input is hidden):")
-
-        if store_credentials:
-            with open(CREDENTIALS_FILE, "w") as f:
-                f.writelines([phone_no + "\n", pin + "\n"])
-
-            log.info(f"Storing credentials/cookies in {BASE_DIR}")
-        else:
-            save_cookies = False
+    if save_cookies:
+        BASE_DIR.mkdir(parents=True, exist_ok=True)
 
     tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies, waf_token=waf_token)
 
     # Use same login as app.traderepublic.com
     if not tr.resume_websession():
+        if pin is None:
+            print("Please enter your TradeRepublic pin:")
+            pin = getpass(prompt="Pin (Input is hidden):")
+            tr.pin = pin
+
+        if store_credentials:
+            fd = os.open(CREDENTIALS_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, "w") as f:
+                f.write(phone_no + "\n")
+            os.chmod(CREDENTIALS_FILE, 0o600)
+            log.info(f"Storing phone number and session cookies in {BASE_DIR}; PIN is not stored")
         try:
             countdown = tr.initiate_weblogin()
         except ValueError as e:
@@ -79,5 +87,5 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         tr.complete_weblogin(code)
         log.info("Logged in.")
 
-    log.debug(get_settings(tr))
+    log.debug("Account settings retrieved.")
     return tr

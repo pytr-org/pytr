@@ -22,6 +22,7 @@
 
 import asyncio
 import json
+import os
 import pathlib
 import re
 import ssl
@@ -83,17 +84,17 @@ class TradeRepublicApi:
 
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
-        if not (phone_no and pin):
+        if not phone_no:
             try:
                 with open(self._credentials_file, "r") as f:
                     lines = f.readlines()
                 self.phone_no = lines[0].strip()
-                self.pin = lines[1].strip()
             except FileNotFoundError:
-                raise ValueError(f"phone_no and pin must be specified explicitly or via {self._credentials_file}")
+                raise ValueError(f"phone_no must be specified explicitly or via {self._credentials_file}")
         else:
             self.phone_no = phone_no
-            self.pin = pin
+
+        self.pin = pin
 
         self._cookies_file = pathlib.Path(cookies_file) if cookies_file else BASE_DIR / f"cookies.{self.phone_no}.txt"
 
@@ -208,6 +209,9 @@ class TradeRepublicApi:
     def initiate_weblogin(self):
         self.log.info("Initiating web login...")
 
+        if not self.pin:
+            raise ValueError("pin must be specified explicitly; it is never read from or written to disk")
+
         if self._waf_token == "awswaf":
             self._waf_token = self._fetch_waf_token_awswaf()
         elif self._waf_token == "playwright":
@@ -228,7 +232,7 @@ class TradeRepublicApi:
         self.log.debug(f"Web login returned: {r.status_code}")
         r.raise_for_status()
         j = r.json()
-        self.log.debug(f"Web login data: {json.dumps(j, indent=4)}")
+        self.log.debug("Web login response received.")
         try:
             self._process_id = j["processId"]
         except KeyError:
@@ -258,6 +262,7 @@ class TradeRepublicApi:
         if self._save_cookies:
             # Saves session cookies too (expirydate=0).
             self._websession.cookies.save(ignore_discard=True)
+            os.chmod(self._cookies_file, 0o600)
 
     def resume_websession(self):
         """
@@ -350,7 +355,7 @@ class TradeRepublicApi:
     async def subscribe(self, payload):
         subscription_id = await self._next_subscription_id()
         ws = await self._get_ws()
-        self.log.debug(f"Subscribing: 'sub {subscription_id} {json.dumps(payload)}'")
+        self.log.debug("Subscribing to request %s.", subscription_id)
         self.subscriptions[subscription_id] = payload
         await ws.send(f"sub {subscription_id} {json.dumps(payload)}")
         return subscription_id
@@ -368,7 +373,7 @@ class TradeRepublicApi:
         ws = await self._get_ws()
         while True:
             response = await ws.recv()
-            self.log.debug(f"Received message: {response!r}")
+            self.log.debug("Received websocket response.")
 
             subscription_id = response[: response.find(" ")]
             code = response[response.find(" ") + 1 : response.find(" ") + 2]
@@ -387,7 +392,7 @@ class TradeRepublicApi:
 
             elif code == "D":
                 response = self._calculate_delta(subscription_id, payload_str)
-                self.log.debug(f"Payload is {response}")
+                self.log.debug("Received websocket delta response.")
 
                 self._previous_responses[subscription_id] = response
                 return subscription_id, subscription, json.loads(response)
@@ -398,7 +403,7 @@ class TradeRepublicApi:
                 continue
 
             elif code == "E":
-                self.log.error(f"Received error message: {response!r}")
+                self.log.error("Trade Republic returned a websocket error.")
 
                 await self.unsubscribe(subscription_id)
 
