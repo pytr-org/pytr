@@ -820,6 +820,21 @@ def test_events():
             ],
         },
         {
+            "filename": "kartenzahlung_null_eventType.json",
+            "event_type": PPEventType.REMOVAL,
+            "title": "Coop Pronto",
+            "value": -12.16,
+            "note": "card_successful_transaction",
+            "transactions": [
+                {
+                    "Datum": "2025-10-21T17:30:01",
+                    "Typ": "Entnahme",
+                    "Wert": -12.16,
+                    "Notiz": "Kartentransaktion - Coop Pronto",
+                }
+            ],
+        },
+        {
             "filename": "kartenzahlung_no_eventType.json",
             "event_type": PPEventType.REMOVAL,
             "title": "Baecker",

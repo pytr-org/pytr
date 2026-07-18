@@ -765,7 +765,7 @@ class Event:
             Optional[str]: note
         """
         eventTypeStr = event_dict.get("eventType", "")
-        if eventTypeStr.startswith("card_"):
+        if eventTypeStr is not None and eventTypeStr.startswith("card_"):
             return eventTypeStr
 
         sections = event_dict.get("details", {}).get("sections", [{}])
