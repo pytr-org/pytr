@@ -28,7 +28,7 @@
         "id": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3",
         "sections": [
             {
-                "title": "Du hast 0,76\u00a0\u20ac erhalten",
+                "title": "Du hast 0,76 € erhalten",
                 "data": {
                     "icon": "logos/timeline_person/v2",
                     "timestamp": "2025-11-04T23:31:58Z",
@@ -37,12 +37,12 @@
                 "type": "header"
             },
             {
-                "title": "\u00dcbersicht",
+                "title": "Übersicht",
                 "data": [
                     {
                         "title": "Status",
                         "detail": {
-                            "text": "Ausgef\u00fchrt",
+                            "text": "Ausgeführt",
                             "functionalStyle": "EXECUTED",
                             "type": "status"
                         },
@@ -63,14 +63,14 @@
                 "type": "table"
             },
             {
-                "title": "Gesch\u00e4ft",
+                "title": "Geschäft",
                 "data": [
                     {
                         "title": "Gesamt",
                         "detail": {
-                            "text": "0,76\u00a0\u20ac",
+                            "text": "0,76 €",
                             "displayValue": {
-                                "text": "0,76\u00a0\u20ac"
+                                "text": "0,76 €"
                             },
                             "type": "text"
                         },
@@ -94,31 +94,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "common_empty_string",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "timelineEventId": "0a3c14cf-0688-374e-99fc-3b690e1a7ea3",
-                                        "chat_flow_key": "NHC_0029_tax_optimization_picker"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "highlighted"
-                    }
-                ],
-                "type": "table"
             }
         ]
     }

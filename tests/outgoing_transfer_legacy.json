@@ -17,7 +17,7 @@
         "payload": "..."
     },
     "eventType": "timeline_legacy_migrated_events",
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",

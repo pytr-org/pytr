@@ -71,35 +71,6 @@
                 ],
                 "action": null,
                 "type": "table"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "",
-                            "action": {
-                                "type": "customerSupportChat",
-                                "payload": {
-                                    "contextParams": {
-                                        "chat_flow_key": "NHC_0024_deposit_report_an_issue",
-                                        "timelineEventId": "...",
-                                        "createdAt": "2024-06-03T17:07:26.459880Z",
-                                        "amount": "200.000000",
-                                        "iban": "..."
-                                    },
-                                    "contextCategory": "NHC"
-                                }
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "action": null,
-                "type": "table"
             }
         ]
     }

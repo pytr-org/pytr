@@ -21,7 +21,7 @@
       "payload": "5b516589-a0b6-46fb-80e1-2506bef82542"
     },
     "eventType": "benefits_spare_change_execution",
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",

@@ -20,7 +20,7 @@
       "type": "timelineDetail",
       "payload": "de16f265-0c83-4c40-86b8-9926be9650ae"
     },
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",

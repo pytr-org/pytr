@@ -28,7 +28,7 @@
         "id": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
         "sections": [
             {
-                "title": "Du hast 139,74\u00a0\u20ac erhalten",
+                "title": "Du hast 139,74 € erhalten",
                 "data": {
                     "icon": "logos/US8816242098/v2",
                     "timestamp": "2025-11-05T12:03:19.648Z",
@@ -41,7 +41,7 @@
                 "type": "header"
             },
             {
-                "title": "\u00dcbersicht",
+                "title": "Übersicht",
                 "data": [
                     {
                         "title": "Portfolio",
@@ -57,7 +57,7 @@
                     {
                         "title": "Limit Order",
                         "detail": {
-                            "text": "Ausgef\u00fchrt",
+                            "text": "Ausgeführt",
                             "functionalStyle": "EXECUTED",
                             "type": "status"
                         },
@@ -77,7 +77,7 @@
                     {
                         "title": "Transaktion",
                         "detail": {
-                            "text": "8 \u00d7  18,55\u00a0\u20ac",
+                            "text": "8 ×  18,55 €",
                             "action": {
                                 "payload": {
                                     "id": "00000000-0000-0000-0000-000000000000",
@@ -102,9 +102,9 @@
                                                 {
                                                     "title": "Aktienkurs",
                                                     "detail": {
-                                                        "text": "18,55\u00a0\u20ac",
+                                                        "text": "18,55 €",
                                                         "displayValue": {
-                                                            "text": "18,55\u00a0\u20ac"
+                                                            "text": "18,55 €"
                                                         },
                                                         "type": "text"
                                                     },
@@ -113,9 +113,9 @@
                                                 {
                                                     "title": "Summe",
                                                     "detail": {
-                                                        "text": "148,40\u00a0\u20ac",
+                                                        "text": "148,40 €",
                                                         "displayValue": {
-                                                            "text": "148,40\u00a0\u20ac"
+                                                            "text": "148,40 €"
                                                         },
                                                         "type": "text"
                                                     },
@@ -129,8 +129,8 @@
                                 "type": "infoPage"
                             },
                             "displayValue": {
-                                "text": "18,55\u00a0\u20ac",
-                                "prefix": "8 \u00d7 "
+                                "text": "18,55 €",
+                                "prefix": "8 × "
                             },
                             "type": "text"
                         },
@@ -139,20 +139,20 @@
                     {
                         "title": "Steuer",
                         "detail": {
-                            "text": "7,66\u00a0\u20ac",
+                            "text": "7,66 €",
                             "displayValue": {
-                                "text": "7,66\u00a0\u20ac"
+                                "text": "7,66 €"
                             },
                             "type": "text"
                         },
                         "style": "plain"
                     },
                     {
-                        "title": "Geb\u00fchr",
+                        "title": "Gebühr",
                         "detail": {
-                            "text": "1,00\u00a0\u20ac",
+                            "text": "1,00 €",
                             "displayValue": {
-                                "text": "1,00\u00a0\u20ac"
+                                "text": "1,00 €"
                             },
                             "type": "text"
                         },
@@ -161,9 +161,9 @@
                     {
                         "title": "Summe",
                         "detail": {
-                            "text": "139,74\u00a0\u20ac",
+                            "text": "139,74 €",
                             "displayValue": {
-                                "text": "139,74\u00a0\u20ac"
+                                "text": "139,74 €"
                             },
                             "type": "text"
                         },
@@ -190,10 +190,10 @@
                     {
                         "title": "Gewinn",
                         "detail": {
-                            "text": "27,52\u00a0\u20ac",
+                            "text": "27,52 €",
                             "trend": "positive",
                             "displayValue": {
-                                "text": "27,52\u00a0\u20ac"
+                                "text": "27,52 €"
                             },
                             "type": "text"
                         },
@@ -215,7 +215,7 @@
                         "postboxType": "EQUITIES_SELL_EX_ANTE"
                     },
                     {
-                        "title": "Auftragsbest\u00e4tigung",
+                        "title": "Auftragsbestätigung",
                         "action": {
                             "payload": "",
                             "type": "browserModal"
@@ -234,34 +234,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
-                                        "timelineEventId": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
-                                        "instrumentType": "stock",
-                                        "instrumentId": "US8816242098",
-                                        "primId": "N1549193313"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "type": "table"
             }
         ]
     }

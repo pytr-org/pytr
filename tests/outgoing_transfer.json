@@ -21,7 +21,7 @@
       "payload": "01b0c632-47de-4beb-9b09-6eb8ac42e871"
     },
     "eventType": "OUTGOING_TRANSFER",
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",

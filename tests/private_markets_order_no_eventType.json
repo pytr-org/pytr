@@ -28,7 +28,7 @@
         "id": "",
         "sections": [
             {
-                "title": "Du hast 101,00\u00a0\u20ac investiert",
+                "title": "Du hast 101,00 € investiert",
                 "data": {
                     "icon": "logos/LU3176111881/v2",
                     "timestamp": "2025-09-18T07:15:25.065819Z",
@@ -41,7 +41,7 @@
                 "type": "header"
             },
             {
-                "title": "\u00dcbersicht",
+                "title": "Übersicht",
                 "data": [
                     {
                         "title": "Kauf",
@@ -66,7 +66,7 @@
                     {
                         "title": "Transaktion",
                         "detail": {
-                            "text": "100,00\u00a0\u20ac",
+                            "text": "100,00 €",
                             "action": {
                                 "payload": {
                                     "id": "00000000-0000-0000-0000-000000000000",
@@ -80,9 +80,9 @@
                                                 {
                                                     "title": "Summe",
                                                     "detail": {
-                                                        "text": "100,00\u00a0\u20ac",
+                                                        "text": "100,00 €",
                                                         "displayValue": {
-                                                            "text": "100,00\u00a0\u20ac"
+                                                            "text": "100,00 €"
                                                         },
                                                         "type": "text"
                                                     },
@@ -96,18 +96,18 @@
                                 "type": "infoPage"
                             },
                             "displayValue": {
-                                "text": "100,00\u00a0\u20ac"
+                                "text": "100,00 €"
                             },
                             "type": "text"
                         },
                         "style": "plain"
                     },
                     {
-                        "title": "Geb\u00fchr",
+                        "title": "Gebühr",
                         "detail": {
-                            "text": "1,00\u00a0\u20ac",
+                            "text": "1,00 €",
                             "displayValue": {
-                                "text": "1,00\u00a0\u20ac"
+                                "text": "1,00 €"
                             },
                             "type": "text"
                         },
@@ -116,9 +116,9 @@
                     {
                         "title": "Summe",
                         "detail": {
-                            "text": "101,00\u00a0\u20ac",
+                            "text": "101,00 €",
                             "displayValue": {
-                                "text": "101,00\u00a0\u20ac"
+                                "text": "101,00 €"
                             },
                             "type": "text"
                         },
@@ -142,35 +142,6 @@
                     }
                 ],
                 "type": "documents"
-            },
-            {
-                "title": "",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "icon": "",
-                            "action": {
-                                "payload": {
-                                    "contextCategory": "NHC",
-                                    "contextParams": {
-                                        "chat_flow_key": "NHC_0029_wealth_private_buying_selling_open_order",
-                                        "timelineEventId": "",
-                                        "orderType": "BUY",
-                                        "instrumentId": "LU3176111881",
-                                        "orderCreationDate": "2025-09-18",
-                                        "orderCutoffDate": "2025-10-14"
-                                    }
-                                },
-                                "type": "customerSupportChat"
-                            },
-                            "style": "highlighted",
-                            "type": "listItemAvatarDefault"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "type": "table"
             }
         ]
     },

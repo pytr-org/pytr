@@ -44,7 +44,7 @@ locale_dir = "pytr/locale"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.9.4",
+    "ruff==0.9.6",
     "pytest>=8.3.4",
     "mypy>=1.15.0",
     "types-babel>=2.11.0.15",

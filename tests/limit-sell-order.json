@@ -246,34 +246,6 @@
           ],
           "action": null,
           "type": "documents"
-        },
-        {
-          "title": "",
-          "data": [
-            {
-              "title": "",
-              "detail": {
-                "icon": "",
-                "action": {
-                  "payload": {
-                    "contextCategory": "NHC",
-                    "contextParams": {
-                      "chat_flow_key": "NHC_0029_wealth_buying_selling_past_trade_execution",
-                      "timelineEventId": "12345678",
-                      "primId": ""
-                    }
-                  },
-                  "type": "customerSupportChat",
-                  "overrideAction": null
-                },
-                "style": "highlighted",
-                "type": "listItemAvatarDefault"
-              },
-              "style": "plain"
-            }
-          ],
-          "action": null,
-          "type": "table"
         }
       ]
     }

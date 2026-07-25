@@ -1,12 +1,12 @@
   {
-    "id": "0940e56b-41c5-3da4-a880-501752bb2580",
-    "timestamp": "2025-08-13T05:22:45.443+0000",
+    "id": "d60030b9-878a-3935-9327-0ea85ca78c45",
+    "timestamp": "2025-08-13T05:09:14.774+0000",
     "title": "BYD",
     "icon": "logos/CNE100000296/v2",
     "subtitle": "Bonusaktien",
     "action": {
       "type": "timelineDetail",
-      "payload": "0940e56b-41c5-3da4-a880-501752bb2580"
+      "payload": "d60030b9-878a-3935-9327-0ea85ca78c45"
     },
     "trailing": null,
     "eventType": "SSP_CORPORATE_ACTION_ACTIVITY",
@@ -14,7 +14,7 @@
     "deleted": false,
     "source": "timelineActivity",
     "details": {
-      "id": "0940e56b-41c5-3da4-a880-501752bb2580",
+      "id": "d60030b9-878a-3935-9327-0ea85ca78c45",
       "sections": [
         {
           "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
@@ -23,8 +23,8 @@
               "asset": "logos/CNE100000296/v2",
               "badge": null
             },
-            "timestamp": "2025-08-13T05:22:45.443Z",
-            "status": "executed"
+            "timestamp": "2025-08-13T05:09:14.774Z",
+            "status": "canceled"
           },
           "type": "header"
         },
@@ -34,8 +34,8 @@
             {
               "title": "Status",
               "detail": {
-                "text": "Ausgeführt",
-                "functionalStyle": "EXECUTED",
+                "text": "Storniert",
+                "functionalStyle": "CANCELED",
                 "type": "status"
               },
               "style": "plain"
@@ -81,12 +81,22 @@
           "data": [
             {
               "title": "Dokumente",
-              "detail": "13.08.2025",
+              "detail": "15.04.2026",
               "action": {
                 "payload": "",
                 "type": "browserModal"
               },
-              "id": "90618b77-a507-4467-8995-24c9d411e76b",
+              "id": "facdac8e-5551-4cee-bec3-672b4108a28d",
+              "postboxType": "CA_SECURITIES_INVOICE"
+            },
+            {
+              "title": "Dokumente",
+              "detail": "30.07.2025",
+              "action": {
+                "payload": "",
+                "type": "browserModal"
+              },
+              "id": "097d8cc4-09fa-4f69-8572-a7309d0144ac",
               "postboxType": "CA_SECURITIES_INVOICE"
             }
           ],

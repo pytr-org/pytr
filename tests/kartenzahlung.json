@@ -25,7 +25,7 @@
         "payload": "39a1ecdf-0c09-5e5f-8e31-ba666f1eefe6"
     },
     "eventType": "card_successful_transaction",
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",

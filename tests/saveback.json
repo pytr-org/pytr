@@ -17,7 +17,7 @@
         "payload": "836369c0-f623-4ad0-a259-8bd3807a6be6"
     },
     "eventType": "benefits_saveback_execution",
-    "cashAccountNumber": null,
+    "cashAccountNumber": "123456789",
     "hidden": false,
     "deleted": false,
     "source": "timelineTransaction",
