@@ -368,6 +368,13 @@ def get_main_parser():
         action=argparse.BooleanOptionalAction,
     )
     parser_export_transactions.add_argument(
+        "--load-event-database",
+        help="Load events from this all_events.json file instead of fetching from TR (implies no login)",
+        metavar="PATH",
+        type=Path,
+        default=None,
+    )
+    parser_export_transactions.add_argument(
         "--export-format",
         "--format",
         choices=("json", "csv"),
@@ -592,7 +599,9 @@ def main():
             return -1
 
         tl = Timeline(
-            login(
+            None
+            if not_before == -1 or args.load_event_database is not None
+            else login(
                 phone_no=args.phone_no,
                 pin=args.pin,
                 store_credentials=args.store_credentials,
@@ -604,6 +613,7 @@ def main():
             args.store_event_database,
             args.scan_for_duplicates,
             args.dump_raw_data,
+            load_event_database=args.load_event_database,
         )
         asyncio.run(tl.tl_loop())
         events = tl.events
