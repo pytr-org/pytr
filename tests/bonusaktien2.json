@@ -1,97 +1,97 @@
-  {
+{
+  "id": "0940e56b-41c5-3da4-a880-501752bb2580",
+  "timestamp": "2025-08-13T05:22:45.443+0000",
+  "title": "BYD",
+  "icon": "logos/CNE100000296/v2",
+  "subtitle": "Bonusaktien",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "0940e56b-41c5-3da4-a880-501752bb2580"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_ACTIVITY",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
     "id": "0940e56b-41c5-3da4-a880-501752bb2580",
-    "timestamp": "2025-08-13T05:22:45.443+0000",
-    "title": "BYD",
-    "icon": "logos/CNE100000296/v2",
-    "subtitle": "Bonusaktien",
-    "action": {
-      "type": "timelineDetail",
-      "payload": "0940e56b-41c5-3da4-a880-501752bb2580"
-    },
-    "trailing": null,
-    "eventType": "SSP_CORPORATE_ACTION_ACTIVITY",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineActivity",
-    "details": {
-      "id": "0940e56b-41c5-3da4-a880-501752bb2580",
-      "sections": [
-        {
-          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
-          "data": {
-            "icon": {
-              "asset": "logos/CNE100000296/v2",
-              "badge": null
-            },
-            "timestamp": "2025-08-13T05:22:45.443Z",
-            "status": "executed"
+    "sections": [
+      {
+        "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+        "data": {
+          "icon": {
+            "asset": "logos/CNE100000296/v2",
+            "badge": null
           },
-          "type": "header"
+          "timestamp": "2025-08-13T05:22:45.443Z",
+          "status": "executed"
         },
-        {
-          "title": "Übersicht",
-          "data": [
-            {
-              "title": "Status",
-              "detail": {
-                "text": "Ausgeführt",
-                "functionalStyle": "EXECUTED",
-                "type": "status"
-              },
-              "style": "plain"
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
             },
-            {
-              "title": "Orderart",
-              "detail": {
-                "text": "Bonusaktien",
-                "displayValue": {
-                  "text": "Bonusaktien"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Bonusaktien",
+              "displayValue": {
+                "text": "Bonusaktien"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Wertpapier",
-              "detail": {
-                "text": "BYD",
-                "displayValue": {
-                  "text": "BYD"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "BYD",
+              "displayValue": {
+                "text": "BYD"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Aktien hinzugefügt",
-              "detail": {
-                "text": "2.149301",
-                "displayValue": {
-                  "text": "2.149301"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "2.149301",
+              "displayValue": {
+                "text": "2.149301"
               },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Dokumente",
-          "data": [
-            {
-              "title": "Dokumente",
-              "detail": "13.08.2025",
-              "action": {
-                "payload": "",
-                "type": "browserModal"
-              },
-              "id": "90618b77-a507-4467-8995-24c9d411e76b",
-              "postboxType": "CA_SECURITIES_INVOICE"
-            }
-          ],
-          "type": "documents"
-        }
-      ]
-    }
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "13.08.2025",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "90618b77-a507-4467-8995-24c9d411e76b",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
 }

@@ -1,180 +1,180 @@
-  {
+{
+  "id": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36",
+  "timestamp": "2025-07-01T06:46:37.846+0000",
+  "title": "Zinsen",
+  "icon": "logos/timeline_interest_new/v2",
+  "avatar": {
+    "asset": "logos/timeline_interest_new/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "2 % p.a.",
+  "amount": {
+    "currency": "EUR",
+    "value": 4.87,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36"
+  },
+  "eventType": "INTEREST_PAYOUT",
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
     "id": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36",
-    "timestamp": "2025-07-01T06:46:37.846+0000",
-    "title": "Zinsen",
-    "icon": "logos/timeline_interest_new/v2",
-    "avatar": {
-      "asset": "logos/timeline_interest_new/v2",
-      "badge": null
-    },
-    "badge": null,
-    "subtitle": "2 % p.a.",
-    "amount": {
-      "currency": "EUR",
-      "value": 4.87,
-      "fractionDigits": 2
-    },
-    "subAmount": null,
-    "status": "EXECUTED",
-    "action": {
-      "type": "timelineDetail",
-      "payload": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36"
-    },
-    "eventType": "INTEREST_PAYOUT",
-    "cashAccountNumber": "123456789",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineTransaction",
-    "details": {
-      "id": "2d35c2c1-f231-4b5d-bee1-deae7e33bf36",
-      "sections": [
-        {
-          "title": "Du hast 4,87 € erhalten",
-          "data": {
-            "icon": "logos/timeline_interest_new/v2",
-            "timestamp": "2025-07-01T06:46:42.342175Z",
-            "status": "executed"
+    "sections": [
+      {
+        "title": "Du hast 4,87 € erhalten",
+        "data": {
+          "icon": "logos/timeline_interest_new/v2",
+          "timestamp": "2025-07-01T06:46:42.342175Z",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
           },
-          "type": "header"
-        },
-        {
-          "title": "Übersicht",
-          "data": [
-            {
-              "title": "Status",
-              "detail": {
-                "text": "Ausgeführt",
-                "functionalStyle": "EXECUTED",
-                "type": "status"
+          {
+            "title": "Durchschnittssaldo",
+            "detail": {
+              "text": "3.900,38 €",
+              "displayValue": {
+                "text": "3.900,38 €"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Durchschnittssaldo",
-              "detail": {
-                "text": "3.900,38 €",
-                "displayValue": {
-                  "text": "3.900,38 €"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Jährliche Rate",
+            "detail": {
+              "text": "2.00 %",
+              "displayValue": {
+                "text": "2.00 %"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Jährliche Rate",
-              "detail": {
-                "text": "2.00 %",
-                "displayValue": {
-                  "text": "2.00 %"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Cash",
+              "displayValue": {
+                "text": "Cash"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Asset",
-              "detail": {
-                "text": "Cash",
-                "displayValue": {
-                  "text": "Cash"
-                },
-                "type": "text"
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Status",
+        "steps": [
+          {
+            "leading": {
+              "avatar": {
+                "status": "completed",
+                "type": "bullet"
               },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Status",
-          "steps": [
-            {
-              "leading": {
-                "avatar": {
-                  "status": "completed",
-                  "type": "bullet"
-                },
-                "connection": {
-                  "order": "first"
-                }
-              },
-              "content": {
-                "title": "Zinsberechnung",
-                "timestamp": "2025-07-01T06:46:42.342175Z"
+              "connection": {
+                "order": "first"
               }
             },
-            {
-              "leading": {
-                "avatar": {
-                  "status": "completed",
-                  "type": "bullet"
-                },
-                "connection": {
-                  "order": "last"
-                }
+            "content": {
+              "title": "Zinsberechnung",
+              "timestamp": "2025-07-01T06:46:42.342175Z"
+            }
+          },
+          {
+            "leading": {
+              "avatar": {
+                "status": "completed",
+                "type": "bullet"
               },
-              "content": {
-                "title": "Zinszahlung",
-                "timestamp": "2025-07-01T06:46:42.342175Z"
+              "connection": {
+                "order": "last"
               }
-            }
-          ],
-          "type": "steps"
-        },
-        {
-          "title": "Transaktion",
-          "data": [
-            {
-              "title": "Angesammelt",
-              "detail": {
-                "text": "6,74 €",
-                "displayValue": {
-                  "text": "6,74 €"
-                },
-                "type": "text"
-              },
-              "style": "plain"
             },
-            {
-              "title": "Steuern",
-              "detail": {
-                "text": "1,87 €",
-                "displayValue": {
-                  "text": "1,87 €"
-                },
-                "type": "text"
+            "content": {
+              "title": "Zinszahlung",
+              "timestamp": "2025-07-01T06:46:42.342175Z"
+            }
+          }
+        ],
+        "type": "steps"
+      },
+      {
+        "title": "Transaktion",
+        "data": [
+          {
+            "title": "Angesammelt",
+            "detail": {
+              "text": "6,74 €",
+              "displayValue": {
+                "text": "6,74 €"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Gesamt",
-              "detail": {
-                "text": "4,87 €",
-                "displayValue": {
-                  "text": "4,87 €"
-                },
-                "type": "text"
+            "style": "plain"
+          },
+          {
+            "title": "Steuern",
+            "detail": {
+              "text": "1,87 €",
+              "displayValue": {
+                "text": "1,87 €"
               },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Dokument",
-          "data": [
-            {
-              "title": "Abrechnung",
-              "action": {
-                "payload": "",
-                "type": "browserModal"
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "4,87 €",
+              "displayValue": {
+                "text": "4,87 €"
               },
-              "id": "3a982728-a476-44cd-bce9-aaa520b55f6f",
-              "postboxType": ""
-            }
-          ],
-          "type": "documents"
-        }
-      ]
-    }
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokument",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "3a982728-a476-44cd-bce9-aaa520b55f6f",
+            "postboxType": ""
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
 }

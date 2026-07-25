@@ -1,205 +1,205 @@
-  {
+{
+  "id": "8bd087f0-0091-4791-bff5-d47d8196aee4",
+  "timestamp": "2025-10-23T08:26:13.657+0000",
+  "title": "DroneShield",
+  "icon": "logos/AU000000DRO2/v2",
+  "avatar": {
+    "asset": "logos/AU000000DRO2/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Sparplan ausgeführt",
+  "amount": {
+    "currency": "EUR",
+    "value": -19.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "8bd087f0-0091-4791-bff5-d47d8196aee4"
+  },
+  "eventType": "trading_savingsplan_executed",
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
     "id": "8bd087f0-0091-4791-bff5-d47d8196aee4",
-    "timestamp": "2025-10-23T08:26:13.657+0000",
-    "title": "DroneShield",
-    "icon": "logos/AU000000DRO2/v2",
-    "avatar": {
-      "asset": "logos/AU000000DRO2/v2",
-      "badge": null
-    },
-    "badge": null,
-    "subtitle": "Sparplan ausgeführt",
-    "amount": {
-      "currency": "EUR",
-      "value": -19.0,
-      "fractionDigits": 2
-    },
-    "subAmount": null,
-    "status": "EXECUTED",
-    "action": {
-      "type": "timelineDetail",
-      "payload": "8bd087f0-0091-4791-bff5-d47d8196aee4"
-    },
-    "eventType": "trading_savingsplan_executed",
-    "cashAccountNumber": "123456789",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineTransaction",
-    "details": {
-      "id": "8bd087f0-0091-4791-bff5-d47d8196aee4",
-      "sections": [
-        {
-          "title": "Du hast 19,00 € gespart",
-          "data": {
-            "icon": "logos/AU000000DRO2/v2",
-            "timestamp": "2025-10-23T08:26:13.65787Z",
-            "status": "executed"
+    "sections": [
+      {
+        "title": "Du hast 19,00 € gespart",
+        "data": {
+          "icon": "logos/AU000000DRO2/v2",
+          "timestamp": "2025-10-23T08:26:13.65787Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "AU000000DRO2",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Sparplan",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
           },
-          "action": {
-            "payload": "AU000000DRO2",
-            "type": "instrumentDetail"
+          {
+            "title": "Zahlung",
+            "detail": {
+              "text": "Cash",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
           },
-          "type": "header"
-        },
-        {
-          "title": "Übersicht",
-          "data": [
-            {
-              "title": "Sparplan",
-              "detail": {
-                "text": "Ausgeführt",
-                "functionalStyle": "EXECUTED",
-                "type": "status"
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "DroneShield",
+              "displayValue": {
+                "text": "DroneShield"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Zahlung",
-              "detail": {
-                "text": "Cash",
-                "icon": "logos/bank_traderepublic/v2",
-                "type": "iconWithText"
-              },
-              "style": "plain"
-            },
-            {
-              "title": "Asset",
-              "detail": {
-                "text": "DroneShield",
-                "displayValue": {
-                  "text": "DroneShield"
-                },
-                "type": "text"
-              },
-              "style": "plain"
-            },
-            {
-              "title": "Transaktion",
-              "detail": {
-                "text": "6,921675 ×  2,75 €",
-                "action": {
-                  "payload": {
-                    "id": "00000000-0000-0000-0000-000000000000",
-                    "sections": [
-                      {
-                        "title": "Transaktion",
-                        "type": "title"
-                      },
-                      {
-                        "data": [
-                          {
-                            "title": "Aktien",
-                            "detail": {
-                              "text": "6,921675",
-                              "displayValue": {
-                                "text": "6,921675"
-                              },
-                              "type": "text"
-                            },
-                            "style": "plain"
-                          },
-                          {
-                            "title": "Aktienkurs",
-                            "detail": {
-                              "text": "2,75 €",
-                              "displayValue": {
-                                "text": "2,75 €"
-                              },
-                              "type": "text"
-                            },
-                            "style": "plain"
-                          },
-                          {
-                            "title": "Summe",
-                            "detail": {
-                              "text": "19,00 €",
-                              "displayValue": {
-                                "text": "19,00 €"
-                              },
-                              "type": "text"
-                            },
-                            "style": "plain"
-                          }
-                        ],
-                        "type": "table"
-                      }
-                    ]
-                  },
-                  "type": "infoPage"
-                },
-                "displayValue": {
-                  "text": "2,75 €",
-                  "prefix": "6,921675 × "
-                },
-                "type": "text"
-              },
-              "style": "plain"
-            },
-            {
-              "title": "Gebühr",
-              "detail": {
-                "text": "Kostenlos",
-                "displayValue": {
-                  "text": "Kostenlos"
-                },
-                "type": "text"
-              },
-              "style": "plain"
-            },
-            {
-              "title": "Summe",
-              "detail": {
-                "text": "19,00 €",
-                "displayValue": {
-                  "text": "19,00 €"
-                },
-                "type": "text"
-              },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Sparplan",
-          "data": [
-            {
-              "title": "",
-              "detail": {
-                "title": "DroneShield",
-                "timestamp": "2025-10-23T08:26:13.65787Z",
-                "amount": "19,00 €",
-                "icon": "logos/AU000000DRO2/v2",
-                "status": "executed",
-                "action": {
-                  "payload": {
-                    "savingsPlanId": "31e81415-c9ed-48b2-996b-5f3a2a6c32b1"
-                  },
-                  "type": "openSavingsPlanOverview"
-                },
-                "subtitle": "Wöchentlich",
-                "type": "embeddedTimelineItem"
-              },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Dokumente",
-          "data": [
-            {
-              "title": "Abrechnungsausführung",
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "6,921675 ×  2,75 €",
               "action": {
-                "payload": "",
-                "type": "browserModal"
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
+                    {
+                      "title": "Transaktion",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Aktien",
+                          "detail": {
+                            "text": "6,921675",
+                            "displayValue": {
+                              "text": "6,921675"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Aktienkurs",
+                          "detail": {
+                            "text": "2,75 €",
+                            "displayValue": {
+                              "text": "2,75 €"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Summe",
+                          "detail": {
+                            "text": "19,00 €",
+                            "displayValue": {
+                              "text": "19,00 €"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    }
+                  ]
+                },
+                "type": "infoPage"
               },
-              "id": "f58e3844-a6f9-4f81-9bd0-8b49d8e5984e",
-              "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
-            }
-          ],
-          "type": "documents"
-        }
-      ]
-    }
+              "displayValue": {
+                "text": "2,75 €",
+                "prefix": "6,921675 × "
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Kostenlos",
+              "displayValue": {
+                "text": "Kostenlos"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Summe",
+            "detail": {
+              "text": "19,00 €",
+              "displayValue": {
+                "text": "19,00 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Sparplan",
+        "data": [
+          {
+            "title": "",
+            "detail": {
+              "title": "DroneShield",
+              "timestamp": "2025-10-23T08:26:13.65787Z",
+              "amount": "19,00 €",
+              "icon": "logos/AU000000DRO2/v2",
+              "status": "executed",
+              "action": {
+                "payload": {
+                  "savingsPlanId": "31e81415-c9ed-48b2-996b-5f3a2a6c32b1"
+                },
+                "type": "openSavingsPlanOverview"
+              },
+              "subtitle": "Wöchentlich",
+              "type": "embeddedTimelineItem"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnungsausführung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "f58e3844-a6f9-4f81-9bd0-8b49d8e5984e",
+            "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
 }
