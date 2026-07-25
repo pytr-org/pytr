@@ -31,9 +31,9 @@ jobs:
       - name: Pytest
         run: uv run pytest
       - name: Ruff check
-        run: uv run ruff check
+        run: uvx ruff@0.9.6 check
       - name: Ruff format
-        run: uv run ruff format --check --diff
+        run: uvx ruff@0.9.6 format --check --diff
       - name: Mypy type check
         run: uv run mypy .
       - name: Check if README.md automatically generated content is up to date
