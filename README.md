@@ -138,8 +138,28 @@ Install dependencies:
 Run the tests to ensure everything is set up correctly:
 
 ```sh
- uv run pytest
+uv run pytest
 ```
+
+### Security hardening in this fork
+
+This fork changes authentication storage and logging to reduce the impact of a
+local file, shell-history, or debug-log disclosure:
+
+- The PIN is never written to disk. `--store_credentials` stores only the
+  phone number and the authenticated session cookies.
+- Existing legacy two-line credential files are automatically reduced to the
+  phone number; a PIN is requested interactively if the saved session expires.
+- Credential and cookie files are created with owner-only permissions (`0600`).
+- Debug logging no longer dumps login responses, account settings, websocket
+  payloads, or websocket errors, which can contain sensitive account data.
+- The PIN should be entered interactively rather than passed as `--pin`, so it
+  does not enter shell history or appear in process arguments.
+
+These changes address plaintext PIN persistence and accidental disclosure of
+authentication/session/account data through logs. The SDK still communicates
+with Trade Republic's private API and stores session cookies locally; protect
+the `~/.pytr` directory and avoid enabling debug logs in shared environments.
 
 ### Linting and Code Formatting
 
