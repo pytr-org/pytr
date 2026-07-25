@@ -1,124 +1,124 @@
-  {
+{
+  "id": "e93246ae-ee22-3124-988b-7c249e8c3add",
+  "timestamp": "2026-06-30T16:46:52.404+0000",
+  "title": "Honeywell International",
+  "icon": "logos/US4385162056/v2",
+  "subtitle": "Reverse Split",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "e93246ae-ee22-3124-988b-7c249e8c3add"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
     "id": "e93246ae-ee22-3124-988b-7c249e8c3add",
-    "timestamp": "2026-06-30T16:46:52.404+0000",
-    "title": "Honeywell International",
-    "icon": "logos/US4385162056/v2",
-    "subtitle": "Reverse Split",
-    "action": {
-      "type": "timelineDetail",
-      "payload": "e93246ae-ee22-3124-988b-7c249e8c3add"
-    },
-    "trailing": null,
-    "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineActivity",
-    "details": {
-      "id": "e93246ae-ee22-3124-988b-7c249e8c3add",
-      "sections": [
-        {
-          "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
-          "data": {
-            "icon": {
-              "asset": "logos/US4385162056/v2",
-              "badge": null
-            },
-            "timestamp": "2026-06-30T16:46:52.404Z",
-            "status": "executed"
+    "sections": [
+      {
+        "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+        "data": {
+          "icon": {
+            "asset": "logos/US4385162056/v2",
+            "badge": null
           },
-          "type": "header"
+          "timestamp": "2026-06-30T16:46:52.404Z",
+          "status": "executed"
         },
-        {
-          "title": "Übersicht",
-          "data": [
-            {
-              "title": "Status",
-              "detail": {
-                "text": "Ausgeführt",
-                "functionalStyle": "EXECUTED",
-                "type": "status"
-              },
-              "style": "plain"
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
             },
-            {
-              "title": "Orderart",
-              "detail": {
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Reverse Split",
+              "displayValue": {
                 "text": "Reverse Split",
-                "displayValue": {
-                  "text": "Reverse Split",
-                  "textDataSensitivity": "PUBLIC"
-                },
-                "type": "text"
+                "textDataSensitivity": "PUBLIC"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Wertpapier",
-              "detail": {
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Honeywell International",
+              "displayValue": {
                 "text": "Honeywell International",
-                "displayValue": {
-                  "text": "Honeywell International",
-                  "textDataSensitivity": "PUBLIC"
-                },
-                "type": "text"
+                "textDataSensitivity": "PUBLIC"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Aktien entfernt",
-              "detail": {
+            "style": "plain"
+          },
+          {
+            "title": "Aktien entfernt",
+            "detail": {
+              "text": "0.966682",
+              "displayValue": {
                 "text": "0.966682",
-                "displayValue": {
-                  "text": "0.966682",
-                  "textDataSensitivity": "PUBLIC"
-                },
-                "type": "text"
+                "textDataSensitivity": "PUBLIC"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Wertpapier",
-              "detail": {
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Honeywell International",
+              "displayValue": {
                 "text": "Honeywell International",
-                "displayValue": {
-                  "text": "Honeywell International",
-                  "textDataSensitivity": "PUBLIC"
-                },
-                "type": "text"
+                "textDataSensitivity": "PUBLIC"
               },
-              "style": "plain"
+              "type": "text"
             },
-            {
-              "title": "Aktien hinzugefügt",
-              "detail": {
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "0.483341",
+              "displayValue": {
                 "text": "0.483341",
-                "displayValue": {
-                  "text": "0.483341",
-                  "textDataSensitivity": "PUBLIC"
-                },
-                "type": "text"
+                "textDataSensitivity": "PUBLIC"
               },
-              "style": "plain"
-            }
-          ],
-          "type": "table"
-        },
-        {
-          "title": "Dokumente",
-          "data": [
-            {
-              "title": "Dokumente",
-              "detail": "30.06.2026",
-              "action": {
-                "payload": "",
-                "type": "browserModal"
-              },
-              "id": "b699fbb6-31e6-404b-94a7-892080058427",
-              "postboxType": "CA_SECURITIES_INVOICE"
-            }
-          ],
-          "type": "documents"
-        }
-      ]
-    }
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "30.06.2026",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "b699fbb6-31e6-404b-94a7-892080058427",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
 }

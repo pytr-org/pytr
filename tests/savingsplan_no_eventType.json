@@ -1,204 +1,204 @@
 {
+  "id": "78862117-79a9-4330-b594-ec62c3685a16",
+  "timestamp": "2025-11-03T15:58:11.121+0000",
+  "title": "TSMC (ADR)",
+  "icon": "logos/US8740391003/v2",
+  "avatar": {
+    "asset": "logos/US8740391003/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Sparplan ausgeführt",
+  "amount": {
+    "currency": "EUR",
+    "value": -10.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "78862117-79a9-4330-b594-ec62c3685a16"
+  },
+  "cashAccountNumber": "",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
     "id": "78862117-79a9-4330-b594-ec62c3685a16",
-    "timestamp": "2025-11-03T15:58:11.121+0000",
-    "title": "TSMC (ADR)",
-    "icon": "logos/US8740391003/v2",
-    "avatar": {
-        "asset": "logos/US8740391003/v2",
-        "badge": null
-    },
-    "badge": null,
-    "subtitle": "Sparplan ausgeführt",
-    "amount": {
-        "currency": "EUR",
-        "value": -10.0,
-        "fractionDigits": 2
-    },
-    "subAmount": null,
-    "status": "EXECUTED",
-    "action": {
-        "type": "timelineDetail",
-        "payload": "78862117-79a9-4330-b594-ec62c3685a16"
-    },
-    "cashAccountNumber": "",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineTransaction",
-    "details": {
-        "id": "78862117-79a9-4330-b594-ec62c3685a16",
-        "sections": [
-            {
-                "title": "Du hast 10,00 € gespart",
-                "data": {
-                    "icon": "logos/US8740391003/v2",
-                    "timestamp": "2025-11-03T15:58:11.121982Z",
-                    "status": "executed"
-                },
-                "action": {
-                    "payload": "US8740391003",
-                    "type": "instrumentDetail"
-                },
-                "type": "header"
+    "sections": [
+      {
+        "title": "Du hast 10,00 € gespart",
+        "data": {
+          "icon": "logos/US8740391003/v2",
+          "timestamp": "2025-11-03T15:58:11.121982Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "US8740391003",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Sparplan",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
             },
-            {
-                "title": "Übersicht",
-                "data": [
+            "style": "plain"
+          },
+          {
+            "title": "Zahlung",
+            "detail": {
+              "text": "Cash",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "TSMC (ADR)",
+              "displayValue": {
+                "text": "TSMC (ADR)"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "0,037523 ×  266,50 €",
+              "action": {
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
                     {
-                        "title": "Sparplan",
-                        "detail": {
-                            "text": "Ausgeführt",
-                            "functionalStyle": "EXECUTED",
-                            "type": "status"
-                        },
-                        "style": "plain"
+                      "title": "Transaktion",
+                      "type": "title"
                     },
                     {
-                        "title": "Zahlung",
-                        "detail": {
-                            "text": "Cash",
-                            "icon": "logos/bank_traderepublic/v2",
-                            "type": "iconWithText"
-                        },
-                        "style": "plain"
-                    },
-                    {
-                        "title": "Asset",
-                        "detail": {
-                            "text": "TSMC (ADR)",
+                      "data": [
+                        {
+                          "title": "Aktien",
+                          "detail": {
+                            "text": "0,037523",
                             "displayValue": {
-                                "text": "TSMC (ADR)"
+                              "text": "0,037523"
                             },
                             "type": "text"
+                          },
+                          "style": "plain"
                         },
-                        "style": "plain"
-                    },
-                    {
-                        "title": "Transaktion",
-                        "detail": {
-                            "text": "0,037523 ×  266,50 €",
-                            "action": {
-                                "payload": {
-                                    "id": "00000000-0000-0000-0000-000000000000",
-                                    "sections": [
-                                        {
-                                            "title": "Transaktion",
-                                            "type": "title"
-                                        },
-                                        {
-                                            "data": [
-                                                {
-                                                    "title": "Aktien",
-                                                    "detail": {
-                                                        "text": "0,037523",
-                                                        "displayValue": {
-                                                            "text": "0,037523"
-                                                        },
-                                                        "type": "text"
-                                                    },
-                                                    "style": "plain"
-                                                },
-                                                {
-                                                    "title": "Aktienkurs",
-                                                    "detail": {
-                                                        "text": "266,50 €",
-                                                        "displayValue": {
-                                                            "text": "266,50 €"
-                                                        },
-                                                        "type": "text"
-                                                    },
-                                                    "style": "plain"
-                                                },
-                                                {
-                                                    "title": "Summe",
-                                                    "detail": {
-                                                        "text": "10,00 €",
-                                                        "displayValue": {
-                                                            "text": "10,00 €"
-                                                        },
-                                                        "type": "text"
-                                                    },
-                                                    "style": "plain"
-                                                }
-                                            ],
-                                            "type": "table"
-                                        }
-                                    ]
-                                },
-                                "type": "infoPage"
-                            },
+                        {
+                          "title": "Aktienkurs",
+                          "detail": {
+                            "text": "266,50 €",
                             "displayValue": {
-                                "text": "266,50 €",
-                                "prefix": "0,037523 × "
+                              "text": "266,50 €"
                             },
                             "type": "text"
+                          },
+                          "style": "plain"
                         },
-                        "style": "plain"
-                    },
-                    {
-                        "title": "Gebühr",
-                        "detail": {
-                            "text": "Kostenlos",
-                            "displayValue": {
-                                "text": "Kostenlos"
-                            },
-                            "type": "text"
-                        },
-                        "style": "plain"
-                    },
-                    {
-                        "title": "Summe",
-                        "detail": {
+                        {
+                          "title": "Summe",
+                          "detail": {
                             "text": "10,00 €",
                             "displayValue": {
-                                "text": "10,00 €"
+                              "text": "10,00 €"
                             },
                             "type": "text"
-                        },
-                        "style": "plain"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
                     }
-                ],
-                "type": "table"
+                  ]
+                },
+                "type": "infoPage"
+              },
+              "displayValue": {
+                "text": "266,50 €",
+                "prefix": "0,037523 × "
+              },
+              "type": "text"
             },
-            {
-                "title": "Sparplan",
-                "data": [
-                    {
-                        "title": "",
-                        "detail": {
-                            "title": "TSMC (ADR)",
-                            "timestamp": "2025-11-03T15:58:11.121982Z",
-                            "amount": "10,00 €",
-                            "icon": "logos/US8740391003/v2",
-                            "status": "executed",
-                            "action": {
-                                "payload": {
-                                    "savingsPlanId": "407449dc-fce1-48c3-93a6-e86919e5b385"
-                                },
-                                "type": "openSavingsPlanOverview"
-                            },
-                            "subtitle": "Wöchentlich",
-                            "type": "embeddedTimelineItem"
-                        },
-                        "style": "plain"
-                    }
-                ],
-                "type": "table"
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Kostenlos",
+              "displayValue": {
+                "text": "Kostenlos"
+              },
+              "type": "text"
             },
-            {
-                "title": "Dokumente",
-                "data": [
-                    {
-                        "title": "Abrechnungsausführung",
-                        "action": {
-                            "payload": "",
-                            "type": "browserModal"
-                        },
-                        "id": "548c51bd-f5c3-45f4-b794-b68bb90dc10c",
-                        "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
-                    }
-                ],
-                "type": "documents"
-            }
-        ]
-    }
+            "style": "plain"
+          },
+          {
+            "title": "Summe",
+            "detail": {
+              "text": "10,00 €",
+              "displayValue": {
+                "text": "10,00 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Sparplan",
+        "data": [
+          {
+            "title": "",
+            "detail": {
+              "title": "TSMC (ADR)",
+              "timestamp": "2025-11-03T15:58:11.121982Z",
+              "amount": "10,00 €",
+              "icon": "logos/US8740391003/v2",
+              "status": "executed",
+              "action": {
+                "payload": {
+                  "savingsPlanId": "407449dc-fce1-48c3-93a6-e86919e5b385"
+                },
+                "type": "openSavingsPlanOverview"
+              },
+              "subtitle": "Wöchentlich",
+              "type": "embeddedTimelineItem"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnungsausführung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "548c51bd-f5c3-45f4-b794-b68bb90dc10c",
+            "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
 }

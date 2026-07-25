@@ -1,69 +1,69 @@
 {
+  "id": "e613ddd9-8fab-307d-bc39-44d2985fc5d4",
+  "timestamp": "2026-06-29T09:09:14.897+0000",
+  "title": "OHB",
+  "icon": "logos/DE0005936124/v2",
+  "subtitle": "Zwischenvertrieb von Wertpapieren",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "e613ddd9-8fab-307d-bc39-44d2985fc5d4"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
     "id": "e613ddd9-8fab-307d-bc39-44d2985fc5d4",
-    "timestamp": "2026-06-29T09:09:14.897+0000",
-    "title": "OHB",
-    "icon": "logos/DE0005936124/v2",
-    "subtitle": "Zwischenvertrieb von Wertpapieren",
-    "action": {
-      "type": "timelineDetail",
-      "payload": "e613ddd9-8fab-307d-bc39-44d2985fc5d4"
-    },
-    "trailing": null,
-    "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
-    "hidden": false,
-    "deleted": false,
-    "source": "timelineActivity",
-    "details": {
-      "id": "e613ddd9-8fab-307d-bc39-44d2985fc5d4",
-      "sections": [
-        {
-          "type": "header",
-          "title": "Du hast Aktien erhalten",
-          "data": {
-            "status": "executed",
-            "icon": "logos/DE0005936124/v2",
-            "timestamp": "2026-06-29T09:09:14.897948Z"
-          }
-        },
-        {
-          "type": "table",
-          "title": "Überblick",
-          "data": [
-            {
-              "title": "Status",
-              "style": "plain",
-              "detail": {
-                "type": "status",
-                "text": "Abgeschlossen",
-                "functionalStyle": "EXECUTED"
-              }
-            },
-            {
-              "title": "Ereignis",
-              "style": "plain",
-              "detail": {
-                "type": "text",
-                "text": "Zwischenausschüttung von Wertpapieren"
-              }
-            },
-            {
-              "title": "Vermögenswert",
-              "style": "plain",
-              "detail": {
-                "type": "text",
-                "text": "OHB"
-              }
-            },
-            {
-              "title": "Aktien",
-              "style": "plain",
-              "detail": {
-                "type": "text",
-                "text": "1.026415"
-              }
-            }
-          ]
+    "sections": [
+      {
+        "type": "header",
+        "title": "Du hast Aktien erhalten",
+        "data": {
+          "status": "executed",
+          "icon": "logos/DE0005936124/v2",
+          "timestamp": "2026-06-29T09:09:14.897948Z"
         }
-      ]
-    }
+      },
+      {
+        "type": "table",
+        "title": "Überblick",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Abgeschlossen",
+              "functionalStyle": "EXECUTED"
+            }
+          },
+          {
+            "title": "Ereignis",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Zwischenausschüttung von Wertpapieren"
+            }
+          },
+          {
+            "title": "Vermögenswert",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "OHB"
+            }
+          },
+          {
+            "title": "Aktien",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "1.026415"
+            }
+          }
+        ]
+      }
+    ]
   }
+}
