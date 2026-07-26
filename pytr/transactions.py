@@ -179,8 +179,6 @@ class TransactionExporter:
                 kwargs["value"] = self._decimal_format(-event.value)
                 kwargs["isin"] = None
                 kwargs["shares"] = None
-        elif event.event_type == PPEventType.TAXES:
-            pass
         elif event.event_type == PPEventType.SWAP:
             kwargs["note"] = event.title
 
