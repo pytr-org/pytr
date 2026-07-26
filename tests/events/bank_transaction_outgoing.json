@@ -1,0 +1,127 @@
+{
+  "id": "01b0c632-47de-4beb-9b09-6eb8ac42e871",
+  "timestamp": "2024-07-21T09:35:47.370+0000",
+  "title": "Max Mustermann",
+  "icon": "logos/contacts-C-Lightblue/v2",
+  "avatar": {
+    "asset": "logos/contacts-C-Lightblue/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Gesendet",
+  "amount": {
+    "currency": "EUR",
+    "value": -50.3,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "01b0c632-47de-4beb-9b09-6eb8ac42e871"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "BANK_TRANSACTION_OUTGOING",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "01b0c632-47de-4beb-9b09-6eb8ac42e871",
+    "sections": [
+      {
+        "title": "Du hast -50,30 € an Max Mustermann gesendet",
+        "data": {
+          "icon": {
+            "asset": "logos/contacts-C-Lightblue/v2",
+            "badge": null
+          },
+          "subtitleText": "21 Juli 2024 · 09:35",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesendet mit",
+            "detail": {
+              "text": "Cash",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Referenz",
+            "detail": {
+              "text": "Sent via Trade Republic",
+              "displayValue": {
+                "text": "Sent via Trade Republic",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Empfänger",
+        "data": [
+          {
+            "title": "Name",
+            "detail": {
+              "text": "Max Mustermann",
+              "displayValue": {
+                "text": "Max Mustermann",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "IBAN",
+            "detail": {
+              "text": "DE00123456789012345678",
+              "displayValue": {
+                "text": "DE00123456789012345678",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokument",
+        "data": [
+          {
+            "title": "Transaktionsbestätigung",
+            "detail": "22.07.2024",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "325de7ad-a645-442f-bb14-09a4de5f7fbf",
+            "postboxType": "OUTGOING_TRANSFER"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

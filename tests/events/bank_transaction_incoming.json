@@ -1,0 +1,118 @@
+{
+  "id": "37dcd310-1b1e-430f-9a7d-adfbee85a378",
+  "timestamp": "2024-07-04T06:17:41.228+0000",
+  "title": "Max Mustermann",
+  "icon": "logos/contacts-C-Lightblue/v2",
+  "avatar": {
+    "asset": "logos/contacts-C-Lightblue/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Fertig",
+  "amount": {
+    "currency": "EUR",
+    "value": 5.15,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "37dcd310-1b1e-430f-9a7d-adfbee85a378"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "BANK_TRANSACTION_INCOMING",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "37dcd310-1b1e-430f-9a7d-adfbee85a378",
+    "sections": [
+      {
+        "title": "Du hast 5,15 € von Max Mustermann erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/contacts-C-Lightblue/v2",
+            "badge": null
+          },
+          "subtitleText": "4 Juli 2024 · 06:17",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "CREATED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Referenz",
+            "detail": {
+              "text": "Baecker",
+              "displayValue": {
+                "text": "Baecker",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Absender",
+        "data": [
+          {
+            "title": "Name",
+            "detail": {
+              "text": "Max Mustermann",
+              "displayValue": {
+                "text": "Max Mustermann",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "IBAN",
+            "detail": {
+              "text": "DE00123456789012345678",
+              "displayValue": {
+                "text": "DE00123456789012345678",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokument",
+        "data": [
+          {
+            "title": "Transaktionsbestätigung",
+            "detail": "04.07.2024",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "31061d66-01ca-42af-9825-9d157ff82392",
+            "postboxType": "INCOMING_TRANSFER"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

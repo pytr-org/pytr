@@ -2289,6 +2289,199 @@ def test_events():
                 }
             ],
         },
+        {
+            "filename": "bank_transaction_incoming.json",
+            "event_type": PPEventType.DEPOSIT,
+            "title": "Max Mustermann",
+            "value": 5.15,
+            "transactions": [
+                {
+                    "Datum": "2024-07-04T06:17:41",
+                    "Typ": "Einlage",
+                    "Wert": 5.15,
+                    "Notiz": "Max Mustermann",
+                }
+            ],
+        },
+        {
+            "filename": "bank_transaction_outgoing.json",
+            "event_type": PPEventType.REMOVAL,
+            "title": "Max Mustermann",
+            "value": -50.3,
+            "transactions": [
+                {
+                    "Datum": "2024-07-21T09:35:47",
+                    "Typ": "Entnahme",
+                    "Wert": -50.3,
+                    "Notiz": "Max Mustermann",
+                }
+            ],
+        },
+        {
+            "filename": "card_transaction.json",
+            "event_type": PPEventType.REMOVAL,
+            "title": "REWE",
+            "value": -4.28,
+            "note": "card_successful_transaction",
+            "transactions": [
+                {
+                    "Datum": "2024-06-03T15:10:48",
+                    "Typ": "Entnahme",
+                    "Wert": -4.28,
+                    "Notiz": "Kartentransaktion - REWE",
+                }
+            ],
+        },
+        {
+            "filename": "interest_payout_created.json",
+            "event_type": PPEventType.INTEREST,
+            "title": "Zinsen",
+            "value": 13.56,
+            "taxes": 5.21,
+            "transactions": [
+                {
+                    "Datum": "2024-07-01T04:51:32",
+                    "Typ": "Zinsen",
+                    "Wert": 13.56,
+                    "Notiz": "Zinsen",
+                    "Steuern": 5.21,
+                }
+            ],
+        },
+        {
+            "filename": "saveback_aggregate.json",
+            "event_type": ConditionalEventType.SAVEBACK,
+            "title": "S&P 500 Information Tech USD (Acc)",
+            "isin": "IE00B3WJKG14",
+            "value": -15.0,
+            "shares": 0.501924,
+            "transactions": [
+                {
+                    "Datum": "2024-07-02T13:53:44",
+                    "Typ": "Kauf",
+                    "Wert": -15.0,
+                    "Notiz": "S&P 500 Information Tech USD (Acc)",
+                    "ISIN": "IE00B3WJKG14",
+                    "Stück": 0.501924,
+                },
+                {
+                    "Datum": "2024-07-02T13:53:44",
+                    "Typ": "Einlage",
+                    "Wert": 15.0,
+                    "Notiz": "S&P 500 Information Tech USD (Acc)",
+                },
+            ],
+        },
+        {
+            "filename": "savings_plan_invoice_created.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "Volkswagen (Vz.)",
+            "isin": "DE0007664039",
+            "value": -1.0,
+            "shares": 0.00961,
+            "transactions": [
+                {
+                    "Datum": "2024-06-17T08:16:25",
+                    "Typ": "Kauf",
+                    "Wert": -1.0,
+                    "Notiz": "Volkswagen (Vz.)",
+                    "ISIN": "DE0007664039",
+                    "Stück": 0.00961,
+                }
+            ],
+        },
+        {
+            "filename": "spare_change_aggregate.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "S&P 500 Information Tech USD (Acc)",
+            "isin": "IE00B3WJKG14",
+            "value": -5.81,
+            "shares": 0.208318,
+            "transactions": [
+                {
+                    "Datum": "2024-06-10T13:52:18",
+                    "Typ": "Kauf",
+                    "Wert": -5.81,
+                    "Notiz": "S&P 500 Information Tech USD (Acc)",
+                    "ISIN": "IE00B3WJKG14",
+                    "Stück": 0.208318,
+                }
+            ],
+        },
+        {
+            "filename": "ssp_tax_correction.json",
+            "event_type": PPEventType.TAX_REFUND,
+            "title": "Steuerkorrektur",
+            "value": 3.47,
+            "transactions": [
+                {
+                    "Datum": "2024-06-11T22:45:15",
+                    "Typ": "Steuerrückerstattung",
+                    "Wert": 3.47,
+                    "Notiz": "Steuerkorrektur",
+                }
+            ],
+        },
+        {
+            "filename": "trade_corrected.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "Worldline",
+            "isin": "FR0011981968",
+            "value": 105.85,
+            "shares": 13.0,
+            "fees": 1.0,
+            "taxes": 1.8,
+            "transactions": [
+                {
+                    "Datum": "2024-12-16T09:59:01",
+                    "Typ": "Verkauf",
+                    "Wert": 105.85,
+                    "Notiz": "Worldline",
+                    "ISIN": "FR0011981968",
+                    "Stück": 13.0,
+                    "Gebühren": 1.0,
+                    "Steuern": 1.8,
+                }
+            ],
+        },
+        {
+            "filename": "trade_invoice.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "DWS Group",
+            "isin": "DE000DWS1007",
+            "value": -221.0,
+            "shares": 5.0,
+            "fees": 1.0,
+            "transactions": [
+                {
+                    "Datum": "2024-06-04T06:23:45",
+                    "Typ": "Kauf",
+                    "Wert": -221.0,
+                    "Notiz": "DWS Group",
+                    "ISIN": "DE000DWS1007",
+                    "Stück": 5.0,
+                    "Gebühren": 1.0,
+                }
+            ],
+        },
+        {
+            "filename": "trading_savingsplan_executed.json",
+            "event_type": ConditionalEventType.TRADE_INVOICE,
+            "title": "BASF",
+            "isin": "DE000BASF111",
+            "value": -15.0,
+            "shares": 0.316355,
+            "transactions": [
+                {
+                    "Datum": "2025-02-10T09:23:13",
+                    "Typ": "Kauf",
+                    "Wert": -15.0,
+                    "Notiz": "BASF",
+                    "ISIN": "DE000BASF111",
+                    "Stück": 0.316355,
+                }
+            ],
+        },
     ]
 
     # Create an instance of EventCsvFormatter
@@ -2296,7 +2489,7 @@ def test_events():
 
     for row in test_data:
         # Load the sample JSON file
-        with open("tests/" + row["filename"], "r", encoding="utf-8") as file:
+        with open("tests/events/" + row["filename"], "r", encoding="utf-8") as file:
             sample_data = json.load(file)
 
         # Parse the JSON data using the from_dict function

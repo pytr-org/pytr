@@ -1,0 +1,188 @@
+{
+  "id": "7a4b762d-3366-46b0-9f4b-1c7e6cdd1d67",
+  "timestamp": "2024-06-17T08:16:25.998+0000",
+  "title": "Volkswagen (Vz.)",
+  "icon": "logos/DE0007664039/v2",
+  "avatar": {
+    "asset": "logos/DE0007664039/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Sparplan ausgeführt",
+  "amount": {
+    "currency": "EUR",
+    "value": -1.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "7a4b762d-3366-46b0-9f4b-1c7e6cdd1d67"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SAVINGS_PLAN_INVOICE_CREATED",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "7a4b762d-3366-46b0-9f4b-1c7e6cdd1d67",
+    "sections": [
+      {
+        "title": "Du hast 1,00 € investiert",
+        "data": {
+          "icon": "logos/DE0007664039/v2",
+          "subtitleText": null,
+          "timestamp": "2024-06-17T08:16:25.998+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "DE0007664039"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Sparplan",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Volkswagen (Vz.)",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Zahlung",
+            "detail": {
+              "text": "Guthaben",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Sparplan",
+        "data": [
+          {
+            "title": "",
+            "detail": {
+              "title": "Volkswagen (Vz.)",
+              "timestamp": "2024-06-17T08:16:25.998Z",
+              "amount": "1,00 €",
+              "icon": "logos/DE0007664039/v2",
+              "status": "executed",
+              "action": {
+                "type": "openSavingsPlanOverview",
+                "payload": {
+                  "savingsPlanId": "d2e09e56-10c3-4352-9023-f799e75ab880"
+                }
+              },
+              "subtitle": "Wöchentlich",
+              "type": "embeddedTimelineItem"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Transaktion",
+        "data": [
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "0,00961",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteilspreis",
+            "detail": {
+              "text": "104,05 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Gratis",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "1,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung Ausführung",
+            "detail": "17.06.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "cd07b3c9-d32b-4a94-b005-b05b6c4d645d",
+            "postboxType": "SAVINGS_PLAN_EXECUTED_V2"
+          }
+        ],
+        "action": null,
+        "type": "documents"
+      }
+    ]
+  }
+}

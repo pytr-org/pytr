@@ -47,51 +47,58 @@ class PPEventType(EventType):
 tr_event_type_mapping = {
     # Deposits
     "ACCOUNT_TRANSFER_INCOMING": PPEventType.DEPOSIT,
+    "BANK_TRANSACTION_INCOMING": PPEventType.DEPOSIT,
+    "CARD_REFUND": PPEventType.DEPOSIT,
+    "CARD_SUCCESSFUL_OCT": PPEventType.DEPOSIT,
+    "CARD_TR_REFUND": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER": PPEventType.DEPOSIT,
     "INCOMING_TRANSFER_DELEGATION": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_APPLE_PAY": PPEventType.DEPOSIT,
+    "PAYMENT_INBOUND_CREDIT_CARD": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_GOOGLE_PAY": PPEventType.DEPOSIT,
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": PPEventType.DEPOSIT,
-    "PAYMENT_INBOUND_CREDIT_CARD": PPEventType.DEPOSIT,
     "PAYMENT-SERVICE-IN-PAYMENT-DIRECT-DEBIT": PPEventType.DEPOSIT,
-    "card_refund": PPEventType.DEPOSIT,
-    "card_successful_oct": PPEventType.DEPOSIT,
-    "card_tr_refund": PPEventType.DEPOSIT,
     # Dividends
     "CREDIT": PPEventType.DIVIDEND,
     # Interests
     "INTEREST_PAYOUT": PPEventType.INTEREST,
     "INTEREST_PAYOUT_CREATED": PPEventType.INTEREST,
     # Removals
+    "BANK_TRANSACTION_OUTGOING": PPEventType.REMOVAL,
+    "CARD_FAILED_TRANSACTION": PPEventType.REMOVAL,
+    "CARD_ORDER_BILLED": PPEventType.REMOVAL,
+    "CARD_SUCCESSFUL_ATM_WITHDRAWAL": PPEventType.REMOVAL,
+    "CARD_SUCCESSFUL_TRANSACTION": PPEventType.REMOVAL,
+    "CARD_TRANSACTION": PPEventType.REMOVAL,
+    "JUNIOR_P2P_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER_DELEGATION": PPEventType.REMOVAL,
     "PAYMENT_OUTBOUND": PPEventType.REMOVAL,
-    "card_failed_transaction": PPEventType.REMOVAL,
-    "card_order_billed": PPEventType.REMOVAL,
-    "card_successful_atm_withdrawal": PPEventType.REMOVAL,
-    "card_successful_transaction": PPEventType.REMOVAL,
-    "junior_p2p_transfer": PPEventType.REMOVAL,
     # Saveback
     "ACQUISITION_TRADE_PERK": ConditionalEventType.SAVEBACK,
-    "benefits_saveback_execution": ConditionalEventType.SAVEBACK,
+    "BENEFITS_SAVEBACK_EXECUTION": ConditionalEventType.SAVEBACK,
+    "SAVEBACK_AGGREGATE": ConditionalEventType.SAVEBACK,
     # Tax refunds
+    "SSP_TAX_CORRECTION": PPEventType.TAX_REFUND,
+    "SSP_TAX_CORRECTION_INVOICE": PPEventType.TAX_REFUND,
     "TAX_CORRECTION": PPEventType.TAX_REFUND,
     "TAX_REFUND": PPEventType.TAX_REFUND,
-    "ssp_tax_correction_invoice": PPEventType.TAX_REFUND,
     # Trade invoices
+    "BENEFITS_SPARE_CHANGE_EXECUTION": ConditionalEventType.TRADE_INVOICE,
     "IPO_TRADE_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_INVOICE_CREATED": ConditionalEventType.TRADE_INVOICE,
+    "SPARE_CHANGE_AGGREGATE": ConditionalEventType.TRADE_INVOICE,
     "TRADE_CORRECTED": ConditionalEventType.TRADE_INVOICE,
     "TRADE_INVOICE": ConditionalEventType.TRADE_INVOICE,
-    "benefits_spare_change_execution": ConditionalEventType.TRADE_INVOICE,
-    "trading_savingsplan_executed": ConditionalEventType.TRADE_INVOICE,
-    "trading_trade_executed": ConditionalEventType.TRADE_INVOICE,
+    "TRADING_SAVINGSPLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
+    "TRADING_TRADE_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     # Private markets order
-    "private_markets_order_created": ConditionalEventType.PRIVATE_MARKETS_ORDER,
-    "private_markets_trade_executed": ConditionalEventType.PRIVATE_MARKETS_ORDER,
+    "PRIVATE_MARKET_FUND_TRADE_EXECUTED": ConditionalEventType.PRIVATE_MARKETS_ORDER,
+    "PRIVATE_MARKETS_ORDER_CREATED": ConditionalEventType.PRIVATE_MARKETS_ORDER,
+    "PRIVATE_MARKETS_TRADE_EXECUTED": ConditionalEventType.PRIVATE_MARKETS_ORDER,
 }
 
 timeline_legacy_migrated_events_title_type_mapping = {
@@ -167,33 +174,40 @@ subtitle_event_type_mapping = {
 
 events_known_ignored = [
     "AML_SOURCE_OF_WEALTH_RESPONSE_EXECUTED",
+    "CARD_FAILED_VERIFICATION",
+    "CARD_SUCCESSFUL_VERIFICATION",
+    "CARD_VERIFICATION",
     "CASH_ACCOUNT_CHANGED",
     "CREDIT_CANCELED",
-    "CUSTOMER_CREATED",
     "CRYPTO_ANNUAL_STATEMENT",
+    "CRYPTO_TNC_UPDATE_2025",
     "CSX_CHAT_ACTIVITY",
+    "CURRENT_ACCOUNT_ACTIVATED",
+    "CUSTOMER_CREATED",
     "DEVICE_RESET",
     "DOCUMENTS_ACCEPTED",
     "DOCUMENTS_CHANGED",
     "DOCUMENTS_CREATED",
     "EMAIL_VALIDATED",
-    "EX_POST_COST_REPORT",
-    "EX_POST_COST_REPORT_CREATED",
     "EXEMPTION_ORDER_CHANGE_REQUESTED",
     "EXEMPTION_ORDER_CHANGE_REQUESTED_AUTOMATICALLY",
     "EXEMPTION_ORDER_CHANGED",
+    "EX_POST_COST_REPORT",
+    "EX_POST_COST_REPORT_CREATED",
+    "GENERAL_MEETING",
+    "GESH_CORPORATE_ACTION",
     "INPAYMENTS_SEPA_MANDATE_CREATED",
     "INSTRUCTION_CORPORATE_ACTION",
     "JUNIOR_ONBOARDING_GUARDIAN_B_CONSENT",
-    "GENERAL_MEETING",
-    "GESH_CORPORATE_ACTION",
     "MATURITY",
+    "NEW_TR_IBAN",
     "ORDER_CANCELED",
     "ORDER_CREATED",
     "ORDER_EXPIRED",
     "ORDER_REJECTED",
     "PRE_DETERMINED_TAX_BASE_EARNING",
     "PRIVATE_MARKET_FUND_ORDER_RECEIVED",
+    "PRIVATE_MARKETS_SUITABILITY_QUIZ_COMPLETED",
     "PUK_CREATED",
     "QUARTERLY_REPORT",
     "RDD_FLOW",
@@ -202,29 +216,24 @@ events_known_ignored = [
     "SECURITIES_ACCOUNT_CREATED",
     "SHAREBOOKING",
     "SHAREBOOKING_TRANSACTIONAL",
+    "SSP_CAPITAL_INCREASE_CUSTOMER_INSTRUCTION",
+    "SSP_CORPORATE_ACTION_INFORMATIVE",
+    "SSP_CORPORATE_ACTION_INFORMATIVE_NOTIFICATION",
     "SSP_CORPORATE_ACTION_INSTRUCTION",
     "SSP_CORPORATE_ACTION_UPCOMING",
+    "SSP_DIVIDEND_OPTION_CUSTOMER_INSTRUCTION",
+    "SSP_GENERAL_MEETING_CUSTOMER_INSTRUCTION",
+    "SSP_TENDER_OFFER_CUSTOMER_INSTRUCTION",
     "STOCK_PERK_REFUNDED",
     "TAX_YEAR_END_REPORT",
     "TAX_YEAR_END_REPORT_CREATED",
+    "TRADING_ORDER_CANCELLED",
+    "TRADING_ORDER_CREATED",
+    "TRADING_ORDER_EXPIRED",
+    "TRADING_ORDER_REJECTED",
+    "TRADING_SAVINGSPLAN_EXECUTION_FAILED",
     "VERIFICATION_TRANSFER_ACCEPTED",
     "YEAR_END_TAX_REPORT",
-    "card_failed_verification",
-    "card_successful_verification",
-    "crypto_annual_statement",
-    "current_account_activated",
-    "new_tr_iban",
-    "private_markets_suitability_quiz_completed",
-    "ssp_general_meeting_customer_instruction",
-    "ssp_tender_offer_customer_instruction",
-    "trading_order_cancelled",
-    "trading_order_created",
-    "trading_order_expired",
-    "trading_order_rejected",
-    "trading_savingsplan_execution_failed",
-    "ssp_capital_increase_customer_instruction",
-    "ssp_corporate_action_informative_notification",
-    "ssp_dividend_option_customer_instruction",
 ]
 
 events_known_ignored_title = [
@@ -318,7 +327,7 @@ class Event:
         taxes: Optional[float] = None
         note: Optional[str] = None
 
-        eventTypeStr = event_dict.get("eventType", "")
+        eventTypeStr = (event_dict.get("eventType") or "").upper()
         subtitle = event_dict["subtitle"]
         eventdesc = f"{title} {subtitle} ({event_dict['id']})"
         dump_dict = {"eventdesc": eventdesc, "id": event_dict["id"]}
@@ -392,7 +401,7 @@ class Event:
         # We support some older eventType entries which might not exist any more in current TR data.
         # We could consider removing this if block some time in the future.
         if event_type is None:
-            if eventTypeStr == "timeline_legacy_migrated_events":
+            if eventTypeStr == "TIMELINE_LEGACY_MIGRATED_EVENTS":
                 event_type = timeline_legacy_migrated_events_title_type_mapping.get(title)
                 if event_type is None:
                     event_type = timeline_legacy_migrated_events_subtitle_type_mapping.get(subtitle)
@@ -406,7 +415,7 @@ class Event:
                             elif ititle.endswith(" gesendet"):
                                 event_type = PPEventType.REMOVAL
                                 break
-            elif eventTypeStr == "ssp_corporate_action_invoice_shares":
+            elif eventTypeStr == "SSP_CORPORATE_ACTION_INVOICE_SHARES":
                 if subtitle in [
                     "Aktiendividende",
                     "Spin-off",
@@ -423,7 +432,7 @@ class Event:
                     event_type = PPEventType.SWAP
                 elif subtitle == "Wertlos":
                     event_type = ConditionalEventType.TRADE_INVOICE
-            elif eventTypeStr in ["ssp_corporate_action_invoice_cash", "SSP_CORPORATE_ACTION_CASH"]:
+            elif eventTypeStr in ["SSP_CORPORATE_ACTION_INVOICE_CASH", "SSP_CORPORATE_ACTION_CASH"]:
                 if subtitle == "Aufruf von Zwischenpapieren":
                     event_type = PPEventType.SWAP
                 elif subtitle in [
@@ -571,7 +580,7 @@ class Event:
                     ]
                     or eventTypeStr
                     in [
-                        "benefits_spare_change_execution",
+                        "BENEFITS_SPARE_CHANGE_EXECUTION",
                     ]
                     or subtitle
                     in [
@@ -610,7 +619,7 @@ class Event:
         elif (
             (
                 event_type in [ConditionalEventType.SAVEBACK]
-                or eventTypeStr in ["benefits_spare_change_execution", "ACQUISITION_TRADE_PERK"]
+                or eventTypeStr in ["BENEFITS_SPARE_CHANGE_EXECUTION", "ACQUISITION_TRADE_PERK"]
                 or subtitle == "Round up"
                 or title == "Aktien-Bonus"
             )
@@ -668,7 +677,7 @@ class Event:
             value = 0  # Transfers have no monetary value
 
         if event_type in [PPEventType.DEPOSIT, PPEventType.REMOVAL]:
-            if eventTypeStr is not None and eventTypeStr.startswith("card_"):
+            if eventTypeStr is not None and eventTypeStr.startswith("CARD_"):
                 note = eventTypeStr
 
             if uebersicht_dict:
@@ -717,7 +726,7 @@ class Event:
             ]
             and subtitle
             not in ["Wertlos", "Round up", "1 % Bonus", "Sparplan ausgeführt", "Aufruf von Zwischenpapieren"]
-            and eventTypeStr not in ["benefits_spare_change_execution"]
+            and eventTypeStr not in ["BENEFITS_SPARE_CHANGE_EXECUTION"]
         ):
             get_event_logger().warning("Could not parse fees from %s", eventdesc)
             get_event_logger().debug("Failed to parse fees from %s", json.dumps(event_dict, indent=4))
