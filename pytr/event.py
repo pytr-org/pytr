@@ -75,6 +75,8 @@ tr_event_type_mapping = {
     "OUTGOING_TRANSFER": PPEventType.REMOVAL,
     "OUTGOING_TRANSFER_DELEGATION": PPEventType.REMOVAL,
     "PAYMENT_OUTBOUND": PPEventType.REMOVAL,
+    # Transfers
+    "SSP_SECURITIES_TRANSFER_INCOMING": PPEventType.TRANSFER_IN,
     # Saveback
     "ACQUISITION_TRADE_PERK": ConditionalEventType.SAVEBACK,
     "BENEFITS_SAVEBACK_EXECUTION": ConditionalEventType.SAVEBACK,
@@ -173,6 +175,7 @@ subtitle_event_type_mapping = {
 }
 
 events_known_ignored = [
+    "ADDRESS_CHANGED",
     "AML_SOURCE_OF_WEALTH_RESPONSE_EXECUTED",
     "CARD_FAILED_VERIFICATION",
     "CARD_SUCCESSFUL_VERIFICATION",
@@ -262,6 +265,7 @@ events_known_ignored_subtitle = [
     "Jährliche Hauptversammlung",
     "Kartenprüfung",
     "Kauf-Abrechnung storniert",
+    "Kauforder abgelehnt",
     "Kauforder storniert",
     "Limit-Buy-Order abgelaufen",
     "Limit-Buy-Order erstellt",
@@ -383,7 +387,7 @@ class Event:
             dump_dict["maintitle"] = transaction_dict["title"]
             data = transaction_dict.get("data", [{}])
             shares_dict = next(filter(lambda x: x["title"] in ["Aktien", "Anteile", "Shares"], data), None)
-            fees_dict = next(filter(lambda x: x["title"] == "Gebühr", data), None)
+            fees_dict = next(filter(lambda x: x["title"] in ["Gebühr", "Fee"], data), None)
             taxes_dict = next(filter(lambda x: x["title"] in ["Steuer", "Steuern"], data), None)
 
         uebersicht_dict = next(
@@ -668,7 +672,7 @@ class Event:
         if (event_type == PPEventType.SPINOFF or subtitle == "Wertlos") and value is None:
             value = 0
 
-        if event_type in [PPEventType.SPLIT, PPEventType.SWAP] and value is None:
+        if event_type in [PPEventType.SPLIT, PPEventType.SWAP, PPEventType.TRANSFER_IN] and value is None:
             value = 0
 
         if event_type in [PPEventType.SPINOFF, PPEventType.SWAP]:

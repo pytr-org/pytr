@@ -1,0 +1,12 @@
+{
+  "id": "5f054afa-2eb5-409b-805d-6d3d9d45ffad",
+  "timestamp": "2026-02-18T17:45:01.178+0000",
+  "title": "Neues Gerät",
+  "icon": "logos/timeline_computers/v2",
+  "subtitle": null,
+  "action": null,
+  "eventType": null,
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity"
+}
