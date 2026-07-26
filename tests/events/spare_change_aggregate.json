@@ -1,0 +1,170 @@
+{
+  "id": "b210331f-cea3-46ae-ab1a-3ea3f608f6fb",
+  "timestamp": "2024-06-10T13:52:18.218+0000",
+  "title": "S&P 500 Information Tech USD (Acc)",
+  "icon": "logos/IE00B3WJKG14/v2",
+  "avatar": {
+    "asset": "logos/IE00B3WJKG14/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Round up",
+  "amount": {
+    "currency": "EUR",
+    "value": -5.81,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "b210331f-cea3-46ae-ab1a-3ea3f608f6fb"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SPARE_CHANGE_AGGREGATE",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "b210331f-cea3-46ae-ab1a-3ea3f608f6fb",
+    "sections": [
+      {
+        "title": "Du hast 5,81 € investiert",
+        "data": {
+          "icon": {
+            "asset": "logos/IE00B3WJKG14/v2",
+            "badge": null
+          },
+          "subtitleText": "Juni 10 · 13:52",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "IE00B3WJKG14",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Round up",
+            "detail": {
+              "text": "Abgeschlossen",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "S&P 500 Information Tech USD (Acc)",
+              "displayValue": {
+                "text": "S&P 500 Information Tech USD (Acc)"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Angefallen",
+            "detail": {
+              "text": "5,81 €",
+              "displayValue": {
+                "text": "5,81 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "0.208318 x  27,89 €",
+              "displayValue": {
+                "text": "27,89 €",
+                "prefix": "0.208318 x "
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Kostenlos",
+              "displayValue": {
+                "text": "Kostenlos"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "5,81 €",
+              "displayValue": {
+                "text": "5,81 €"
+              },
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung Ausführung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "654f9f73-3534-4fff-895b-d1f769e8f9d6",
+            "postboxType": "SAVINGS_PLAN_EXECUTED_V2"
+          },
+          {
+            "title": "Kosteninformation",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "0c163f1a-432c-4c1b-b685-303d4e9a9df1",
+            "postboxType": "COSTS_INFO_SAVINGS_PLAN_V2"
+          },
+          {
+            "title": "Aktivierung",
+            "action": {
+              "payload": {
+                "path": "/api/v1/benefits/sparechange/documents/config/5d0b1b02-54ab-43dd-b99b-8f1bb9a2612b",
+                "title": "Herunterladen",
+                "shareable": true
+              },
+              "type": "authenticatedBrowserModal"
+            },
+            "id": "5d0b1b02-54ab-43dd-b99b-8f1bb9a2612b",
+            "postboxType": "BENEFIT_ACTIVATED"
+          },
+          {
+            "title": "Aktivierung",
+            "action": {
+              "payload": {
+                "path": "/api/v1/benefits/sparechange/documents/config/9561fc08-3e6c-4199-a546-e0a481004d83",
+                "title": "Herunterladen",
+                "shareable": true
+              },
+              "type": "authenticatedBrowserModal"
+            },
+            "id": "9561fc08-3e6c-4199-a546-e0a481004d83",
+            "postboxType": "BENEFIT_ACTIVATED"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

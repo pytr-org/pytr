@@ -1,0 +1,106 @@
+{
+  "id": "cee48a8c-226f-35ec-ae86-1efd19beace1",
+  "timestamp": "2024-06-11T22:45:15.000+0000",
+  "title": "Steuerkorrektur",
+  "icon": "logos/timeline_person/v2",
+  "avatar": {
+    "asset": "logos/timeline_person/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": null,
+  "amount": {
+    "currency": "EUR",
+    "value": 3.47,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "cee48a8c-226f-35ec-ae86-1efd19beace1"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SSP_TAX_CORRECTION",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "cee48a8c-226f-35ec-ae86-1efd19beace1",
+    "sections": [
+      {
+        "title": "Du hast 3,47 € erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/timeline_person/v2",
+            "badge": null
+          },
+          "subtitleText": "11 Juni 2024 · 22:45",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Event",
+            "detail": {
+              "text": "Steuerkorrektur",
+              "displayValue": {
+                "text": "Steuerkorrektur",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Geschäft",
+        "data": [
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "3,47 €",
+              "displayValue": {
+                "text": "3,47 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Steuerabrechnung",
+            "detail": "28.06.2024",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "cdbc5f0c-4b16-4bd2-ad90-eb225e691aad",
+            "postboxType": "TAX_OPTIMIZATION_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

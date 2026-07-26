@@ -1,0 +1,219 @@
+{
+  "id": "a98f640c-6dd6-4af4-a5f5-b3984da9e0c2",
+  "timestamp": "2025-02-10T09:23:13.824+0000",
+  "title": "BASF",
+  "icon": "logos/DE000BASF111/v2",
+  "avatar": {
+    "asset": "logos/DE000BASF111/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Sparplan ausgeführt",
+  "amount": {
+    "currency": "EUR",
+    "value": -15.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "a98f640c-6dd6-4af4-a5f5-b3984da9e0c2"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "TRADING_SAVINGSPLAN_EXECUTED",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "a98f640c-6dd6-4af4-a5f5-b3984da9e0c2",
+    "sections": [
+      {
+        "title": "Du hast 15,00 € gespart",
+        "data": {
+          "icon": {
+            "asset": "logos/DE000BASF111/v2",
+            "badge": null
+          },
+          "timestamp": "2025-02-10T09:23:13.824796Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "DE000BASF111",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Sparplan",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Zahlung",
+            "detail": {
+              "text": "Cash",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "BASF",
+              "displayValue": {
+                "text": "BASF",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "0,316355 ×  47,415 €",
+              "action": {
+                "type": "infoPage",
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
+                    {
+                      "title": "Transaktion",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Aktienkurs",
+                          "detail": {
+                            "text": "47,415 €",
+                            "displayValue": {
+                              "text": "47,415 €",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Aktien",
+                          "detail": {
+                            "text": "0,316355",
+                            "displayValue": {
+                              "text": "0,316355",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Summe",
+                          "detail": {
+                            "text": "15,00 €",
+                            "displayValue": {
+                              "text": "15,00 €",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    }
+                  ]
+                },
+                "displayMode": "bottomSheet"
+              },
+              "displayValue": {
+                "text": "47,415 €",
+                "prefix": "0,316355 × ",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Kostenlos",
+              "displayValue": {
+                "text": "Kostenlos",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Summe",
+            "detail": {
+              "text": "15,00 €",
+              "displayValue": {
+                "text": "15,00 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Sparplan",
+        "data": [
+          {
+            "title": "",
+            "detail": {
+              "title": "BASF",
+              "timestamp": "2025-02-10T09:23:13.824796Z",
+              "amount": "15,00 €",
+              "icon": {
+                "asset": "logos/DE000BASF111/v2",
+                "badge": null
+              },
+              "status": "executed",
+              "action": {
+                "payload": {
+                  "savingsPlanId": "cbe1cadc-d169-4c2e-b175-450731c51eb2"
+                },
+                "type": "openSavingsPlanOverview"
+              },
+              "subtitle": "Wöchentlich",
+              "type": "embeddedTimelineItem"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnungsausführung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "ededaa5b-2bbf-4ffc-b80b-3ddd50bf5b08",
+            "postboxType": "SECURITIES_SETTLEMENT_SAVINGS_PLAN"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

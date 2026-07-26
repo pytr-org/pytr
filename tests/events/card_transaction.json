@@ -1,0 +1,191 @@
+{
+  "id": "b9641cbc-e892-590e-85ca-3530a461969e",
+  "timestamp": "2024-06-03T15:10:48.618+0000",
+  "title": "REWE",
+  "icon": "logos/merchant-4f7a75cd-9cbb-493f-b7fa-d259620b178b/v2",
+  "avatar": {
+    "asset": "logos/merchant-4f7a75cd-9cbb-493f-b7fa-d259620b178b/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": null,
+  "amount": {
+    "currency": "EUR",
+    "value": -4.28,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "b9641cbc-e892-590e-85ca-3530a461969e"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "CARD_TRANSACTION",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "b9641cbc-e892-590e-85ca-3530a461969e",
+    "sections": [
+      {
+        "title": "Du hast 4,28 € ausgegeben",
+        "data": {
+          "icon": {
+            "asset": "logos/merchant-4f7a75cd-9cbb-493f-b7fa-d259620b178b/v2",
+            "badge": null
+          },
+          "timestamp": "2024-06-03T15:10:48.618Z",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Kartenzahlung",
+            "detail": {
+              "text": "Fertig",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Bezahlt mit",
+            "detail": {
+              "text": "Apple Pay",
+              "icon": "logos/bank_applepay/v2",
+              "action": {
+                "payload": {
+                  "id": "850e7618-377e-4043-8956-4ab387928223",
+                  "sections": [
+                    {
+                      "title": "Bezahlt mit Apple Pay",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Name des Geräts",
+                          "detail": {
+                            "text": "Maximilians iPhone",
+                            "displayValue": {
+                              "text": "Maximilians iPhone"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Gerätetyp",
+                          "detail": {
+                            "text": "Smartphone",
+                            "displayValue": {
+                              "text": "Smartphone"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Apple Pay-Karte",
+                          "detail": {
+                            "text": "··9419",
+                            "displayValue": {
+                              "text": "··9419"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    },
+                    {
+                      "text": "Wenn du Apple Pay nutzt, erhält der Händler eine sichere, gerätespezifische Kartennummer. Deshalb kann es sein, dass die letzten vier Ziffern auf dem Beleg nicht mit denen auf deiner Karte übereinstimmen.",
+                      "style": "disclaimer",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "displayMode": "bottomSheet",
+                "type": "infoPage"
+              },
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Händler",
+            "detail": {
+              "text": "REWE",
+              "displayValue": {
+                "text": "REWE"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "4,28 €",
+              "displayValue": {
+                "text": "4,28 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Vorteile",
+        "data": [
+          {
+            "title": "S&P 500 Information Tech USD (Acc)",
+            "detail": {
+              "title": "S&P 500 Information Tech USD (Acc)",
+              "timestamp": "2024-06-03T15:10:49.641732Z",
+              "amount": "0,05 €",
+              "icon": {
+                "asset": "logos/IE00B3WJKG14/v2",
+                "badge": null
+              },
+              "status": "executed",
+              "action": {
+                "type": "benefitsSavebackOverview"
+              },
+              "subtitle": "Saveback · 1%",
+              "type": "embeddedTimelineItem"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Transaktionsbeleg",
+            "action": {
+              "payload": {
+                "path": "api/v1/card/transactions/timelineDocuments/b9641cbc-e892-590e-85ca-3530a461969e",
+                "title": "Herunterladen",
+                "shareable": true
+              },
+              "type": "authenticatedBrowserModal"
+            },
+            "id": "b9641cbc-e892-590e-85ca-3530a461969e",
+            "postboxType": ""
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}
