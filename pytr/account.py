@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 from getpass import getpass
@@ -47,6 +48,7 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         if store_credentials:
             with open(CREDENTIALS_FILE, "w") as f:
                 f.writelines([phone_no + "\n", pin + "\n"])
+            os.chmod(CREDENTIALS_FILE, 0o600)
 
             log.info(f"Storing credentials/cookies in {BASE_DIR}")
         else:
