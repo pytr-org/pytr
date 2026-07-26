@@ -279,6 +279,34 @@ events_known_ignored_subtitle = [
     "Verkaufsorder abgelehnt",
 ]
 
+_note_to_isin: dict[str, str] = {
+    "BlackRock Funding": "US09290D1019",
+    "BYD": "CNE100000296",
+    "Chipotle": "US1696561059",
+    "Eckert & Ziegler": "DE0005659700",
+    "Enovix Corp. WTS 01.10.26": "US2935941318",
+    "Gamestop Corp. WTS 30.10.26": "US36467W1172",
+    "GLOBALSTAR INC. O.N.": "US3789735079",
+    "HONEYWELL AEROSPACE INC.": "US43849R1059",
+    "Magnum Ice Cream": "NL0015002MS2",
+    "Netflix": "US64110L1061",
+    "NVIDIA": "US67066G1040",
+    "OHB": "DE000A41YFG5",
+    "Orsted": "DK0060094928",
+    "ORSTED A/S   -ANR-": "DK0064307839",
+    "ORSTED A/S EM.09/25 DK 10": "DK0064307755",
+    "ROCKET LAB CORP. O.N.": "US7731211089",
+    "TKMS": "DE000TKMS001",
+    "Unilever": "GB00BVZK7T90",
+    "VERSANT MEDIA GRP A O.N.": "US9252831030",
+    "Worldline": "FR0014015MS9",
+}
+
+# Overrides for SWAP events where the target ISIN differs from the spinoff case.
+_swap_note_to_isin_overrides: dict[str, str] = {
+    "Worldline": "FR0011981968",
+}
+
 logger = None
 
 
@@ -649,6 +677,18 @@ class Event:
             elif wertpapier_dict:
                 note = wertpapier_dict["detail"]["text"]
 
+            if event_type == PPEventType.SPINOFF:
+                isin2 = isin
+                isin = _note_to_isin.get(note, isin2) if note else isin2
+            elif event_type == PPEventType.SWAP:
+                if note == "Honeywell International":
+                    isin2 = isin
+                    isin = "US4385161066"
+                elif note == "MSCI World USD (Acc)" and isin == "LU1781541179":
+                    isin2 = "IE000BI8OT95"
+                else:
+                    isin2 = (_swap_note_to_isin_overrides.get(note) or _note_to_isin.get(note, note)) if note else None
+
         # parse fees
         if fees_dict:
             dump_dict["subtitle"] = fees_dict["title"]
@@ -695,7 +735,19 @@ class Event:
                     shares = (abs(value) - abs(fees)) / 100
                 else:
                     shares = abs(value) / 100
-            note = event_dict["subtitle"]
+            subtitle_note = event_dict["subtitle"]
+            if subtitle_note != "1 % Bonus" and isin == "LU3176111881":
+                note = "EQT"
+            elif subtitle_note != "1 % Bonus" and isin == "LU3170240538":
+                note = "Apollo"
+            else:
+                note = subtitle_note
+
+        if event_type == PPEventType.TAXES and subtitle == "Vorabpauschale":
+            if isin == "LU3176111881":
+                note = "EQT"
+            elif isin == "LU3170240538":
+                note = "Apollo"
 
         if event_type is PPEventType.SWAP and uebersicht_dict:
             foundentfernt = False
@@ -705,6 +757,7 @@ class Event:
                     foundentfernt = True
             if not foundentfernt:
                 event_type = ConditionalEventType.TRADE_INVOICE
+                isin2 = None
                 if title == "WORLDLINE S.A. ANR":
                     title = "Worldline"
                     isin = "FR0011981968"
