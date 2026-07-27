@@ -1,0 +1,80 @@
+{
+  "id": "dfe3fa0d-be9f-30aa-b50e-6efdf27ecb1d",
+  "timestamp": "2026-06-26T13:51:37.901+0000",
+  "title": "Medical Properties Trust",
+  "icon": "logos/US58463J3041/v2",
+  "avatar": {
+    "asset": "logos/US58463J3041/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Bardividende korrigiert",
+  "amount": {
+    "currency": "EUR",
+    "value": 0.37,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "dfe3fa0d-be9f-30aa-b50e-6efdf27ecb1d"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SSP_CORPORATE_ACTION_CASH",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "dfe3fa0d-be9f-30aa-b50e-6efdf27ecb1d",
+    "sections": [
+      {
+        "type": "header",
+        "title": "Du hast 0,37 € erhalten",
+        "data": {
+          "status": "executed",
+          "icon": "logos/US58463J3041/v2",
+          "timestamp": "2026-06-26T13:51:37.901118Z"
+        }
+      },
+      {
+        "type": "table",
+        "title": "Überblick",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED"
+            }
+          },
+          {
+            "title": "Vermögenswert",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Medical Properties Trust"
+            }
+          }
+        ]
+      },
+      {
+        "type": "documents",
+        "title": "Dokumente",
+        "data": [
+          {
+            "id": "ec8f5ff2-9a6d-42f7-bdb7-e2efcdb0a991",
+            "title": "Dividendenbeleg",
+            "action": {
+              "type": "browserModal",
+              "payload": "https://example.com/pb178248205762239248901284987.pdf"
+            },
+            "postboxType": "INVOICE"
+          }
+        ]
+      }
+    ]
+  }
+}

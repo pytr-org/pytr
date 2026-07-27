@@ -49,10 +49,9 @@ class Timeline:
         self.output_path = output_path
         if load_event_database is not None or not_before == -1:
             self.fetch_from_tr = False
-            self.not_before = float(0)
         else:
             self.fetch_from_tr = True
-            self.not_before = not_before
+        self.not_before = float(0) if not_before == -1 else not_before
         self.load_event_database = load_event_database
         self.not_after = not_after
         self.store_event_database = store_event_database
@@ -77,7 +76,6 @@ class Timeline:
 
     async def tl_loop(self):
         if not self.fetch_from_tr:
-            # We might not want to download anything from TR but just create/update account_transactions.csv from available data
             self.finish_timeline_details()
             return
 
@@ -370,5 +368,18 @@ class Timeline:
                 with open(all_events_path, "w", encoding="utf-8") as f:
                     json.dump(self.events, f, ensure_ascii=False, indent=2, default=str)
                 self.log.info("Updated event database.")
+
+        if not self.fetch_from_tr:
+            filtered = [
+                e
+                for e in self.events
+                if "details" in e
+                and datetime.fromisoformat(e["timestamp"][:19]).timestamp() >= self.not_before
+                and datetime.fromisoformat(e["timestamp"][:19]).timestamp() <= self.not_after
+            ]
+            self.log.info(f"Replaying {len(filtered)} events from database (out of {len(self.events)} total)...")
+            self.all_detail = len(filtered)
+            for event in filtered:
+                self.event_callback(event)
 
         self.dl_done = True

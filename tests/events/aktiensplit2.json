@@ -1,0 +1,100 @@
+{
+  "id": "bf903d2e-8353-3a00-94dd-312a876a0ab1",
+  "timestamp": "2026-07-02T06:31:26.598+0000",
+  "title": "Crowdstrike Holdings (A)",
+  "icon": "logos/US22788C1053/v2",
+  "subtitle": "Aktiensplit",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "bf903d2e-8353-3a00-94dd-312a876a0ab1"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "bf903d2e-8353-3a00-94dd-312a876a0ab1",
+    "sections": [
+      {
+        "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/US22788C1053/v2",
+            "badge": null
+          },
+          "subtitleText": "2 Juli · 06:31",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Aktiensplit",
+              "displayValue": {
+                "text": "Aktiensplit",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Crowdstrike Holdings (A)",
+              "displayValue": {
+                "text": "Crowdstrike Holdings (A)",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "0.688026",
+              "displayValue": {
+                "text": "0.688026",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "02.07.2026",
+            "action": {
+              "payload": "https://example.com/pb178297411197790182675288721.pdf",
+              "type": "browserModal"
+            },
+            "id": "03c70be5-854b-4994-b73c-e9230791b6af",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

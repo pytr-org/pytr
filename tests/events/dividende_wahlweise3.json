@@ -1,0 +1,82 @@
+{
+  "id": "5ba0acbb-df94-4965-a977-09739dcd36fa",
+  "timestamp": "2026-07-29T13:38:12.570+0000",
+  "title": "Rio Tinto",
+  "icon": "logos/AU000000RIO1/v2",
+  "subtitle": "Dividende. Cash oder Stockdividende?",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "5ba0acbb-df94-4965-a977-09739dcd36fa"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_INSTRUCTION",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "5ba0acbb-df94-4965-a977-09739dcd36fa",
+    "sections": [
+      {
+        "type": "header",
+        "title": "Du hast eine bevorstehende Dividendenzahlung",
+        "data": {
+          "status": "executed",
+          "icon": "logos/AU000000RIO1/v2",
+          "timestamp": "2026-07-29T13:38:12.570034Z"
+        }
+      },
+      {
+        "type": "table",
+        "title": "Überblick",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Ausstehend",
+              "functionalStyle": "PENDING"
+            }
+          },
+          {
+            "title": "Vermögenswert",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Rio Tinto",
+              "displayValue": {
+                "text": "Rio Tinto"
+              }
+            }
+          },
+          {
+            "title": "Ereignis",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Dividende Wahlweise",
+              "displayValue": {
+                "text": "Dividende Wahlweise"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "documents",
+        "title": "Dokumente",
+        "data": [
+          {
+            "id": "cea3db89-128b-4069-b4f2-fd831b656231",
+            "title": "Dividende Wahlweise",
+            "action": {
+              "type": "browserModal",
+              "payload": "https://example.com/pb1785332375898143002307863481.pdf"
+            },
+            "postboxType": "DIVIDEND_OPTION_NOTIFICATION"
+          }
+        ]
+      }
+    ]
+  }
+}
