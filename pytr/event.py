@@ -212,6 +212,7 @@ events_known_ignored = [
     "PRIVATE_MARKET_FUND_ORDER_RECEIVED",
     "PRIVATE_MARKETS_SUITABILITY_QUIZ_COMPLETED",
     "PUK_CREATED",
+    "QUARTERLY_NET_WORTH_STATEMENT_CREATED",
     "QUARTERLY_REPORT",
     "RDD_FLOW",
     "REFERENCE_ACCOUNT_CHANGED",
@@ -804,7 +805,7 @@ class Event:
                 PPEventType.TRANSFER_IN,
                 PPEventType.TRANSFER_OUT,
             ]
-            and subtitle not in ["Aktienprämiendividende", "Dividende Wahlweise", "Tilgung"]
+            and subtitle not in ["Aktienprämiendividende", "Bardividende korrigiert", "Dividende Wahlweise", "Tilgung"]
         ):
             get_event_logger().warning("Could not parse shares from %s", eventdesc)
             get_event_logger().debug("Failed to parse shares from: %s", json.dumps(event_dict, indent=4))

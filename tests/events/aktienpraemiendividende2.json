@@ -1,0 +1,110 @@
+{
+  "id": "1d820d2e-c9d8-38de-98ab-910788874bb5",
+  "timestamp": "2026-07-02T10:41:56.991+0000",
+  "title": "Hensoldt",
+  "icon": "logos/DE000HAG0005/v2",
+  "avatar": {
+    "asset": "logos/DE000HAG0005/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Aktienprämiendividende",
+  "amount": {
+    "currency": "EUR",
+    "value": 0.98,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "CANCELED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "1d820d2e-c9d8-38de-98ab-910788874bb5"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SSP_CORPORATE_ACTION_CASH_NON_DIVIDEND",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "1d820d2e-c9d8-38de-98ab-910788874bb5",
+    "sections": [
+      {
+        "title": "Du hast 0,98 € erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/DE000HAG0005/v2",
+            "badge": null
+          },
+          "subtitleText": "2 Juli · 10:41",
+          "status": "canceled"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Storniert",
+              "functionalStyle": "CANCELED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Event",
+            "detail": {
+              "text": "Aktienprämiendividende",
+              "displayValue": {
+                "text": "Aktienprämiendividende",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Hensoldt",
+              "displayValue": {
+                "text": "Hensoldt",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "02.07.2026",
+            "action": {
+              "payload": "https://example.com/pb1782989599488139633943454541.pdf",
+              "type": "browserModal"
+            },
+            "id": "04c7d864-de68-4133-aa38-cdf77655baf2",
+            "postboxType": "CA_INCOME_INVOICE"
+          },
+          {
+            "title": "Dokumente",
+            "detail": "27.05.2026",
+            "action": {
+              "payload": "https://example.com/pb17798719140201365610066326.pdf",
+              "type": "browserModal"
+            },
+            "id": "964c98d8-3a87-44d1-9217-10bd675347fb",
+            "postboxType": "CA_INCOME_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

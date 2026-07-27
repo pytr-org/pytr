@@ -317,6 +317,19 @@ def get_main_parser():
         help="Do not sort documents into folders and keep their original filenames",
         action="store_true",
     )
+    parser_dl_docs.add_argument(
+        "--load-event-database",
+        help="Debug/analysis option: load events from this all_events.json instead of fetching from TR. Implies --dry-run; document URLs in the database may be expired.",
+        metavar="PATH",
+        default=None,
+        type=Path,
+    )
+    parser_dl_docs.add_argument(
+        "--dry-run",
+        default=False,
+        help="Create folder structure and empty placeholder files without downloading",
+        action="store_true",
+    )
 
     # export_transactions
     info = (
@@ -570,7 +583,9 @@ def main():
         ).get()
     elif args.command == "dl_docs":
         DL(
-            login(
+            None
+            if args.load_event_database is not None
+            else login(
                 phone_no=args.phone_no,
                 pin=args.pin,
                 store_credentials=args.store_credentials,
@@ -592,6 +607,8 @@ def main():
             sort_export=args.sort,
             format_export=args.export_format,
             flat=args.flat,
+            load_event_database=args.load_event_database,
+            dry_run=args.dry_run,
         ).do_dl()
     elif args.command == "export_transactions":
         if args.outputfile is None and args.outputdir is None:
