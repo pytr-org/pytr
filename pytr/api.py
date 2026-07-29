@@ -21,14 +21,19 @@
 # SOFTWARE.
 
 import asyncio
+import base64
+import hashlib
 import json
+import os
 import pathlib
+import platform
 import re
 import ssl
 import subprocess
 import time
 import urllib.parse
 import uuid
+from datetime import datetime
 from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
 
@@ -46,6 +51,23 @@ BASE_DIR = home / ".pytr"
 CREDENTIALS_FILE = BASE_DIR / "credentials"
 COOKIES_FILE = BASE_DIR / "cookies.txt"
 
+# errorCodes the login process can answer with, mapped to readable messages
+LOGIN_ERRORS = {
+    "PROCESS_GONE": "The login request expired. Please start again.",
+    "ALREADY_PROCESSED": "The login request was rejected or has already been used.",
+    "NOT_FOUND": "Trade Republic does not know this login request.",
+    "TOO_MANY_REQUESTS": "Too many attempts. Please wait before trying again.",
+    "VALIDATION_CODE_INVALID": "That authenticator code is not correct.",
+    "VALIDATION_CODE_ALREADY_USED": "That authenticator code was already used.",
+}
+
+# Build version of the web frontend. It sends this on every api/v2 login call and
+# pins it into its own Sentry release, so it moves with each frontend deployment.
+APP_VERSION = "2.2631.13"
+
+# The web frontend's API client identifies itself with this platform on the same calls.
+WEB_PLATFORM = "web-pro"
+
 
 class TradeRepublicApi:
     _default_headers = {
@@ -55,6 +77,8 @@ class TradeRepublicApi:
     _waf_login_url = "https://app.traderepublic.com/login"
 
     _process_id = None
+    _required_action = None
+    _device_info = None
     _session_expires_at = 0
 
     _ws = None
@@ -205,6 +229,61 @@ class TradeRepublicApi:
         )
         self._websession.cookies.set_cookie(cookie)
 
+    def _stable_device_id(self):
+        """An id that stays the same for this installation.
+
+        The web frontend derives it from a canvas fingerprint and hashes that with
+        SHA-512. There is no canvas here, so the hash is taken over what identifies
+        this machine instead. Same length, same alphabet, no state on disk and no
+        request to anyone.
+        """
+        seed = "|".join([str(uuid.getnode()), platform.node(), platform.machine(), platform.system()])
+        return hashlib.sha512(seed.encode()).hexdigest()
+
+    def _timezone_name(self):
+        """The IANA name of the local timezone, with the frontend's own fallback."""
+        try:
+            return str(pathlib.Path("/etc/localtime").resolve()).split("zoneinfo/")[1]
+        except (OSError, IndexError):
+            return "Etc/UTC"
+
+    def _login_headers(self):
+        """The headers Trade Republic requires on the api/v2 login calls.
+
+        Without them the endpoints answer 400 MISSING_REQUIRED_HEADER. The web
+        frontend sends the same set on all three of them: a base64 encoded JSON
+        description of the device, its build version, the platform its API client is
+        configured with, and the language it wants to be answered in.
+
+        Fields the frontend can only fill in from a browser are left out rather than
+        made up. It omits them itself whenever the browser does not provide them
+        (`model` on desktop, `deviceMemory` outside Chromium), so the server accepts
+        their absence. `screen` is the one value with no counterpart here.
+        """
+        if self._device_info is None:
+            chrome = re.search(r"Chrome/([\d.]+)", self._websession.headers.get("User-Agent", ""))
+            offset = datetime.now().astimezone().utcoffset()
+            device = {
+                "stableDeviceId": self._stable_device_id(),
+                "browser": "Chrome",
+                "browserVersion": chrome.group(1) if chrome else "",
+                "os": platform.system(),
+                "osVersion": platform.release(),
+                "timezone": self._timezone_name(),
+                # JavaScript counts the offset the other way round than Python does.
+                "timezoneOffset": -int(offset.total_seconds() // 60) if offset else 0,
+                "screen": "1920x1080x24",
+                "preferredLanguages": [self._locale],
+                "numberOfCores": os.cpu_count() or 1,
+            }
+            self._device_info = base64.b64encode(json.dumps(device).encode()).decode()
+        return {
+            "X-TR-Device-Info": self._device_info,
+            "X-TR-App-Version": APP_VERSION,
+            "X-Tr-Platform": WEB_PLATFORM,
+            "Accept-Language": self._locale,
+        }
+
     def initiate_weblogin(self):
         self.log.info("Initiating web login...")
 
@@ -222,8 +301,9 @@ class TradeRepublicApi:
             self.log.warning("No WAF token available.")
 
         r = self._websession.post(
-            f"{self._host}/api/v1/auth/web/login",
+            f"{self._host}/api/v2/auth/web/login",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
+            headers=self._login_headers(),
         )
         self.log.debug(f"Web login returned: {r.status_code}")
         r.raise_for_status()
@@ -237,22 +317,98 @@ class TradeRepublicApi:
                 raise ValueError(str(err))
             else:
                 raise ValueError("processId not in reponse")
-        return int(j["countdownInSeconds"]) + 1
+        if self._process_id is None:
+            # The frontend treats a null processId as a login that needs no second factor.
+            raise ValueError("Trade Republic completed the login without a confirmation step.")
+        # The second factor is on the login process, not in the response above.
+        self._required_action = self._get_weblogin_process(quiet=True).get("requiredAction")
+        # v2 does not always send countdownInSeconds; the web frontend falls back to 120s.
+        return int(j.get("countdownInSeconds", 120)) + 1
+
+    @property
+    def weblogin_needs_authenticator(self):
+        """Whether complete_weblogin() needs a code from the user's authenticator app."""
+        return self._required_action == "AUTHENTICATOR_VERIFICATION"
 
     def resend_weblogin(self):
-        r = self._websession.post(
-            f"{self._host}/api/v1/auth/web/login/{self._process_id}/resend",
-            headers=self._default_headers,
+        self.log.warning(
+            "Trade Republic removed the SMS resend endpoint along with the v1 web login. "
+            "Confirm the login in the Trade Republic mobile app instead."
         )
-        r.raise_for_status()
 
-    def complete_weblogin(self, verify_code):
+    def complete_weblogin(self, verify_code=None):
         if not self._process_id and not self._websession:
             raise ValueError("Initiate web login first.")
 
-        r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
-        r.raise_for_status()
+        if self.weblogin_needs_authenticator:
+            if not verify_code:
+                raise ValueError("This account needs a code from your authenticator app.")
+            r = self._websession.post(
+                f"{self._host}/api/v2/auth/web/login/processes/{self._process_id}/authenticator-verification",
+                json={"code": verify_code},
+                headers=self._login_headers(),
+            )
+            self._raise_for_login_error(r)
+        else:
+            self._await_weblogin_confirmation()
         self.save_websession()
+
+    def _raise_for_login_error(self, r):
+        """Raise a readable error. Unlike raise_for_status() this keeps the URL, and with it
+        the process id, out of the message."""
+        if r.status_code < 400:
+            return
+        try:
+            code = r.json()["errors"][0]["errorCode"]
+        except (ValueError, KeyError, IndexError, TypeError):
+            raise ValueError(f"Login failed with status {r.status_code}.") from None
+        raise ValueError(LOGIN_ERRORS.get(code, f"Login failed: {code}."))
+
+    def _get_weblogin_process(self, quiet=False):
+        """Read the state of the current login process."""
+        r = self._websession.get(
+            f"{self._host}/api/v2/auth/web/login/processes/{self._process_id}",
+            headers=self._login_headers(),
+        )
+        if quiet and r.status_code >= 400:
+            # The frontend also ignores errors here and falls back to in-app confirmation.
+            return {}
+        self._raise_for_login_error(r)
+        return r.json()
+
+    def _weblogin_deadline(self, process, fallback=120):
+        """Trade Republic sends the deadline as expiresAt; fall back to a fixed window."""
+        expires_at = process.get("expiresAt")
+        try:
+            if isinstance(expires_at, (int, float)):
+                # Epoch, either in seconds or in milliseconds.
+                return expires_at / 1000 if expires_at > 1e11 else float(expires_at)
+            return datetime.fromisoformat(str(expires_at).replace("Z", "+00:00")).timestamp()
+        except (TypeError, ValueError):
+            return time.time() + fallback
+
+    def _await_weblogin_confirmation(self, interval=2):
+        """Poll the login process until it is confirmed in the Trade Republic mobile app."""
+        process = self._get_weblogin_process()
+        deadline = self._weblogin_deadline(process)
+        self.log.info("Waiting for you to confirm the login in the Trade Republic app...")
+        announced = 0.0
+        while True:
+            status = process.get("status")
+            self.log.debug(f"Login process status: {status}")
+            if status in ("CONFIRMED", "COMPLETED"):
+                self.log.info("Login confirmed.")
+                return
+            if status != "PENDING":
+                raise ValueError(f"Unexpected login process status: {status!r}")
+            remaining = deadline - time.time()
+            if remaining <= 0:
+                raise TimeoutError("The login was not confirmed in time.")
+            if time.time() - announced >= 10:
+                self.log.info(f"Still waiting, {int(remaining)}s left...")
+                announced = time.time()
+            time.sleep(interval)
+            process = self._get_weblogin_process()
 
     def save_websession(self):
         if self._save_cookies:

@@ -1,7 +1,6 @@
 import json
 import os
 import sys
-import time
 from getpass import getpass
 
 from pygments import formatters, highlight, lexers
@@ -63,21 +62,11 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         except ValueError as e:
             log.fatal(str(e))
             sys.exit(1)
-        request_time = time.time()
-        print("Enter the code you received to your mobile app as a notification.")
-        print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
-        code = input("Code: ")
-        if code == "":
-            countdown = countdown - (time.time() - request_time)
-            for remaining in range(int(countdown)):
-                print(
-                    f"Need to wait {int(countdown - remaining)} seconds before requesting SMS...",
-                    end="\r",
-                )
-                time.sleep(1)
-            print()
-            tr.resend_weblogin()
-            code = input("SMS requested. Enter the confirmation code:")
+        if tr.weblogin_needs_authenticator:
+            code = input("Enter the code from your authenticator app: ")
+        else:
+            print(f"Confirm the login in your Trade Republic app. (Countdown: {countdown})")
+            code = None
         tr.complete_weblogin(code)
         log.info("Logged in.")
 
