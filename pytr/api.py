@@ -29,7 +29,6 @@ import pathlib
 import platform
 import re
 import ssl
-import subprocess
 import time
 import urllib.parse
 import uuid
@@ -41,15 +40,34 @@ import certifi
 import requests
 import websockets
 from curl_cffi import requests as cffi_requests
-from playwright.sync_api import sync_playwright
 
-from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
+
+# `playwright` and `pytr.awswaf` are imported lazily inside the two
+# `_fetch_waf_token_*` methods, not here. Both are only reachable when the
+# caller asks for that specific WAF strategy, and importing them at module
+# level made every consumer pay for them unconditionally:
+#   - `playwright` is an optional extra (see pyproject). A module-level import
+#     makes `import pytr.api` fail outright when it is not installed, which
+#     would defeat the point of making it optional.
+#   - `pytr.awswaf` reaches the network and reads `webgl.json` from disk at
+#     import time (`awswaf/fingerprint.py`). Deferring the import means a
+#     deployment that never selects `waf_token="awswaf"` neither performs that
+#     file IO nor carries the code in a hot import path.
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"
 CREDENTIALS_FILE = BASE_DIR / "credentials"
 COOKIES_FILE = BASE_DIR / "cookies.txt"
+
+# Hosts that `_fetch_waf_token_awswaf` is allowed to talk to. The challenge
+# endpoint is scraped out of the login page with a regular expression, so
+# whatever `app.traderepublic.com` serves decides where the follow-up requests
+# for `/inputs` and `/verify` go — that is a server-side request forgery
+# primitive if left unchecked. AWS serves WAF challenge tokens exclusively from
+# `*.token.awswaf.com`, so pinning the suffix costs nothing and removes the
+# primitive. Comparison is on the parsed host, never on the raw URL string.
+_AWSWAF_ALLOWED_HOST_SUFFIX = ".token.awswaf.com"
 
 # errorCodes the v2 login process can answer with, mapped to readable messages.
 LOGIN_ERRORS = {
@@ -134,6 +152,8 @@ class TradeRepublicApi:
         Get the AWS WAF token, using the awswaf library.
         """
 
+        from pytr.awswaf.aws import AwsWaf
+
         self.log.info("Retrieving AWS WAF token using awswaf...")
         try:
             session = cffi_requests.Session(impersonate="chrome")
@@ -143,6 +163,16 @@ class TradeRepublicApi:
                 self.log.warning("AWS WAF token not acquired. challenge.js URL not found in login page.")
                 return None
             challenge_js_url = m.group(1)
+            # The URL above came out of a regular expression over whatever the
+            # login page returned, and everything below turns it into outbound
+            # requests. Check the host before the first of them, not after.
+            host = urllib.parse.urlparse(challenge_js_url).hostname or ""
+            if not host.lower().endswith(_AWSWAF_ALLOWED_HOST_SUFFIX):
+                self.log.warning(
+                    "AWS WAF token not acquired. challenge.js host is not an AWS WAF endpoint (expected *%s).",
+                    _AWSWAF_ALLOWED_HOST_SUFFIX,
+                )
+                return None
             waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
             challenge_js = session.get(challenge_js_url).text
             token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
@@ -158,52 +188,58 @@ class TradeRepublicApi:
         """
         Get the AWS WAF token, using a Playwright browser session.
 
-        One-time setup needed:
-            playwright install chromium
+        Requires the optional `playwright` extra plus its browser binary:
+            pip install 'pytr[playwright]' && playwright install chromium
+
+        Neither is installed automatically. An earlier version of this method
+        caught *every* exception — a network blip, a WAF change, a timeout —
+        and answered it by shelling out to `playwright install chromium`, i.e.
+        by downloading and executing a browser at runtime, in the process that
+        is holding the user's PIN and Trade Republic cookies. That download
+        bypasses whatever pinning the installing environment applied to its
+        dependencies, and it only ever helped for one of the many failures it
+        was triggered by. A missing browser is now reported like any other
+        failure and left to the operator to fix deliberately.
         """
+        try:
+            from playwright.sync_api import sync_playwright  # type: ignore[import-not-found]
+        except ImportError:
+            self.log.error(
+                "Failed to get AWS WAF token: playwright is not installed. "
+                "Install the optional extra with `pip install 'pytr[playwright]'` "
+                "and then run `playwright install chromium`."
+            )
+            raise
 
         self.log.info("Retrieving AWS WAF token using Playwright...")
 
-        called_playwright_install = False
-        while True:
-            try:
-                with sync_playwright() as p:
-                    browser = p.chromium.launch(
-                        headless=True,
-                        args=["--no-sandbox", "--disable-setuid-sandbox"],
-                    )
-                    context = browser.new_context()
-                    page = context.new_page()
-                    page.goto(
-                        "https://app.traderepublic.com/login",
-                        wait_until="domcontentloaded",
-                        timeout=timeout_ms,
-                    )
-                    deadline = time.time() + timeout_ms / 1000
-                    token = None
-                    while time.time() < deadline:
-                        for c in context.cookies():
-                            if c["name"] == "aws-waf-token":
-                                token = c["value"]
-                                break
-                        if token:
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=["--no-sandbox", "--disable-setuid-sandbox"],
+                )
+                context = browser.new_context()
+                page = context.new_page()
+                page.goto(
+                    "https://app.traderepublic.com/login",
+                    wait_until="domcontentloaded",
+                    timeout=timeout_ms,
+                )
+                deadline = time.time() + timeout_ms / 1000
+                token = None
+                while time.time() < deadline:
+                    for c in context.cookies():
+                        if c["name"] == "aws-waf-token":
+                            token = c["value"]
                             break
-                        time.sleep(0.5)
-                    browser.close()
-                done = True
-            except Exception as e:
-                if called_playwright_install:
-                    self.log.error("Failed to get AWS WAF token.")
-                    raise
-                else:
-                    self.log.warning("%s", e)
-                    self.log.info('Running "playwright install chromium"...')
-                    called_playwright_install = True
-                    done = False
-                    subprocess.run(["playwright", "install", "chromium"], check=True)
-                    self.log.info("Calling Playwright once more...")
-            if done:
-                break
+                    if token:
+                        break
+                    time.sleep(0.5)
+                browser.close()
+        except Exception:
+            self.log.error("Failed to get AWS WAF token.")
+            raise
 
         if not token:
             self.log.warning("AWS WAF token not acquired. Value is None.")
