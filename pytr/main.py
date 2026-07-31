@@ -82,7 +82,12 @@ def get_main_parser():
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
     parser_login_args.add_argument(
         "--waf-token",
-        help='AWS WAF token value or the method to obtain it. Values: "playwright", "awswaf" or a token string, e.g. an aws-waf-token cookie captured from a browser session.',
+        help=(
+            'AWS WAF token value or the method to obtain it. Values: "playwright" (needs the '
+            "optional extra: pip install 'pytr[playwright]' && playwright install chromium), "
+            '"awswaf" (pure Python, no browser), an empty value to send no token at all, or a '
+            "token string, e.g. an aws-waf-token cookie captured from a browser session."
+        ),
         default="playwright",
     )
     parser_login_args.add_argument(

@@ -147,6 +147,12 @@ class AwsWaf:
         checksum, fp = get_fp(self.user_agent)
         bandwidth_sizes = self._js_config.get("bandwidth_sizes", {})
         solution = solver(inputs["challenge"]["input"], checksum, inputs["difficulty"], bandwidth_sizes=bandwidth_sizes)
+        if solution is None:
+            # The proof-of-work solvers give up instead of spinning forever on a
+            # difficulty the server picked (see verify.py). Stop here rather than
+            # posting a null solution to /verify, where the failure would surface
+            # as a KeyError on the response instead of as what it is.
+            raise ValueError(f"Could not solve WAF challenge of type {challenge_type} within the allotted budget")
         return {
             "challenge": inputs["challenge"],
             "checksum": checksum,
