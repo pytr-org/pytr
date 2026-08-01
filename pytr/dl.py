@@ -284,10 +284,16 @@ class DL:
                 self.log.warning(f"no subfolder mapping for {eventdesc}")
 
             for idx, doc in enumerate(section["data"]):
-                if isinstance(doc["action"]["payload"], dict):
-                    self.log.warning(
-                        f'Download of document with new API-Path URL "{doc["action"]["payload"]["path"]}" is not possible. (yet?)'
-                    )
+                payload = doc["action"]["payload"]
+                if isinstance(payload, dict):
+                    if "path" in payload:
+                        self.log.warning(
+                            f'Download of document with new API-Path URL "{payload["path"]}" is not possible. (yet?)'
+                        )
+                    else:
+                        self.log.warning(
+                            f'Download of document with unsupported action payload "{payload}" is not possible. (yet?)'
+                        )
                     continue
                 has_docs = True
                 timestamp_str = event["timestamp"]
