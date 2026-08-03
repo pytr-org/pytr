@@ -588,6 +588,12 @@ class Event:
                     ):
                         ignoreEvent = True
 
+            # A real transaction carries a "timelineDetail" action.
+            # Events without one are informational activity-log entries (e.g. device paired, address changed, ...) that
+            # have no transaction to parse
+            if (event_dict.get("action") or {}).get("type") != "timelineDetail":
+                ignoreEvent = True
+
             if not ignoreEvent:
                 get_event_logger().warning(f'Ignoring unknown event "{eventdesc}"')
                 get_event_logger().debug("Unknown event %s: %s", eventdesc, json.dumps(event_dict, indent=4))

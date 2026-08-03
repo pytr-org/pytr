@@ -2644,3 +2644,25 @@ def test_events(case):
         entry.setdefault("ISIN2", None)
         entry.setdefault("Stück2", None)
     assert transactions == rowtransactions
+
+
+def _make_unmapped_event(action):
+    return {
+        "id": "test-id",
+        "timestamp": "2024-01-01T00:00:00.000+0000",
+        "title": "Some brand new thing",
+        "subtitle": "that pytr cannot map",
+        "eventType": "SOME_UNMAPPED_TYPE",
+        "action": action,
+    }
+
+
+def test_informational_event_without_detail_is_silently_ignored(caplog):
+    event = Event.from_dict(_make_unmapped_event(None))
+    assert event.event_type is None
+    assert "Ignoring unknown event" not in caplog.text
+
+
+def test_unmapped_transaction_event_still_warns(caplog):
+    Event.from_dict(_make_unmapped_event({"type": "timelineDetail", "payload": "test-id"}))
+    assert "Ignoring unknown event" in caplog.text

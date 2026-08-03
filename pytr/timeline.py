@@ -203,6 +203,7 @@ class Timeline:
 
         for event in self.timeline_details.values():
             msg = None
+            is_anomaly = False
             action = event.get("action")
             if action is None:
                 if event.get("actionLabel") is None:
@@ -211,6 +212,7 @@ class Timeline:
                 msg = f"Skip timeline detail: Action type {action['type']} is not timelineDetail"
             elif action.get("payload") != event["id"]:
                 msg = f"Skip timeline detail: Action payload {action['payload']} does not match id {event['id']}"
+                is_anomaly = True
 
             self.requested_detail += 1
             if msg is None:
@@ -218,10 +220,11 @@ class Timeline:
             else:
                 self.received_detail += 1
                 self.events.append(event)
-                self.log.warning(
+                log_line = (
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
                     + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]} {msg}"
                 )
+                (self.log.warning if is_anomaly else self.log.info)(log_line)
                 self.log.debug("%s: %s", msg, json.dumps(event, indent=2))
 
             if self.requested_detail % MAX_EVENT_REQUEST_BATCH == 0 and (
