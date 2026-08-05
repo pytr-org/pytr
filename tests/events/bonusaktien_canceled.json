@@ -1,0 +1,107 @@
+{
+  "id": "d60030b9-878a-3935-9327-0ea85ca78c45",
+  "timestamp": "2025-08-13T05:09:14.774+0000",
+  "title": "BYD",
+  "icon": "logos/CNE100000296/v2",
+  "subtitle": "Bonusaktien",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "d60030b9-878a-3935-9327-0ea85ca78c45"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_ACTIVITY",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "d60030b9-878a-3935-9327-0ea85ca78c45",
+    "sections": [
+      {
+        "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten\n",
+        "data": {
+          "icon": {
+            "asset": "logos/CNE100000296/v2",
+            "badge": null
+          },
+          "timestamp": "2025-08-13T05:09:14.774Z",
+          "status": "canceled"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Storniert",
+              "functionalStyle": "CANCELED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Bonusaktien",
+              "displayValue": {
+                "text": "Bonusaktien"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "BYD",
+              "displayValue": {
+                "text": "BYD"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "2.149301",
+              "displayValue": {
+                "text": "2.149301"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "15.04.2026",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "facdac8e-5551-4cee-bec3-672b4108a28d",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          },
+          {
+            "title": "Dokumente",
+            "detail": "30.07.2025",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "097d8cc4-09fa-4f69-8572-a7309d0144ac",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

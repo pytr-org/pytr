@@ -1,0 +1,83 @@
+{
+  "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890",
+  "timestamp": "2022-04-10T10:15:30.000+0000",
+  "title": "Metro",
+  "icon": "logos/DE000BFB0019/v2",
+  "subtitle": "Wertpapiertransfer",
+  "eventType": "timeline_legacy_migrated_events",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890",
+    "sections": [
+      {
+        "title": "Du hast 76 Aktien erhalten",
+        "data": {
+          "icon": "logos/DE000BFB0019/v2",
+          "subtitleText": null,
+          "timestamp": "2022-04-10T10:15:30.000+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "DE000BFB0019"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Completed",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Wertpapiertransfer",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "76",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteil",
+            "detail": {
+              "text": "Metro",
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "detail": "10.04.2022",
+            "id": "b2c3d4e5-f6a7-8901-bc23-de45fg678901",
+            "postboxType": "SHAREBOOKING"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

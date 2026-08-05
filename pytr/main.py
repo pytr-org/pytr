@@ -2,6 +2,7 @@
 
 import argparse
 import asyncio
+import re
 import shutil
 import signal
 import sys
@@ -17,6 +18,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
+from pytr.rates import RATE_COLUMNS, Rates, parse_isin_input
 from pytr.savings_plans import SavingsPlans
 from pytr.timeline import Timeline
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
@@ -80,7 +82,12 @@ def get_main_parser():
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
     parser_login_args.add_argument(
         "--waf-token",
-        help='AWS WAF token value or the method to obtain it. Values: "playwright", "awswaf" or a token string, e.g. an aws-waf-token cookie captured from a browser session.',
+        help=(
+            'AWS WAF token value or the method to obtain it. Values: "playwright" (needs the '
+            "optional extra: pip install 'pytr[playwright]' && playwright install chromium), "
+            '"awswaf" (pure Python, no browser), an empty value to send no token at all, or a '
+            "token string, e.g. an aws-waf-token cookie captured from a browser session."
+        ),
         default="playwright",
     )
     parser_login_args.add_argument(
@@ -92,8 +99,8 @@ def get_main_parser():
     parser_login_args.add_argument(
         "--v2",
         help=(
-            "Use the v2 web-login flow (push approval via the Trade Republic "
-            "mobile app). Default is the legacy v1 flow with an SMS/notification code."
+            "Use the v2 web-login flow: confirm in the Trade Republic mobile app "
+            "instead of entering an SMS/notification code. Also supports authenticator-app accounts."
         ),
         action="store_true",
         default=False,
@@ -164,18 +171,68 @@ def get_main_parser():
         default=False,
         help="Include watchlist.",
     )
+    parser_portfolio.add_argument(
+        "--ignore",
+        default=None,
+        metavar="ISINS",
+        help="Semicolon or comma separated list of ISINs to exclude from the portfolio, e.g. --ignore US30303M1027;DE0005140008",
+    )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
     parser_portfolio.add_argument(
         "--sort-by-column",
-        type=str.lower,
-        choices=[col.lower() for col in PORTFOLIO_COLUMNS],
-        default=None,
-        help="Sort results by column.",
+        type=str,
+        choices=list(PORTFOLIO_COLUMNS),
+        default="netValue",
+        help="Sort results by column (default: netValue).",
     )
     parser_portfolio.add_argument(
         "--sort-ascending",
         action=argparse.BooleanOptionalAction,
         default=False,
+        help="Whether to sort in ascending order.",
+    )
+
+    # rates
+    info = "Fetch current prices for a list of ISINs given as direct list or CSV input"
+    parser_rates = parser_cmd.add_parser(
+        "rates",
+        formatter_class=formatter,
+        parents=[parser_login_args, parser_lang, parser_decimal_localization],
+        help=info,
+        description=info,
+    )
+    parser_rates.add_argument(
+        "input",
+        nargs="*",
+        help="ISINs to fetch prices for; comma, semicolon or space separated, e.g. DE0005140008,US0378331005",
+        default=[],
+    )
+    parser_rates.add_argument(
+        "-i",
+        "--inputfile",
+        help="Input file containing ISINs — comma, semicolon, whitespace or newline separated. Used when no ISINs given as positional args. Use '-' for stdin.",
+        type=argparse.FileType("r", encoding="utf-8"),
+        default=None,
+        nargs="?",
+    )
+    parser_rates.add_argument(
+        "-o",
+        "--output",
+        help="Output path for CSV file (default: stdout).",
+        type=Path,
+        default=None,
+    )
+    parser_rates.add_argument(
+        "--sort-by-column",
+        type=str,
+        choices=list(RATE_COLUMNS),
+        default="Name",
+        help="Sort results by column (default: Name).",
+    )
+    parser_rates.add_argument(
+        "--sort-ascending",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help="Whether to sort in ascending order.",
     )
 
@@ -274,6 +331,19 @@ def get_main_parser():
         help="Do not sort documents into folders and keep their original filenames",
         action="store_true",
     )
+    parser_dl_docs.add_argument(
+        "--load-event-database",
+        help="Debug/analysis option: load events from this all_events.json instead of fetching from TR. Implies --dry-run; document URLs in the database may be expired.",
+        metavar="PATH",
+        default=None,
+        type=Path,
+    )
+    parser_dl_docs.add_argument(
+        "--dry-run",
+        default=False,
+        help="Create folder structure and empty placeholder files without downloading",
+        action="store_true",
+    )
 
     # export_transactions
     info = (
@@ -323,6 +393,13 @@ def get_main_parser():
         default=False,
         help="Dump more raw data in json format",
         action=argparse.BooleanOptionalAction,
+    )
+    parser_export_transactions.add_argument(
+        "--load-event-database",
+        help="Load events from this all_events.json file instead of fetching from TR (implies no login)",
+        metavar="PATH",
+        type=Path,
+        default=None,
     )
     parser_export_transactions.add_argument(
         "--export-format",
@@ -484,9 +561,30 @@ def main():
                 v2=args.v2,
             ),
             args.include_watchlist,
+            instruments_to_ignore=re.split(r"[,;]", args.ignore) if args.ignore else [],
             lang=args.lang,
             decimal_localization=args.decimal_localization,
             output=args.output,
+            sort_by_column=args.sort_by_column,
+            sort_descending=not args.sort_ascending,
+        ).get()
+    elif args.command == "rates":
+        isins = parse_isin_input(args.input, args.inputfile)
+        if not isins:
+            print("No valid ISINs found in input.")
+            return -1
+        Rates(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                store_credentials=args.store_credentials,
+                waf_token=args.waf_token,
+                v2=args.v2,
+            ),
+            isins,
+            output=args.output,
+            decimal_localization=args.decimal_localization,
+            lang=args.lang,
             sort_by_column=args.sort_by_column,
             sort_descending=not args.sort_ascending,
         ).get()
@@ -503,7 +601,9 @@ def main():
         ).get()
     elif args.command == "dl_docs":
         DL(
-            login(
+            None
+            if args.load_event_database is not None
+            else login(
                 phone_no=args.phone_no,
                 pin=args.pin,
                 store_credentials=args.store_credentials,
@@ -526,6 +626,8 @@ def main():
             sort_export=args.sort,
             format_export=args.export_format,
             flat=args.flat,
+            load_event_database=args.load_event_database,
+            dry_run=args.dry_run,
         ).do_dl()
     elif args.command == "export_transactions":
         if args.outputfile is None and args.outputdir is None:
@@ -533,7 +635,9 @@ def main():
             return -1
 
         tl = Timeline(
-            login(
+            None
+            if not_before == -1 or args.load_event_database is not None
+            else login(
                 phone_no=args.phone_no,
                 pin=args.pin,
                 store_credentials=args.store_credentials,
@@ -546,6 +650,7 @@ def main():
             args.store_event_database,
             args.scan_for_duplicates,
             args.dump_raw_data,
+            load_event_database=args.load_event_database,
         )
         asyncio.run(tl.tl_loop())
         events = tl.events
@@ -573,7 +678,6 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
-                    v2=args.v2,
                 ),
                 args.input,
                 args.outputfile,
@@ -589,7 +693,6 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
-                    v2=args.v2,
                 ),
                 args.input,
                 args.inputfile,

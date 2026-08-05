@@ -22,15 +22,17 @@
 
 import asyncio
 import base64
+import hashlib
 import json
 import os
 import pathlib
+import platform
 import re
 import ssl
-import subprocess
 import time
 import urllib.parse
 import uuid
+from datetime import datetime
 from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
 
@@ -38,28 +40,51 @@ import certifi
 import requests
 import websockets
 from curl_cffi import requests as cffi_requests
-from playwright.sync_api import sync_playwright
 
-from pytr.awswaf.aws import AwsWaf
 from pytr.utils import get_logger
+
+# `playwright` and `pytr.awswaf` are imported lazily inside the two
+# `_fetch_waf_token_*` methods, not here. Both are only reachable when the
+# caller asks for that specific WAF strategy, and importing them at module
+# level made every consumer pay for them unconditionally:
+#   - `playwright` is an optional extra (see pyproject). A module-level import
+#     makes `import pytr.api` fail outright when it is not installed, which
+#     would defeat the point of making it optional.
+#   - `pytr.awswaf` reaches the network and reads `webgl.json` from disk at
+#     import time (`awswaf/fingerprint.py`). Deferring the import means a
+#     deployment that never selects `waf_token="awswaf"` neither performs that
+#     file IO nor carries the code in a hot import path.
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"
 CREDENTIALS_FILE = BASE_DIR / "credentials"
 COOKIES_FILE = BASE_DIR / "cookies.txt"
-DEVICE_ID_FILE = BASE_DIR / "device_id"
 
-# v2 web-login values captured from app.traderepublic.com on 2026-05-29.
-# Only used when the caller opts into the v2 push-approval flow.
-# Overridable via env vars in case Trade Republic bumps them.
-TR_WEB_APP_VERSION = os.environ.get("PYTR_TR_APP_VERSION", "15.7.0")
-TR_WEB_USER_AGENT_V2 = os.environ.get(
-    "PYTR_TR_USER_AGENT",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
-)
-TR_V1_LOGIN_PATH = "/api/v1/auth/web/login"
-TR_V2_LOGIN_PATH = "/api/v2/auth/web/login"
+# Hosts that `_fetch_waf_token_awswaf` is allowed to talk to. The challenge
+# endpoint is scraped out of the login page with a regular expression, so
+# whatever `app.traderepublic.com` serves decides where the follow-up requests
+# for `/inputs` and `/verify` go — that is a server-side request forgery
+# primitive if left unchecked. AWS serves WAF challenge tokens exclusively from
+# `*.token.awswaf.com`, so pinning the suffix costs nothing and removes the
+# primitive. Comparison is on the parsed host, never on the raw URL string.
+_AWSWAF_ALLOWED_HOST_SUFFIX = ".token.awswaf.com"
+
+# errorCodes the v2 login process can answer with, mapped to readable messages.
+LOGIN_ERRORS = {
+    "PROCESS_GONE": "The login request expired. Please start again.",
+    "ALREADY_PROCESSED": "The login request was rejected or has already been used.",
+    "NOT_FOUND": "Trade Republic does not know this login request.",
+    "TOO_MANY_REQUESTS": "Too many attempts. Please wait before trying again.",
+    "VALIDATION_CODE_INVALID": "That authenticator code is not correct.",
+    "VALIDATION_CODE_ALREADY_USED": "That authenticator code was already used.",
+}
+
+# Build version of the web frontend. Sent on every api/v2 login call.
+# Moves with each frontend deployment; bump when TR starts rejecting stale versions.
+APP_VERSION = "2.2631.13"
+
+# The web frontend's API client identifies itself with this platform on all v2 login calls.
+WEB_PLATFORM = "web-pro"
 
 
 class TradeRepublicApi:
@@ -70,6 +95,8 @@ class TradeRepublicApi:
     _waf_login_url = "https://app.traderepublic.com/login"
 
     _process_id = None
+    _required_action = None
+    _device_info = None
     _session_expires_at = 0
 
     _ws = None
@@ -125,6 +152,8 @@ class TradeRepublicApi:
         Get the AWS WAF token, using the awswaf library.
         """
 
+        from pytr.awswaf.aws import AwsWaf
+
         self.log.info("Retrieving AWS WAF token using awswaf...")
         try:
             session = cffi_requests.Session(impersonate="chrome")
@@ -134,6 +163,16 @@ class TradeRepublicApi:
                 self.log.warning("AWS WAF token not acquired. challenge.js URL not found in login page.")
                 return None
             challenge_js_url = m.group(1)
+            # The URL above came out of a regular expression over whatever the
+            # login page returned, and everything below turns it into outbound
+            # requests. Check the host before the first of them, not after.
+            host = urllib.parse.urlparse(challenge_js_url).hostname or ""
+            if not host.lower().endswith(_AWSWAF_ALLOWED_HOST_SUFFIX):
+                self.log.warning(
+                    "AWS WAF token not acquired. challenge.js host is not an AWS WAF endpoint (expected *%s).",
+                    _AWSWAF_ALLOWED_HOST_SUFFIX,
+                )
+                return None
             waf_endpoint = challenge_js_url.split("https://", 1)[1].rsplit("/challenge.js", 1)[0]
             challenge_js = session.get(challenge_js_url).text
             token = AwsWaf(waf_endpoint, "app.traderepublic.com", challenge_js)()
@@ -149,99 +188,62 @@ class TradeRepublicApi:
         """
         Get the AWS WAF token, using a Playwright browser session.
 
-        One-time setup needed:
-            playwright install chromium
+        Requires the optional `playwright` extra plus its browser binary:
+            pip install 'pytr[playwright]' && playwright install chromium
+
+        Neither is installed automatically. An earlier version of this method
+        caught *every* exception — a network blip, a WAF change, a timeout —
+        and answered it by shelling out to `playwright install chromium`, i.e.
+        by downloading and executing a browser at runtime, in the process that
+        is holding the user's PIN and Trade Republic cookies. That download
+        bypasses whatever pinning the installing environment applied to its
+        dependencies, and it only ever helped for one of the many failures it
+        was triggered by. A missing browser is now reported like any other
+        failure and left to the operator to fix deliberately.
         """
+        try:
+            from playwright.sync_api import sync_playwright  # type: ignore[import-not-found]
+        except ImportError:
+            self.log.error(
+                "Failed to get AWS WAF token: playwright is not installed. "
+                "Install the optional extra with `pip install 'pytr[playwright]'` "
+                "and then run `playwright install chromium`."
+            )
+            raise
 
         self.log.info("Retrieving AWS WAF token using Playwright...")
 
-        called_playwright_install = False
-        while True:
-            try:
-                with sync_playwright() as p:
-                    browser = p.chromium.launch(
-                        headless=True,
-                        args=["--no-sandbox", "--disable-setuid-sandbox"],
-                    )
-                    context = browser.new_context()
-                    page = context.new_page()
-                    page.goto(
-                        "https://app.traderepublic.com/login",
-                        wait_until="domcontentloaded",
-                        timeout=timeout_ms,
-                    )
-                    deadline = time.time() + timeout_ms / 1000
-                    token = None
-                    while time.time() < deadline:
-                        for c in context.cookies():
-                            if c["name"] == "aws-waf-token":
-                                token = c["value"]
-                                break
-                        if token:
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(
+                    headless=True,
+                    args=["--no-sandbox", "--disable-setuid-sandbox"],
+                )
+                context = browser.new_context()
+                page = context.new_page()
+                page.goto(
+                    "https://app.traderepublic.com/login",
+                    wait_until="domcontentloaded",
+                    timeout=timeout_ms,
+                )
+                deadline = time.time() + timeout_ms / 1000
+                token = None
+                while time.time() < deadline:
+                    for c in context.cookies():
+                        if c["name"] == "aws-waf-token":
+                            token = c["value"]
                             break
-                        time.sleep(0.5)
-                    browser.close()
-                done = True
-            except Exception as e:
-                if called_playwright_install:
-                    self.log.error("Failed to get AWS WAF token.")
-                    raise
-                else:
-                    self.log.warning("%s", e)
-                    self.log.info('Running "playwright install chromium"...')
-                    called_playwright_install = True
-                    done = False
-                    subprocess.run(["playwright", "install", "chromium"], check=True)
-                    self.log.info("Calling Playwright once more...")
-            if done:
-                break
+                    if token:
+                        break
+                    time.sleep(0.5)
+                browser.close()
+        except Exception:
+            self.log.error("Failed to get AWS WAF token.")
+            raise
 
         if not token:
             self.log.warning("AWS WAF token not acquired. Value is None.")
         return token
-
-    def _get_device_id(self) -> str:
-        """Return a stable per-install device UUID, creating it on first use."""
-        try:
-            return DEVICE_ID_FILE.read_text().strip()
-        except FileNotFoundError:
-            BASE_DIR.mkdir(parents=True, exist_ok=True)
-            device_id = uuid.uuid4().hex + uuid.uuid4().hex  # 64 hex chars, matches web app
-            DEVICE_ID_FILE.write_text(device_id)
-            return device_id
-
-    def _build_device_info_header(self) -> str:
-        """Build the base64(JSON) x-tr-device-info payload the web app sends."""
-        payload = {
-            "stableDeviceId": self._get_device_id(),
-            "model": "Apple Macintosh",
-            "browser": "Chrome",
-            "browserVersion": "148.0.0.0",
-            "os": "Mac OS",
-            "osVersion": "10.15.7",
-            "timezone": "Europe/Amsterdam",
-            "timezoneOffset": -120,
-            "screen": "1800x1169x30",
-            "preferredLanguages": ["en", "en-US"],
-            "numberOfCores": 12,
-            "deviceMemory": 16,
-        }
-        raw = json.dumps(payload, separators=(",", ":")).encode("utf-8")
-        return base64.b64encode(raw).decode("ascii")
-
-    def _auth_headers(self) -> Dict[str, str]:
-        """Headers required by /api/v2/auth/web/login (v2 push-approval flow)."""
-        headers = {
-            "User-Agent": TR_WEB_USER_AGENT_V2,
-            "Origin": "https://app.traderepublic.com",
-            "Referer": "https://app.traderepublic.com/",
-            "x-tr-platform": "web",
-            "x-tr-app-version": TR_WEB_APP_VERSION,
-            "x-tr-device-info": self._build_device_info_header(),
-        }
-        if self._waf_token:
-            headers["x-aws-waf-token"] = self._waf_token
-        return headers
 
     def _set_waf_cookie(self, token: str):
         """Set the aws-waf-token cookie on the web session."""
@@ -265,6 +267,60 @@ class TradeRepublicApi:
         )
         self._websession.cookies.set_cookie(cookie)
 
+    def _stable_device_id(self):
+        """An id that stays the same for this installation.
+
+        The web frontend derives it from a canvas fingerprint hashed with SHA-512.
+        There is no canvas here, so the hash covers what identifies this machine
+        instead. Same length, same alphabet, no state on disk and no request to anyone.
+        """
+        seed = "|".join([str(uuid.getnode()), platform.node(), platform.machine(), platform.system()])
+        return hashlib.sha512(seed.encode()).hexdigest()
+
+    def _timezone_name(self):
+        """The IANA name of the local timezone, with the frontend's own fallback."""
+        try:
+            return str(pathlib.Path("/etc/localtime").resolve()).split("zoneinfo/")[1]
+        except (OSError, IndexError):
+            return "Etc/UTC"
+
+    def _login_headers(self):
+        """The headers Trade Republic requires on the api/v2 login calls.
+
+        Without them the endpoints answer 400 MISSING_REQUIRED_HEADER. The web
+        frontend sends the same set on all three of them: a base64-encoded JSON
+        description of the device, its build version, the platform its API client is
+        configured with, and the language it wants to be answered in.
+
+        Fields the frontend can only fill from a browser are left out rather than
+        invented. It omits them itself when the browser doesn't provide them
+        (`model` on desktop, `deviceMemory` outside Chromium), so their absence
+        is accepted by the server. `screen` is the one value with no counterpart here.
+        """
+        if self._device_info is None:
+            chrome = re.search(r"Chrome/([\d.]+)", self._websession.headers.get("User-Agent", ""))
+            offset = datetime.now().astimezone().utcoffset()
+            device = {
+                "stableDeviceId": self._stable_device_id(),
+                "browser": "Chrome",
+                "browserVersion": chrome.group(1) if chrome else "",
+                "os": platform.system(),
+                "osVersion": platform.release(),
+                "timezone": self._timezone_name(),
+                # JavaScript counts the offset the other way round than Python does.
+                "timezoneOffset": -int(offset.total_seconds() // 60) if offset else 0,
+                "screen": "1920x1080x24",
+                "preferredLanguages": [self._locale],
+                "numberOfCores": os.cpu_count() or 1,
+            }
+            self._device_info = base64.b64encode(json.dumps(device).encode()).decode()
+        return {
+            "X-TR-Device-Info": self._device_info,
+            "X-TR-App-Version": APP_VERSION,
+            "X-Tr-Platform": WEB_PLATFORM,
+            "Accept-Language": self._locale,
+        }
+
     def initiate_weblogin(self):
         self.log.info("Initiating web login...")
 
@@ -281,9 +337,8 @@ class TradeRepublicApi:
         else:
             self.log.warning("No WAF token available.")
 
-        login_path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
-        extra_headers = self._auth_headers() if self._use_v2_login else None
-
+        extra_headers = self._login_headers() if self._use_v2_login else None
+        login_path = "/api/v2/auth/web/login" if self._use_v2_login else "/api/v1/auth/web/login"
         r = self._websession.post(
             f"{self._host}{login_path}",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
@@ -301,79 +356,109 @@ class TradeRepublicApi:
                 raise ValueError(str(err))
             else:
                 raise ValueError("processId not in reponse")
-
         if not self._use_v2_login:
             return int(j["countdownInSeconds"]) + 1
+        if self._process_id is None:
+            raise ValueError("Trade Republic completed the login without a confirmation step.")
+        # The second factor is on the login process, not in the login response.
+        self._required_action = self._get_weblogin_process(quiet=True).get("requiredAction")
+        # v2 does not always send countdownInSeconds; the web frontend falls back to 120s.
+        return int(j.get("countdownInSeconds", 120)) + 1
 
-        # v2 web login uses push-to-approve in the TR mobile app: no SMS/code.
-        # Poll the process endpoint until the push is approved (or rejected/expired).
-        self.await_web_login_approval()
-        return 0
-
-    def await_web_login_approval(self, timeout_s: int = 180, interval_s: float = 2.0):
-        """Block until the TR mobile-app push for this login process is approved."""
-        if not self._process_id:
-            raise ValueError("Initiate web login first.")
-        url = f"{self._host}{TR_V2_LOGIN_PATH}/processes/{self._process_id}"
-        deadline = time.time() + timeout_s
-        print(
-            f"Approve the login in your Trade Republic mobile app (waiting up to {timeout_s}s)...",
-            flush=True,
-        )
-        while time.time() < deadline:
-            r = self._websession.get(url, headers=self._auth_headers())
-            if r.status_code == 200:
-                try:
-                    j = r.json()
-                except ValueError:
-                    j = {}
-                state = str(j.get("state") or j.get("status") or "").upper()
-                if state in ("APPROVED", "COMPLETED", "SUCCESS", "OK", "DONE"):
-                    self.save_websession()
-                    self.log.info("Push approved.")
-                    return
-                if state in ("REJECTED", "DECLINED", "FAILED", "EXPIRED"):
-                    raise ValueError(f"Login process {state.lower()}: {j}")
-                # State unknown but session cookie present? Treat as approved.
-                for c in self._websession.cookies:
-                    if c.name in ("tr_session",) and c.value:
-                        self.save_websession()
-                        self.log.info("Session cookie detected, login complete.")
-                        return
-            elif r.status_code in (401, 403, 404, 410):
-                raise ValueError(f"Login process rejected or expired ({r.status_code}): {r.text[:200]}")
-            else:
-                self.log.warning("Login poll %s: %s", r.status_code, r.text[:200])
-            time.sleep(interval_s)
-        raise TimeoutError("Push approval not received within timeout.")
+    @property
+    def weblogin_needs_authenticator(self):
+        """Whether complete_weblogin() needs a code from the user's authenticator app."""
+        return self._required_action == "AUTHENTICATOR_VERIFICATION"
 
     def resend_weblogin(self):
-        path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
-        headers = self._auth_headers() if self._use_v2_login else self._default_headers
+        if self._use_v2_login:
+            self.log.warning(
+                "Trade Republic removed the SMS resend endpoint along with the v1 web login. "
+                "Confirm the login in the Trade Republic mobile app instead."
+            )
+            return
         r = self._websession.post(
-            f"{self._host}{path}/{self._process_id}/resend",
-            headers=headers,
+            f"{self._host}/api/v1/auth/web/login/{self._process_id}/resend",
+            headers=self._default_headers,
         )
         r.raise_for_status()
 
-    def complete_weblogin(self, verify_code):
+    def complete_weblogin(self, verify_code=None):
         if not self._process_id and not self._websession:
             raise ValueError("Initiate web login first.")
 
-        # v2 push flow: approval already happened during initiate_weblogin().
-        # An empty verify_code signals nothing left to do.
-        if self._use_v2_login and not verify_code:
+        if not self._use_v2_login:
+            r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
+            r.raise_for_status()
             self.save_websession()
             return
 
-        path = TR_V2_LOGIN_PATH if self._use_v2_login else TR_V1_LOGIN_PATH
-        headers = self._auth_headers() if self._use_v2_login else None
-        r = self._websession.post(
-            f"{self._host}{path}/{self._process_id}/{verify_code}",
-            headers=headers,
-        )
-        r.raise_for_status()
+        if self.weblogin_needs_authenticator:
+            if not verify_code:
+                raise ValueError("This account needs a code from your authenticator app.")
+            r = self._websession.post(
+                f"{self._host}/api/v2/auth/web/login/processes/{self._process_id}/authenticator-verification",
+                json={"code": verify_code},
+                headers=self._login_headers(),
+            )
+            self._raise_for_login_error(r)
+        else:
+            self._await_weblogin_confirmation()
         self.save_websession()
+
+    def _raise_for_login_error(self, r):
+        """Raise a readable error, keeping the process id out of the message."""
+        if r.status_code < 400:
+            return
+        try:
+            code = r.json()["errors"][0]["errorCode"]
+        except (ValueError, KeyError, IndexError, TypeError):
+            raise ValueError(f"Login failed with status {r.status_code}.") from None
+        raise ValueError(LOGIN_ERRORS.get(code, f"Login failed: {code}."))
+
+    def _get_weblogin_process(self, quiet=False):
+        """Read the state of the current login process."""
+        r = self._websession.get(
+            f"{self._host}/api/v2/auth/web/login/processes/{self._process_id}",
+            headers=self._login_headers(),
+        )
+        if quiet and r.status_code >= 400:
+            return {}
+        self._raise_for_login_error(r)
+        return r.json()
+
+    def _weblogin_deadline(self, process, fallback=120):
+        """Return deadline as a Unix timestamp; fall back to a fixed window."""
+        expires_at = process.get("expiresAt")
+        try:
+            if isinstance(expires_at, (int, float)):
+                return expires_at / 1000 if expires_at > 1e11 else float(expires_at)
+            return datetime.fromisoformat(str(expires_at).replace("Z", "+00:00")).timestamp()
+        except (TypeError, ValueError):
+            return time.time() + fallback
+
+    def _await_weblogin_confirmation(self, interval=2):
+        """Poll the login process until confirmed in the Trade Republic mobile app."""
+        process = self._get_weblogin_process()
+        deadline = self._weblogin_deadline(process)
+        self.log.info("Waiting for you to confirm the login in the Trade Republic app...")
+        announced = 0.0
+        while True:
+            status = process.get("status")
+            self.log.debug(f"Login process status: {status}")
+            if status in ("CONFIRMED", "COMPLETED"):
+                self.log.info("Login confirmed.")
+                return
+            if status != "PENDING":
+                raise ValueError(f"Unexpected login process status: {status!r}")
+            remaining = deadline - time.time()
+            if remaining <= 0:
+                raise TimeoutError("The login was not confirmed in time.")
+            if time.time() - announced >= 10:
+                self.log.info(f"Still waiting, {int(remaining)}s left...")
+                announced = time.time()
+            time.sleep(interval)
+            process = self._get_weblogin_process()
 
     def save_websession(self):
         if self._save_cookies:
@@ -567,7 +652,7 @@ class TradeRepublicApi:
             self.settings()
         if self._sec_acc_no is None:
             raise ValueError("Could not retrieve securities account number from account settings.")
-        return await self.subscribe({"type": "compactPortfolio", "secAccNo": self._sec_acc_no})
+        return await self.subscribe({"type": "compactPortfolioByType", "secAccNo": self._sec_acc_no})
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})

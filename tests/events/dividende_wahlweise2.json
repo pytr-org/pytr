@@ -1,0 +1,76 @@
+{
+  "id": "536a5126-a287-46c4-aee5-2c4746809d8c",
+  "timestamp": "2024-11-05T16:48:48.463+0000",
+  "title": "Unilever",
+  "icon": "logos/GB00B10RZP78/v2",
+  "subtitle": "Dividende. Cash oder Stockdividende?",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "536a5126-a287-46c4-aee5-2c4746809d8c"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_ACTIVITY",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "536a5126-a287-46c4-aee5-2c4746809d8c",
+    "sections": [
+      {
+        "title": "Du hast eine bevorstehende Dividendenzahlung",
+        "data": {
+          "icon": {
+            "asset": "logos/GB00B10RZP78/v2",
+            "badge": null
+          },
+          "subtitleText": "5 Nov. 2024 · 16:48",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausstehend",
+              "functionalStyle": "PENDING",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Unilever",
+              "displayValue": {
+                "text": "Unilever",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dividende Wahlweise",
+            "detail": "05.11.2024",
+            "action": {
+              "payload": "https://example.com/pb173082660789413143540778822817.pdf",
+              "type": "browserModal"
+            },
+            "id": "063c02e6-b4b0-4972-aea6-940df2ef0e24",
+            "postboxType": "CA_DIVIDEND_OPTION"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

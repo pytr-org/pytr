@@ -1,0 +1,173 @@
+{
+  "id": "902268aa-34fd-4066-95d1-17463a0e86d3",
+  "timestamp": "2024-06-04T06:23:45.768+0000",
+  "title": "DWS Group",
+  "icon": "logos/DE000DWS1007/v2",
+  "avatar": {
+    "asset": "logos/DE000DWS1007/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Limit-Buy-Order",
+  "amount": {
+    "currency": "EUR",
+    "value": -221.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "902268aa-34fd-4066-95d1-17463a0e86d3"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "TRADE_INVOICE",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "902268aa-34fd-4066-95d1-17463a0e86d3",
+    "sections": [
+      {
+        "title": "Du hast 221,00 €  investiert",
+        "data": {
+          "icon": "logos/DE000DWS1007/v2",
+          "subtitleText": null,
+          "timestamp": "2024-06-04T06:23:45.768+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "DE000DWS1007"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Limit Kauf",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "DWS Group",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Transaktion",
+        "data": [
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "5",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktienkurs",
+            "detail": {
+              "text": "44,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "1,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "221,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "detail": "04.06.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "94863a69-7895-4f2f-91a8-9da7633cbe20",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Auftragsbestätigung",
+            "detail": "04.06.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "b88ab265-c8ca-4fce-8271-85ab41c20a0e",
+            "postboxType": "CONFIRM_ORDER_CREATE_V2"
+          },
+          {
+            "title": "Kosteninformation",
+            "detail": "04.06.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "779fadd7-e5df-47c4-8db2-d77ed91aa659",
+            "postboxType": "COSTS_INFO_BUY_V2"
+          }
+        ],
+        "action": null,
+        "type": "documents"
+      }
+    ]
+  }
+}

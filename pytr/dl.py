@@ -17,19 +17,33 @@ from .utils import get_logger
 event_subfolder_mapping = {
     "OUTGOING_TRANSFER_DELEGATION": "Auszahlungen",
     "OUTGOING_TRANSFER": "Auszahlungen",
+    "BANK_TRANSACTION_OUTGOING": "Auszahlungen",
     "CREDIT": "Dividende",
-    "ssp_corporate_action_invoice_cash": "Dividende",
+    "SSP_CORPORATE_ACTION_INVOICE_CASH": "Dividende",
+    "SSP_CORPORATE_ACTION_CASH": "Dividende",
+    "SSP_CORPORATE_ACTION_CASH_AND_STOCK": "Dividende",
     "ACCOUNT_TRANSFER_INCOMING": "Einzahlungen",
     "INCOMING_TRANSFER_DELEGATION": "Einzahlungen",
     "INCOMING_TRANSFER": "Einzahlungen",
     "PAYMENT_INBOUND_GOOGLE_PAY": "Einzahlungen",
     "PAYMENT_INBOUND_SEPA_DIRECT_DEBIT": "Einzahlungen",
+    "BANK_TRANSACTION_INCOMING": "Einzahlungen",
+    "PAYMENT_INBOUND": "Einzahlungen",
+    "JUNIOR_P2P_TRANSFER": "Einzahlungen",
+    "CARD_TRANSACTION": "Karte",
+    "CARD_REFUND": "Karte",
+    "CARD_VERIFICATION": "Karte",
     "CREDIT_CANCELED": "Misc",
     "CRYPTO_ANNUAL_STATEMENT": "Misc",
+    "CRYPTO_TNC_UPDATE_2025": "Misc",
+    "CSX_CHAT_ACTIVITY": "Misc",
     "CUSTOMER_CREATED": "Misc",
+    "DEVICE_RESET": "Misc",
     "DOCUMENTS_ACCEPTED": "Misc",
     "DOCUMENTS_CHANGED": "Misc",
     "DOCUMENTS_CREATED": "Misc",
+    "EMAIL_VALIDATED": "Misc",
+    "EXEMPTION_ORDER_CHANGED": "Misc",
     "EX_POST_COST_REPORT": "Misc",
     "EX_POST_COST_REPORT_CREATED": "Misc",
     "GENERAL_MEETING": "Misc",
@@ -38,45 +52,59 @@ event_subfolder_mapping = {
     "INSTRUCTION_CORPORATE_ACTION": "Misc",
     "JUNIOR_ONBOARDING_GUARDIAN_B_CONSENT": "Misc",
     "PRE_DETERMINED_TAX_BASE_EARNING": "Misc",
+    "PRIVATE_MARKETS_SUITABILITY_QUIZ_COMPLETED": "Misc",
+    "PUK_CREATED": "Misc",
+    "QUARTERLY_NET_WORTH_STATEMENT_CREATED": "Misc",
     "QUARTERLY_REPORT": "Misc",
+    "REFERENCE_ACCOUNT_CHANGED": "Misc",
+    "SECURITIES_ACCOUNT_CREATED": "Misc",
     "SHAREBOOKING": "Misc",
     "SHAREBOOKING_TRANSACTIONAL": "Misc",
+    "SPARE_CHANGE_AGGREGATE": "RoundUp",
+    "SSP_CAPITAL_INCREASE_CUSTOMER_INSTRUCTION": "Misc",
+    "SSP_CORPORATE_ACTION_ACTIVITY": "Misc",
+    "SSP_CORPORATE_ACTION_CASH_NON_DIVIDEND": "Misc",
+    "SSP_CORPORATE_ACTION_INFORMATIVE": "Misc",
+    "SSP_CORPORATE_ACTION_INFORMATIVE_NOTIFICATION": "Misc",
+    "SSP_CORPORATE_ACTION_INSTRUCTION": "Misc",
+    "SSP_CORPORATE_ACTION_INVOICE_SHARES": "Misc",
+    "SSP_CORPORATE_ACTION_NO_CASH": "Misc",
+    "SSP_CORPORATE_ACTION_UPCOMING": "Misc",
+    "SSP_DIVIDEND_OPTION_CUSTOMER_INSTRUCTION": "Misc",
+    "SSP_GENERAL_MEETING_CUSTOMER_INSTRUCTION": "Misc",
+    "SSP_TENDER_OFFER_CUSTOMER_INSTRUCTION": "Misc",
     "STOCK_PERK_REFUNDED": "Misc",
     "TAX_YEAR_END_REPORT": "Misc",
     "TAX_YEAR_END_REPORT_CREATED": "Misc",
+    "VERIFICATION_TRANSFER_ACCEPTED": "Misc",
     "YEAR_END_TAX_REPORT": "Misc",
-    "crypto_annual_statement": "Misc",
-    "private_markets_suitability_quiz_completed": "Misc",
-    "ssp_capital_increase_customer_instruction": "Misc",
-    "ssp_corporate_action_informative_notification": "Misc",
-    "ssp_corporate_action_invoice_shares": "Misc",
-    "ssp_dividend_option_customer_instruction": "Misc",
-    "ssp_general_meeting_customer_instruction": "Misc",
-    "ssp_tender_offer_customer_instruction": "Misc",
-    "benefits_spare_change_execution": "RoundUp",
-    "benefits_saveback_execution": "Saveback",
+    "BENEFITS_SPARE_CHANGE_EXECUTION": "RoundUp",
+    "BENEFITS_SAVEBACK_EXECUTION": "Saveback",
+    "SAVEBACK_AGGREGATE": "Saveback",
     "SAVINGS_PLAN_EXECUTED": "Sparplan",
     "SAVINGS_PLAN_INVOICE_CREATED": "Sparplan",
-    "trading_savingsplan_executed": "Sparplan",
-    "trading_savingsplan_execution_failed": "Sparplan",
+    "TRADING_SAVINGSPLAN_EXECUTED": "Sparplan",
+    "TRADING_SAVINGSPLAN_EXECUTION_FAILED": "Sparplan",
+    "SSP_TAX_CORRECTION": "Steuerkorrekturen",
+    "SSP_TAX_CORRECTION_INVOICE": "Steuerkorrekturen",
     "TAX_CORRECTION": "Steuerkorrekturen",
     "TAX_REFUND": "Steuerkorrekturen",
-    "ssp_tax_correction_invoice": "Steuerkorrekturen",
+    "IPO_TRADE_EXECUTED": "Trades",
     "ORDER_CANCELED": "Trades",
     "ORDER_EXECUTED": "Trades",
     "ORDER_EXPIRED": "Trades",
     "ORDER_REJECTED": "Trades",
+    "PRIVATE_MARKET_FUND_TRADE_EXECUTED": "Trades",
+    "PRIVATE_MARKETS_TRADE_EXECUTED": "Trades",
+    "PRIVATE_MARKETS_ORDER_CREATED": "Trades",
     "TRADE_CORRECTED": "Trades",
     "TRADE_INVOICE": "Trades",
     "TRADING_ORDER_CANCELLED": "Trades",
     "TRADING_ORDER_CREATED": "Trades",
-    "private_markets_order_created": "Trades",
-    "trading_order_cancelled": "Trades",
-    "trading_order_created": "Trades",
-    "trading_order_rejected": "Trades",
-    "trading_trade_executed": "Trades",
-    "trading_order_expired": "Trades",
-    "ACQUISITION_TRADE_PERK": "Vorteil",
+    "TRADING_ORDER_EXPIRED": "Trades",
+    "TRADING_ORDER_REJECTED": "Trades",
+    "TRADING_TRADE_EXECUTED": "Trades",
+    "ACQUISITION_TRADE_PERK": "Misc",
     "INTEREST_PAYOUT": "Zinsen",
     "INTEREST_PAYOUT_CREATED": "Zinsen",
 }
@@ -99,7 +127,8 @@ subtitle_subfolder_mapping = {
     "Bardividende": "Dividende",
     "Cash oder Aktie": "Dividende",
     "Dividende Wahlweise": "Dividende",
-    "Aktienprämiendividende": "Misc",
+    "Dividende. Cash oder Stockdividende?": "Dividende",
+    "Aktienprämiendividende": "Dividende",
     "Aktiensplit": "Misc",
     "Aufruf von Zwischenpapieren": "Misc",
     "Bardividende korrigiert": "Misc",
@@ -145,7 +174,6 @@ class DL:
         scan_for_duplicates=False,
         dump_raw_data=False,
         export_transactions=True,
-        history_file="pytr_history",
         max_workers=8,
         universal_filepath=False,
         lang="en",
@@ -154,6 +182,8 @@ class DL:
         sort_export=False,
         format_export: Literal["json", "csv"] = "csv",
         flat=False,
+        load_event_database=None,
+        dry_run=False,
     ):
         """
         tr: api object
@@ -165,7 +195,6 @@ class DL:
         self.filename_fmt = filename_fmt
         self.dump_raw_data = dump_raw_data
         self.export_transactions = export_transactions
-        self.history_file = self.output_path / history_file
         self.universal_filepath = universal_filepath
         self.lang = lang
         self.date_with_time = date_with_time
@@ -173,6 +202,7 @@ class DL:
         self.sort_export = sort_export
         self.format_export: Literal["json", "csv"] = format_export
         self.flat = flat
+        self.dry_run = dry_run
 
         self.tl = Timeline(
             self.tr,
@@ -183,9 +213,12 @@ class DL:
             scan_for_duplicates,
             dump_raw_data,
             self.dl_callback,
+            load_event_database=load_event_database,
         )
 
-        self.session = FuturesSession(max_workers=max_workers, session=self.tr._websession)
+        self.session = (
+            FuturesSession(max_workers=max_workers, session=self.tr._websession) if self.tr is not None else None
+        )
         self.futures: list[Future[Response]] = []
 
         self.events_without_docs: List[Dict[str, Any]] = []
@@ -195,23 +228,11 @@ class DL:
         self.done = 0
         self.filepaths: List[str] = []
         self.doc_urls: List[str] = []
-        self.doc_urls_history: List[str] = []
+        self.events_processed = 0
 
         self.log = get_logger(__name__)
-        self.load_history()
-
-    def load_history(self):
-        """
-        Read history file with URLs if it exists, otherwise create empty file
-        """
-        if self.history_file.exists():
-            with self.history_file.open() as f:
-                self.doc_urls_history = f.read().splitlines()
-            self.log.info(f"Found {len(self.doc_urls_history)} lines in history file")
-        else:
-            self.history_file.parent.mkdir(exist_ok=True, parents=True)
-            self.history_file.touch()
-            self.log.info("Created history file")
+        if load_event_database is not None:
+            self.dry_run = True
 
     def do_dl(self):
         asyncio.run(self.tl.tl_loop())
@@ -239,24 +260,32 @@ class DL:
         self.work_responses()
 
     def dl_callback(self, event):
+        if hasattr(self, "tl") and not self.tl.fetch_from_tr:
+            self.events_processed += 1
+            if self.events_processed % 1000 == 0:
+                self.log.info(f"Processing events: {self.events_processed}/{self.tl.all_detail}")
         has_docs = False
         for section in event["details"]["sections"]:
             if section["type"] != "documents":
                 continue
 
             subfolder = None
-            eventType = event.get("eventType", None)
+            eventType = (event.get("eventType") or "").upper() or None
             title = event.get("title", "")
             subtitle = event.get("subtitle", "")
             eventdesc = f"{title} {subtitle} ({event['id']})"
             sections = event.get("details", {}).get("sections", [{}])
             uebersicht_dict = next(filter(lambda x: x.get("title") in ["Übersicht"], sections), None)
-            if eventType in ["timeline_legacy_migrated_events", None]:
+            if eventType in ["TIMELINE_LEGACY_MIGRATED_EVENTS", None]:
                 subfolder = title_subfolder_mapping.get(title)
                 if subfolder is None:
                     subfolder = subtitle_subfolder_mapping.get(subtitle)
             else:
                 subfolder = event_subfolder_mapping.get(eventType)
+                if subfolder == "Misc":
+                    subtitle_override = subtitle_subfolder_mapping.get(subtitle)
+                    if subtitle_override is not None:
+                        subfolder = subtitle_override
 
             if subfolder is None and uebersicht_dict:
                 for item in uebersicht_dict.get("data", []):
@@ -283,11 +312,19 @@ class DL:
             if subfolder is None:
                 self.log.warning(f"no subfolder mapping for {eventdesc}")
 
+            doc_type_counts = {}
+            for doc in section["data"]:
+                if not isinstance(doc["action"]["payload"], dict):
+                    t = doc["title"].rsplit(" ")
+                    t = " ".join(t[:-1] if t[-1].isnumeric() else t)
+                    doc_type_counts[t] = doc_type_counts.get(t, 0) + 1
+            doc_type_seen = {}
+
             for idx, doc in enumerate(section["data"]):
                 if isinstance(doc["action"]["payload"], dict):
-                    self.log.warning(
-                        f'Download of document with new API-Path URL "{doc["action"]["payload"]["path"]}" is not possible. (yet?)'
-                    )
+                    # self.log.warning(
+                    #     f'Download of document with new API-Path URL "{doc["action"]["payload"]["path"]}" is not possible. (yet?)'
+                    # )
                     continue
                 has_docs = True
                 timestamp_str = event["timestamp"]
@@ -299,17 +336,31 @@ class DL:
                     self.log.warning(f"no timestamp parseable from {timestamp_str}")
                     docdate = datetime.now()
 
-                suffix = f" - {idx}" if idx > 0 else ""
+                t = doc["title"].rsplit(" ")
+                has_num = t[-1].isnumeric()
+                t = " ".join(t[:-1] if has_num else t)
+                doc_type_seen[t] = doc_type_seen.get(t, 0) + 1
+                if not has_num and doc_type_counts[t] > 1 and doc_type_seen[t] > 1:
+                    suffix = f" {doc_type_seen[t]}" if t == "Dokumente" else f" - {doc_type_seen[t] - 1}"
+                else:
+                    suffix = ""
                 title = f"{doc['title']} - {event['title']} - {event['subtitle']}{suffix}"
 
-                self.dl_doc(doc, title, subfolder, docdate)
+                self.dl_doc(
+                    doc,
+                    title,
+                    subfolder,
+                    docdate,
+                    event.get("subtitle") or "",
+                    subdir_override=event["title"] if eventType == "ACQUISITION_TRADE_PERK" else None,
+                )
 
         if has_docs:
             self.events_with_docs.append(event)
         else:
             self.events_without_docs.append(event)
 
-    def dl_doc(self, doc, titleText, subfolder, doc_date):
+    def dl_doc(self, doc, titleText, subfolder, doc_date, subtitle="", subdir_override=None):
         """
         send asynchronous request, append future with filepath to self.futures
         """
@@ -345,7 +396,21 @@ class DL:
             doc_type = " ".join(doc_type)
             if doc_type == "Abrechnung Ausführung" or doc_type == "Abrechnungsausführung":
                 doc_type = "Abrechnung"
+            if doc_type == "Bestätigung eines Ausführungsfehlers":
+                doc_type = "Ausführungsfehler"
             titleText = titleText.replace("\n", "").replace("/", "-")
+            if doc_type == "Dokumente" or doc_type == "Steuerabrechnung":
+                titleText = titleText.removeprefix("Dokumente - ").removeprefix("Steuerabrechnung - ")
+                if subtitle and subfolder == "Misc":
+                    titleText = titleText.removesuffix(f" - {subtitle}")
+            else:
+                titleText = (
+                    titleText.replace("Abrechnung Ausführung - ", "Abrechnung - ")
+                    .replace("Abrechnungsausführung - ", "Abrechnung - ")
+                    .replace("Bestätigung eines Ausführungsfehlers - ", "Ausführungsfehler - ")
+                    .replace(" - Teilnehmen?", "")
+                )
+            titleText = titleText.removesuffix(" - None")
             subtitleText = subtitleText.replace("\n", "").replace("/", "-")
 
             filename = self.filename_fmt.format(
@@ -356,16 +421,29 @@ class DL:
                 doc_num=doc_type_num,
                 id=doc_id,
             )
-
+            filename = filename.rstrip("?")
             # In case, the filename already ends with the doc id, we remove it to avoid a duplicate id in the name
             filename_with_doc_id = filename.removesuffix(doc_id).rstrip() + f" ({doc_id})"
 
             if doc_type in ["Kontoauszug", "Depotauszug"]:
                 filepath = directory / "Abschlüsse" / f"{filename}" / f"{doc_type}.pdf"
                 filepath_with_doc_id = directory / "Abschlüsse" / f"{filename_with_doc_id}" / f"{doc_type}.pdf"
+            elif (
+                doc_type in ["Dokumente", "Steuerabrechnung", "Dividende Wahlweise", "Dividendenbeleg"]
+                or (doc_type == "Transaktionsbestätigung" and subfolder in ["Einzahlungen", "Auszahlungen"])
+                or (subfolder == "Zinsen")
+                or (doc_type == "Abrechnung" and subfolder in ["RoundUp", "Saveback", "Sparplan", "Trades"])
+            ):
+                if subtitle and subfolder == "Misc":
+                    filepath = directory / subtitle / f"{filename}.pdf"
+                    filepath_with_doc_id = directory / subtitle / f"{filename_with_doc_id}.pdf"
+                else:
+                    filepath = directory / f"{filename}.pdf"
+                    filepath_with_doc_id = directory / f"{filename_with_doc_id}.pdf"
             else:
-                filepath = directory / doc_type / f"{filename}.pdf"
-                filepath_with_doc_id = directory / doc_type / f"{filename_with_doc_id}.pdf"
+                subdir = subdir_override if subdir_override is not None else doc_type
+                filepath = directory / subdir / f"{filename}.pdf"
+                filepath_with_doc_id = directory / subdir / f"{filename_with_doc_id}.pdf"
 
             if self.universal_filepath:
                 filepath = sanitize_filepath(filepath, "_", "universal")
@@ -385,18 +463,24 @@ class DL:
         doc["local_filepath"] = str(filepath)
         self.filepaths.append(str(filepath))
 
+        if self.dry_run:
+            if not filepath.exists():
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+                filepath.touch()
+                self.log.debug(f"[dry-run] Created placeholder {filepath}")
+            else:
+                self.log.debug(f"[dry-run] Already exists {filepath}")
+            return
+
         if filepath.is_file() is False:
             doc_url_base = doc_url.split("?")[0]
             if doc_url_base in self.doc_urls:
                 self.log.debug(f"URL {doc_url_base} already in queue. Skipping...")
                 return
-            elif doc_url_base in self.doc_urls_history:
-                self.log.debug(f"URL {doc_url_base} already in history. Skipping...")
-                return
             else:
                 self.doc_urls.append(doc_url_base)
 
-            future = self.session.get(doc_url)
+            future = self.session.get(doc_url)  # type: ignore[union-attr]
             future.filepath = filepath  # type: ignore[attr-defined]
             future.doc_url_base = doc_url_base  # type: ignore[attr-defined]
             self.futures.append(future)  # type: ignore[arg-type]
@@ -412,26 +496,25 @@ class DL:
             self.log.info("Nothing to download.")
             return
 
-        with self.history_file.open("a") as history_file:
-            self.log.info("Waiting for downloads to complete...")
-            for future in as_completed(self.futures):
-                if future.filepath.is_file() is True:  # type: ignore[attr-defined]
-                    self.log.debug(f"file {future.filepath} was already downloaded.")  # type: ignore[attr-defined]
+        self.log.info("Waiting for downloads to complete...")
+        for future in as_completed(self.futures):
+            if future.filepath.is_file() is True:  # type: ignore[attr-defined]
+                self.log.debug(f"file {future.filepath} was already downloaded.")  # type: ignore[attr-defined]
 
-                try:
-                    r = future.result()
-                except Exception as e:
-                    self.log.fatal(str(e))
-                    continue
+            try:
+                r = future.result()
+            except Exception as e:
+                self.log.fatal(str(e))
+                continue
 
-                future.filepath.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[attr-defined]
-                with open(future.filepath, "wb") as f:  # type: ignore[attr-defined]
-                    f.write(r.content)
-                    self.done += 1
-                    history_file.write(f"{future.doc_url_base}\n")  # type: ignore[attr-defined]
+            future.filepath.parent.mkdir(parents=True, exist_ok=True)  # type: ignore[attr-defined]
+            with open(future.filepath, "wb") as f:  # type: ignore[attr-defined]
+                f.write(r.content)
+            self.done += 1
+            if self.done % 500 == 0:
+                self.log.info(f"Downloading: {self.done}/{len(self.doc_urls)}")
+            self.log.debug(f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}")  # type: ignore[attr-defined]
 
-                    self.log.debug(f"{self.done:>3}/{len(self.doc_urls)} {future.filepath.name}")  # type: ignore[attr-defined]
-
-                if self.done == len(self.doc_urls):
-                    self.log.info("Done.")
-                    return
+            if self.done == len(self.doc_urls):
+                self.log.info("Done.")
+                return

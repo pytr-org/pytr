@@ -1,0 +1,93 @@
+{
+  "id": "c511b534-0c1a-4390-ac9c-8572eb47430c",
+  "timestamp": "2024-06-14T16:40:07.424+0000",
+  "title": "British American Tobacco",
+  "icon": "logos/GB0002875804/v2",
+  "subtitle": "Aktien erhalten",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "c511b534-0c1a-4390-ac9c-8572eb47430c"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "c511b534-0c1a-4390-ac9c-8572eb47430c",
+    "sections": [
+      {
+        "title": "Du hast Aktien im Wert von 1.0 erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/GB0002875804/v2",
+            "badge": null
+          },
+          "timestamp": "2024-06-14T16:40:07.424Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "GB0002875804",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Abgeschlossen",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Auftragsart",
+            "detail": {
+              "text": "Wertpapierübertrag",
+              "displayValue": {
+                "text": "Wertpapierübertrag"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien",
+            "detail": {
+              "text": "1.0",
+              "displayValue": {
+                "text": "1.0"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "British American Tobacco",
+              "displayValue": {
+                "text": "British American Tobacco"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Ausführungsmitteilung",
+            "detail": "18.06.2024",
+            "id": "c511b534-0c1a-4390-ac9c-8572eb47430c",
+            "postboxType": "TRANSFER_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 from getpass import getpass
@@ -47,18 +48,13 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         if store_credentials:
             with open(CREDENTIALS_FILE, "w") as f:
                 f.writelines([phone_no + "\n", pin + "\n"])
+            os.chmod(CREDENTIALS_FILE, 0o600)
 
             log.info(f"Storing credentials/cookies in {BASE_DIR}")
         else:
             save_cookies = False
 
-    tr = TradeRepublicApi(
-        phone_no=phone_no,
-        pin=pin,
-        save_cookies=save_cookies,
-        waf_token=waf_token,
-        use_v2_login=v2,
-    )
+    tr = TradeRepublicApi(phone_no=phone_no, pin=pin, save_cookies=save_cookies, waf_token=waf_token, use_v2_login=v2)
 
     # Use same login as app.traderepublic.com
     if not tr.resume_websession():
@@ -67,12 +63,14 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         except ValueError as e:
             log.fatal(str(e))
             sys.exit(1)
+        request_time = time.time()
         if v2:
-            # v2 push-approve flow: initiate_weblogin() already polled and got approval.
-            tr.complete_weblogin("")
-            log.info("Logged in.")
+            if tr.weblogin_needs_authenticator:
+                code = input("Enter the code from your authenticator app: ")
+            else:
+                print(f"Confirm the login in your Trade Republic app. (Countdown: {countdown})")
+                code = None
         else:
-            request_time = time.time()
             print("Enter the code you received to your mobile app as a notification.")
             print(f"Enter nothing if you want to receive the (same) code as SMS. (Countdown: {countdown})")
             code = input("Code: ")
@@ -87,8 +85,8 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
                 print()
                 tr.resend_weblogin()
                 code = input("SMS requested. Enter the confirmation code:")
-            tr.complete_weblogin(code)
-            log.info("Logged in.")
+        tr.complete_weblogin(code)
+        log.info("Logged in.")
 
     log.debug(get_settings(tr))
     return tr

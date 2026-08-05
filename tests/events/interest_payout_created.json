@@ -1,0 +1,313 @@
+{
+  "id": "90234752-d42e-4820-85c8-91d7731dcbcd",
+  "timestamp": "2024-07-01T04:51:32.833+0000",
+  "title": "Zinsen",
+  "icon": "logos/timeline_interest_new/v2",
+  "avatar": {
+    "asset": "logos/timeline_interest_new/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": null,
+  "amount": {
+    "currency": "EUR",
+    "value": 13.56,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "90234752-d42e-4820-85c8-91d7731dcbcd"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "INTEREST_PAYOUT_CREATED",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "90234752-d42e-4820-85c8-91d7731dcbcd",
+    "sections": [
+      {
+        "title": "Du hast 13,56 EUR erhalten",
+        "data": {
+          "icon": "logos/timeline_interest_new/v2",
+          "subtitleText": null,
+          "timestamp": "2024-07-01T04:51:32.833+0000",
+          "status": "executed"
+        },
+        "action": null,
+        "type": "header"
+      },
+      {
+        "title": "3.75% ist seit 12 Juni in Kraft",
+        "description": "",
+        "button": {
+          "title": "Mehr Details",
+          "action": {
+            "type": "infoPage",
+            "payload": {
+              "sections": [
+                {
+                  "title": "3.75% ist seit 12 Juni in Kraft",
+                  "action": null,
+                  "type": "title"
+                },
+                {
+                  "title": null,
+                  "data": [
+                    {
+                      "title": "Durchschnittssaldo",
+                      "detail": {
+                        "text": "6.277,70 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Jährliche Rate bis 11 Juni",
+                      "detail": {
+                        "text": "4 %",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Jährliche Rate ab 12 Juni",
+                      "detail": {
+                        "text": "3.75 %",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "plain"
+                    },
+                    {
+                      "title": "Angefallen",
+                      "detail": {
+                        "text": "18,77 €",
+                        "trend": null,
+                        "action": null,
+                        "displayValue": null,
+                        "type": "text"
+                      },
+                      "style": "highlighted"
+                    }
+                  ],
+                  "action": null,
+                  "type": "table"
+                }
+              ]
+            }
+          }
+        },
+        "action": null,
+        "type": "banner"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Abgeschlossen",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Durchschnittssaldo",
+            "detail": {
+              "text": "6.277,70 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Vermögenswert",
+            "detail": {
+              "text": "Guthaben",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Transaktion",
+        "data": [
+          {
+            "title": "Angefallen",
+            "detail": {
+              "text": "+ 18,77 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Steuern",
+            "detail": {
+              "text": "5,21 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "+ 13,56 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "action": {
+          "type": "infoPage",
+          "payload": {
+            "sections": [
+              {
+                "title": "Transaktion",
+                "action": null,
+                "type": "title"
+              },
+              {
+                "title": null,
+                "data": [
+                  {
+                    "title": "Kapitalertragsteuer",
+                    "detail": {
+                      "text": "4,60 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Kirchensteuer",
+                    "detail": {
+                      "text": "0,36 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Solidaritätszuschlag",
+                    "detail": {
+                      "text": "0,25 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Steuern",
+                    "detail": {
+                      "text": "5,21 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "highlighted"
+                  }
+                ],
+                "action": null,
+                "type": "table"
+              },
+              {
+                "title": null,
+                "data": [
+                  {
+                    "title": "Angefallen",
+                    "detail": {
+                      "text": "+ 18,77 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Steuern",
+                    "detail": {
+                      "text": "5,21 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Gesamt",
+                    "detail": {
+                      "text": "+ 13,56 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "highlighted"
+                  }
+                ],
+                "action": null,
+                "type": "table"
+              }
+            ]
+          }
+        },
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "detail": "01.07.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "4c97b25f-227f-4b5e-b21a-4bffe353fa5e",
+            "postboxType": "INTEREST_PAYOUT_INVOICE"
+          }
+        ],
+        "action": null,
+        "type": "documents"
+      }
+    ]
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "id": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
+  "timestamp": "2025-11-05T12:03:19.648+0000",
+  "title": "Teva Pharmaceutical Industries (ADR)",
+  "icon": "logos/US8816242098/v2",
+  "avatar": {
+    "asset": "logos/US8816242098/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Limit-Sell-Order",
+  "amount": {
+    "currency": "EUR",
+    "value": 139.74,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf"
+  },
+  "cashAccountNumber": "",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
+    "id": "89c3a1b3-7af2-4256-ba1b-6a28338ebadf",
+    "sections": [
+      {
+        "title": "Du hast 139,74 € erhalten",
+        "data": {
+          "icon": "logos/US8816242098/v2",
+          "timestamp": "2025-11-05T12:03:19.648Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "US8816242098",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Portfolio",
+            "detail": {
+              "text": "Brokerage",
+              "displayValue": {
+                "text": "Brokerage"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Limit Order",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Teva Pharmaceutical Industries (ADR)",
+              "displayValue": {
+                "text": "Teva Pharmaceutical Industries (ADR)"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "8 ×  18,55 €",
+              "action": {
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
+                    {
+                      "title": "Transaktion",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Aktien",
+                          "detail": {
+                            "text": "8",
+                            "displayValue": {
+                              "text": "8"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Aktienkurs",
+                          "detail": {
+                            "text": "18,55 €",
+                            "displayValue": {
+                              "text": "18,55 €"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Summe",
+                          "detail": {
+                            "text": "148,40 €",
+                            "displayValue": {
+                              "text": "148,40 €"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    }
+                  ]
+                },
+                "type": "infoPage"
+              },
+              "displayValue": {
+                "text": "18,55 €",
+                "prefix": "8 × "
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Steuer",
+            "detail": {
+              "text": "7,66 €",
+              "displayValue": {
+                "text": "7,66 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "1,00 €",
+              "displayValue": {
+                "text": "1,00 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Summe",
+            "detail": {
+              "text": "139,74 €",
+              "displayValue": {
+                "text": "139,74 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Performance",
+        "data": [
+          {
+            "title": "Rendite",
+            "detail": {
+              "text": "22,96 %",
+              "trend": "positive",
+              "displayValue": {
+                "text": "22,96 %"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gewinn",
+            "detail": {
+              "text": "27,52 €",
+              "trend": "positive",
+              "displayValue": {
+                "text": "27,52 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "horizontalTable"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Kosteninformation",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "eb32bdce-1b2a-4a56-882a-24cb814ee867",
+            "postboxType": "EQUITIES_SELL_EX_ANTE"
+          },
+          {
+            "title": "Auftragsbestätigung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "96eccb8a-cca0-47aa-a2aa-ee5427d8eb26",
+            "postboxType": "ORDER_CONFIRMATION"
+          },
+          {
+            "title": "Abrechnung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "88b2b6cc-aa38-46e4-bb93-6b54b1dfee32",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

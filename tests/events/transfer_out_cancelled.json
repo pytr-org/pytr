@@ -1,0 +1,92 @@
+{
+  "id": "83af5c46-caa7-4e07-a504-ef0fbe367925",
+  "timestamp": "2024-11-16T11:55:12.959+0000",
+  "title": "MSCI World USD (Dist)",
+  "icon": "logos/IE00BK1PV551/v2",
+  "subtitle": "Aktien übertragen",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "83af5c46-caa7-4e07-a504-ef0fbe367925"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "83af5c46-caa7-4e07-a504-ef0fbe367925",
+    "sections": [
+      {
+        "type": "header",
+        "title": "You transferred 14 shares",
+        "data": {
+          "status": "canceled",
+          "icon": "logos/IE00BK1PV551/v2",
+          "timestamp": "2024-11-16T11:55:12.959548322Z"
+        }
+      },
+      {
+        "type": "banner",
+        "title": "Shares not accepted",
+        "description": "Your outgoing transfer was rejected since your receiving bank didn't accept your shares within 21 days."
+      },
+      {
+        "type": "table",
+        "title": "Overview",
+        "data": [
+          {
+            "title": "Status",
+            "style": "plain",
+            "detail": {
+              "type": "status",
+              "text": "Rejected",
+              "functionalStyle": "CANCELED"
+            }
+          },
+          {
+            "title": "Asset",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "MSCI World USD (Dist)"
+            }
+          },
+          {
+            "title": "Action",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Securities transfer"
+            }
+          },
+          {
+            "title": "BIC",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "BDWBDEMMXXX"
+            }
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "title": "Transaction",
+        "data": [
+          {
+            "title": "Shares",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "14"
+            }
+          },
+          {
+            "title": "Fee",
+            "style": "plain",
+            "detail": {
+              "type": "text",
+              "text": "Free"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

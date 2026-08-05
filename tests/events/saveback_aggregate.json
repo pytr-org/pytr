@@ -1,0 +1,230 @@
+{
+  "id": "94582990-1af6-457e-a0ae-161e4f2607f1",
+  "timestamp": "2024-07-02T13:53:44.125+0000",
+  "title": "S&P 500 Information Tech USD (Acc)",
+  "icon": "logos/IE00B3WJKG14/v2",
+  "avatar": {
+    "asset": "logos/IE00B3WJKG14/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Saveback",
+  "amount": {
+    "currency": "EUR",
+    "value": -15.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "94582990-1af6-457e-a0ae-161e4f2607f1"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SAVEBACK_AGGREGATE",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "94582990-1af6-457e-a0ae-161e4f2607f1",
+    "sections": [
+      {
+        "title": "Du hast 15,00 € erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/IE00B3WJKG14/v2",
+            "badge": null
+          },
+          "subtitleText": "Juli 2 · 13:53",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "IE00B3WJKG14",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Saveback",
+            "detail": {
+              "text": "Abgeschlossen",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "S&P 500 Information Tech USD (Acc)",
+              "displayValue": {
+                "text": "S&P 500 Information Tech USD (Acc)"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Angefallen",
+            "detail": {
+              "text": "+ 15,00 €",
+              "action": {
+                "payload": {
+                  "id": "94582990-1af6-457e-a0ae-161e4f2607f1",
+                  "sections": [
+                    {
+                      "title": "Saveback-Übersicht",
+                      "type": "title"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "",
+                          "detail": {
+                            "content": {
+                              "type": "default",
+                              "title": "1 % Saveback",
+                              "subtitle": "17,00 € zulässig",
+                              "truncate": false
+                            },
+                            "trailing": {
+                              "type": "value",
+                              "title": "15,00 €"
+                            },
+                            "type": "listItem"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "",
+                          "detail": {
+                            "content": {
+                              "type": "default",
+                              "title": "2% Crypto Saveback",
+                              "subtitle": "Keine zulässigen Ausgaben",
+                              "truncate": false
+                            },
+                            "trailing": {
+                              "type": "value",
+                              "title": "0,00 €"
+                            },
+                            "type": "listItem"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "",
+                          "detail": {
+                            "content": {
+                              "type": "default",
+                              "title": "Gesamt",
+                              "truncate": false
+                            },
+                            "trailing": {
+                              "type": "value",
+                              "title": "15,00 €"
+                            },
+                            "type": "listItem"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    },
+                    {
+                      "text": "Du erhältst Saveback auf die ersten 1.500 € an zulässigen Transaktionen pro Monat. Erfahre mehr über Saveback.",
+                      "style": "disclaimer",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "displayMode": "bottomSheet",
+                "type": "infoPage"
+              },
+              "displayValue": {
+                "text": "+ 15,00 €"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "0.501924 x  29,89 €",
+              "displayValue": {
+                "text": "29,89 €",
+                "prefix": "0.501924 x "
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "Kostenlos",
+              "displayValue": {
+                "text": "Kostenlos"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "+ 15,00 €",
+              "displayValue": {
+                "text": "+ 15,00 €"
+              },
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung Ausführung",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "45e2b36b-81a3-408c-822a-318b49c49cb5",
+            "postboxType": "SAVINGS_PLAN_EXECUTED_V2"
+          },
+          {
+            "title": "Kosteninformation",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "c3037321-6365-4e2c-98e7-be0b8b5b0406",
+            "postboxType": "COSTS_INFO_SAVINGS_PLAN_V2"
+          },
+          {
+            "title": "Aktivierung",
+            "action": {
+              "payload": {
+                "path": "/api/v1/benefits/saveback/documents/config/817422da-529a-4e76-8b38-aa242d085756",
+                "title": "Herunterladen",
+                "shareable": true
+              },
+              "type": "authenticatedBrowserModal"
+            },
+            "id": "817422da-529a-4e76-8b38-aa242d085756",
+            "postboxType": "BENEFIT_ACTIVATED"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

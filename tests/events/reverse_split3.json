@@ -1,0 +1,124 @@
+{
+  "id": "8ffd17fe-afc2-3520-8eea-28828c8a8168",
+  "timestamp": "2026-06-30T16:46:52.404+0000",
+  "title": "Honeywell International",
+  "icon": "logos/US4385161066/v2",
+  "subtitle": "Reverse Split",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "8ffd17fe-afc2-3520-8eea-28828c8a8168"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "8ffd17fe-afc2-3520-8eea-28828c8a8168",
+    "sections": [
+      {
+        "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+        "data": {
+          "icon": {
+            "asset": "logos/US4385161066/v2",
+            "badge": null
+          },
+          "timestamp": "2026-06-30T16:46:52.404Z",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Reverse Split",
+              "displayValue": {
+                "text": "Reverse Split",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Honeywell International",
+              "displayValue": {
+                "text": "Honeywell International",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien entfernt",
+            "detail": {
+              "text": "0.966682",
+              "displayValue": {
+                "text": "0.966682",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Honeywell International",
+              "displayValue": {
+                "text": "Honeywell International",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "0.483341",
+              "displayValue": {
+                "text": "0.483341",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "30.06.2026",
+            "action": {
+              "payload": "",
+              "type": "browserModal"
+            },
+            "id": "873a5c81-5f95-4d44-a8c7-f475fba6dd4c",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

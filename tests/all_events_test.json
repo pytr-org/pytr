@@ -1,0 +1,195 @@
+[
+  {
+    "id": "12345678",
+    "timestamp": "2024-02-20T16:32:07.731+0000",
+    "title": "Euro Stoxx 50 EUR (Dist)",
+    "icon": "logos/IE00B4K6B022/v2",
+    "badge": null,
+    "subtitle": "Kauforder",
+    "amount": {"currency": "EUR", "value": -3002.8, "fractionDigits": 2},
+    "status": "EXECUTED",
+    "action": {"type": "timelineDetail", "payload": "12345678"},
+    "eventType": "ORDER_EXECUTED",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "12345678",
+      "sections": [
+        {
+          "title": "Du hast 3.002,80 € investiert",
+          "data": {"icon": "logos/IE00B4K6B022/v2", "status": "executed"},
+          "action": {"type": "instrumentDetail", "payload": "IE00B4K6B022"},
+          "type": "header"
+        },
+        {
+          "title": "Transaktion",
+          "data": [
+            {"title": "Anteile", "detail": {"text": "60", "type": "text"}, "style": "plain"},
+            {"title": "Aktienkurs", "detail": {"text": "50,03 €", "type": "text"}, "style": "plain"},
+            {"title": "Gebühr", "detail": {"text": "1,00 €", "type": "text"}, "style": "plain"},
+            {"title": "Gesamt", "detail": {"text": "3.002,80 €", "type": "text"}, "style": "highlighted"}
+          ],
+          "type": "table"
+        }
+      ]
+    }
+  },
+  {
+    "id": "5b0f491f-7bad-40b1-8cd1-56d83729afd4",
+    "timestamp": "2025-03-14T07:03:14.000+0000",
+    "title": "D-Wave Quantum",
+    "icon": "logos/US26740W1099/v2",
+    "subtitle": "Stop-Sell-Order",
+    "amount": {"currency": "EUR", "value": 94.76, "fractionDigits": 2},
+    "status": "EXECUTED",
+    "action": {"type": "timelineDetail", "payload": "5b0f491f-7bad-40b1-8cd1-56d83729afd4"},
+    "eventType": "trading_trade_executed",
+    "cashAccountNumber": "123456789",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "5b0f491f-7bad-40b1-8cd1-56d83729afd4",
+      "sections": [
+        {
+          "title": "Du hast 94,76 € erhalten",
+          "data": {"icon": "logos/US26740W1099/v2", "status": "executed"},
+          "action": {"payload": "US26740W1099", "type": "instrumentDetail"},
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {"title": "Asset", "detail": {"text": "D-Wave Quantum", "type": "text"}, "style": "plain"},
+            {
+              "title": "Transaktion",
+              "detail": {
+                "text": "17 × 5,82 €",
+                "action": {
+                  "payload": {
+                    "id": "00000000-0000-0000-0000-000000000000",
+                    "sections": [
+                      {"title": "Transaktion", "type": "title"},
+                      {
+                        "data": [
+                          {"title": "Aktien", "detail": {"text": "17", "type": "text"}, "style": "plain"},
+                          {"title": "Aktienkurs", "detail": {"text": "5,82 €", "type": "text"}, "style": "plain"},
+                          {"title": "Summe", "detail": {"text": "98,94 €", "type": "text"}, "style": "plain"}
+                        ],
+                        "type": "table"
+                      }
+                    ]
+                  },
+                  "type": "infoPage"
+                },
+                "type": "text"
+              },
+              "style": "plain"
+            },
+            {"title": "Steuer", "detail": {"text": "3,18 €", "type": "text"}, "style": "plain"},
+            {"title": "Gebühr", "detail": {"text": "1,00 €", "type": "text"}, "style": "plain"},
+            {"title": "Summe", "detail": {"text": "94,76 €", "type": "text"}, "style": "plain"}
+          ],
+          "type": "table"
+        }
+      ]
+    }
+  },
+  {
+    "id": "88008da6-da94-3e0e-8ea5-e3878643f5ab",
+    "timestamp": "2025-10-23T14:19:56.295+0000",
+    "title": "Comcast (A)",
+    "icon": "logos/US20030N1019/v2",
+    "subtitle": "Bardividende",
+    "amount": {"currency": "EUR", "value": 2.24, "fractionDigits": 2},
+    "status": "EXECUTED",
+    "action": {"type": "timelineDetail", "payload": "88008da6-da94-3e0e-8ea5-e3878643f5ab"},
+    "eventType": "ssp_corporate_action_invoice_cash",
+    "cashAccountNumber": "123456789",
+    "source": "timelineTransaction",
+    "details": {
+      "id": "88008da6-da94-3e0e-8ea5-e3878643f5ab",
+      "sections": [
+        {
+          "title": "Du hast 2,24 € erhalten",
+          "data": {"icon": "logos/US20030N1019/v2", "status": "executed"},
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {"title": "Event", "detail": {"text": "Bardividende", "type": "text"}, "style": "plain"},
+            {"title": "Wertpapier", "detail": {"text": "Comcast (A)", "type": "text"}, "style": "plain"}
+          ],
+          "type": "table"
+        },
+        {
+          "title": "Geschäft",
+          "data": [
+            {"title": "Aktien", "detail": {"text": "10.640298", "type": "text"}, "style": "plain"},
+            {"title": "Steuer", "detail": {"text": "-0,78 €", "type": "text"}, "style": "plain"},
+            {"title": "Gesamt", "detail": {"text": "2,24 €", "type": "text"}, "style": "plain"}
+          ],
+          "type": "table"
+        }
+      ]
+    }
+  },
+  {
+    "id": "deposit-001",
+    "timestamp": "2024-06-03T17:07:26.374+0000",
+    "title": "My Name",
+    "icon": "logos/timeline_plus_circle/v2",
+    "subtitle": null,
+    "amount": {"currency": "EUR", "value": 200.0, "fractionDigits": 2},
+    "status": "EXECUTED",
+    "action": {"type": "timelineDetail", "payload": "deposit-001"},
+    "eventType": "timeline_legacy_migrated_events",
+    "cashAccountNumber": null,
+    "source": "timelineTransaction",
+    "details": {
+      "id": "deposit-001",
+      "sections": [
+        {
+          "title": "Du hast 200,00 € erhalten",
+          "data": {"icon": "logos/timeline_plus_circle/v2", "status": "executed"},
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {"title": "Von", "detail": {"text": "My Name", "type": "text"}, "style": "plain"},
+            {"title": "IBAN", "detail": {"text": "...", "type": "text"}, "style": "plain"}
+          ],
+          "type": "table"
+        }
+      ]
+    }
+  },
+  {
+    "id": "e230be28-286a-31b6-879f-5c97f8a9d85a",
+    "timestamp": "2024-06-26T08:06:40.347+0000",
+    "title": "Chipotle Mexican Grill",
+    "icon": "logos/US1696561059/v2",
+    "subtitle": "Aktiensplit",
+    "action": {"type": "timelineDetail", "payload": "e230be28-286a-31b6-879f-5c97f8a9d85a"},
+    "eventType": "ssp_corporate_action_invoice_shares",
+    "source": "timelineActivity",
+    "details": {
+      "id": "e230be28-286a-31b6-879f-5c97f8a9d85a",
+      "sections": [
+        {
+          "title": "Du hast Aktien aus einer Kapitalmaßnahme erhalten",
+          "data": {"icon": "logos/US1696561059/v2", "status": "executed"},
+          "type": "header"
+        },
+        {
+          "title": "Übersicht",
+          "data": [
+            {"title": "Orderart", "detail": {"text": "Aktiensplit", "type": "text"}, "style": "plain"},
+            {"title": "Wertpapier", "detail": {"text": "Chipotle", "type": "text"}, "style": "plain"},
+            {"title": "Aktien hinzugefügt", "detail": {"text": "49.000000", "type": "text"}, "style": "plain"}
+          ],
+          "type": "table"
+        }
+      ]
+    }
+  }
+]

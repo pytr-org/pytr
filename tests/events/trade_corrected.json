@@ -1,0 +1,376 @@
+{
+  "id": "20f25b9c-272c-4063-9681-674beba243b1",
+  "timestamp": "2024-12-16T09:59:01.938+0000",
+  "title": "Worldline",
+  "icon": "logos/FR0011981968/v2",
+  "avatar": {
+    "asset": "logos/FR0011981968/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Limit Verkauf-Order neu abgerechnet",
+  "amount": {
+    "currency": "EUR",
+    "value": 105.85,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "20f25b9c-272c-4063-9681-674beba243b1"
+  },
+  "cashAccountNumber": null,
+  "hidden": false,
+  "deleted": false,
+  "eventType": "TRADE_CORRECTED",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "20f25b9c-272c-4063-9681-674beba243b1",
+    "sections": [
+      {
+        "title": "Du hast 105,85 €  erhalten",
+        "data": {
+          "icon": "logos/FR0011981968/v2",
+          "subtitleText": null,
+          "timestamp": "2024-12-16T09:59:01.938+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "FR0011981968"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Limit Verkauf",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Worldline",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "table"
+      },
+      {
+        "title": "Performance",
+        "data": [
+          {
+            "title": "Rendite",
+            "detail": {
+              "text": "8,03 %",
+              "trend": "positive",
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gewinn",
+            "detail": {
+              "text": "8,08 €",
+              "trend": "positive",
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "action": null,
+        "type": "horizontalTable"
+      },
+      {
+        "title": "Transaktion",
+        "data": [
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "13",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktienkurs",
+            "detail": {
+              "text": "8,36 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Steuern",
+            "detail": {
+              "text": "1,80 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "1,00 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "+ 105,85 €",
+              "trend": null,
+              "action": null,
+              "displayValue": null,
+              "type": "text"
+            },
+            "style": "highlighted"
+          }
+        ],
+        "action": {
+          "type": "infoPage",
+          "payload": {
+            "sections": [
+              {
+                "title": "Transaktion",
+                "action": null,
+                "type": "title"
+              },
+              {
+                "title": null,
+                "data": [
+                  {
+                    "title": "Anteile",
+                    "detail": {
+                      "text": "13",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Aktienkurs",
+                    "detail": {
+                      "text": "8,36 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Order",
+                    "detail": {
+                      "text": "+ 108,65 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "highlighted"
+                  }
+                ],
+                "action": null,
+                "type": "table"
+              },
+              {
+                "title": null,
+                "data": [
+                  {
+                    "title": "Kapitalertragsteuer",
+                    "detail": {
+                      "text": "1,60 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Kirchensteuer",
+                    "detail": {
+                      "text": "0,12 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Solidaritätszuschlag",
+                    "detail": {
+                      "text": "0,08 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Steuern",
+                    "detail": {
+                      "text": "1,80 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "highlighted"
+                  }
+                ],
+                "action": null,
+                "type": "table"
+              },
+              {
+                "title": null,
+                "data": [
+                  {
+                    "title": "Order",
+                    "detail": {
+                      "text": "+ 108,65 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Steuern",
+                    "detail": {
+                      "text": "1,80 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Gebühr",
+                    "detail": {
+                      "text": "1,00 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "plain"
+                  },
+                  {
+                    "title": "Gesamt",
+                    "detail": {
+                      "text": "+ 105,85 €",
+                      "trend": null,
+                      "action": null,
+                      "displayValue": null,
+                      "type": "text"
+                    },
+                    "style": "highlighted"
+                  }
+                ],
+                "action": null,
+                "type": "table"
+              }
+            ]
+          }
+        },
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung 2",
+            "detail": "27.06.2025",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "39adca91-1233-4be3-96ce-6c9600a6a306",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Abrechnung 1",
+            "detail": "16.12.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "08797e22-8186-49a7-9340-e570be775a60",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Auftragsbestätigung",
+            "detail": "16.12.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "c4881377-47fc-41eb-8666-b595406bd8b0",
+            "postboxType": "CONFIRM_ORDER_CREATE_V2"
+          },
+          {
+            "title": "Kosteninformation",
+            "detail": "16.12.2024",
+            "action": {
+              "type": "browserModal",
+              "payload": ""
+            },
+            "id": "09b6e758-7be7-459d-ba09-6b2dc6d27a6c",
+            "postboxType": "COSTS_INFO_SELL_V2"
+          }
+        ],
+        "action": null,
+        "type": "documents"
+      }
+    ]
+  }
+}

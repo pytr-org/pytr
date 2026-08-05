@@ -1,0 +1,83 @@
+{
+  "id": "b2c3d4e5-f6a7-8901-bc23-de45fg678901",
+  "timestamp": "2022-05-20T16:45:00.000+0000",
+  "title": "Netflix",
+  "icon": "logos/US64110L1061/v2",
+  "subtitle": "Wertpapiertransfer",
+  "eventType": "timeline_legacy_migrated_events",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "b2c3d4e5-f6a7-8901-bc23-de45fg678901"
+  },
+  "source": "timelineActivity",
+  "details": {
+    "id": "b2c3d4e5-f6a7-8901-bc23-de45fg678901",
+    "sections": [
+      {
+        "title": "Du hast 4 Aktien gesendet",
+        "data": {
+          "icon": "logos/US64110L1061/v2",
+          "subtitleText": null,
+          "timestamp": "2022-05-20T16:45:00.000+0000",
+          "status": "executed"
+        },
+        "action": {
+          "type": "instrumentDetail",
+          "payload": "US64110L1061"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Completed",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Wertpapiertransfer",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteile",
+            "detail": {
+              "text": "4",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Anteil",
+            "detail": {
+              "text": "Netflix",
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung",
+            "detail": "20.05.2022",
+            "id": "c3d4e5f6-a7b8-9012-cd34-ef56gh789012",
+            "postboxType": "SHAREBOOKING"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

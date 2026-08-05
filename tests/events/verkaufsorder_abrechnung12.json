@@ -1,0 +1,138 @@
+{
+  "id": "7ca12567-d1a3-4b9e-9ff9-860a8b1039da",
+  "timestamp": "2026-05-18T15:37:40.852+0000",
+  "title": "Zalando",
+  "icon": "logos/DE000ZAL1111/v2",
+  "avatar": {
+    "asset": "logos/DE000ZAL1111/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Verkaufsorder",
+  "amount": {
+    "currency": "EUR",
+    "value": 93.07,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "7ca12567-d1a3-4b9e-9ff9-860a8b1039da"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "TRADING_TRADE_EXECUTED",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "7ca12567-d1a3-4b9e-9ff9-860a8b1039da",
+    "sections": [
+      {
+        "title": "Du hast 93,07 € erhalten",
+        "data": {
+          "icon": {
+            "asset": "logos/DE000ZAL1111/v2",
+            "badge": null
+          },
+          "timestamp": "2026-05-18T15:37:40.85271Z",
+          "status": "executed"
+        },
+        "action": {
+          "payload": "DE000ZAL1111",
+          "type": "instrumentDetail"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Verkaufen",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Zalando",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien",
+            "detail": {
+              "text": "4,795804",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gebühr",
+            "detail": {
+              "text": "1,00 €",
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Summe",
+            "detail": {
+              "text": "93,07 €",
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Abrechnung 1",
+            "action": {
+              "payload": "https://example.com/pb177912741843111361132997312.pdf",
+              "type": "browserModal"
+            },
+            "id": "c296d1ff-1c41-4d78-9f78-ebfd36c1aa4a",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Abrechnung 2",
+            "action": {
+              "payload": "https://example.com/pb177912741845833861871511777.pdf",
+              "type": "browserModal"
+            },
+            "id": "878d892d-e423-4276-bd92-1be56378ddae",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Kosteninformation 1",
+            "action": {
+              "payload": "https://example.com/pb17791186615264608177800718.pdf",
+              "type": "browserModal"
+            },
+            "id": "6fefbcb8-b090-42fe-9a2e-082c448be84b",
+            "postboxType": "EQUITIES_SELL_EX_ANTE"
+          },
+          {
+            "title": "Kosteninformation 2",
+            "action": {
+              "payload": "https://example.com/pb177911866152618856175389832.pdf",
+              "type": "browserModal"
+            },
+            "id": "7f65bb06-b16a-4cc1-8ba3-a4423ec4b9a0",
+            "postboxType": "EQUITIES_SELL_EX_ANTE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}
