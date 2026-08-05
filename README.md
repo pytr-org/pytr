@@ -119,6 +119,26 @@ procedure will log you out from your mobile device.
 If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain
 the phone number, the second line the pin). If the file doesn't exist pytr will ask for for the phone number and pin.
 
+### If web login suddenly stops working
+
+The web login identifies itself to Trade Republic as their own web frontend, using a build version and a browser
+`User-Agent` that are pinned in `pytr`. Trade Republic can invalidate either at any time, and when they do, login
+fails for everyone until a new release goes out. Two environment variables let you fix it yourself in the meantime:
+
+| Variable | Overrides | Use it when |
+|---|---|---|
+| `PYTR_TR_APP_VERSION` | The frontend build version sent as `X-TR-App-Version` | Login fails with `426 CLIENT_VERSION_OUTDATED` |
+| `PYTR_TR_USER_AGENT` | The `User-Agent` sent on every request | Login is rejected or challenged in a way that looks like bot filtering |
+
+```sh
+ PYTR_TR_APP_VERSION=2.2700.4 pytr login --v2
+ PYTR_TR_USER_AGENT='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36' pytr login
+```
+
+Read the current values off [app.traderepublic.com](https://app.traderepublic.com/) in your browser's dev tools, on the
+network request to `/api/v2/auth/web/login`. Leaving a variable unset, or setting it to an empty string, keeps the
+built-in default. If you need one of these, please also open an issue so the default can be updated for everyone.
+
 ## Development
 
 ### Setting Up a Development Environment
