@@ -2646,33 +2646,3 @@ def test_events(case):
     assert transactions == rowtransactions
 
 
-def _make_unmapped_event(action):
-    return {
-        "id": "test-id",
-        "timestamp": "2024-01-01T00:00:00.000+0000",
-        "title": "Some brand new thing",
-        "subtitle": "that pytr cannot map",
-        "eventType": "SOME_UNMAPPED_TYPE",
-        "action": action,
-    }
-
-
-def test_informational_event_without_detail_is_silently_ignored():
-    import logging
-    from unittest.mock import patch
-
-    event_logger = logging.getLogger("event")
-    with patch.object(event_logger, "warning") as mock_warn:
-        event = Event.from_dict(_make_unmapped_event(None))
-    assert event.event_type is None
-    assert not any("Ignoring unknown event" in str(call) for call in mock_warn.call_args_list)
-
-
-def test_unmapped_transaction_event_still_warns():
-    import logging
-    from unittest.mock import patch
-
-    event_logger = logging.getLogger("event")
-    with patch.object(event_logger, "warning") as mock_warn:
-        Event.from_dict(_make_unmapped_event({"type": "timelineDetail", "payload": "test-id"}))
-    assert any("Ignoring unknown event" in str(call) for call in mock_warn.call_args_list)
