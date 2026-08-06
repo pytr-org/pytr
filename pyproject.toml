@@ -41,7 +41,9 @@ dependencies = [
 # fetches separately. The pure-Python `--waf-token awswaf` path solves the same
 # challenge without either, so deployments that use it — or that find their IP
 # is not challenged at all — should not have to carry the browser.
-playwright = ["playwright"]
+playwright = [
+    "playwright>=1.62.0",
+]
 
 [project.scripts]
 pytr = "pytr.main:main"
