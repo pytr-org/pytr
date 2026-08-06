@@ -2644,5 +2644,3 @@ def test_events(case):
         entry.setdefault("ISIN2", None)
         entry.setdefault("Stück2", None)
     assert transactions == rowtransactions
-
-
