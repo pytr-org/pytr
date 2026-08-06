@@ -546,6 +546,12 @@ class Event:
                 ]:
                     event_type = PPEventType.TAXES
 
+        # A real transaction carries a "timelineDetail" action.
+        # Events without one are informational activity-log entries (e.g. device paired, address changed, ...)
+        # that have no transaction to parse — skip them silently before any further processing.
+        if (event_dict.get("action") or {}).get("type") != "timelineDetail":
+            ignoreEvent = True
+
         # Canceled Events should be ignored, even if they have an event type
         if event_type is not None:
             if event_dict.get("status", "").lower() == "canceled":
@@ -587,12 +593,6 @@ class Event:
                         or ititle.startswith("You received an offer to sell shares")
                     ):
                         ignoreEvent = True
-
-            # A real transaction carries a "timelineDetail" action.
-            # Events without one are informational activity-log entries (e.g. device paired, address changed, ...) that
-            # have no transaction to parse
-            if (event_dict.get("action") or {}).get("type") != "timelineDetail":
-                ignoreEvent = True
 
             if not ignoreEvent:
                 get_event_logger().warning(f'Ignoring unknown event "{eventdesc}"')
