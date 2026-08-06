@@ -116,14 +116,16 @@ class TradeRepublicApi:
         save_cookies=False,
         credentials_file=None,
         cookies_file=None,
-        waf_token="playwright",
         use_v2_login=False,
+        waf_token="default",
     ):
         self.log = get_logger(__name__)
         self._locale = locale
         self._save_cookies = save_cookies
-        self._waf_token = waf_token
         self._use_v2_login = use_v2_login
+        self._waf_token = waf_token
+        if self._waf_token == "default":
+            self._waf_token = None if self._use_v2_login else "playwright"
 
         self._credentials_file = pathlib.Path(credentials_file) if credentials_file else CREDENTIALS_FILE
 
@@ -204,12 +206,12 @@ class TradeRepublicApi:
         try:
             from playwright.sync_api import sync_playwright  # type: ignore[import-not-found]
         except ImportError:
-            self.log.error(
-                "Failed to get AWS WAF token: playwright is not installed. "
+            raise ValueError(
+                "playwright is not installed. "
                 "Install the optional extra with `pip install 'pytr[playwright]'` "
-                "and then run `playwright install chromium`."
-            )
-            raise
+                "and then run `playwright install chromium`. "
+                "Alternatively, use --v2 which does not require a WAF token."
+            ) from None
 
         self.log.info("Retrieving AWS WAF token using Playwright...")
 
@@ -237,7 +239,13 @@ class TradeRepublicApi:
                         break
                     time.sleep(0.5)
                 browser.close()
-        except Exception:
+        except Exception as e:
+            if "Executable doesn't exist" in str(e):
+                raise ValueError(
+                    "Chromium is not installed. "
+                    "Run `playwright install chromium` to download it. "
+                    "Alternatively, use --v2 which does not require a WAF token."
+                ) from None
             self.log.error("Failed to get AWS WAF token.")
             raise
 
@@ -326,16 +334,20 @@ class TradeRepublicApi:
 
         if self._waf_token == "awswaf":
             self._waf_token = self._fetch_waf_token_awswaf()
+            if not self._waf_token:
+                self.log.warning("No WAF token available.")
         elif self._waf_token == "playwright":
             self._waf_token = self._fetch_waf_token_playwright()
+            if not self._waf_token:
+                self.log.warning("No WAF token available.")
         elif self._waf_token:
             self.log.info("Using WAF token from arguments.")
+        else:
+            self.log.info("WAF token skipped.")
 
         if self._waf_token:
             self.log.debug(f"WAF Token: {self._waf_token}")
             self._set_waf_cookie(self._waf_token)
-        else:
-            self.log.warning("No WAF token available.")
 
         extra_headers = self._login_headers() if self._use_v2_login else None
         login_path = "/api/v2/auth/web/login" if self._use_v2_login else "/api/v1/auth/web/login"
@@ -345,6 +357,14 @@ class TradeRepublicApi:
             headers=extra_headers,
         )
         self.log.debug(f"Web login returned: {r.status_code}")
+        if r.status_code == 405 and "awselb" in r.headers.get("server", "").lower():
+            hint = (
+                f"The request was blocked by the AWS load balancer before reaching Trade Republic "
+                f"(server: {r.headers.get('server')}, empty body). "
+                "This means the AWS WAF token is missing or was rejected. "
+                "Try using --waf-token playwright to obtain a valid token, or switch to --v2 which does not require a WAF token."
+            )
+            raise ValueError(hint)
         r.raise_for_status()
         j = r.json()
         self.log.debug(f"Web login data: {json.dumps(j, indent=4)}")
