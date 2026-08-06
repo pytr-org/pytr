@@ -205,8 +205,8 @@ class Timeline:
             self.requested_detail += 1
 
             action = event.get("action")
-            if action is None or action.get("type") != "timelineDetail":
-                action_type = action.get("type") if action is not None else None
+            action_type = action.get("type") if action is not None else None
+            if action_type != "timelineDetail":
                 self.received_detail += 1
                 self.events.append(event)
                 self.log.info(
