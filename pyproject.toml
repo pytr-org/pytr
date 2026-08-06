@@ -29,11 +29,20 @@ dependencies = [
     "curl_cffi",
     "packaging",
     "pathvalidate",
-    "playwright",
     "pygments",
     "requests_futures",
     "shtab",
     "websockets>=14",
+]
+
+[project.optional-dependencies]
+# Only `--waf-token playwright` (the CLI default) needs this, and it drags in a
+# ~130 MB package plus a ~630 MB Chromium download that `playwright install`
+# fetches separately. The pure-Python `--waf-token awswaf` path solves the same
+# challenge without either, so deployments that use it — or that find their IP
+# is not challenged at all — should not have to carry the browser.
+playwright = [
+    "playwright>=1.62.0",
 ]
 
 [project.scripts]

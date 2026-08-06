@@ -80,14 +80,38 @@ def get_main_parser():
     parser_login_args = argparse.ArgumentParser(add_help=False)
     parser_login_args.add_argument("-n", "--phone_no", help="TradeRepublic phone number (international format)")
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
-    parser_login_args.add_argument(
+    waf_group = parser_login_args.add_mutually_exclusive_group()
+    waf_group.add_argument(
         "--waf-token",
-        help='AWS WAF token value or the method to obtain it. Values: "playwright", "awswaf" or a token string, e.g. an aws-waf-token cookie captured from a browser session.',
-        default="playwright",
+        help=(
+            "AWS WAF token string or the method to obtain it. Possible values: "
+            "\"playwright\" (to use playwright to obtain a token, needs the optional extra: pip install 'pytr[playwright]' && playwright install chromium), "
+            '"awswaf" (to use a pure Python implementation to obtain a token, no browser), '
+            '"default" (let pytr determine what to do, e.g. by login method used.), '
+            "or a token string, e.g. captured from a browser session."
+        ),
+        default="default",
+        dest="waf_token",
+    )
+    waf_group.add_argument(
+        "--no-waf-token",
+        help="Skip the AWS WAF token entirely.",
+        action="store_const",
+        const=None,
+        dest="waf_token",
     )
     parser_login_args.add_argument(
         "--store_credentials",
         help="Store credentials (Phone number, pin, cookies) for next usage",
+        action="store_true",
+        default=False,
+    )
+    parser_login_args.add_argument(
+        "--v2",
+        help=(
+            "Use the v2 web-login flow: confirm in the Trade Republic mobile app "
+            "instead of entering an SMS/notification code. Also supports authenticator-app accounts."
+        ),
         action="store_true",
         default=False,
     )
@@ -535,6 +559,7 @@ def main():
             pin=args.pin,
             store_credentials=args.store_credentials,
             waf_token=args.waf_token,
+            v2=args.v2,
         )
     elif args.command == "portfolio":
         Portfolio(
@@ -543,6 +568,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.include_watchlist,
             instruments_to_ignore=re.split(r"[,;]", args.ignore) if args.ignore else [],
@@ -563,6 +589,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             isins,
             output=args.output,
@@ -578,6 +605,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.isin,
         ).get()
@@ -590,6 +618,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.output,
             args.format,
@@ -623,6 +652,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.outputdir,
             not_before,
@@ -688,6 +718,7 @@ def main():
                 pin=args.pin,
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
+                v2=args.v2,
             ),
             args.outputfile,
             decimal_localization=args.decimal_localization,
