@@ -2657,12 +2657,22 @@ def _make_unmapped_event(action):
     }
 
 
-def test_informational_event_without_detail_is_silently_ignored(caplog):
-    event = Event.from_dict(_make_unmapped_event(None))
+def test_informational_event_without_detail_is_silently_ignored():
+    import logging
+    from unittest.mock import patch
+
+    event_logger = logging.getLogger("event")
+    with patch.object(event_logger, "warning") as mock_warn:
+        event = Event.from_dict(_make_unmapped_event(None))
     assert event.event_type is None
-    assert "Ignoring unknown event" not in caplog.text
+    assert not any("Ignoring unknown event" in str(call) for call in mock_warn.call_args_list)
 
 
-def test_unmapped_transaction_event_still_warns(caplog):
-    Event.from_dict(_make_unmapped_event({"type": "timelineDetail", "payload": "test-id"}))
-    assert "Ignoring unknown event" in caplog.text
+def test_unmapped_transaction_event_still_warns():
+    import logging
+    from unittest.mock import patch
+
+    event_logger = logging.getLogger("event")
+    with patch.object(event_logger, "warning") as mock_warn:
+        Event.from_dict(_make_unmapped_event({"type": "timelineDetail", "payload": "test-id"}))
+    assert any("Ignoring unknown event" in str(call) for call in mock_warn.call_args_list)
