@@ -207,22 +207,22 @@ class Timeline:
             action = event.get("action")
             if action is None or action.get("type") != "timelineDetail":
                 action_type = action.get("type") if action is not None else None
+                self.received_detail += 1
+                self.events.append(event)
                 self.log.info(
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
                     f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
-                    f" (event is no timeline detail: action type {action_type!r})"
+                    f" (no timeline detail, action type: {action_type!r})"
                 )
+            elif action.get("payload") != event["id"]:
                 self.received_detail += 1
                 self.events.append(event)
-            elif action.get("payload") != event["id"]:
                 self.log.warning(
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
                     f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
                     f" (action payload {action['payload']!r} does not match event id {event['id']!r})"
                 )
                 self.log.debug("payload mismatch: %s", json.dumps(event, indent=2))
-                self.received_detail += 1
-                self.events.append(event)
             else:
                 await self.tr.timeline_detail_v2(event["id"])
 
