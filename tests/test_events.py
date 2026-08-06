@@ -2170,6 +2170,22 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "zinsen2.json",
+        "event_type": PPEventType.INTEREST,
+        "title": "Zinsen",
+        "value": 6.41,
+        "taxes": 2.45,
+        "transactions": [
+            {
+                "Datum": "2026-08-01T03:26:43",
+                "Typ": "Zinsen",
+                "Wert": 6.41,
+                "Notiz": "Zinsen",
+                "Steuern": 2.45,
+            }
+        ],
+    },
+    {
         "filename": "zusammenschluss.json",
         "event_type": PPEventType.SWAP,
         "title": "Rocket Lab USA",

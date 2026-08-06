@@ -402,7 +402,7 @@ class Event:
                     gesamt_dict = item
                 elif ititle == "Gebühr" and not fees_dict:
                     fees_dict = item
-                elif ititle == "Steuer" and not taxes_dict:
+                elif ititle in ["Steuer", "Steuern"] and not taxes_dict:
                     taxes_dict = item
                 elif ititle in ["Vermögenswert", "Wertpapier", "Asset"] and not wertpapier_dict:
                     wertpapier_dict = item
