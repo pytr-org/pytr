@@ -90,21 +90,24 @@ DEFAULT_USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
 )
 
-# Both values above describe someone else's deployment, and Trade Republic can
-# invalidate either one at any moment: a frontend release makes APP_VERSION stale
+# All three values above describe someone else's deployment, and Trade Republic can
+# invalidate any of them at any moment: a frontend release makes APP_VERSION stale
 # (the endpoints then answer 426 CLIENT_VERSION_OUTDATED, which is what #250 was),
-# and a change to their bot filtering can make the User-Agent the thing being
-# rejected. Neither failure needs a code change to fix, only a different string, so
-# both are readable from the environment. That turns "wait for a pytr release" into
+# a change to their bot filtering can make the User-Agent the thing being rejected,
+# and WEB_PLATFORM is whatever string their API client happens to be configured with.
+# None of those failures needs a code change to fix, only a different string, so all
+# three are readable from the environment. That turns "wait for a pytr release" into
 # "export a variable" for a user who is locked out today.
 #
 #   PYTR_TR_APP_VERSION=2.2700.4 pytr login --v2
 #   PYTR_TR_USER_AGENT='Mozilla/5.0 ... Chrome/149.0.0.0 Safari/537.36' pytr login
+#   PYTR_TR_PLATFORM=web pytr login --v2
 #
 # An unset or empty variable keeps the built-in default, so an empty assignment can
 # never send an empty header.
 ENV_APP_VERSION = "PYTR_TR_APP_VERSION"
 ENV_USER_AGENT = "PYTR_TR_USER_AGENT"
+ENV_PLATFORM = "PYTR_TR_PLATFORM"
 
 
 class TradeRepublicApi:
@@ -349,7 +352,7 @@ class TradeRepublicApi:
         return {
             "X-TR-Device-Info": self._device_info,
             "X-TR-App-Version": os.environ.get(ENV_APP_VERSION) or APP_VERSION,
-            "X-Tr-Platform": WEB_PLATFORM,
+            "X-Tr-Platform": os.environ.get(ENV_PLATFORM) or WEB_PLATFORM,
             "Accept-Language": self._locale,
         }
 

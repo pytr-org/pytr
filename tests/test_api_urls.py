@@ -12,7 +12,9 @@ from pytr.api import (
     APP_VERSION,
     DEFAULT_USER_AGENT,
     ENV_APP_VERSION,
+    ENV_PLATFORM,
     ENV_USER_AGENT,
+    WEB_PLATFORM,
     TradeRepublicApi,
 )
 
@@ -290,12 +292,21 @@ def test_user_agent_can_be_overridden_from_the_environment(monkeypatch):
     assert _real_session_api()._websession.headers["User-Agent"] == CHROME_149
 
 
+def test_platform_can_be_overridden_from_the_environment(monkeypatch):
+    monkeypatch.setenv(ENV_PLATFORM, "web")
+
+    assert _api([])._login_headers()["X-Tr-Platform"] == "web"
+
+
 def test_an_empty_override_keeps_the_built_in_default(monkeypatch):
-    """An empty assignment must not send an empty version or an empty User-Agent."""
+    """An empty assignment must not send an empty header for any of the three."""
     monkeypatch.setenv(ENV_APP_VERSION, "")
     monkeypatch.setenv(ENV_USER_AGENT, "")
+    monkeypatch.setenv(ENV_PLATFORM, "")
 
-    assert _api([])._login_headers()["X-TR-App-Version"] == APP_VERSION
+    headers = _api([])._login_headers()
+    assert headers["X-TR-App-Version"] == APP_VERSION
+    assert headers["X-Tr-Platform"] == WEB_PLATFORM
     assert _real_session_api()._websession.headers["User-Agent"] == DEFAULT_USER_AGENT
 
 
