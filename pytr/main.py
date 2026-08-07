@@ -80,15 +80,25 @@ def get_main_parser():
     parser_login_args = argparse.ArgumentParser(add_help=False)
     parser_login_args.add_argument("-n", "--phone_no", help="TradeRepublic phone number (international format)")
     parser_login_args.add_argument("-p", "--pin", help="TradeRepublic pin")
-    parser_login_args.add_argument(
+    waf_group = parser_login_args.add_mutually_exclusive_group()
+    waf_group.add_argument(
         "--waf-token",
         help=(
-            'AWS WAF token value or the method to obtain it. Values: "playwright" (needs the '
-            "optional extra: pip install 'pytr[playwright]' && playwright install chromium), "
-            '"awswaf" (pure Python, no browser), an empty value to send no token at all, or a '
-            "token string, e.g. an aws-waf-token cookie captured from a browser session."
+            "AWS WAF token string or the method to obtain it. Possible values: "
+            "\"playwright\" (to use playwright to obtain a token, needs the optional extra: pip install 'pytr[playwright]' && playwright install chromium), "
+            '"awswaf" (to use a pure Python implementation to obtain a token, no browser), '
+            '"default" (let pytr determine what to do, e.g. by login method used.), '
+            "or a token string, e.g. captured from a browser session."
         ),
-        default="playwright",
+        default="default",
+        dest="waf_token",
+    )
+    waf_group.add_argument(
+        "--no-waf-token",
+        help="Skip the AWS WAF token entirely.",
+        action="store_const",
+        const=None,
+        dest="waf_token",
     )
     parser_login_args.add_argument(
         "--store_credentials",

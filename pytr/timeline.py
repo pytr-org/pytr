@@ -202,27 +202,29 @@ class Timeline:
         self.detail_digits = len(str(self.all_detail))
 
         for event in self.timeline_details.values():
-            msg = None
-            action = event.get("action")
-            if action is None:
-                if event.get("actionLabel") is None:
-                    msg = "Skip timeline detail: No action/actionLabel section"
-            elif action.get("type") != "timelineDetail":
-                msg = f"Skip timeline detail: Action type {action['type']} is not timelineDetail"
-            elif action.get("payload") != event["id"]:
-                msg = f"Skip timeline detail: Action payload {action['payload']} does not match id {event['id']}"
-
             self.requested_detail += 1
-            if msg is None:
-                await self.tr.timeline_detail_v2(event["id"])
-            else:
+
+            action = event.get("action")
+            action_type = action.get("type") if action is not None else None
+            if action_type != "timelineDetail":
+                self.received_detail += 1
+                self.events.append(event)
+                self.log.info(
+                    f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
+                    f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
+                    f" (no timeline detail, action type: {action_type!r})"
+                )
+            elif action.get("payload") != event["id"]:
                 self.received_detail += 1
                 self.events.append(event)
                 self.log.warning(
                     f"{self.received_detail + self.skipped_detail:>{self.detail_digits}}/{self.all_detail}: "
-                    + f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]} {msg}"
+                    f"{event['title']} -- {event['subtitle']} - {event['timestamp'][:19]}"
+                    f" (action payload {action['payload']!r} does not match event id {event['id']!r})"
                 )
-                self.log.debug("%s: %s", msg, json.dumps(event, indent=2))
+                self.log.debug("payload mismatch: %s", json.dumps(event, indent=2))
+            else:
+                await self.tr.timeline_detail_v2(event["id"])
 
             if self.requested_detail % MAX_EVENT_REQUEST_BATCH == 0 and (
                 (self.received_detail + self.skipped_detail) < self.requested_detail

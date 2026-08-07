@@ -13,8 +13,7 @@ __Table of Contents__
 * [Quickstart](#quickstart)
 * [Usage](#usage)
 * [Authentication](#authentication)
-  * [Web login (default)](#web-login-default)
-  * [App login](#app-login)
+  * [Web login](#web-login)
 * [Development](#development)
   * [Setting Up a Development Environment](#setting-up-a-development-environment)
   * [Linting and Code Formatting](#linting-and-code-formatting)
@@ -96,28 +95,26 @@ Options:
 
 ## Authentication
 
-There are two authentication methods:
+### Web login
 
-### Web login (default)
+Web login uses the public web-login endpoints at `api.traderepublic.com`. Two variants are available:
 
-Web login is the newer method that uses the same login method as [app.traderepublic.com](https://app.traderepublic.com/),
-meaning you receive a four-digit code in the TradeRepublic app or via SMS. This will keep you logged in your primary
-device, but means that you may need to repeat entering a new four-digit code ever so often when runnnig `pytr`.
+- **v1 (default)**: `pytr login`. You receive a four-digit code in the TradeRepublic app (or via SMS as a
+  fallback) and enter it in the terminal. This is the original behavior; nothing changes for existing users.
+  v1 requires passing an AWS WAF token with the login request; by default pytr fetches one automatically
+  via Playwright (requires the optional `playwright` extra: `pip install 'pytr[playwright]' && playwright install chromium`).
+  The pure-Python alternative `--waf-token awswaf` exists but has been reported to no longer work reliably.
+- **v2 (opt-in)**: `pytr login --v2`. Mirrors what
+  [app.traderepublic.com](https://app.traderepublic.com/) currently does. Instead of typing a four-digit code, you
+  confirm the login from a push notification in the Trade Republic mobile app. Accounts secured with an authenticator
+  app are asked for a code from that app instead. Useful if your account no longer issues a code via the app or SMS.
+  v2 does not require a WAF token; pytr skips it automatically when `--v2` is used.
+  Note that Trade Republic removed the SMS resend endpoint along with the v1 web login, so there is no SMS fallback
+  under `--v2`. The flag is available on every subcommand that performs a login, e.g. `pytr portfolio --v2`,
+  `pytr dl_docs --v2`.
 
-### App login
-
-App login is the older method that uses the same login method as the TradeRepublic app. First you need to perform a
-device reset - a private key will be generated that pins your "device". The private key is saved to your keyfile. This
-procedure will log you out from your mobile device.
-
-```sh
- pytr login
- # or
- pytr login --phone_no +49123456789 --pin 1234
-```
-
-If no arguments are supplied pytr will look for them in the file `~/.pytr/credentials` (the first line must contain
-the phone number, the second line the pin). If the file doesn't exist pytr will ask for for the phone number and pin.
+Both variants keep you logged in on your primary device, but you may need to re-authenticate every so often when
+running `pytr`.
 
 ### If web login suddenly stops working
 
