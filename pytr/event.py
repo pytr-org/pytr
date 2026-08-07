@@ -292,6 +292,7 @@ _note_to_isin: dict[str, str] = {
     "Enovix Corp. WTS 01.10.26": "US2935941318",
     "Gamestop Corp. WTS 30.10.26": "US36467W1172",
     "GLOBALSTAR INC. O.N.": "US3789735079",
+    "Honeywell Aerospace": "US43849R1059",
     "HONEYWELL AEROSPACE INC.": "US43849R1059",
     "Magnum Ice Cream": "NL0015002MS2",
     "Netflix": "US64110L1061",
