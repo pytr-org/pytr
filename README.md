@@ -14,6 +14,7 @@ __Table of Contents__
 * [Usage](#usage)
 * [Authentication](#authentication)
   * [Web login](#web-login)
+  * [If web login suddenly stops working](#if-web-login-suddenly-stops-working)
 * [Development](#development)
   * [Setting Up a Development Environment](#setting-up-a-development-environment)
   * [Linting and Code Formatting](#linting-and-code-formatting)
@@ -115,6 +116,29 @@ Web login uses the public web-login endpoints at `api.traderepublic.com`. Two va
 
 Both variants keep you logged in on your primary device, but you may need to re-authenticate every so often when
 running `pytr`.
+
+### If web login suddenly stops working
+
+The web login identifies itself to Trade Republic as their own web frontend, using a build version, a platform name
+and a browser `User-Agent` that are pinned in `pytr`. Trade Republic can invalidate any of them at any time, and when
+they do, login fails for everyone until a new release goes out. Three environment variables let you fix it yourself
+in the meantime:
+
+| Variable | Overrides | Use it when |
+|---|---|---|
+| `PYTR_TR_APP_VERSION` | The frontend build version sent as `X-TR-App-Version` | Login fails with `426 CLIENT_VERSION_OUTDATED` |
+| `PYTR_TR_USER_AGENT` | The `User-Agent` sent on every request | Login is rejected or challenged in a way that looks like bot filtering |
+| `PYTR_TR_PLATFORM` | The platform name sent as `X-Tr-Platform` | Login fails with a missing or invalid header error naming the platform |
+
+```sh
+ PYTR_TR_APP_VERSION=2.2700.4 pytr login --v2
+ PYTR_TR_USER_AGENT='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36' pytr login
+ PYTR_TR_PLATFORM=web pytr login --v2
+```
+
+Read the current values off [app.traderepublic.com](https://app.traderepublic.com/) in your browser's dev tools, on the
+network request to `/api/v2/auth/web/login`. Leaving a variable unset, or setting it to an empty string, keeps the
+built-in default. If you need one of these, please also open an issue so the default can be updated for everyone.
 
 ## Development
 

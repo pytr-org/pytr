@@ -8,7 +8,15 @@ from typing import Any
 import pytest
 import requests
 
-from pytr.api import TradeRepublicApi
+from pytr.api import (
+    APP_VERSION,
+    DEFAULT_USER_AGENT,
+    ENV_APP_VERSION,
+    ENV_PLATFORM,
+    ENV_USER_AGENT,
+    WEB_PLATFORM,
+    TradeRepublicApi,
+)
 
 LOGIN = "https://api.traderepublic.com/api/v2/auth/web/login"
 PROCESS = "https://api.traderepublic.com/api/v2/auth/web/login/processes/pid-1"
@@ -259,6 +267,75 @@ def test_app_version_and_platform_come_from_the_web_frontend():
     # A build version of the frontend, not a pytr version.
     assert re.fullmatch(r"\d+\.\d+\.\d+", headers["X-TR-App-Version"])
     assert headers["X-Tr-Platform"] == "web-pro"
+
+
+# --- environment overrides -----------------------------------------------------------
+
+CHROME_149 = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+
+
+def _real_session_api():
+    """An instance keeping its real session, so constructor-set headers survive."""
+    return TradeRepublicApi(phone_no="+490000000000", pin="0000", waf_token=None, use_v2_login=True)
+
+
+def test_app_version_can_be_overridden_from_the_environment(monkeypatch):
+    """A frontend release makes the built-in stale; 426 must be fixable without a release."""
+    monkeypatch.setenv(ENV_APP_VERSION, "2.9999.1")
+
+    assert _api([])._login_headers()["X-TR-App-Version"] == "2.9999.1"
+
+
+def test_user_agent_can_be_overridden_from_the_environment(monkeypatch):
+    monkeypatch.setenv(ENV_USER_AGENT, CHROME_149)
+
+    assert _real_session_api()._websession.headers["User-Agent"] == CHROME_149
+
+
+def test_platform_can_be_overridden_from_the_environment(monkeypatch):
+    monkeypatch.setenv(ENV_PLATFORM, "web")
+
+    assert _api([])._login_headers()["X-Tr-Platform"] == "web"
+
+
+def test_an_empty_override_keeps_the_built_in_default(monkeypatch):
+    """An empty assignment must not send an empty header for any of the three."""
+    monkeypatch.setenv(ENV_APP_VERSION, "")
+    monkeypatch.setenv(ENV_USER_AGENT, "")
+    monkeypatch.setenv(ENV_PLATFORM, "")
+
+    headers = _api([])._login_headers()
+    assert headers["X-TR-App-Version"] == APP_VERSION
+    assert headers["X-Tr-Platform"] == WEB_PLATFORM
+    assert _real_session_api()._websession.headers["User-Agent"] == DEFAULT_USER_AGENT
+
+
+def test_overriding_the_user_agent_does_not_leak_into_other_instances(monkeypatch):
+    """The default lives on the class; overriding it must stay on the instance."""
+    monkeypatch.setenv(ENV_USER_AGENT, CHROME_149)
+    _real_session_api()
+    monkeypatch.delenv(ENV_USER_AGENT)
+
+    assert TradeRepublicApi._default_headers["User-Agent"] == DEFAULT_USER_AGENT
+    assert _real_session_api()._websession.headers["User-Agent"] == DEFAULT_USER_AGENT
+
+
+def test_device_info_follows_the_overridden_user_agent(monkeypatch):
+    """browserVersion is scraped from the User-Agent; the two must not drift apart."""
+    monkeypatch.setenv(ENV_USER_AGENT, CHROME_149)
+
+    device = jsonlib.loads(base64.b64decode(_real_session_api()._login_headers()["X-TR-Device-Info"]))
+
+    assert device["browserVersion"] == "149.0.0.0"
+
+
+def test_a_non_chrome_user_agent_leaves_the_browser_version_empty(monkeypatch):
+    """The frontend omits what the browser does not provide, and TR accepts that."""
+    monkeypatch.setenv(ENV_USER_AGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0")
+
+    device = jsonlib.loads(base64.b64decode(_real_session_api()._login_headers()["X-TR-Device-Info"]))
+
+    assert device["browserVersion"] == ""
 
 
 # --- endpoints that must NOT move ----------------------------------------------------

@@ -86,11 +86,32 @@ APP_VERSION = "2.2631.13"
 # The web frontend's API client identifies itself with this platform on all v2 login calls.
 WEB_PLATFORM = "web-pro"
 
+DEFAULT_USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+)
+
+# All three values above describe someone else's deployment, and Trade Republic can
+# invalidate any of them at any moment: a frontend release makes APP_VERSION stale
+# (the endpoints then answer 426 CLIENT_VERSION_OUTDATED, which is what #250 was),
+# a change to their bot filtering can make the User-Agent the thing being rejected,
+# and WEB_PLATFORM is whatever string their API client happens to be configured with.
+# None of those failures needs a code change to fix, only a different string, so all
+# three are readable from the environment. That turns "wait for a pytr release" into
+# "export a variable" for a user who is locked out today.
+#
+#   PYTR_TR_APP_VERSION=2.2700.4 pytr login --v2
+#   PYTR_TR_USER_AGENT='Mozilla/5.0 ... Chrome/149.0.0.0 Safari/537.36' pytr login
+#   PYTR_TR_PLATFORM=web pytr login --v2
+#
+# An unset or empty variable keeps the built-in default, so an empty assignment can
+# never send an empty header.
+ENV_APP_VERSION = "PYTR_TR_APP_VERSION"
+ENV_USER_AGENT = "PYTR_TR_USER_AGENT"
+ENV_PLATFORM = "PYTR_TR_PLATFORM"
+
 
 class TradeRepublicApi:
-    _default_headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
-    }
+    _default_headers = {"User-Agent": DEFAULT_USER_AGENT}
     _host = "https://api.traderepublic.com"
     _waf_login_url = "https://app.traderepublic.com/login"
 
@@ -144,6 +165,12 @@ class TradeRepublicApi:
         self._cookies_file = pathlib.Path(cookies_file) if cookies_file else BASE_DIR / f"cookies.{self.phone_no}.txt"
 
         self._websession = requests.Session()
+        # Copy before overriding: `_default_headers` is a class attribute, and it is
+        # handed straight to the session below, which mutates what it is given.
+        self._default_headers = dict(self._default_headers)
+        user_agent = os.environ.get(ENV_USER_AGENT)
+        if user_agent:
+            self._default_headers["User-Agent"] = user_agent
         self._websession.headers = self._default_headers
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
@@ -324,8 +351,8 @@ class TradeRepublicApi:
             self._device_info = base64.b64encode(json.dumps(device).encode()).decode()
         return {
             "X-TR-Device-Info": self._device_info,
-            "X-TR-App-Version": APP_VERSION,
-            "X-Tr-Platform": WEB_PLATFORM,
+            "X-TR-App-Version": os.environ.get(ENV_APP_VERSION) or APP_VERSION,
+            "X-Tr-Platform": os.environ.get(ENV_PLATFORM) or WEB_PLATFORM,
             "Accept-Language": self._locale,
         }
 
