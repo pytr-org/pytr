@@ -2660,3 +2660,48 @@ def test_events(case):
         entry.setdefault("ISIN2", None)
         entry.setdefault("Stück2", None)
     assert transactions == rowtransactions
+
+
+@pytest.fixture
+def corporate_action_invoice_cash_event():
+    with open(EVENTS_DIR / "bardividende.json", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def test_negative_corporate_action_invoice_cash_is_taxes(corporate_action_invoice_cash_event):
+    corporate_action_invoice_cash_event["amount"]["value"] = -2.24
+
+    event = Event.from_dict(corporate_action_invoice_cash_event)
+
+    assert event.event_type is PPEventType.TAXES
+
+
+def test_positive_corporate_action_invoice_cash_is_dividend(corporate_action_invoice_cash_event):
+    event = Event.from_dict(corporate_action_invoice_cash_event)
+
+    assert event.event_type is PPEventType.DIVIDEND
+
+
+def test_zero_corporate_action_invoice_cash_is_dividend(corporate_action_invoice_cash_event):
+    corporate_action_invoice_cash_event["amount"]["value"] = 0
+
+    event = Event.from_dict(corporate_action_invoice_cash_event)
+
+    assert event.event_type is PPEventType.DIVIDEND
+
+
+def test_missing_amount_corporate_action_invoice_cash_is_dividend(corporate_action_invoice_cash_event):
+    del corporate_action_invoice_cash_event["amount"]
+
+    event = Event.from_dict(corporate_action_invoice_cash_event)
+
+    assert event.event_type is PPEventType.DIVIDEND
+
+
+def test_canceled_negative_corporate_action_invoice_cash_is_ignored(corporate_action_invoice_cash_event):
+    corporate_action_invoice_cash_event["amount"]["value"] = -2.24
+    corporate_action_invoice_cash_event["status"] = "CANCELED"
+
+    event = Event.from_dict(corporate_action_invoice_cash_event)
+
+    assert event.event_type is None

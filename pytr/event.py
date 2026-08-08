@@ -469,13 +469,9 @@ class Event:
             elif eventTypeStr in ["SSP_CORPORATE_ACTION_INVOICE_CASH", "SSP_CORPORATE_ACTION_CASH"]:
                 if subtitle == "Aufruf von Zwischenpapieren":
                     event_type = PPEventType.SWAP
-                elif subtitle in [
-                    "Aktienprämiendividende",
-                    "Bardividende",
-                    "Bardividende korrigiert",
-                    "Dividende Wahlweise",
-                    "Tilgung",
-                ]:
+                elif eventTypeStr == "SSP_CORPORATE_ACTION_INVOICE_CASH" and value is not None and value < 0:
+                    event_type = PPEventType.TAXES
+                elif subtitle_event_type_mapping.get(subtitle) is PPEventType.DIVIDEND:
                     event_type = PPEventType.DIVIDEND
                 else:
                     event_type = PPEventType.TAXES
