@@ -499,8 +499,9 @@ class Event:
         if event_type is None and uebersicht_dict:
             for item in uebersicht_dict.get("data", []):
                 ititle = item.get("title")
-                if ititle == "Kartenzahlung":
-                    event_type = PPEventType.REMOVAL
+                if ititle in ["Kartenzahlung", "Zahlung"]:
+                    if event_type is None:
+                        event_type = PPEventType.REMOVAL
                 elif ititle in ["Überweisung", "Kartenerstattung", "Überweisen"]:
                     if sections:
                         for item in sections:

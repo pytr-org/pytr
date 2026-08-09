@@ -1,0 +1,85 @@
+{
+  "id": "a23a9d75-c017-518e-91f6-608c0ff39041",
+  "timestamp": "2024-11-22T09:09:09.123+0000",
+  "title": "Trade Republic Card",
+  "icon": "logos/bank_traderepublic/v2",
+  "avatar": {
+    "asset": "logos/bank_traderepublic/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": null,
+  "amount": {
+    "currency": "EUR",
+    "value": -5.0,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "a23a9d75-c017-518e-91f6-608c0ff39041"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineTransaction",
+  "details": {
+    "id": "a23a9d75-c017-518e-91f6-608c0ff39041",
+    "sections": [
+      {
+        "title": "Du hast -5,00 € ausgegeben",
+        "data": {
+          "icon": {
+            "asset": "logos/bank_traderepublic/v2",
+            "badge": null
+          },
+          "timestamp": "2024-11-22T09:09:09.123Z",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Completed",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Zahlung",
+            "detail": {
+              "text": "Cash",
+              "icon": "logos/bank_traderepublic/v2",
+              "type": "iconWithText"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Bestellung Trade Republic Karte",
+            "detail": "22.11.2024",
+            "action": {
+              "payload": "https://example.com/timeline/postbox/2024/11/22/pb1732266550110904938819726779.pdf",
+              "type": "browserModal"
+            },
+            "id": "bb3304f2-ab96-53e1-93d4-8aa6e2e55561",
+            "postboxType": "CARD_BILLING_INVOICE",
+            "local_filepath": "/home/max/Documents/admin/traderepublic/maxim/202601/Bestellung Trade Republic Karte/2024-11-22 09:09 Bestellung Trade Republic Karte - Trade Republic Card - None.pdf"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}
