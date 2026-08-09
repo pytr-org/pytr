@@ -1774,7 +1774,7 @@ test_data: list[dict] = [
         ],
     },
     {
-        "filename": "securities_transfer_incoming_null_eventType.json",
+        "filename": "securities_transfer_incoming_no_eventType.json",
         "event_type": PPEventType.TRANSFER_IN,
         "title": "MSCI EM USD (Acc)",
         "isin": "IE00BTJRMP35",
