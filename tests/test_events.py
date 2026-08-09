@@ -2487,6 +2487,20 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "card_purchase_no_eventType.json",
+        "event_type": PPEventType.REMOVAL,
+        "title": "Trade Republic Card",
+        "value": -5.0,
+        "transactions": [
+            {
+                "Datum": "2024-11-22T09:09:09",
+                "Typ": "Entnahme",
+                "Wert": -5.0,
+                "Notiz": "Trade Republic Card",
+            }
+        ],
+    },
+    {
         "filename": "interest_payout_created.json",
         "event_type": PPEventType.INTEREST,
         "title": "Zinsen",
