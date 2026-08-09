@@ -1774,6 +1774,24 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "securities_transfer_incoming_no_eventType.json",
+        "event_type": PPEventType.TRANSFER_IN,
+        "title": "MSCI EM USD (Acc)",
+        "isin": "IE00BTJRMP35",
+        "shares": 7,
+        "value": 0,
+        "transactions": [
+            {
+                "Datum": "2025-10-13T12:43:03",
+                "Typ": "Umbuchung (Eingang)",
+                "Wert": 0,
+                "Notiz": "MSCI EM USD (Acc)",
+                "ISIN": "IE00BTJRMP35",
+                "Stück": 7.0,
+            }
+        ],
+    },
+    {
         "filename": "sell_stop.json",
         "event_type": ConditionalEventType.TRADE_INVOICE,
         "title": "D-Wave Quantum",
