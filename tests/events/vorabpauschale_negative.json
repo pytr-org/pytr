@@ -1,0 +1,142 @@
+{
+  "id": "61373a0b-3574-31be-855f-53edf4976c8f",
+  "timestamp": "2025-01-28T14:30:05.259+0000",
+  "title": "S&P 400 US Mid Cap (Acc)",
+  "icon": "logos/IE00B4YBJ215/v2",
+  "avatar": {
+    "asset": "logos/IE00B4YBJ215/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "Vorabpauschale",
+  "amount": {
+    "currency": "EUR",
+    "value": -0.04,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "61373a0b-3574-31be-855f-53edf4976c8f"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "SSP_CORPORATE_ACTION_CASH",
+  "source": "timelineTransaction",
+  "details": {
+    "id": "61373a0b-3574-31be-855f-53edf4976c8f",
+    "sections": [
+      {
+        "title": "Du hast -0,04 € bezahlt",
+        "data": {
+          "icon": {
+            "asset": "logos/IE00B4YBJ215/v2",
+            "badge": null
+          },
+          "subtitleText": "28 Jan. 2025 · 14:30",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Event",
+            "detail": {
+              "text": "Vorabpauschale",
+              "displayValue": {
+                "text": "Vorabpauschale",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "S&P 400 US Mid Cap (Acc)",
+              "displayValue": {
+                "text": "S&P 400 US Mid Cap (Acc)",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Geschäft",
+        "data": [
+          {
+            "title": "Bruttoertrag",
+            "detail": {
+              "text": "0,00 €",
+              "displayValue": {
+                "text": "0,00 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Steuer",
+            "detail": {
+              "text": "-0,04 €",
+              "displayValue": {
+                "text": "-0,04 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "-0,04 €",
+              "displayValue": {
+                "text": "-0,04 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Vorabpauschale",
+            "detail": "28.01.2025",
+            "action": {
+              "payload": "https://example.com/vorabpauschale.pdf",
+              "type": "browserModal"
+            },
+            "id": "2e2ce1bd-6149-4ad6-9483-a57e619ca5d7",
+            "postboxType": "CA_VOPA_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

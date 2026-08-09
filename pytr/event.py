@@ -469,16 +469,10 @@ class Event:
             elif eventTypeStr in ["SSP_CORPORATE_ACTION_INVOICE_CASH", "SSP_CORPORATE_ACTION_CASH"]:
                 if subtitle == "Aufruf von Zwischenpapieren":
                     event_type = PPEventType.SWAP
-                elif subtitle in [
-                    "Aktienprämiendividende",
-                    "Bardividende",
-                    "Bardividende korrigiert",
-                    "Dividende Wahlweise",
-                    "Tilgung",
-                ]:
-                    event_type = PPEventType.DIVIDEND
-                else:
+                elif value is not None and value < 0:
                     event_type = PPEventType.TAXES
+                else:
+                    event_type = PPEventType.DIVIDEND
 
         # Now try to deduct the event type from the title if we still don't have one
         if event_type is None and eventTypeStr not in events_known_ignored:

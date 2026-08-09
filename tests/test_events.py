@@ -2618,6 +2618,24 @@ test_data: list[dict] = [
             }
         ],
     },
+    {
+        "filename": "vorabpauschale_negative.json",
+        "event_type": PPEventType.TAXES,
+        "title": "S&P 400 US Mid Cap (Acc)",
+        "isin": "IE00B4YBJ215",
+        "value": -0.04,
+        "taxes": 0.04,
+        "transactions": [
+            {
+                "Datum": "2025-01-28T14:30:05",
+                "Typ": "Steuern",
+                "Wert": -0.04,
+                "Notiz": "S&P 400 US Mid Cap (Acc)",
+                "ISIN": "IE00B4YBJ215",
+                "Steuern": 0.04,
+            }
+        ],
+    },
 ]
 
 
