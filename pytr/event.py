@@ -292,6 +292,7 @@ _note_to_isin: dict[str, str] = {
     "Enovix Corp. WTS 01.10.26": "US2935941318",
     "Gamestop Corp. WTS 30.10.26": "US36467W1172",
     "GLOBALSTAR INC. O.N.": "US3789735079",
+    "Honeywell Aerospace": "US43849R1059",
     "HONEYWELL AEROSPACE INC.": "US43849R1059",
     "Magnum Ice Cream": "NL0015002MS2",
     "Netflix": "US64110L1061",
@@ -468,16 +469,10 @@ class Event:
             elif eventTypeStr in ["SSP_CORPORATE_ACTION_INVOICE_CASH", "SSP_CORPORATE_ACTION_CASH"]:
                 if subtitle == "Aufruf von Zwischenpapieren":
                     event_type = PPEventType.SWAP
-                elif subtitle in [
-                    "Aktienprämiendividende",
-                    "Bardividende",
-                    "Bardividende korrigiert",
-                    "Dividende Wahlweise",
-                    "Tilgung",
-                ]:
-                    event_type = PPEventType.DIVIDEND
-                else:
+                elif value is not None and value < 0:
                     event_type = PPEventType.TAXES
+                else:
+                    event_type = PPEventType.DIVIDEND
 
         # Now try to deduct the event type from the title if we still don't have one
         if event_type is None and eventTypeStr not in events_known_ignored:
@@ -504,8 +499,9 @@ class Event:
         if event_type is None and uebersicht_dict:
             for item in uebersicht_dict.get("data", []):
                 ititle = item.get("title")
-                if ititle == "Kartenzahlung":
-                    event_type = PPEventType.REMOVAL
+                if ititle in ["Kartenzahlung", "Zahlung"]:
+                    if event_type is None:
+                        event_type = PPEventType.REMOVAL
                 elif ititle in ["Überweisung", "Kartenerstattung", "Überweisen"]:
                     if sections:
                         for item in sections:

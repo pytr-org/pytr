@@ -1774,6 +1774,24 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "securities_transfer_incoming_no_eventType.json",
+        "event_type": PPEventType.TRANSFER_IN,
+        "title": "MSCI EM USD (Acc)",
+        "isin": "IE00BTJRMP35",
+        "shares": 7,
+        "value": 0,
+        "transactions": [
+            {
+                "Datum": "2025-10-13T12:43:03",
+                "Typ": "Umbuchung (Eingang)",
+                "Wert": 0,
+                "Notiz": "MSCI EM USD (Acc)",
+                "ISIN": "IE00BTJRMP35",
+                "Stück": 7.0,
+            }
+        ],
+    },
+    {
         "filename": "sell_stop.json",
         "event_type": ConditionalEventType.TRADE_INVOICE,
         "title": "D-Wave Quantum",
@@ -2469,6 +2487,20 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "card_purchase_no_eventType.json",
+        "event_type": PPEventType.REMOVAL,
+        "title": "Trade Republic Card",
+        "value": -5.0,
+        "transactions": [
+            {
+                "Datum": "2024-11-22T09:09:09",
+                "Typ": "Entnahme",
+                "Wert": -5.0,
+                "Notiz": "Trade Republic Card",
+            }
+        ],
+    },
+    {
         "filename": "interest_payout_created.json",
         "event_type": PPEventType.INTEREST,
         "title": "Zinsen",
@@ -2615,6 +2647,24 @@ test_data: list[dict] = [
                 "Notiz": "BASF",
                 "ISIN": "DE000BASF111",
                 "Stück": 0.316355,
+            }
+        ],
+    },
+    {
+        "filename": "vorabpauschale_negative.json",
+        "event_type": PPEventType.TAXES,
+        "title": "S&P 400 US Mid Cap (Acc)",
+        "isin": "IE00B4YBJ215",
+        "value": -0.04,
+        "taxes": 0.04,
+        "transactions": [
+            {
+                "Datum": "2025-01-28T14:30:05",
+                "Typ": "Steuern",
+                "Wert": -0.04,
+                "Notiz": "S&P 400 US Mid Cap (Acc)",
+                "ISIN": "IE00B4YBJ215",
+                "Steuern": 0.04,
             }
         ],
     },
