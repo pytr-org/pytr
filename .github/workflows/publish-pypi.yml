@@ -37,7 +37,13 @@ jobs:
       - name: Mypy type check
         run: uv run mypy .
       - name: Check if README.md automatically generated content is up to date
-        run: diff -u <(cat README.md | sed -z '$s/\n*$//') <(uvx mksync@0.1.5 README.md | sed -z '$s/\n*$//')
+        # Both sides are normalised to end in exactly one newline before comparing.
+        # `$(...)` strips every trailing newline and `printf` puts one back, which is
+        # what `sed -z '$s/\n*$//'` did here, minus the `-z`: that flag is GNU-only, so
+        # on BSD/macOS sed it failed on both sides and the step compared two empty
+        # streams and always passed. Contributors could not reproduce this check
+        # locally, and it reported success on a README that was in fact stale.
+        run: diff -u <(printf '%s\n' "$(cat README.md)") <(printf '%s\n' "$(uvx mksync@0.1.5 README.md)")
 
   build-n-publish:
     name: Build and publish Python distributions to PyPI
