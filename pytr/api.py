@@ -86,11 +86,21 @@ APP_VERSION = "2.2631.13"
 # The web frontend's API client identifies itself with this platform on all v2 login calls.
 WEB_PLATFORM = "web-pro"
 
+# Sent on every request. Trade Republic can start rejecting a stale one as bot traffic.
+USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+
+# Trade Republic can invalidate any of the three values above at any time, and none of
+# those failures needs a code change to fix, only a different string. Overriding them
+# from the environment turns "wait for a pytr release" into "export a variable" for a
+# user who is locked out today. See the README for when to reach for which. An unset or
+# empty variable keeps the built-in default, so an empty assignment sends no empty header.
+ENV_APP_VERSION = "PYTR_TR_APP_VERSION"
+ENV_PLATFORM = "PYTR_TR_PLATFORM"
+ENV_USER_AGENT = "PYTR_TR_USER_AGENT"
+
 
 class TradeRepublicApi:
-    _default_headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
-    }
+    _default_headers = {"User-Agent": os.environ.get(ENV_USER_AGENT) or USER_AGENT}
     _host = "https://api.traderepublic.com"
     _waf_login_url = "https://app.traderepublic.com/login"
 
@@ -324,8 +334,8 @@ class TradeRepublicApi:
             self._device_info = base64.b64encode(json.dumps(device).encode()).decode()
         return {
             "X-TR-Device-Info": self._device_info,
-            "X-TR-App-Version": APP_VERSION,
-            "X-Tr-Platform": WEB_PLATFORM,
+            "X-TR-App-Version": os.environ.get(ENV_APP_VERSION) or APP_VERSION,
+            "X-Tr-Platform": os.environ.get(ENV_PLATFORM) or WEB_PLATFORM,
             "Accept-Language": self._locale,
         }
 
