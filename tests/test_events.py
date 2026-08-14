@@ -1626,7 +1626,7 @@ test_data: list[dict] = [
         ],
     },
     {
-        "filename": "reverse_split2.json",
+        "filename": "reverse_split_old_isin.json",
         "event_type": PPEventType.SWAP,
         "title": "Honeywell International",
         "isin": "US4385161066",
@@ -1649,27 +1649,35 @@ test_data: list[dict] = [
         ],
     },
     {
-        "filename": "reverse_split3.json",
+        "filename": "reverse_split_new_isin.json",
+        "event_type": None,  # new-ISIN side of a paired swap — suppressed in favour of reverse_split_old_isin.json
+    },
+    {
+        "filename": "tausch_old_isin.json",
         "event_type": PPEventType.SWAP,
-        "title": "Honeywell International",
-        "isin": "US4385161066",
-        "isin2": "US4385161066",
-        "shares": 0.966682,
-        "shares2": 0.483341,
+        "title": "Fresenius",
+        "isin": "DE0005785604",
+        "isin2": "DE000FRE5EN2",
+        "shares": 5.431472,
+        "shares2": 5.431472,
         "value": 0,
-        "note": "Honeywell International",
+        "note": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
         "transactions": [
             {
-                "Datum": "2026-06-30T16:46:52",
+                "Datum": "2026-08-13T15:22:52",
                 "Typ": "Swap",
                 "Wert": 0,
-                "Notiz": "Honeywell International",
-                "ISIN": "US4385161066",
-                "Stück": 0.966682,
-                "ISIN2": "US4385161066",
-                "Stück2": 0.483341,
+                "Notiz": "Fresenius",
+                "ISIN": "DE0005785604",
+                "Stück": 5.431472,
+                "ISIN2": "DE000FRE5EN2",
+                "Stück2": 5.431472,
             },
         ],
+    },
+    {
+        "filename": "tausch_new_isin.json",
+        "event_type": None,  # new-ISIN side of a paired swap — suppressed in favour of tausch_old_isin.json
     },
     {
         "filename": "saveback.json",
@@ -1924,8 +1932,12 @@ test_data: list[dict] = [
         ],
     },
     {
-        "filename": "tausch_no_eventType.json",
-        "title": "L'Oreal",
+        "filename": "tausch_informative_no_eventType.json",
+        "event_type": None,
+    },
+    {
+        "filename": "tausch_informative.json",
+        "event_type": None,
     },
     {
         "filename": "teilrueckzahlung.json",

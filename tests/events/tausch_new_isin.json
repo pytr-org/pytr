@@ -1,0 +1,124 @@
+{
+  "id": "cb25d019-05f3-3a6c-8785-e410b70df9cd",
+  "timestamp": "2026-08-13T15:22:52.025+0000",
+  "title": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+  "icon": "logos/DE000FRE5EN2/v2",
+  "subtitle": "Tausch",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "cb25d019-05f3-3a6c-8785-e410b70df9cd"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "cb25d019-05f3-3a6c-8785-e410b70df9cd",
+    "sections": [
+      {
+        "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+        "data": {
+          "icon": {
+            "asset": "logos/DE000FRE5EN2/v2",
+            "badge": null
+          },
+          "subtitleText": "13 Aug. · 15:22",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Tausch",
+              "displayValue": {
+                "text": "Tausch",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Fresenius",
+              "displayValue": {
+                "text": "Fresenius",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien entfernt",
+            "detail": {
+              "text": "5.431472",
+              "displayValue": {
+                "text": "5.431472",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+              "displayValue": {
+                "text": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "5.431472",
+              "displayValue": {
+                "text": "5.431472",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "13.08.2026",
+            "action": {
+              "payload": "https://traderepublic-postbox-platform-production.s3.eu-central-1.amazonaws.com/timeline/postbox/2026/8/13/0d8878ab/pb178663471063817474809665823.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC8aDGV1LWNlbnRyYWwtMSJGMEQCIBQ5PyGOkR5LjRsc1CTT1nE16lFpNrgJPsfX9E04PFw7AiADvrH8eTLAl4dLTRc7bjJBi5FuB0ms5zwtC7Ar%2BASoRCqeBQj4%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAQaDDgzMDAwNjQ0MjI2MCIMP5lDk1NjaXoUJAEPKvIEBl9fO36UtV1PFbu1FNdk9iystAz5TrC3Zk2NSGERA5jThqkTsw8faSGDDcJ2evzfyISUTlFg%2F2WE%2Fyi0QSUisdFpiNPLJZnqyW00P83KnCAFWBjdu4R%2BpIz5ETvxUE%2FqLpvwd%2Fj%2F3X9yEwufXj1MJU%2BJrE9IiMGa434qUc1sTBRVARQEzANxGaHHLdzcmAetKSCNRZviSbqKuLT4MT%2Fd%2FYu%2FZ3QlkphOgrC4ePWbNdLWTg8cHe%2Bw8h%2BOEtyoQJIJP2cuenpN07x0rwvTmxCjdCE2C1XecYK3SEbm9y0yOeAumXSPT25xOZO%2FdbqDunmBhme%2BIoOOjBQz4EzbO8k3MqeJ%2FrbfiOqfiQL5aCG7LQRCSwG2gI%2F4Ve34sMQOjw2RewkeRDJhHaIpxHVs55sW%2FA0%2FGNjNuq9Of8XxV2L0tjq0CU3L%2BiiPn2Jz7NO4Y2tC0fUAfp%2B6MoNG1H51Qsq7CTGtdSjvfDE6hGYGxsJ73drNdgbtOwt9QpNSdof9zKFDr80n4wtkRj3ROtb0VAXd2PNAn0wPjVFICSmtzU4GuGOn0xEnxkj5RBzkXDd9RBE6C7ZOJNgZnruVW5dhIMxZ%2F8rzWBl25WoOdwNvRKm4epPrg%2BQzR7Ec0cEe4vItdB8G9maa0uTLimYTck8i5bNOImjcN%2F%2FPeLU%2BGyzUs3ldYcHifNhf7q4pHT2AZ1LTkkog%2B%2F1%2FEqHWy4NEYs8FREvqQLWzFHj%2BVXM%2FtxTuuiGwlONiEefxiDIh8beJfXoQAGPByXZUuDuFTI6utD4HdlgWuVEq1%2BUCWD6fu0AJUNd4GDhyapdz2HcKrm2aAYujMsBt94MwuID70wY6mgGdKA%2FwFOHmvQno5YSvqSd1vSW6aaLebZYrDPF2sfCy1KJq5men51%2BZRRKFOuB7fXXsvWEdmSCXEky26hRBAgH2uF0l3W2CltNhWVfTI%2BICdHjBCICWvnGUMVyPackkBFGvB4HWbBJVSUD6oMc9%2BBMwT3HKyJPQJbMixQLNatakJ7fPEfmphFcdbtfoc3maGFRR5nukDFYzYzk%2B&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20260814T080539Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Credential=ASIA4CQB5HEKJSEZ6Z2L%2F20260814%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=c1938cd10790fd50a3c5487673072cd84f6b6e48d513c3d3d6f1c9180413d74b",
+              "type": "browserModal"
+            },
+            "id": "5310c3d8-e7b5-4ad7-97fb-a48b39f5f579",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

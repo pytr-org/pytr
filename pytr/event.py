@@ -155,6 +155,7 @@ subtitle_event_type_mapping = {
     # Swap
     "Aufruf von Zwischenpapieren": PPEventType.SWAP,
     "Reverse Split": PPEventType.SWAP,
+    "Tausch": PPEventType.SWAP,
     "Teilrückzahlung ohne Reduzierung des Poolfaktors": PPEventType.SWAP,
     "Zusammenschluss": PPEventType.SWAP,
     # Taxes
@@ -311,6 +312,14 @@ _note_to_isin: dict[str, str] = {
 # Overrides for SWAP events where the target ISIN differs from the spinoff case.
 _swap_note_to_isin_overrides: dict[str, str] = {
     "Worldline": "FR0011981968",
+}
+
+# Known ISIN renames/swaps: old ISIN -> new ISIN.
+# Used to resolve paired TR swap events (one event per ISIN) into a single SWAP transaction.
+_swap_old_to_new_isin: dict[str, str] = {
+    "DE0005785604": "DE000FRE5EN2",  # Fresenius SE ISIN change 2026-08
+    "IE000BI8OT95": "LU1781541179",  # MSCI World USD (Acc) fund change
+    "US4385161066": "US4385162056",  # Honeywell International reverse split 2026
 }
 
 logger = None
@@ -619,6 +628,7 @@ class Event:
                         "Aktiensplit",
                         "Bonusaktien",
                         "Reverse Split",
+                        "Tausch",
                         "Teilrückzahlung ohne Reduzierung des Poolfaktors",
                         "Zusammenschluss",
                     ]
@@ -682,11 +692,12 @@ class Event:
                 isin2 = isin
                 isin = _note_to_isin.get(note, isin2) if note else isin2
             elif event_type == PPEventType.SWAP:
-                if note == "Honeywell International":
-                    isin2 = isin
-                    isin = "US4385161066"
-                elif note == "MSCI World USD (Acc)" and isin == "LU1781541179":
-                    isin2 = "IE000BI8OT95"
+                if isin in _swap_old_to_new_isin:
+                    isin2 = _swap_old_to_new_isin[isin]
+                elif isin in _swap_old_to_new_isin.values():
+                    # Duplicate event for the new ISIN side — suppress it; the old-ISIN event is canonical
+                    event_type = None
+                    ignoreEvent = True
                 else:
                     isin2 = (_swap_note_to_isin_overrides.get(note) or _note_to_isin.get(note, note)) if note else None
 
@@ -750,19 +761,23 @@ class Event:
             elif isin == "LU3170240538":
                 note = "Apollo"
 
-        if event_type is PPEventType.SWAP and uebersicht_dict:
-            foundentfernt = False
-            for item in uebersicht_dict.get("data", []):
-                ititle = item.get("title")
-                if ititle == "Aktien entfernt":
-                    foundentfernt = True
-            if not foundentfernt:
-                event_type = ConditionalEventType.TRADE_INVOICE
-                isin2 = None
-                if title == "WORLDLINE S.A. ANR":
-                    title = "Worldline"
-                    isin = "FR0011981968"
-                    note = None
+        if event_type is PPEventType.SWAP:
+            if not uebersicht_dict:
+                event_type = None
+                ignoreEvent = True
+            else:
+                foundentfernt = False
+                for item in uebersicht_dict.get("data", []):
+                    ititle = item.get("title")
+                    if ititle == "Aktien entfernt":
+                        foundentfernt = True
+                if not foundentfernt:
+                    event_type = ConditionalEventType.TRADE_INVOICE
+                    isin2 = None
+                    if title == "WORLDLINE S.A. ANR":
+                        title = "Worldline"
+                        isin = "FR0011981968"
+                        note = None
 
         if (
             subtitle == "Zusammenschluss"
