@@ -482,6 +482,11 @@ class Event:
                     event_type = PPEventType.TAXES
                 else:
                     event_type = PPEventType.DIVIDEND
+            elif eventTypeStr == "SSP_CORPORATE_ACTION_DIVIDEND_EQUIVALENT":
+                # "Ausschüttungsgleicher Ertrag": tax withheld on a deemed/notional distribution.
+                # This event type only ever carries a "Steuer" line item (no gross distribution),
+                # so it is always a tax event, even when the amount is 0.
+                event_type = PPEventType.TAXES
 
         # Now try to deduct the event type from the title if we still don't have one
         if event_type is None and eventTypeStr not in events_known_ignored:
