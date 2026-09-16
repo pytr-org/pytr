@@ -2663,6 +2663,10 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "trading_savingsplan_execution_pending.json",
+        "event_type": None,
+    },
+    {
         "filename": "vorabpauschale_negative.json",
         "event_type": PPEventType.TAXES,
         "title": "S&P 400 US Mid Cap (Acc)",
