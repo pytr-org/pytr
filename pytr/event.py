@@ -237,6 +237,7 @@ events_known_ignored = [
     "TRADING_ORDER_EXPIRED",
     "TRADING_ORDER_REJECTED",
     "TRADING_SAVINGSPLAN_EXECUTION_FAILED",
+    "TRADING_SAVINGSPLAN_EXECUTION_PENDING",
     "VERIFICATION_TRANSFER_ACCEPTED",
     "YEAR_END_TAX_REPORT",
 ]
@@ -506,7 +507,7 @@ class Event:
                     break
 
         # If still no event type, try to deduce it from the overview section
-        if event_type is None and uebersicht_dict:
+        if event_type is None and uebersicht_dict and eventTypeStr not in events_known_ignored:
             for item in uebersicht_dict.get("data", []):
                 ititle = item.get("title")
                 if ititle in ["Kartenzahlung", "Zahlung"]:
@@ -527,7 +528,7 @@ class Event:
                         event_type = PPEventType.DIVIDEND
 
         # If still no event type, try to deduce it from the sections
-        if event_type is None and sections:
+        if event_type is None and sections and eventTypeStr not in events_known_ignored:
             for item in sections:
                 ititle = item.get("title")
                 if ititle is None:
