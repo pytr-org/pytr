@@ -26,6 +26,7 @@ def make_dl(tmp_path: Path) -> DL:
     dl.universal_filepath = True
     dl.dry_run = True
     dl.filepaths = []
+    dl.known_documents = None
     dl.doc_urls = []
     dl.futures = []
     dl.events_with_docs = []
@@ -439,3 +440,60 @@ def test_moving_instrument_title_reuses_the_file_of_the_previous_run(tmp_path):
 
     assert first_document(today)["local_filepath"] == str(yesterday)
     assert [p.name for p in tmp_path.rglob("*.pdf")] == [yesterday.name]
+
+
+def test_document_without_an_id_is_not_matched_against_the_database(tmp_path):
+    """An empty document id must not stand in for every id-less document.
+
+    Trade Republic ships documents with an empty id (see buy.json), so the id
+    cannot be used as a key without checking it first.
+    """
+    event = load_event("buy.json")
+    dl = make_dl(tmp_path)
+    dl.dl_callback(event)
+    documents = [
+        doc for section in event["details"]["sections"] if section["type"] == "documents" for doc in section["data"]
+    ]
+    id_less = [doc for doc in documents if not doc["id"]]
+    assert id_less, "fixture no longer has a document without an id"
+    settlement = Path(id_less[0]["local_filepath"])
+
+    with open(tmp_path / "all_events.json", "w", encoding="utf-8") as f:
+        json.dump([event], f, ensure_ascii=False)
+
+    other = load_event("buy.json")
+    other["title"] = "Another Instrument"
+    dl = make_dl(tmp_path)
+    assert dl.known_document_path("") is None
+    dl.dl_callback(other)
+    other_documents = [
+        doc for section in other["details"]["sections"] if section["type"] == "documents" for doc in section["data"]
+    ]
+    assert Path(other_documents[0]["local_filepath"]) != settlement
+
+
+def test_database_entry_whose_file_is_gone_is_ignored(tmp_path):
+    """A moved or deleted archive must fall back to the computed name."""
+    event = load_event("tilgung.json")
+    event["title"] = "Long 237,3067 $"
+    dl = make_dl(tmp_path)
+    dl.dl_callback(event)
+    gone = Path(first_document(event)["local_filepath"])
+    with open(tmp_path / "all_events.json", "w", encoding="utf-8") as f:
+        json.dump([event], f, ensure_ascii=False)
+    gone.unlink()
+
+    today = load_event("tilgung.json")
+    today["title"] = "Long 237,2596 $"
+    dl = make_dl(tmp_path)
+    dl.dl_callback(today)
+    assert "Long 237,2596 $" in first_document(today)["local_filepath"]
+
+
+def test_unreadable_event_database_warns_and_keeps_going(tmp_path, caplog):
+    """A truncated database is not fatal, it only costs a second download."""
+    (tmp_path / "all_events.json").write_text("{not json", encoding="utf-8")
+    dl = make_dl(tmp_path)
+    with caplog.at_level(logging.WARNING):
+        assert dl.read_event_database() == {}
+    assert "all_events.json" in caplog.text
