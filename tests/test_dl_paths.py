@@ -392,3 +392,50 @@ test_data: list[dict] = [
 @pytest.mark.parametrize("case", test_data, ids=[c["filename"] for c in test_data])
 def test_dl_paths(case, tmp_path):
     assert collect_paths(case["filename"], tmp_path) == case["paths"]
+
+
+def first_document(event: dict) -> dict:
+    """The first entry of the event's documents section."""
+    for section in event["details"]["sections"]:
+        if section["type"] == "documents":
+            return section["data"][0]
+    raise AssertionError("fixture has no documents section")
+
+
+def load_event(fixture_name: str) -> dict:
+    with open(EVENTS_DIR / fixture_name, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def test_moving_instrument_title_reuses_the_file_of_the_previous_run(tmp_path):
+    """A document must not be fetched again when only the event title changed.
+
+    Certificates are renamed daily: the instrument keeps its ISIN and the
+    document keeps its id, but the event title carries the current barrier
+    ("Long 237,3067" -> "Long 237,2596"). Since the target path is derived
+    from that title, every run computes a fresh path, finds nothing on disk
+    and downloads the same document once more (pytr-org/pytr#391).
+
+    all_events.json, written by default and read on the next run, already
+    maps the stable document id to the file on disk.
+    """
+    event = load_event("tilgung.json")
+    event["title"] = "Long 237,3067 $"
+    dl = make_dl(tmp_path)
+    dl.dl_callback(event)
+    yesterday = Path(first_document(event)["local_filepath"])
+    assert yesterday.is_file()
+
+    # What the run leaves behind for the next one (--store-event-database).
+    with open(tmp_path / "all_events.json", "w", encoding="utf-8") as f:
+        json.dump([event], f, ensure_ascii=False)
+
+    # Next run: same document id, moved instrument name.
+    today = load_event("tilgung.json")
+    today["title"] = "Long 237,2596 $"
+    assert first_document(today)["id"] == first_document(event)["id"]
+    dl = make_dl(tmp_path)
+    dl.dl_callback(today)
+
+    assert first_document(today)["local_filepath"] == str(yesterday)
+    assert [p.name for p in tmp_path.rglob("*.pdf")] == [yesterday.name]
