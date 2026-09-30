@@ -4,6 +4,7 @@ import sys
 import time
 from getpass import getpass
 
+import requests
 from pygments import formatters, highlight, lexers
 
 from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
@@ -19,10 +20,12 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False):
+def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False, account=None):
     """
     Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
+
+    `account` selects another account of this login, e.g. a company or child account.
     """
     log = get_logger(__name__)
     save_cookies = True
@@ -88,5 +91,20 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         tr.complete_weblogin(code)
         log.info("Logged in.")
 
-    log.debug(get_settings(tr))
+    try:
+        settings = get_settings(tr)
+    except requests.exceptions.HTTPError as e:
+        if not tr._acts_for_other_account(e.response):
+            raise
+        # Saved cookies can still act for the account chosen in an earlier run.
+        settings = None
+
+    if account is not None or settings is None:
+        try:
+            tr.switch_account(account)
+        except ValueError as e:
+            log.fatal(str(e))
+            sys.exit(1)
+    else:
+        log.debug(settings)
     return tr

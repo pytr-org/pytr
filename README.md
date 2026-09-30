@@ -14,6 +14,7 @@ __Table of Contents__
 * [Usage](#usage)
 * [Authentication](#authentication)
   * [Web login](#web-login)
+  * [Company and child accounts](#company-and-child-accounts)
 * [Development](#development)
   * [Setting Up a Development Environment](#setting-up-a-development-environment)
   * [Linting and Code Formatting](#linting-and-code-formatting)
@@ -115,6 +116,20 @@ Web login uses the public web-login endpoints at `api.traderepublic.com`. Two va
 
 Both variants keep you logged in on your primary device, but you may need to re-authenticate every so often when
 running `pytr`.
+
+### Company and child accounts
+
+A Trade Republic login can hold more than its own account, e.g. a company account or a child's account. Trade
+Republic treats each of them as a customer of its own, and the web app switches between them after the login. Pass
+`--account` to do the same, on any subcommand that performs a login:
+
+```sh
+pytr portfolio --account LEGAL_ENTITY
+pytr dl_docs --account "Mustermann Holding GmbH" ./docs
+```
+
+The value is the account's type or its name. An unknown value makes pytr list the accounts your login has. Without
+`--account`, pytr uses your own account, as before.
 
 ## Development
 

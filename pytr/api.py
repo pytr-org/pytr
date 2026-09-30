@@ -87,6 +87,28 @@ APP_VERSION = "2.2631.13"
 WEB_PLATFORM = "web-pro"
 
 
+def _relationship_names(relationship):
+    """Everything a relationship can be selected by, lower-cased."""
+    full_name = " ".join(filter(None, [relationship.get("firstName"), relationship.get("lastName")]))
+    names = [
+        relationship.get("customerId"),
+        relationship.get("relationshipType"),
+        relationship.get("accountType"),
+        relationship.get("accountName"),
+        relationship.get("shortDisplayName"),
+        full_name,
+    ]
+    return {name.strip().casefold() for name in names if isinstance(name, str) and name.strip()}
+
+
+def _describe_relationship(relationship):
+    name = relationship.get("accountName") or " ".join(
+        filter(None, [relationship.get("firstName"), relationship.get("lastName")])
+    )
+    kind = relationship.get("accountType") or relationship.get("relationshipType") or "UNKNOWN"
+    return f"{kind} ({name})" if name else kind
+
+
 class TradeRepublicApi:
     _default_headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
@@ -148,6 +170,8 @@ class TradeRepublicApi:
         if self._save_cookies:
             self._websession.cookies = MozillaCookieJar(self._cookies_file)
         self._sec_acc_no: str | None = None
+        # Customer id of the account the session acts for, once it is not the login's own.
+        self._subject_id: str | None = None
 
     def _fetch_waf_token_awswaf(self):
         """
@@ -504,7 +528,11 @@ class TradeRepublicApi:
         try:
             self.log.debug("Calling settings...")
             self.settings()
-        except requests.exceptions.HTTPError:
+        except requests.exceptions.HTTPError as e:
+            if self._acts_for_other_account(e.response):
+                # The cookies are fine, they were saved while acting for another account.
+                self.log.info("Websession resumed.")
+                return True
             self.log.info("Resuming websession failed.")
             self.log.debug("Error calling tr.settings().", exc_info=True)
             # in case the websession can not be resumed, start with a fresh set of cookies
@@ -516,10 +544,80 @@ class TradeRepublicApi:
 
     def _web_request(self, url_path, payload=None, method="GET"):
         if self._session_expires_at < time.time():
-            r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
+            if self._subject_id is None:
+                r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
+            else:
+                # Refreshing without the subject would not keep the session on that account.
+                r = self._post_session(self._subject_id)
             r.raise_for_status()
             self._session_expires_at = time.time() + 290
         return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
+
+    def _post_session(self, subject_id):
+        """Ask for session tokens that act for `subject_id`, the way the web frontend does."""
+        return self._websession.post(
+            f"{self._host}/api/v2/auth/web/session",
+            json={"subjectId": subject_id},
+            headers=self._login_headers(),
+        )
+
+    @staticmethod
+    def _acts_for_other_account(response):
+        """Tell whether `/api/v2/auth/account` refused because the session acts for another account."""
+        if response is None or response.status_code != 400:
+            return False
+        try:
+            return response.json()["errors"][0]["errorCode"] == "INVALID_AUTH_ACCOUNT_STATE"
+        except (ValueError, KeyError, IndexError, TypeError):
+            return False
+
+    def relationships(self):
+        """List the accounts this login can act for.
+
+        Besides the login's own account (`relationshipType` `SELF`) these are e.g. a
+        company account (`LEGAL_ENTITY_ACTOR`) or a child's account.
+        """
+        r = self._web_request("/api/v1/customer/relationships/detailed")
+        r.raise_for_status()
+        return r.json().get("relationships", [])
+
+    def _find_relationship(self, account):
+        """Pick one relationship by customer id, type or name. `None` picks the login's own account."""
+        relationships = self.relationships()
+        wanted = "self" if account is None else account.strip().casefold()
+        matches = [r for r in relationships if wanted in _relationship_names(r)]
+        if len(matches) == 1:
+            return matches[0]
+        known = ", ".join(_describe_relationship(r) for r in relationships) or "none"
+        problem = "matches more than one account" if matches else "does not match any account"
+        raise ValueError(f"{account!r} {problem}. Available accounts: {known}.")
+
+    def switch_account(self, account=None):
+        """Let the session act for another account of this login, e.g. a company or child account.
+
+        `account` is a customer id, a relationship or account type (`LEGAL_ENTITY`), or the
+        account's name, as listed by `relationships()`. `None` switches back to the login's
+        own account. Returns the chosen relationship.
+
+        Trade Republic does not address these accounts by a second account number. It hands
+        out new session tokens that act for the other customer, so every call made afterwards,
+        the websocket included, sees that account only.
+        """
+        if self._ws is not None and self._ws.close_code is None:
+            raise ValueError("Close the websocket connection before switching the account.")
+
+        relationship = self._find_relationship(account)
+        r = self._post_session(relationship["customerId"])
+        r.raise_for_status()
+
+        is_self = relationship.get("relationshipType") == "SELF"
+        self._subject_id = None if is_self else relationship["customerId"]
+        self._session_expires_at = time.time() + 290
+        # The securities account belongs to the previous account.
+        self._sec_acc_no = None
+        self.save_websession()
+        self.log.info(f"Using account: {_describe_relationship(relationship)}")
+        return relationship
 
     async def _get_ws(self):
         if self._ws and self._ws.close_code is None:
@@ -668,11 +766,29 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "portfolioStatus"})
 
     async def compact_portfolio(self):
+        if self._sec_acc_no is None and self._subject_id is None:
+            try:
+                self.settings()
+            except requests.exceptions.HTTPError as e:
+                if not self._acts_for_other_account(e.response):
+                    raise
         if self._sec_acc_no is None:
-            self.settings()
+            # The account settings are only served for the login's own account.
+            self._sec_acc_no = await self._sec_acc_no_from_account_pairs()
         if self._sec_acc_no is None:
-            raise ValueError("Could not retrieve securities account number from account settings.")
+            raise ValueError("Could not retrieve securities account number.")
         return await self.subscribe({"type": "compactPortfolioByType", "secAccNo": self._sec_acc_no})
+
+    async def account_pairs(self):
+        return await self.subscribe({"type": "accountPairs"})
+
+    async def _sec_acc_no_from_account_pairs(self, timeout=5.0):
+        """Read the securities account number of the account the session acts for."""
+        response = await self._receive_one(self.account_pairs(), timeout=timeout)
+        accounts = [a for a in response.get("accounts", []) if a.get("securitiesAccountNumber")]
+        # An account can hold more than one pair; the portfolio is the default product.
+        accounts.sort(key=lambda a: a.get("productType") != "DEFAULT")
+        return accounts[0]["securitiesAccountNumber"] if accounts else None
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})

@@ -101,6 +101,14 @@ def get_main_parser():
         dest="waf_token",
     )
     parser_login_args.add_argument(
+        "--account",
+        help=(
+            "Use another account of this login, e.g. a company or child account. Give its type "
+            '(e.g. "LEGAL_ENTITY") or its name. Defaults to your own account.'
+        ),
+        default=None,
+    )
+    parser_login_args.add_argument(
         "--store_credentials",
         help="Store credentials (Phone number, pin, cookies) for next usage",
         action="store_true",
@@ -560,6 +568,7 @@ def main():
             store_credentials=args.store_credentials,
             waf_token=args.waf_token,
             v2=args.v2,
+            account=args.account,
         )
     elif args.command == "portfolio":
         Portfolio(
@@ -569,6 +578,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             args.include_watchlist,
             instruments_to_ignore=re.split(r"[,;]", args.ignore) if args.ignore else [],
@@ -590,6 +600,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             isins,
             output=args.output,
@@ -606,6 +617,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             args.isin,
         ).get()
@@ -619,6 +631,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             args.output,
             args.format,
@@ -653,6 +666,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             args.outputdir,
             not_before,
@@ -688,6 +702,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    account=args.account,
                 ),
                 args.input,
                 args.outputfile,
@@ -703,6 +718,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    account=args.account,
                 ),
                 args.input,
                 args.inputfile,
@@ -719,6 +735,7 @@ def main():
                 store_credentials=args.store_credentials,
                 waf_token=args.waf_token,
                 v2=args.v2,
+                account=args.account,
             ),
             args.outputfile,
             decimal_localization=args.decimal_localization,
