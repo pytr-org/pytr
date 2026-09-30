@@ -12,7 +12,7 @@ from pathlib import Path
 
 import shtab
 
-from pytr.account import login
+from pytr.account import get_accounts, login
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
@@ -168,6 +168,16 @@ def get_main_parser():
     )
     parser_cmd.add_parser(
         "login",
+        formatter_class=formatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+
+    # accounts
+    info = "List the accounts of this login, e.g. company or child accounts. Use one of them with --account"
+    parser_cmd.add_parser(
+        "accounts",
         formatter_class=formatter,
         parents=[parser_login_args],
         help=info,
@@ -569,6 +579,19 @@ def main():
             waf_token=args.waf_token,
             v2=args.v2,
             account=args.account,
+        )
+    elif args.command == "accounts":
+        print(
+            get_accounts(
+                login(
+                    phone_no=args.phone_no,
+                    pin=args.pin,
+                    store_credentials=args.store_credentials,
+                    waf_token=args.waf_token,
+                    v2=args.v2,
+                    account=args.account,
+                )
+            )
         )
     elif args.command == "portfolio":
         Portfolio(

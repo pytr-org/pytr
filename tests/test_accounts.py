@@ -320,6 +320,31 @@ def test_compact_portfolio_reports_a_missing_securities_account():
         asyncio.run(tr.compact_portfolio())
 
 
+# --- pytr accounts -------------------------------------------------------------------
+
+
+def test_get_accounts_prints_what_account_accepts():
+    tr = _api([{"relationships": [SELF, {**COMPANY, "accountState": "ACTIVE"}, CHILD_B]}])
+
+    assert account_module.get_accounts(tr).splitlines() == [
+        "ADULT         Erika Mustermann         your own account",
+        "LEGAL_ENTITY  Mustermann Holding GmbH  ACTIVE",
+        "CHILD         Mia",
+    ]
+
+
+def test_get_accounts_of_a_login_without_relationships_is_empty():
+    assert account_module.get_accounts(_api([{}])) == ""
+
+
+def test_the_accounts_command_exists_and_takes_the_login_arguments():
+    from pytr.main import get_main_parser
+
+    args = get_main_parser().parse_args(["accounts", "--v2"])
+
+    assert (args.command, args.v2, args.account) == ("accounts", True, None)
+
+
 # --- login() -------------------------------------------------------------------------
 
 

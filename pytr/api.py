@@ -101,11 +101,19 @@ def _relationship_names(relationship):
     return {name.strip().casefold() for name in names if isinstance(name, str) and name.strip()}
 
 
-def _describe_relationship(relationship):
-    name = relationship.get("accountName") or " ".join(
+def relationship_type(relationship):
+    return relationship.get("accountType") or relationship.get("relationshipType") or "UNKNOWN"
+
+
+def relationship_name(relationship):
+    return relationship.get("accountName") or " ".join(
         filter(None, [relationship.get("firstName"), relationship.get("lastName")])
     )
-    kind = relationship.get("accountType") or relationship.get("relationshipType") or "UNKNOWN"
+
+
+def _describe_relationship(relationship):
+    name = relationship_name(relationship)
+    kind = relationship_type(relationship)
     return f"{kind} ({name})" if name else kind
 
 

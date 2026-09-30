@@ -7,7 +7,7 @@ from getpass import getpass
 import requests
 from pygments import formatters, highlight, lexers
 
-from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
+from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi, relationship_name, relationship_type
 from .utils import get_logger
 
 
@@ -18,6 +18,20 @@ def get_settings(tr):
         return colorful_json
     else:
         return formatted_json
+
+
+def get_accounts(tr):
+    """List the accounts of this login, one per line: type, name and state."""
+    rows = [
+        (
+            relationship_type(r),
+            relationship_name(r),
+            "your own account" if r.get("relationshipType") == "SELF" else (r.get("accountState") or ""),
+        )
+        for r in tr.relationships()
+    ]
+    widths = [max((len(row[i]) for row in rows), default=0) for i in range(2)]
+    return "\n".join(f"{kind:<{widths[0]}}  {name:<{widths[1]}}  {note}".rstrip() for kind, name, note in rows)
 
 
 def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False, account=None):
