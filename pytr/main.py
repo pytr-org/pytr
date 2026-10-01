@@ -103,8 +103,9 @@ def get_main_parser():
     parser_login_args.add_argument(
         "--account",
         help=(
-            "Use another account of this login, e.g. a company or child account. Give its type "
-            '(e.g. "LEGAL_ENTITY") or its name. Defaults to your own account.'
+            "Use another account of this login, e.g. a company account. Give its type "
+            '(e.g. "LEGAL_ENTITY"), name or customer id as listed by "pytr accounts". '
+            "Defaults to your own account."
         ),
         default=None,
     )
@@ -175,7 +176,7 @@ def get_main_parser():
     )
 
     # accounts
-    info = "List the accounts of this login, e.g. company or child accounts. Use one of them with --account"
+    info = "List the accounts of this login, e.g. a company account. Use one of them with --account"
     parser_cmd.add_parser(
         "accounts",
         formatter_class=formatter,

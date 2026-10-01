@@ -14,7 +14,7 @@ __Table of Contents__
 * [Usage](#usage)
 * [Authentication](#authentication)
   * [Web login](#web-login)
-  * [Company and child accounts](#company-and-child-accounts)
+  * [Other accounts of your login](#other-accounts-of-your-login)
 * [Development](#development)
   * [Setting Up a Development Environment](#setting-up-a-development-environment)
   * [Linting and Code Formatting](#linting-and-code-formatting)
@@ -72,8 +72,8 @@ Commands:
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
                                         login. Ask for device reset if needed
-    accounts                            List the accounts of this login, e.g. company or child accounts. Use one of them
-                                        with --account
+    accounts                            List the accounts of this login, e.g. a company account. Use one of them with
+                                        --account
     portfolio                           Show current portfolio
     rates                               Fetch current prices for a list of ISINs given as direct list or CSV input
     details                             Get details for an ISIN
@@ -119,19 +119,22 @@ Web login uses the public web-login endpoints at `api.traderepublic.com`. Two va
 Both variants keep you logged in on your primary device, but you may need to re-authenticate every so often when
 running `pytr`.
 
-### Company and child accounts
+### Other accounts of your login
 
-A Trade Republic login can hold more than its own account, e.g. a company account or a child's account. Trade
-Republic treats each of them as a customer of its own, and the web app switches between them after the login. Pass
-`--account` to do the same, on any subcommand that performs a login:
+A Trade Republic login can hold more than its own account, e.g. a company account. Trade Republic treats each of
+them as a customer of its own, and the web app switches between them after the login. Pass `--account` to do the
+same, on any subcommand that performs a login:
 
 ```sh
 pytr portfolio --account LEGAL_ENTITY
 pytr dl_docs --account "Mustermann Holding GmbH" ./docs
 ```
 
-The value is the account's type or its name, as listed by `pytr accounts`. Without `--account`, pytr uses your own
-account, as before.
+The value is the account's type, its name or its customer id, as listed by `pytr accounts`. Without `--account`,
+pytr uses your own account, as before. The choice is not remembered between runs.
+
+This has been tested with a company account. Other accounts that the web app lets you switch to, e.g. a child's
+account, are expected to work the same way but have not been tested.
 
 ## Development
 

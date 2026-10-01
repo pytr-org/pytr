@@ -32,6 +32,7 @@ import ssl
 import time
 import urllib.parse
 import uuid
+from collections import deque
 from datetime import datetime
 from http.cookiejar import Cookie, MozillaCookieJar
 from typing import Any, Dict
@@ -87,34 +88,36 @@ APP_VERSION = "2.2631.13"
 WEB_PLATFORM = "web-pro"
 
 
-def _relationship_names(relationship):
-    """Everything a relationship can be selected by, lower-cased."""
-    full_name = " ".join(filter(None, [relationship.get("firstName"), relationship.get("lastName")]))
-    names = [
+# Seconds after which the web session is refreshed.
+SESSION_REFRESH_INTERVAL = 290
+
+
+def account_kind(relationship):
+    """The kind of account behind an entry of `relationships()`, e.g. `ADULT` or `LEGAL_ENTITY`."""
+    return str(relationship.get("accountType") or relationship.get("relationshipType") or "UNKNOWN")
+
+
+def account_name(relationship):
+    """The name of the account behind an entry of `relationships()`: the account's, else the person's."""
+    person = [str(part) for part in (relationship.get("firstName"), relationship.get("lastName")) if part]
+    return str(relationship.get("accountName") or " ".join(person))
+
+
+def _account_selectors(relationship):
+    """Everything an entry of `relationships()` can be selected by, lower-cased."""
+    selectors = [
         relationship.get("customerId"),
         relationship.get("relationshipType"),
         relationship.get("accountType"),
-        relationship.get("accountName"),
-        relationship.get("shortDisplayName"),
-        full_name,
+        relationship.get("firstName"),
+        account_name(relationship),
     ]
-    return {name.strip().casefold() for name in names if isinstance(name, str) and name.strip()}
+    return {str(selector).strip().casefold() for selector in selectors if selector and str(selector).strip()}
 
 
-def relationship_type(relationship):
-    return relationship.get("accountType") or relationship.get("relationshipType") or "UNKNOWN"
-
-
-def relationship_name(relationship):
-    return relationship.get("accountName") or " ".join(
-        filter(None, [relationship.get("firstName"), relationship.get("lastName")])
-    )
-
-
-def _describe_relationship(relationship):
-    name = relationship_name(relationship)
-    kind = relationship_type(relationship)
-    return f"{kind} ({name})" if name else kind
+def _describe_account(relationship):
+    name = account_name(relationship)
+    return f"{account_kind(relationship)} ({name})" if name else account_kind(relationship)
 
 
 class TradeRepublicApi:
@@ -180,6 +183,8 @@ class TradeRepublicApi:
         self._sec_acc_no: str | None = None
         # Customer id of the account the session acts for, once it is not the login's own.
         self._subject_id: str | None = None
+        # Messages read off the websocket on behalf of a caller that has not asked for them yet.
+        self._held_back: deque = deque()
 
     def _fetch_waf_token_awswaf(self):
         """
@@ -536,11 +541,7 @@ class TradeRepublicApi:
         try:
             self.log.debug("Calling settings...")
             self.settings()
-        except requests.exceptions.HTTPError as e:
-            if self._acts_for_other_account(e.response):
-                # The cookies are fine, they were saved while acting for another account.
-                self.log.info("Websession resumed.")
-                return True
+        except requests.exceptions.HTTPError:
             self.log.info("Resuming websession failed.")
             self.log.debug("Error calling tr.settings().", exc_info=True)
             # in case the websession can not be resumed, start with a fresh set of cookies
@@ -553,62 +554,61 @@ class TradeRepublicApi:
     def _web_request(self, url_path, payload=None, method="GET"):
         if self._session_expires_at < time.time():
             if self._subject_id is None:
+                # Refreshing without a subject returns the session to the login's own account.
+                # A new process starts here, so it never inherits the account an earlier run chose.
                 r = self._websession.get(f"{self._host}/api/v1/auth/web/session")
             else:
-                # Refreshing without the subject would not keep the session on that account.
                 r = self._post_session(self._subject_id)
             r.raise_for_status()
-            self._session_expires_at = time.time() + 290
+            self._session_expires_at = time.time() + SESSION_REFRESH_INTERVAL
         return self._websession.request(method=method, url=f"{self._host}{url_path}", data=payload)
 
     def _post_session(self, subject_id):
-        """Ask for session tokens that act for `subject_id`, the way the web frontend does."""
+        """Ask for session cookies that act for `subject_id`, the way the web frontend does.
+
+        The frontend uses this call both to switch the account and to refresh the session.
+        """
         return self._websession.post(
             f"{self._host}/api/v2/auth/web/session",
             json={"subjectId": subject_id},
             headers=self._login_headers(),
         )
 
-    @staticmethod
-    def _acts_for_other_account(response):
-        """Tell whether `/api/v2/auth/account` refused because the session acts for another account."""
-        if response is None or response.status_code != 400:
-            return False
-        try:
-            return response.json()["errors"][0]["errorCode"] == "INVALID_AUTH_ACCOUNT_STATE"
-        except (ValueError, KeyError, IndexError, TypeError):
-            return False
-
     def relationships(self):
         """List the accounts this login can act for.
 
-        Besides the login's own account (`relationshipType` `SELF`) these are e.g. a
-        company account (`LEGAL_ENTITY_ACTOR`) or a child's account.
+        Besides the login's own account (`relationshipType` `SELF`) this is e.g. a
+        company account (`LEGAL_ENTITY_ACTOR`).
         """
         r = self._web_request("/api/v1/customer/relationships/detailed")
         r.raise_for_status()
-        return r.json().get("relationships", [])
+        return r.json().get("relationships") or []
 
     def _find_relationship(self, account):
         """Pick one relationship by customer id, type or name. `None` picks the login's own account."""
         relationships = self.relationships()
-        wanted = "self" if account is None else account.strip().casefold()
-        matches = [r for r in relationships if wanted in _relationship_names(r)]
-        if len(matches) == 1:
+        if account is None:
+            matches = [r for r in relationships if r.get("relationshipType") == "SELF"]
+            wanted = "Your own account"
+        else:
+            matches = [r for r in relationships if account.strip().casefold() in _account_selectors(r)]
+            wanted = repr(account)
+        if len(matches) == 1 and matches[0].get("customerId"):
             return matches[0]
-        known = ", ".join(_describe_relationship(r) for r in relationships) or "none"
-        problem = "matches more than one account" if matches else "does not match any account"
-        raise ValueError(f"{account!r} {problem}. Available accounts: {known}.")
+        known = ", ".join(_describe_account(r) for r in relationships) or "none"
+        if len(matches) > 1:
+            raise ValueError(f"{wanted} matches more than one account, use its customer id. Accounts: {known}.")
+        raise ValueError(f"{wanted} was not found among the accounts of this login. Accounts: {known}.")
 
     def switch_account(self, account=None):
-        """Let the session act for another account of this login, e.g. a company or child account.
+        """Let the session act for another account of this login, e.g. a company account.
 
-        `account` is a customer id, a relationship or account type (`LEGAL_ENTITY`), or the
-        account's name, as listed by `relationships()`. `None` switches back to the login's
-        own account. Returns the chosen relationship.
+        `account` is the account's type (`LEGAL_ENTITY`), its name or its customer id, as listed
+        by `relationships()`. `None` switches back to the login's own account. Returns the chosen
+        relationship.
 
         Trade Republic does not address these accounts by a second account number. It hands
-        out new session tokens that act for the other customer, so every call made afterwards,
+        out new session cookies that act for the other customer, so every call made afterwards,
         the websocket included, sees that account only.
         """
         if self._ws is not None and self._ws.close_code is None:
@@ -620,11 +620,12 @@ class TradeRepublicApi:
 
         is_self = relationship.get("relationshipType") == "SELF"
         self._subject_id = None if is_self else relationship["customerId"]
-        self._session_expires_at = time.time() + 290
+        self._session_expires_at = time.time() + SESSION_REFRESH_INTERVAL
         # The securities account belongs to the previous account.
         self._sec_acc_no = None
+        # The switch replaced the session cookies; keep the saved ones usable for the next run.
         self.save_websession()
-        self.log.info(f"Using account: {_describe_relationship(relationship)}")
+        self.log.info(f"Using account: {_describe_account(relationship)}")
         return relationship
 
     async def _get_ws(self):
@@ -697,6 +698,11 @@ class TradeRepublicApi:
         self._previous_responses.pop(subscription_id, None)
 
     async def recv(self):
+        if self._held_back:
+            return self._held_back.popleft()
+        return await self._recv_ws()
+
+    async def _recv_ws(self):
         ws = await self._get_ws()
         while True:
             response = await ws.recv()
@@ -774,17 +780,16 @@ class TradeRepublicApi:
         return await self.subscribe({"type": "portfolioStatus"})
 
     async def compact_portfolio(self):
-        if self._sec_acc_no is None and self._subject_id is None:
-            try:
+        if self._sec_acc_no is None:
+            if self._subject_id is None:
                 self.settings()
-            except requests.exceptions.HTTPError as e:
-                if not self._acts_for_other_account(e.response):
-                    raise
+            else:
+                # /api/v2/auth/account answers 400 INVALID_AUTH_ACCOUNT_STATE for any account but
+                # the login's own, so the number has to come from the websocket instead.
+                self._sec_acc_no = await self._sec_acc_no_from_account_pairs()
         if self._sec_acc_no is None:
-            # The account settings are only served for the login's own account.
-            self._sec_acc_no = await self._sec_acc_no_from_account_pairs()
-        if self._sec_acc_no is None:
-            raise ValueError("Could not retrieve securities account number.")
+            source = "account settings" if self._subject_id is None else "account pairs"
+            raise ValueError(f"Could not retrieve securities account number from {source}.")
         return await self.subscribe({"type": "compactPortfolioByType", "secAccNo": self._sec_acc_no})
 
     async def account_pairs(self):
@@ -792,11 +797,25 @@ class TradeRepublicApi:
 
     async def _sec_acc_no_from_account_pairs(self, timeout=5.0):
         """Read the securities account number of the account the session acts for."""
-        response = await self._receive_one(self.account_pairs(), timeout=timeout)
-        accounts = [a for a in response.get("accounts", []) if a.get("securitiesAccountNumber")]
-        # An account can hold more than one pair; the portfolio is the default product.
+        subscription_id = await self.account_pairs()
+        try:
+            response = await asyncio.wait_for(self._recv_holding_back_others(subscription_id), timeout)
+        except asyncio.TimeoutError:
+            return None
+        finally:
+            await self.unsubscribe(subscription_id)
+        accounts = [a for a in response.get("accounts") or [] if a.get("securitiesAccountNumber")]
+        # Prefer the pair of the default product if the account has more than one.
         accounts.sort(key=lambda a: a.get("productType") != "DEFAULT")
         return accounts[0]["securitiesAccountNumber"] if accounts else None
+
+    async def _recv_holding_back_others(self, subscription_id):
+        """Wait for one subscription's answer; keep the answers to others for the next `recv()`."""
+        while True:
+            message = await self._recv_ws()
+            if message[0] == subscription_id:
+                return message[2]
+            self._held_back.append(message)
 
     async def watchlist(self):
         return await self.subscribe({"type": "watchlist"})

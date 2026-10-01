@@ -7,7 +7,7 @@ from getpass import getpass
 import requests
 from pygments import formatters, highlight, lexers
 
-from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi, relationship_name, relationship_type
+from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi, account_kind, account_name
 from .utils import get_logger
 
 
@@ -21,17 +21,21 @@ def get_settings(tr):
 
 
 def get_accounts(tr):
-    """List the accounts of this login, one per line: type, name and state."""
+    """List the accounts of this login, one per line: type, name, customer id and state.
+
+    `--account` takes the type, the name or, where those are not unique, the customer id.
+    """
     rows = [
         (
-            relationship_type(r),
-            relationship_name(r),
-            "your own account" if r.get("relationshipType") == "SELF" else (r.get("accountState") or ""),
+            account_kind(r),
+            account_name(r),
+            str(r.get("customerId") or ""),
+            "your own account" if r.get("relationshipType") == "SELF" else str(r.get("accountState") or ""),
         )
         for r in tr.relationships()
     ]
-    widths = [max((len(row[i]) for row in rows), default=0) for i in range(2)]
-    return "\n".join(f"{kind:<{widths[0]}}  {name:<{widths[1]}}  {note}".rstrip() for kind, name, note in rows)
+    widths = [max((len(row[i]) for row in rows), default=0) for i in range(3)]
+    return "\n".join("  ".join(f"{cell:<{width}}" for cell, width in zip(row, widths + [0])).rstrip() for row in rows)
 
 
 def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False, account=None):
@@ -39,7 +43,7 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
     Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
 
-    `account` selects another account of this login, e.g. a company or child account.
+    `account` selects another account of this login, e.g. a company account.
     """
     log = get_logger(__name__)
     save_cookies = True
@@ -105,20 +109,16 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         tr.complete_weblogin(code)
         log.info("Logged in.")
 
-    try:
-        settings = get_settings(tr)
-    except requests.exceptions.HTTPError as e:
-        if not tr._acts_for_other_account(e.response):
-            raise
-        # Saved cookies can still act for the account chosen in an earlier run.
-        settings = None
+    log.debug(get_settings(tr))
 
-    if account is not None or settings is None:
+    if account is not None:
         try:
             tr.switch_account(account)
         except ValueError as e:
             log.fatal(str(e))
             sys.exit(1)
-    else:
-        log.debug(settings)
+        except requests.exceptions.HTTPError as e:
+            status = e.response.status_code if e.response is not None else "unknown"
+            log.fatal(f"Trade Republic refused to switch to account {account!r} (status {status}).")
+            sys.exit(1)
     return tr
