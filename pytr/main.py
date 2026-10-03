@@ -12,7 +12,7 @@ from pathlib import Path
 
 import shtab
 
-from pytr.account import get_accounts, login
+from pytr.account import login, print_accounts
 from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
@@ -583,7 +583,7 @@ def main():
         )
     elif args.command == "accounts":
         print(
-            get_accounts(
+            print_accounts(
                 login(
                     phone_no=args.phone_no,
                     pin=args.pin,
@@ -726,6 +726,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    v2=args.v2,
                     account=args.account,
                 ),
                 args.input,
@@ -742,6 +743,7 @@ def main():
                     pin=args.pin,
                     store_credentials=args.store_credentials,
                     waf_token=args.waf_token,
+                    v2=args.v2,
                     account=args.account,
                 ),
                 args.input,

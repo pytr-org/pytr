@@ -426,18 +426,19 @@ def test_compact_portfolio_still_reports_account_settings_without_a_securities_a
 # --- pytr accounts -------------------------------------------------------------------
 
 
-def test_get_accounts_prints_what_account_accepts():
+def test_print_accounts_prints_what_account_accepts():
     tr = _api([{"relationships": [SELF, COMPANY, {"customerId": "id-bare"}]}])
 
-    assert account_module.get_accounts(tr).splitlines() == [
-        "ADULT         Erika Mustermann         id-self     your own account",
-        "LEGAL_ENTITY  Mustermann Holding GmbH  id-company  ACTIVE",
+    assert account_module.print_accounts(tr).splitlines() == [
+        "TYPE          NAME                     CUSTOMER ID  STATE",
+        "ADULT         Erika Mustermann         id-self      your own account",
+        "LEGAL_ENTITY  Mustermann Holding GmbH  id-company   ACTIVE",
         "UNKNOWN                                id-bare",
     ]
 
 
-def test_get_accounts_of_a_login_without_relationships_is_empty():
-    assert account_module.get_accounts(_api([{}])) == ""
+def test_print_accounts_of_a_login_without_relationships_is_empty():
+    assert account_module.print_accounts(_api([{}])) == ""
 
 
 def test_the_accounts_command_exists_and_takes_the_login_arguments():

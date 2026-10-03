@@ -20,7 +20,7 @@ def get_settings(tr):
         return formatted_json
 
 
-def get_accounts(tr):
+def print_accounts(tr):
     """List the accounts of this login, one per line: type, name, customer id and state.
 
     `--account` takes the type, the name or, where those are not unique, the customer id.
@@ -34,8 +34,12 @@ def get_accounts(tr):
         )
         for r in tr.relationships()
     ]
-    widths = [max((len(row[i]) for row in rows), default=0) for i in range(3)]
-    return "\n".join("  ".join(f"{cell:<{width}}" for cell, width in zip(row, widths + [0])).rstrip() for row in rows)
+    if not rows:
+        return ""
+    heading = ("TYPE", "NAME", "CUSTOMER ID", "STATE")
+    widths = [max(len(heading[i]), max(len(row[i]) for row in rows)) for i in range(4)]
+    all_rows = [heading] + rows
+    return "\n".join("  ".join(f"{cell:<{width}}" for cell, width in zip(row, widths)).rstrip() for row in all_rows)
 
 
 def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False, account=None):
