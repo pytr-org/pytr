@@ -17,6 +17,8 @@ from pytr.alarms import Alarms
 from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
+from pytr.fund_details import FundDetails, FundDetailsError
+from pytr.fund_details import parse_isin as parse_fund_isin
 from pytr.portfolio import PORTFOLIO_COLUMNS, Portfolio
 from pytr.rates import RATE_COLUMNS, Rates, parse_isin_input
 from pytr.savings_plans import SavingsPlans
@@ -256,6 +258,18 @@ def get_main_parser():
         description=info,
     )
     parser_details.add_argument("isin", help="ISIN of intrument")
+
+    # fund_details
+    info = "Get read-only fund details for an ISIN"
+    parser_fund_details = parser_cmd.add_parser(
+        "fund_details",
+        formatter_class=formatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    parser_fund_details.add_argument("isin", help="ISIN of fund", type=parse_fund_isin)
+    parser_fund_details.add_argument("--exchange", help="Exchange to use for the quote")
 
     # dl_docs
     info = (
@@ -609,6 +623,22 @@ def main():
             ),
             args.isin,
         ).get()
+    elif args.command == "fund_details":
+        try:
+            FundDetails(
+                login(
+                    phone_no=args.phone_no,
+                    pin=args.pin,
+                    store_credentials=args.store_credentials,
+                    waf_token=args.waf_token,
+                    v2=args.v2,
+                ),
+                args.isin,
+                exchange=args.exchange,
+            ).get()
+        except FundDetailsError as error:
+            print(f"Error: {error}")
+            return -1
     elif args.command == "dl_docs":
         DL(
             None
