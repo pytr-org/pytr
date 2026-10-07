@@ -12,6 +12,7 @@ __Table of Contents__
 <!-- toc -->
 * [Quickstart](#quickstart)
 * [Usage](#usage)
+  * [Fund details](#fund-details)
 * [Authentication](#authentication)
   * [Web login](#web-login)
 * [Development](#development)
@@ -61,12 +62,12 @@ If you want to use the cutting-edge version, use this command instead:
 <!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
+            {help,login,portfolio,rates,details,fund_details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
+  {help,login,portfolio,rates,details,fund_details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
@@ -74,6 +75,7 @@ Commands:
     portfolio                           Show current portfolio
     rates                               Fetch current prices for a list of ISINs given as direct list or CSV input
     details                             Get details for an ISIN
+    fund_details                        Get read-only fund details for an ISIN
     dl_docs                             Download all pdf documents from the timeline and sort them into folders. Also
                                         export account transactions (account_transactions.csv) and JSON files with all
                                         events (events_with_documents.json and other_events.json)
@@ -92,6 +94,24 @@ Options:
   --debug-log-filter DEBUG_LOG_FILTER   Filter debug log types (default: None)
 ```
 <!-- end runcmd -->
+
+### Fund details
+
+Use `fund_details` to show metadata and a current bid/ask quote for one fund or ETF. It uses only read-only instrument
+metadata and ticker subscriptions.
+
+```sh
+pytr fund_details IE0000MR4GH9
+```
+
+The quote defaults to the first exchange returned by Trade Republic. Select another available exchange explicitly:
+
+```sh
+pytr fund_details IE0000MR4GH9 --exchange TDG
+```
+
+The output includes the ISIN, YTM, TER, NAV and its date, duration, maturity, distribution policy, market-cap field,
+bid, ask, spread, quote timestamp, and quote status. Metadata is still shown when a quote is unavailable.
 
 ## Authentication
 
