@@ -17,7 +17,6 @@ class Details:
         await self.tr.ticker(self.isin, exchange="LSX")
         await self.tr.performance(self.isin, exchange="LSX")
         await self.tr.instrument_details(self.isin)
-        await self.tr.instrument_suitability(self.isin)
 
         # await self.tr.add_watchlist(self.isin)
         # await self.tr.remove_watchlist(self.isin)
@@ -42,14 +41,10 @@ class Details:
             elif subscription["type"] == "instrument":
                 recv += 1
                 self.instrument = response
-            elif subscription["type"] == "instrumentSuitability":
-                recv += 1
-                self.instrumentSuitability = response
-                print("instrumentSuitability:", response)
             else:
                 print(f"unmatched subscription of type '{subscription['type']}':\n{preview(response, num_lines=30)}")
 
-            if recv == 6:
+            if recv == 5:
                 await self.tr.close()
                 return
 
