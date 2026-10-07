@@ -176,7 +176,7 @@ def get_main_parser():
     )
 
     # accounts
-    info = "List the accounts of this login, e.g. a company account. Use one of them with --account"
+    info = "List accounts of this login, e.g. a company accounts or child accounts. Use them with --account"
     parser_cmd.add_parser(
         "accounts",
         formatter_class=formatter,
