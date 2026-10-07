@@ -12,7 +12,6 @@ __Table of Contents__
 <!-- toc -->
 * [Quickstart](#quickstart)
 * [Usage](#usage)
-  * [Fund details](#fund-details)
 * [Authentication](#authentication)
   * [Web login](#web-login)
 * [Development](#development)
@@ -94,24 +93,6 @@ Options:
   --debug-log-filter DEBUG_LOG_FILTER   Filter debug log types (default: None)
 ```
 <!-- end runcmd -->
-
-### Fund details
-
-Use `fund_details` to show metadata and a current bid/ask quote for one fund or ETF. It uses only read-only instrument
-metadata and ticker subscriptions.
-
-```sh
-pytr fund_details IE0000MR4GH9
-```
-
-The quote defaults to the first exchange returned by Trade Republic. Select another available exchange explicitly:
-
-```sh
-pytr fund_details IE0000MR4GH9 --exchange TDG
-```
-
-The output includes the ISIN, YTM, TER, NAV and its date, duration, maturity, distribution policy, market-cap field,
-bid, ask, spread, quote timestamp, and quote status. Metadata is still shown when a quote is unavailable.
 
 ## Authentication
 
