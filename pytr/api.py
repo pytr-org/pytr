@@ -459,8 +459,8 @@ class TradeRepublicApi:
                 headers=self._login_headers(),
             )
             self._raise_for_login_error(r)
-        else:
-            self._await_weblogin_confirmation()
+
+        self._await_weblogin_confirmation()
         self.save_websession()
 
     def _raise_for_login_error(self, r):
