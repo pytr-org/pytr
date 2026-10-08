@@ -1,0 +1,124 @@
+{
+  "id": "cb25d019-05f3-3a6c-8785-e410b70df9cd",
+  "timestamp": "2026-08-13T15:22:52.025+0000",
+  "title": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+  "icon": "logos/DE000FRE5EN2/v2",
+  "subtitle": "Tausch",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "cb25d019-05f3-3a6c-8785-e410b70df9cd"
+  },
+  "trailing": null,
+  "eventType": "SSP_CORPORATE_ACTION_NO_CASH",
+  "hidden": false,
+  "deleted": false,
+  "source": "timelineActivity",
+  "details": {
+    "id": "cb25d019-05f3-3a6c-8785-e410b70df9cd",
+    "sections": [
+      {
+        "title": "Deine Aktien waren von einer Kapitalmaßnahme betroffen",
+        "data": {
+          "icon": {
+            "asset": "logos/DE000FRE5EN2/v2",
+            "badge": null
+          },
+          "subtitleText": "13 Aug. · 15:22",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "Status",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Orderart",
+            "detail": {
+              "text": "Tausch",
+              "displayValue": {
+                "text": "Tausch",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Fresenius",
+              "displayValue": {
+                "text": "Fresenius",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien entfernt",
+            "detail": {
+              "text": "5.431472",
+              "displayValue": {
+                "text": "5.431472",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Wertpapier",
+            "detail": {
+              "text": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+              "displayValue": {
+                "text": "Fresenius SE & Co. KGaA Namens-Aktien o.N.",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Aktien hinzugefügt",
+            "detail": {
+              "text": "5.431472",
+              "displayValue": {
+                "text": "5.431472",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Dokumente",
+            "detail": "13.08.2026",
+            "action": {
+              "payload": "https://example.com/document.pdf",
+              "type": "browserModal"
+            },
+            "id": "5310c3d8-e7b5-4ad7-97fb-a48b39f5f579",
+            "postboxType": "CA_SECURITIES_INVOICE"
+          }
+        ],
+        "type": "documents"
+      }
+    ]
+  }
+}

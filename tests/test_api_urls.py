@@ -127,7 +127,7 @@ def test_initiate_weblogin_rejects_a_null_process_id():
 
 
 def test_complete_weblogin_posts_code_to_authenticator_verification():
-    tr = _api([{}])
+    tr = _api([{}, {"status": "CONFIRMED"}])
     tr._process_id = "pid-1"
     tr._required_action = "AUTHENTICATOR_VERIFICATION"
 
@@ -230,7 +230,7 @@ def _every_login_call():
     poll.initiate_weblogin()
     poll.complete_weblogin(None)
 
-    verify = _api([{}])
+    verify = _api([{}, {"status": "CONFIRMED"}])
     verify._process_id = "pid-1"
     verify._required_action = "AUTHENTICATOR_VERIFICATION"
     verify.complete_weblogin("123456")
@@ -242,7 +242,7 @@ def test_every_v2_login_call_sends_the_required_headers():
     """Without them Trade Republic answers 400 MISSING_REQUIRED_HEADER."""
     calls = _every_login_call()
 
-    assert [c["url"] for c in calls] == [LOGIN, PROCESS, PROCESS, f"{PROCESS}/authenticator-verification"]
+    assert [c["url"] for c in calls] == [LOGIN, PROCESS, PROCESS, f"{PROCESS}/authenticator-verification", PROCESS]
     for call in calls:
         for header in REQUIRED_HEADERS:
             assert call["headers"].get(header), f"{header} missing on {call['method']} {call['url']}"

@@ -15,6 +15,7 @@ __Table of Contents__
 * [Authentication](#authentication)
   * [Web login](#web-login)
   * [If web login suddenly stops working](#if-web-login-suddenly-stops-working)
+  * [Other accounts of your login](#other-accounts-of-your-login)
 * [Development](#development)
   * [Setting Up a Development Environment](#setting-up-a-development-environment)
   * [Linting and Code Formatting](#linting-and-code-formatting)
@@ -62,16 +63,18 @@ If you want to use the cutting-edge version, use this command instead:
 <!-- runcmd code:console uv run --python 3.13 pytr help --for-readme -->
 ```console
 usage: pytr [-h] [-V] [-v {warning,info,debug}] [--debug-logfile DEBUG_LOGFILE] [--debug-log-filter DEBUG_LOG_FILTER]
-            {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
+            {help,login,accounts,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion} ...
 
 Use "pytr command_name --help" to get detailed help to a specific command
 
 Commands:
-  {help,login,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
+  {help,login,accounts,portfolio,rates,details,dl_docs,export_transactions,get_price_alarms,set_price_alarms,get_savings_plans,completion}
                                         Desired action to perform
     help                                Print this help message
     login                               Check if credentials file exists. If not create it and ask for input. Try to
                                         login. Ask for device reset if needed
+    accounts                            List accounts of this login, e.g. a company accounts or child accounts. Use them
+                                        with --account
     portfolio                           Show current portfolio
     rates                               Fetch current prices for a list of ISINs given as direct list or CSV input
     details                             Get details for an ISIN
@@ -139,6 +142,22 @@ in the meantime:
 Read the current values off [app.traderepublic.com](https://app.traderepublic.com/) in your browser's dev tools, on the
 network request to `/api/v2/auth/web/login`. Leaving a variable unset, or setting it to an empty string, keeps the
 built-in default. If you need one of these, please also open an issue so the default can be updated for everyone.
+
+### Other accounts of your login
+
+A Trade Republic login can hold more than its own account, e.g. company accounts or child accounts. Trade Republic
+treats each of them as a customer of its own, and the web app switches between them after the login. Pass `--account`
+to do the same, on any subcommand that performs a login:
+
+```sh
+pytr portfolio --account LEGAL_ENTITY
+pytr dl_docs --account "Mustermann Holding GmbH" ./docs
+```
+
+The value is the account's type, its name or its customer id, as listed by `pytr accounts`. Without `--account`,
+pytr uses your own account. The choice is not remembered between runs.
+
+Unfortunately, it seems that this only works with company accounts, not with child accounts at the moment.
 
 ## Development
 
