@@ -4,9 +4,10 @@ import sys
 import time
 from getpass import getpass
 
+import requests
 from pygments import formatters, highlight, lexers
 
-from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi
+from .api import BASE_DIR, CREDENTIALS_FILE, TradeRepublicApi, account_kind, account_name
 from .utils import get_logger
 
 
@@ -19,10 +20,34 @@ def get_settings(tr):
         return formatted_json
 
 
-def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False):
+def print_accounts(tr):
+    """List the accounts of this login, one per line: type, name, customer id and state.
+
+    `--account` takes the type, the name or, where those are not unique, the customer id.
+    """
+    rows = [
+        (
+            account_kind(r),
+            account_name(r),
+            str(r.get("customerId") or ""),
+            "your own account" if r.get("relationshipType") == "SELF" else str(r.get("accountState") or ""),
+        )
+        for r in tr.relationships()
+    ]
+    if not rows:
+        return ""
+    heading = ("TYPE", "NAME", "CUSTOMER ID", "STATE")
+    widths = [max(len(heading[i]), max(len(row[i]) for row in rows)) for i in range(4)]
+    all_rows = [heading] + rows
+    return "\n".join("  ".join(f"{cell:<{width}}" for cell, width in zip(row, widths)).rstrip() for row in all_rows)
+
+
+def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwright", v2=False, account=None):
     """
     Handle credentials parameters and store to credentials file if requested.
     If no parameters are set but are needed then ask for input
+
+    `account` selects another account of this login, e.g. a company account.
     """
     log = get_logger(__name__)
     save_cookies = True
@@ -89,4 +114,15 @@ def login(phone_no=None, pin=None, store_credentials=False, waf_token="playwrigh
         log.info("Logged in.")
 
     log.debug(get_settings(tr))
+
+    if account is not None:
+        try:
+            tr.switch_account(account)
+        except ValueError as e:
+            log.fatal(str(e))
+            sys.exit(1)
+        except requests.exceptions.HTTPError as e:
+            status = e.response.status_code if e.response is not None else "unknown"
+            log.fatal(f"Trade Republic refused to switch to account {account!r} (status {status}).")
+            sys.exit(1)
     return tr
