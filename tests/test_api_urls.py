@@ -1,6 +1,7 @@
 """Pin the web login endpoints, their required headers and the login process state machine."""
 
 import base64
+import importlib
 import json as jsonlib
 import re
 from typing import Any
@@ -8,7 +9,16 @@ from typing import Any
 import pytest
 import requests
 
-from pytr.api import TradeRepublicApi
+import pytr.api
+from pytr.api import (
+    APP_VERSION,
+    ENV_APP_VERSION,
+    ENV_PLATFORM,
+    ENV_USER_AGENT,
+    USER_AGENT,
+    WEB_PLATFORM,
+    TradeRepublicApi,
+)
 
 LOGIN = "https://api.traderepublic.com/api/v2/auth/web/login"
 PROCESS = "https://api.traderepublic.com/api/v2/auth/web/login/processes/pid-1"
@@ -259,6 +269,84 @@ def test_app_version_and_platform_come_from_the_web_frontend():
     # A build version of the frontend, not a pytr version.
     assert re.fullmatch(r"\d+\.\d+\.\d+", headers["X-TR-App-Version"])
     assert headers["X-Tr-Platform"] == "web-pro"
+
+
+# --- environment overrides -----------------------------------------------------------
+
+CHROME_149 = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+
+
+FIREFOX_128 = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+
+
+@pytest.fixture
+def reimported_with(monkeypatch):
+    """pytr.api re-imported under a patched environment.
+
+    X-TR-App-Version and X-Tr-Platform are read per call, so those overrides need
+    nothing special. The User-Agent is baked into _default_headers when the class
+    body runs, so seeing a different one means importing the module again.
+    """
+
+    def _load(**environment):
+        for name, value in environment.items():
+            monkeypatch.setenv(name, value)
+        return importlib.reload(pytr.api)
+
+    yield _load
+    monkeypatch.undo()
+    importlib.reload(pytr.api)
+
+
+def _api_of(module):
+    return module.TradeRepublicApi(phone_no="+490000000000", pin="0000", waf_token=None, use_v2_login=True)
+
+
+def _device_info_of(module):
+    return jsonlib.loads(base64.b64decode(_api_of(module)._login_headers()["X-TR-Device-Info"]))
+
+
+def test_app_version_can_be_overridden_from_the_environment(monkeypatch):
+    """A frontend release makes the built-in stale; 426 must be fixable without a release."""
+    monkeypatch.setenv(ENV_APP_VERSION, "2.9999.1")
+
+    assert _api([])._login_headers()["X-TR-App-Version"] == "2.9999.1"
+
+
+def test_platform_can_be_overridden_from_the_environment(monkeypatch):
+    monkeypatch.setenv(ENV_PLATFORM, "web")
+
+    assert _api([])._login_headers()["X-Tr-Platform"] == "web"
+
+
+def test_user_agent_can_be_overridden_from_the_environment(reimported_with):
+    module = reimported_with(**{ENV_USER_AGENT: CHROME_149})
+
+    assert module.TradeRepublicApi._default_headers["User-Agent"] == CHROME_149
+    assert _api_of(module)._websession.headers["User-Agent"] == CHROME_149
+
+
+def test_an_empty_override_keeps_the_built_in_default(monkeypatch, reimported_with):
+    """An empty assignment must not send an empty header for any of the three."""
+    monkeypatch.setenv(ENV_APP_VERSION, "")
+    monkeypatch.setenv(ENV_PLATFORM, "")
+
+    headers = _api([])._login_headers()
+    assert headers["X-TR-App-Version"] == APP_VERSION
+    assert headers["X-Tr-Platform"] == WEB_PLATFORM
+
+    module = reimported_with(**{ENV_USER_AGENT: ""})
+    assert module.TradeRepublicApi._default_headers["User-Agent"] == USER_AGENT
+
+
+def test_device_info_follows_the_overridden_user_agent(reimported_with):
+    """browserVersion is scraped from the User-Agent; the two must not drift apart."""
+    assert _device_info_of(reimported_with(**{ENV_USER_AGENT: CHROME_149}))["browserVersion"] == "149.0.0.0"
+
+
+def test_a_non_chrome_user_agent_leaves_the_browser_version_empty(reimported_with):
+    """The frontend omits what the browser does not provide, and TR accepts that."""
+    assert _device_info_of(reimported_with(**{ENV_USER_AGENT: FIREFOX_128}))["browserVersion"] == ""
 
 
 # --- endpoints that must NOT move ----------------------------------------------------
