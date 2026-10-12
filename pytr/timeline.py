@@ -125,7 +125,7 @@ class Timeline:
             self.num_timelines += 1
             added_last_event = False
             for event in response["items"]:
-                event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
+                event_timestamp = datetime.fromisoformat(event["timestamp"][:19] + "+00:00").timestamp()
                 if event_timestamp > self.not_before:
                     if event_timestamp < self.not_after:
                         event["source"] = "timelineTransaction"
@@ -161,7 +161,7 @@ class Timeline:
             self.num_timelines += 1
             added_last_event = False
             for event in response["items"]:
-                event_timestamp = datetime.fromisoformat(event["timestamp"][:19]).timestamp()
+                event_timestamp = datetime.fromisoformat(event["timestamp"][:19] + "+00:00").timestamp()
                 if event_timestamp > self.not_before:
                     if event_timestamp < self.not_after:
                         event["source"] = "timelineActivity"
@@ -308,7 +308,7 @@ class Timeline:
             if self.fetch_from_tr and (self.not_before != 0 or self.not_after != float("inf")):
                 self.log.info("Throwing away outdated events...")
                 for i in range(len(old_events) - 1, -1, -1):
-                    ts = datetime.fromisoformat(old_events[i]["timestamp"][:19]).timestamp()
+                    ts = datetime.fromisoformat(old_events[i]["timestamp"][:19] + "+00:00").timestamp()
                     if ts > self.not_before and ts < self.not_after:
                         del old_events[i]
 
@@ -376,12 +376,13 @@ class Timeline:
                 e
                 for e in self.events
                 if "details" in e
-                and datetime.fromisoformat(e["timestamp"][:19]).timestamp() >= self.not_before
-                and datetime.fromisoformat(e["timestamp"][:19]).timestamp() <= self.not_after
+                and datetime.fromisoformat(e["timestamp"][:19] + "+00:00").timestamp() >= self.not_before
+                and datetime.fromisoformat(e["timestamp"][:19] + "+00:00").timestamp() <= self.not_after
             ]
             self.log.info(f"Replaying {len(filtered)} events from database (out of {len(self.events)} total)...")
             self.all_detail = len(filtered)
             for event in filtered:
                 self.event_callback(event)
+            self.events = filtered
 
         self.dl_done = True
