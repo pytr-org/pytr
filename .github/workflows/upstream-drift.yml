@@ -1,0 +1,237 @@
+name: Upstream drift alert
+
+on:
+  schedule:
+    - cron: "17 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: upstream-drift-alert
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh upstream drift issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import datetime as dt
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+
+          REPOSITORY = "aafontoura/pytr"
+          UPSTREAM = "pytr-org/pytr"
+          LABEL = "upstream-drift"
+          TITLE = "Upstream drift: pytr-org/pytr"
+          CLIENT = os.environ.get("GH_API_CLI", "gh")
+          AUTH_TERMS = re.compile(
+              r"\b(?:login|auth(?:entication|orization)?|credentials?|passwords?|pin|otp|web[\s_-]*login)\b",
+              re.IGNORECASE,
+          )
+          NETWORK_TERMS = re.compile(
+              r"\b(?:network|hosts?|hostnames?|domains?|ip addresses?|urls?|endpoints?|server address)\b",
+              re.IGNORECASE,
+          )
+          URL = re.compile(r"\b(?:https?|wss?|ftp)://[^\s\"'<>]+", re.IGNORECASE)
+          HOST = re.compile(
+              r"(?<![@\w-])(?:[a-z0-9-]+\.)+(?:com|org|net|edu|gov|mil|int|de|eu|uk|co|io|app|dev|ai|xyz|info|biz)(?::\d{1,5})?(?![\w-])",
+              re.IGNORECASE,
+          )
+          IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?::\d{1,5})?(?![\d.])")
+          DEPENDENCY_FILE = re.compile(
+              r"(?:^|/)(?:pyproject\.toml|requirements[^/]*\.txt|pipfile(?:\.lock)?|package-lock\.json|npm-shrinkwrap\.json|[^/]*(?:[-_.]lock(?:file)?|lockfile)(?:\.[^/]*)?)$",
+              re.IGNORECASE,
+          )
+
+          def api_pages(route, method="GET", payload=None, paginate=False):
+              command = [CLIENT, "api"]
+              if paginate:
+                  command.append("--paginate")
+              if method != "GET":
+                  command.extend(["-X", method])
+              if payload is not None:
+                  command.extend(["--input", "-"])
+              command.extend([route, "--jq", "tojson | @base64"])
+              if os.path.basename(CLIENT) == "gh-axi":
+                  command.append("--full")
+              result = subprocess.run(
+                  command,
+                  input=json.dumps(payload) if payload is not None else None,
+                  text=True,
+                  capture_output=True,
+              )
+              if result.returncode:
+                  raise RuntimeError(f"GitHub API request failed for {route}: {result.stderr.strip()}")
+              try:
+                  return [
+                      json.loads(base64.b64decode(line).decode("utf-8"))
+                      for line in result.stdout.splitlines()
+                      if line.strip()
+                  ]
+              except (ValueError, UnicodeDecodeError) as error:
+                  raise RuntimeError(f"Could not decode GitHub API response for {route}") from error
+
+          def api(route, method="GET", payload=None):
+              pages = api_pages(route, method, payload)
+              if len(pages) != 1:
+                  raise RuntimeError(f"Expected one GitHub API response for {route}")
+              return pages[0]
+
+          def flatten_pages(pages):
+              return [item for page in pages for item in page] if pages and isinstance(pages[0], list) else pages
+
+          def security_reasons(commit):
+              message = commit.get("commit", {}).get("message", "")
+              files = api(f"repos/{UPSTREAM}/commits/{commit['sha']}").get("files", [])
+              paths = [item.get("filename", "") for item in files]
+              patches = "\n".join(item.get("patch", "") for item in files)
+              searchable = "\n".join([message, *paths, patches])
+              reasons = []
+              if AUTH_TERMS.search(searchable):
+                  reasons.append("login/auth/credentials")
+              if (
+                  NETWORK_TERMS.search("\n".join([message, *paths]))
+                  or URL.search(searchable)
+                  or HOST.search(searchable)
+                  or IPV4.search(searchable)
+              ):
+                  reasons.append("network host/URL")
+              if any(DEPENDENCY_FILE.search(path) for path in paths):
+                  reasons.append("dependency file")
+              return reasons
+
+          def cell(value):
+              value = " ".join(str(value).split())
+              for character in "\\`*_[]<>|":
+                  value = value.replace(character, "\\" + character)
+              return value
+
+          def issue_body(ahead, behind, commits):
+              checked = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+              lines = [
+                  "## In sync" if behind == 0 else "## Upstream drift detected",
+                  "",
+                  f"Compared `{UPSTREAM}:master` with `aafontoura/pytr:hardened` using the GitHub Compare API.",
+                  f"- **Upstream commits missing from hardened:** {behind}",
+                  f"- **Hardened-only commits:** {ahead}",
+                  f"- **Last checked:** {checked}",
+              ]
+              if commits:
+                  lines.extend([
+                      "",
+                      "### New upstream commits",
+                      "",
+                      "| Date | SHA | Subject | Security-relevant | Link |",
+                      "| --- | --- | --- | --- | --- |",
+                  ])
+                  for commit in commits:
+                      sha = commit["sha"]
+                      if not re.fullmatch(r"[0-9a-f]{40}", sha):
+                          raise RuntimeError(f"Invalid commit SHA from GitHub: {sha!r}")
+                      metadata = commit.get("commit", {})
+                      date = metadata.get("author", {}).get("date") or metadata.get("committer", {}).get("date", "")
+                      subject = (metadata.get("message", "").splitlines() or ["(no subject)"])[0]
+                      reasons = security_reasons(commit)
+                      relevance = "Yes: " + ", ".join(reasons) if reasons else "No"
+                      link = f"https://github.com/{UPSTREAM}/commit/{sha}"
+                      lines.append(
+                          f"| {cell(date[:10])} | `{cell(sha[:7])}` | {cell(subject)} | {cell(relevance)} | [commit]({link}) |"
+                      )
+              else:
+                  lines.extend(["", "No upstream commits are missing from `hardened`."])
+              return "\n".join(lines)
+
+          def main():
+              if os.environ.get("GITHUB_REPOSITORY", "").lower() != REPOSITORY:
+                  raise RuntimeError(f"This workflow may only update issues in {REPOSITORY}")
+              primary_pages = api_pages(
+                  f"repos/{UPSTREAM}/compare/master...aafontoura:hardened?per_page=100", paginate=True
+              )
+              reverse_pages = api_pages(
+                  f"repos/{UPSTREAM}/compare/aafontoura:hardened...master?per_page=100", paginate=True
+              )
+              if not primary_pages or not reverse_pages:
+                  raise RuntimeError("GitHub Compare API returned no result")
+              primary = primary_pages[0]
+              ahead = int(primary["ahead_by"])
+              behind = int(primary["behind_by"])
+              reverse = reverse_pages[0]
+              if int(reverse["ahead_by"]) != behind or int(reverse["behind_by"]) != ahead:
+                  raise RuntimeError("The directional GitHub Compare API results do not agree")
+              commits = [commit for page in reverse_pages for commit in page.get("commits", [])]
+              if len(commits) != behind:
+                  raise RuntimeError(f"Expected {behind} upstream commits, received {len(commits)}; refusing an incomplete report")
+              commits.sort(key=lambda commit: (
+                  commit.get("commit", {}).get("author", {}).get("date")
+                  or commit.get("commit", {}).get("committer", {}).get("date", "")
+              ))
+
+              dry_run = os.environ.get("DRY_RUN", "").lower() in ("1", "true", "yes")
+              repo_labels = flatten_pages(api_pages(f"repos/{REPOSITORY}/labels?per_page=100", paginate=True))
+              label_exists = any(label.get("name") == LABEL for label in repo_labels)
+              issues = []
+              if label_exists:
+                  issues = [
+                      issue for issue in flatten_pages(api_pages(
+                          f"repos/{REPOSITORY}/issues?state=all&labels={LABEL}&per_page=100", paginate=True
+                      ))
+                      if "pull_request" not in issue
+                  ]
+              issues.sort(key=lambda issue: (issue.get("state") != "open", issue["number"]))
+              existing = issues[0] if issues else None
+              body = issue_body(ahead, behind, commits)
+
+              if dry_run:
+                  if existing:
+                      action = f"update issue #{existing['number']} ({'open' if behind else 'close'})"
+                  elif behind:
+                      action = "create the drift issue"
+                  else:
+                      action = "make no issue change because no drift issue exists"
+                  print(f"DRY RUN: would {action} with label {LABEL!r}. No writes performed.\n")
+                  print(body)
+                  return
+
+              if not existing and behind == 0:
+                  return
+              if behind and not label_exists:
+                  api(f"repos/{REPOSITORY}/labels", "POST", {
+                      "name": LABEL,
+                      "color": "1d76db",
+                      "description": "Tracks commits missing from pytr hardened",
+                  })
+              state = "open" if behind else "closed"
+              if existing:
+                  labels = [label["name"] for label in existing.get("labels", [])]
+                  if LABEL not in labels:
+                      labels.append(LABEL)
+                  api(f"repos/{REPOSITORY}/issues/{existing['number']}", "PATCH", {
+                      "title": TITLE,
+                      "body": body,
+                      "labels": labels,
+                      "state": state,
+                  })
+              else:
+                  api(f"repos/{REPOSITORY}/issues", "POST", {
+                      "title": TITLE,
+                      "body": body,
+                      "labels": [LABEL],
+                  })
+
+          try:
+              main()
+          except Exception as error:
+              print(error, file=sys.stderr)
+              sys.exit(1)
+          PY
