@@ -304,6 +304,7 @@ _note_to_isin: dict[str, str] = {
     "ORSTED A/S   -ANR-": "DK0064307839",
     "ORSTED A/S EM.09/25 DK 10": "DK0064307755",
     "ROCKET LAB CORP. O.N.": "US7731211089",
+    "tk accelis": "DE000TKCC1S8",
     "TKMS": "DE000TKMS001",
     "Unilever": "GB00BVZK7T90",
     "VERSANT MEDIA GRP A O.N.": "US9252831030",
