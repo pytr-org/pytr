@@ -340,7 +340,7 @@ class TradeRepublicApi:
             return "Etc/UTC"
 
     def _login_headers(self):
-        """The headers Trade Republic requires on the api/v2 login calls.
+        """The headers Trade Republic requires on the web login calls.
 
         Without them the endpoints answer 400 MISSING_REQUIRED_HEADER. The web
         frontend sends the same set on all three of them: a base64-encoded JSON
@@ -396,12 +396,11 @@ class TradeRepublicApi:
             self.log.debug(f"WAF Token: {self._waf_token}")
             self._set_waf_cookie(self._waf_token)
 
-        extra_headers = self._login_headers() if self._use_v2_login else None
         login_path = "/api/v2/auth/web/login" if self._use_v2_login else "/api/v1/auth/web/login"
         r = self._websession.post(
             f"{self._host}{login_path}",
             json={"phoneNumber": self.phone_no, "pin": self.pin},
-            headers=extra_headers,
+            headers=self._login_headers(),
         )
         self.log.debug(f"Web login returned: {r.status_code}")
         if r.status_code == 405 and "awselb" in r.headers.get("server", "").lower():
@@ -446,7 +445,7 @@ class TradeRepublicApi:
             return
         r = self._websession.post(
             f"{self._host}/api/v1/auth/web/login/{self._process_id}/resend",
-            headers=self._default_headers,
+            headers=self._login_headers(),
         )
         r.raise_for_status()
 
@@ -455,7 +454,10 @@ class TradeRepublicApi:
             raise ValueError("Initiate web login first.")
 
         if not self._use_v2_login:
-            r = self._websession.post(f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}")
+            r = self._websession.post(
+                f"{self._host}/api/v1/auth/web/login/{self._process_id}/{verify_code}",
+                headers=self._login_headers(),
+            )
             r.raise_for_status()
             self.save_websession()
             return
