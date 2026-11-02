@@ -3,7 +3,7 @@ import json
 from concurrent.futures import Future, as_completed
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Optional
 
 from pathvalidate import sanitize_filepath
 from requests import Response
@@ -229,6 +229,8 @@ class DL:
         self.filepaths: List[str] = []
         self.doc_urls: List[str] = []
         self.events_processed = 0
+        # Read on first use, not here: --flat and the first ever run never need it.
+        self.known_documents: Optional[Dict[str, str]] = None
 
         self.log = get_logger(__name__)
         if load_event_database is not None:
@@ -258,6 +260,47 @@ class DL:
                 )
 
         self.work_responses()
+
+    def read_event_database(self) -> Dict[str, str]:
+        """Map document id to the path a previous run stored it under.
+
+        all_events.json is written by default (--store-event-database) and
+        already carries local_filepath per document. A missing or unreadable
+        database is not fatal, it only means documents may be fetched again.
+        """
+        database = self.output_path / "all_events.json"
+        if not database.is_file():
+            return {}
+        try:
+            with open(database, encoding="utf-8") as f:
+                events = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            self.log.warning(f"Cannot read {database}: {e}. Documents may be downloaded again.")
+            return {}
+        known: Dict[str, str] = {}
+        for event in events:
+            for section in (event.get("details") or {}).get("sections") or []:
+                if section.get("type") != "documents":
+                    continue
+                for doc in section.get("data") or []:
+                    doc_id, path = doc.get("id"), doc.get("local_filepath")
+                    if doc_id and path:
+                        known[doc_id] = path
+        return known
+
+    def known_document_path(self, doc_id: str) -> Optional[Path]:
+        """Where a previous run put this document, if the file is still there.
+
+        An empty doc_id never matches: read_event_database drops entries
+        without one, and Trade Republic does ship documents with an empty id.
+        """
+        if self.known_documents is None:
+            self.known_documents = self.read_event_database()
+        path = self.known_documents.get(doc_id)
+        if path is None:
+            return None
+        stored = Path(path)
+        return stored if stored.is_file() else None
 
     def dl_callback(self, event):
         if hasattr(self, "tl") and not self.tl.fetch_from_tr:
@@ -459,6 +502,15 @@ class DL:
                     return
                 else:
                     filepath = filepath_with_doc_id
+
+            # The computed name follows the event title, which moves for
+            # certificates while the document id does not. Prefer the path a
+            # previous run used, otherwise the same document is fetched again
+            # under every new name (#391).
+            stored = self.known_document_path(doc_id)
+            if stored is not None and stored != filepath:
+                self.log.debug(f"Document {doc_id} already downloaded to {stored}. Keeping that path.")
+                filepath = stored
 
         doc["local_filepath"] = str(filepath)
         self.filepaths.append(str(filepath))
