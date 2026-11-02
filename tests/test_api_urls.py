@@ -21,6 +21,7 @@ from pytr.api import (
 )
 
 LOGIN = "https://api.traderepublic.com/api/v2/auth/web/login"
+LOGIN_V1 = "https://api.traderepublic.com/api/v1/auth/web/login"
 PROCESS = "https://api.traderepublic.com/api/v2/auth/web/login/processes/pid-1"
 
 
@@ -68,8 +69,8 @@ class _Session:
         return self._record(method, url, None, None)
 
 
-def _api(replies):
-    tr = TradeRepublicApi(phone_no="+490000000000", pin="0000", waf_token=None, use_v2_login=True)
+def _api(replies, use_v2_login=True):
+    tr = TradeRepublicApi(phone_no="+490000000000", pin="0000", waf_token=None, use_v2_login=use_v2_login)
     tr._websession = _Session(replies)
     return tr
 
@@ -244,6 +245,25 @@ def test_every_v2_login_call_sends_the_required_headers():
 
     assert [c["url"] for c in calls] == [LOGIN, PROCESS, PROCESS, f"{PROCESS}/authenticator-verification", PROCESS]
     for call in calls:
+        for header in REQUIRED_HEADERS:
+            assert call["headers"].get(header), f"{header} missing on {call['method']} {call['url']}"
+
+
+def test_every_v1_login_call_sends_the_required_headers():
+    """v1 login endpoints also reject requests missing X-TR-Device-Info with 400 MISSING_REQUIRED_HEADER."""
+    tr = _api([{"processId": "pid-1", "countdownInSeconds": 60}, {}, {}], use_v2_login=False)
+
+    countdown = tr.initiate_weblogin()
+    tr.resend_weblogin()
+    tr.complete_weblogin("1234")
+
+    assert countdown == 61
+    assert [c["url"] for c in tr._websession.calls] == [
+        LOGIN_V1,
+        f"{LOGIN_V1}/pid-1/resend",
+        f"{LOGIN_V1}/pid-1/1234",
+    ]
+    for call in tr._websession.calls:
         for header in REQUIRED_HEADERS:
             assert call["headers"].get(header), f"{header} missing on {call['method']} {call['url']}"
 
