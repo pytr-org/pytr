@@ -452,9 +452,9 @@ class DL:
                 filepath = sanitize_filepath(filepath, "_", "auto")
                 filepath_with_doc_id = sanitize_filepath(filepath_with_doc_id, "_", "auto")
 
-            if filepath in self.filepaths:
+            if str(filepath) in self.filepaths:
                 self.log.debug(f"File {filepath} already in queue. Append document id {doc_id}...")
-                if filepath_with_doc_id in self.filepaths:
+                if str(filepath_with_doc_id) in self.filepaths:
                     self.log.debug(f"File {filepath_with_doc_id} already in queue. Skipping...")
                     return
                 else:
