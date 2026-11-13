@@ -10,6 +10,7 @@ import threading
 import time
 import tkinter as tk
 from datetime import datetime, timedelta
+from importlib.metadata import version
 from pathlib import Path
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 from typing import Any
@@ -830,7 +831,10 @@ class PytrGUI(tk.Tk):
         f.columnconfigure(0, weight=1)
         self._log = scrolledtext.ScrolledText(f, state=tk.DISABLED, height=10, font=("Consolas", 9), wrap=tk.WORD)
         self._log.grid(row=0, column=0, sticky="ew")
-        ttk.Button(f, text="Clear", command=self._clear_log, width=7).grid(row=1, column=0, sticky=tk.E, pady=(4, 0))
+        footer = ttk.Frame(f)
+        footer.grid(row=1, column=0, sticky=tk.E, pady=(4, 0))
+        ttk.Label(footer, text=f"v{version('pytr')}", foreground="#888").pack(side=tk.LEFT, padx=(0, 8))
+        ttk.Button(footer, text="Clear", command=self._clear_log, width=7).pack(side=tk.LEFT)
 
     def _clear_log(self) -> None:
         self._log.configure(state=tk.NORMAL)
