@@ -270,6 +270,24 @@ test_data: list[dict] = [
         ],
     },
     {
+        "filename": "ausschuettungsgleicher_ertrag.json",
+        "event_type": PPEventType.TAXES,
+        "title": "MSCI World USD (Dist)",
+        "isin": "IE00BK1PV551",
+        "value": -3.4,
+        "taxes": 3.4,
+        "transactions": [
+            {
+                "Datum": "2026-07-28T07:14:09",
+                "Typ": "Steuern",
+                "Wert": -3.4,
+                "Notiz": "MSCI World USD (Dist)",
+                "ISIN": "IE00BK1PV551",
+                "Steuern": 3.4,
+            }
+        ],
+    },
+    {
         "filename": "bardividende.json",
         "event_type": PPEventType.DIVIDEND,
         "title": "Comcast (A)",
