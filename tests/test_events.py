@@ -895,6 +895,26 @@ test_data: list[dict] = [
         "transactions": [],
     },
     {
+        "filename": "ipo-subscription-allocation.json",
+        "event_type": ConditionalEventType.TRADE_INVOICE,
+        "title": "Anthropic",
+        "isin": "US03703U1079",
+        "shares": 2.0,
+        "value": -152.32,
+        "fees": 1.0,
+        "transactions": [
+            {
+                "Datum": "2026-11-19T07:50:00",
+                "Typ": "Kauf",
+                "Wert": -152.32,
+                "Notiz": "Anthropic",
+                "ISIN": "US03703U1079",
+                "Stück": 2.0,
+                "Gebühren": 1.0,
+            }
+        ],
+    },
+    {
         "filename": "junior_p2p_transfer.json",
         "event_type": PPEventType.REMOVAL,
         "title": "Maria Mueller",
