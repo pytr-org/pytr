@@ -1,0 +1,233 @@
+{
+  "id": "7cc530d5-e4af-412e-a9cf-b2bff8a69cbf",
+  "timestamp": "2026-11-19T07:50:00.000+0000",
+  "title": "Anthropic",
+  "icon": "logos/US03703U1079/v2",
+  "avatar": {
+    "asset": "logos/US03703U1079/v2",
+    "badge": null
+  },
+  "badge": null,
+  "subtitle": "IPO Zuteilung",
+  "amount": {
+    "currency": "EUR",
+    "value": -152.32,
+    "fractionDigits": 2
+  },
+  "subAmount": null,
+  "status": "EXECUTED",
+  "action": {
+    "type": "timelineDetail",
+    "payload": "7cc530d5-e4af-412e-a9cf-b2bff8a69cbf"
+  },
+  "cashAccountNumber": "123456789",
+  "hidden": false,
+  "deleted": false,
+  "eventType": "IPO_SUBSCRIPTION_ALLOCATION",
+  "actor": null,
+  "presentation": {
+    "leading": {
+      "type": "avatar",
+      "icon": "logos/US03703U1079/v2"
+    },
+    "content": {
+      "type": "default",
+      "title": "Anthropic",
+      "subtitle": "19 Nov. · IPO Zuteilung"
+    },
+    "trailing": {
+      "type": "value",
+      "title": "152,32 €",
+      "titleColor": "default",
+      "strikethrough": false,
+      "titleDataSensitivity": "SENSITIVE"
+    },
+    "action": {
+      "type": "timelineDetail",
+      "payload": "7cc530d5-e4af-412e-a9cf-b2bff8a69cbf"
+    },
+    "type": "listItem"
+  },
+  "source": "timelineTransaction",
+  "details": {
+    "id": "7cc530d5-e4af-412e-a9cf-b2bff8a69cbf",
+    "sections": [
+      {
+        "title": "Du hast 152,32 € investiert",
+        "data": {
+          "icon": {
+            "asset": "logos/US03703U1079/v2",
+            "badge": null
+          },
+          "subtitleText": "19 Nov. · 10:57",
+          "status": "executed"
+        },
+        "type": "header"
+      },
+      {
+        "title": "Dein Anthropic Investment",
+        "description": "Du hast Anthropic-Aktien im Wert von 151,32 € erhalten. Den nicht zugeteilten Zeichnungsbetrag in Höhe von 348,68 € haben wir dir erstattet.",
+        "type": "banner"
+      },
+      {
+        "title": "Übersicht",
+        "data": [
+          {
+            "title": "IPO Zeichnung",
+            "detail": {
+              "text": "Ausgeführt",
+              "functionalStyle": "EXECUTED",
+              "type": "status"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Asset",
+            "detail": {
+              "text": "Anthropic",
+              "displayValue": {
+                "text": "Anthropic",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Transaktion",
+            "detail": {
+              "text": "2 ×  75,659514 €",
+              "action": {
+                "type": "infoPage",
+                "payload": {
+                  "id": "00000000-0000-0000-0000-000000000000",
+                  "sections": [
+                    {
+                      "title": "Transaktion",
+                      "data": {
+                        "status": "executed"
+                      },
+                      "type": "header"
+                    },
+                    {
+                      "data": [
+                        {
+                          "title": "Aktienkurs",
+                          "detail": {
+                            "text": "75,659514 €",
+                            "displayValue": {
+                              "text": "75,659514 €",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Anteile",
+                          "detail": {
+                            "text": "2",
+                            "displayValue": {
+                              "text": "2",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        },
+                        {
+                          "title": "Gesamt",
+                          "detail": {
+                            "text": "151,32 €",
+                            "displayValue": {
+                              "text": "151,32 €",
+                              "textDataSensitivity": "PUBLIC"
+                            },
+                            "type": "text"
+                          },
+                          "style": "plain"
+                        }
+                      ],
+                      "type": "table"
+                    }
+                  ]
+                },
+                "displayMode": "bottomSheet"
+              },
+              "displayValue": {
+                "text": "75,659514 €",
+                "prefix": "2 × ",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Entgelt",
+            "detail": {
+              "text": "1,00 €",
+              "displayValue": {
+                "text": "1,00 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          },
+          {
+            "title": "Gesamt",
+            "detail": {
+              "text": "152,32 €",
+              "displayValue": {
+                "text": "152,32 €",
+                "textDataSensitivity": "PUBLIC"
+              },
+              "type": "text"
+            },
+            "style": "plain"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Dokumente",
+        "data": [
+          {
+            "title": "Wertpapierabrechnung",
+            "action": {
+              "payload": "https://example.com/document.pdf",
+              "type": "browserModal"
+            },
+            "id": "25e96768-e4f7-416b-9fd7-8360a2f32782",
+            "postboxType": "SECURITIES_SETTLEMENT"
+          },
+          {
+            "title": "Prospekt",
+            "action": {
+              "payload": "https://assets.traderepublic.com/assets/files/TR_EU_Prospectus_3xkgCuxPiZw.pdf",
+              "type": "browserModal"
+            },
+            "id": "6e77462a-1ee5-3c44-afd1-990d8d7eec7a",
+            "postboxType": "IPO_PROSPECTUS"
+          },
+          {
+            "title": "Ex-Ante Kosteninformation zum Wertpapierkauf",
+            "action": {
+              "payload": "https://example.com/document.pdf",
+              "type": "browserModal"
+            },
+            "id": "1e1479aa-68de-4f49-bb0c-2a8053267cb4",
+            "postboxType": "EQUITIES_BUY_EX_ANTE"
+          }
+        ],
+        "type": "documents"
+      },
+      {
+        "text": "The sale of the shares has been made in connection with a U.S. registration statement.",
+        "style": "disclaimer",
+        "type": "text"
+      }
+    ]
+  }
+}

@@ -88,6 +88,7 @@ tr_event_type_mapping = {
     "TAX_REFUND": PPEventType.TAX_REFUND,
     # Trade invoices
     "BENEFITS_SPARE_CHANGE_EXECUTION": ConditionalEventType.TRADE_INVOICE,
+    "IPO_SUBSCRIPTION_ALLOCATION": ConditionalEventType.TRADE_INVOICE,
     "IPO_TRADE_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "ORDER_EXECUTED": ConditionalEventType.TRADE_INVOICE,
     "SAVINGS_PLAN_EXECUTED": ConditionalEventType.TRADE_INVOICE,
@@ -415,7 +416,7 @@ class Event:
                 ititle = item.get("title")
                 if ititle == "Gesamt":
                     gesamt_dict = item
-                elif ititle == "Gebühr" and not fees_dict:
+                elif ititle in ["Gebühr", "Entgelt"] and not fees_dict:
                     fees_dict = item
                 elif ititle in ["Steuer", "Steuern"] and not taxes_dict:
                     taxes_dict = item
@@ -438,7 +439,7 @@ class Event:
                     for section in sections:
                         if section.get("type") == "table":
                             for subitem in section.get("data", []):
-                                if subitem.get("title") == "Aktien" and not shares_dict:
+                                if subitem.get("title") in ["Aktien", "Anteile"] and not shares_dict:
                                     shares_dict = subitem
                                 elif subitem.get("title") == "Quotation" and not quotation_dict:
                                     quotation_dict = subitem
