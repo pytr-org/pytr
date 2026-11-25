@@ -7,6 +7,7 @@ No network or TR connection needed — DL is constructed without one.
 
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -392,3 +393,15 @@ test_data: list[dict] = [
 @pytest.mark.parametrize("case", test_data, ids=[c["filename"] for c in test_data])
 def test_dl_paths(case, tmp_path):
     assert collect_paths(case["filename"], tmp_path) == case["paths"]
+
+
+def test_dl_paths_same_minute_same_title(tmp_path):
+    """Two documents rendering to the same name (minute precision) must not share a file."""
+    dl = make_dl(tmp_path)
+    with open(EVENTS_DIR / "buy_new.json", encoding="utf-8") as f:
+        doc = json.load(f)["details"]["sections"][-1]["data"][0]
+    other = {**doc, "id": "other-id"}
+    title, when = "Abrechnung - NVIDIA - Kauforder", datetime(2025, 10, 10, 19, 29)
+    dl.dl_doc(doc, title, "Trades", when)
+    dl.dl_doc(other, title, "Trades", when)
+    assert other["local_filepath"].endswith(" (other-id).pdf")
